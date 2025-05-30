@@ -45,9 +45,8 @@ using MQTTnet;
 //TCP/IP
 using JAN0837_DP.Communication.TCPIP;
 
-    // Sharp7
+// Sharp7
 using Sharp7;
-
 
 // Additional Libraries 
 using Newtonsoft; // JSON library
@@ -626,7 +625,7 @@ namespace JAN0837_DP
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Parameter1:";
+            lblPara1.Text = "URL:";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type URL";
@@ -675,14 +674,14 @@ namespace JAN0837_DP
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Parameter1: ";
+            lblPara1.Text = "Broker: ";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type broker address";
 
             lblPara2.Visible = true;
             lblPara2.Enabled = true;
-            lblPara2.Text = "Parameter2: ";
+            lblPara2.Text = "Topic: ";
             txtBoxPara2.Visible = true;
             txtBoxPara2.Enabled = true;
             txtBoxPara2.Text = "Type topic address";
@@ -725,7 +724,7 @@ namespace JAN0837_DP
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Parameter1: ";
+            lblPara1.Text = "IP address: ";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type IP address";
@@ -775,14 +774,14 @@ namespace JAN0837_DP
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Parameter1: ";
+            lblPara1.Text = "IP address: ";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type IP address";
 
             lblPara2.Visible = true;
             lblPara2.Enabled = true;
-            lblPara2.Text = "Parameter2: ";
+            lblPara2.Text = "TCP port: ";
             txtBoxPara2.Visible = true;
             txtBoxPara2.Enabled = true;
             txtBoxPara2.Text = "Type TCP port";
@@ -826,14 +825,14 @@ namespace JAN0837_DP
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Parameter1: ";
+            lblPara1.Text = "URL: ";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type URL";
 
             lblPara2.Visible = false;
             lblPara2.Enabled = false;
-            lblPara2.Text = "Parameter2: ";
+            lblPara2.Text = "";
             txtBoxPara2.Visible = false;
             txtBoxPara2.Enabled = false;
             txtBoxPara2.Text = "";

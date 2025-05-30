@@ -33,6 +33,7 @@
             lblStatus = new ToolStripStatusLabel();
             toolStripMain = new ToolStrip();
             btnGenerateTIATemplate = new ToolStripButton();
+            btnLocalHost = new ToolStripButton();
             rbtnOPCUA = new RadioButton();
             rbtnMQTT = new RadioButton();
             rbtnTCPIP = new RadioButton();
@@ -73,7 +74,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnOpenLocalhost });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnLocalHost });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1096, 27);
@@ -89,6 +90,16 @@
             btnGenerateTIATemplate.Size = new Size(165, 24);
             btnGenerateTIATemplate.Text = "Generate TIA Template";
             btnGenerateTIATemplate.Click += btnGenerateTIATemplate_Click;
+            // 
+            // btnLocalHost
+            // 
+            btnLocalHost.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnLocalHost.Image = (Image)resources.GetObject("btnLocalHost.Image");
+            btnLocalHost.ImageTransparentColor = Color.Magenta;
+            btnLocalHost.Name = "btnLocalHost";
+            btnLocalHost.Size = new Size(113, 24);
+            btnLocalHost.Text = "Open localhost";
+            btnLocalHost.Click += btnLocalHost_Click;
             // 
             // rbtnOPCUA
             // 
@@ -260,16 +271,6 @@
             lblCheckBox.TabIndex = 18;
             lblCheckBox.Text = "What is this device?";
             // 
-            // btnOpenLocalhost
-            // 
-            btnOpenLocalhost.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnOpenLocalhost.Image = (Image)resources.GetObject("btnOpenLocalhost.Image");
-            btnOpenLocalhost.ImageTransparentColor = Color.Magenta;
-            btnOpenLocalhost.Name = "btnOpenLocalhost";
-            btnOpenLocalhost.Size = new Size(113, 24);
-            btnOpenLocalhost.Text = "Open localhost";
-            btnOpenLocalhost.Click += btnOpenLocalhost_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -328,5 +329,6 @@
         private ListBox listBox1;
         private ComboBox comboBox1;
         private Label lblCheckBox;
+        private ToolStripButton btnLocalHost;
     }
 }

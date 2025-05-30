@@ -93,7 +93,7 @@ namespace JAN0837_DP
             rbtnModbusTCPIP.Enabled = true;
             rbtnModbusTCPIP.Visible = true;
             rbtnModbusTCPIP.Checked = false;
-            
+
             rbtnMQTT.Enabled = true;
             rbtnMQTT.Visible = true;
             rbtnMQTT.Checked = false;
@@ -129,6 +129,9 @@ namespace JAN0837_DP
             btnGenerateTIATemplate.Visible = true;
             btnGenerateTIATemplate.Enabled = true;
 
+            btnLocalHost.Visible = true;
+            btnLocalHost.Enabled = true;
+
             // para
             lblPara1.Visible = false;
             lblPara1.Enabled = false;
@@ -153,12 +156,12 @@ namespace JAN0837_DP
             checkBoxMaster.Enabled = false;
             checkBoxMaster.Text = "";
             checkBoxMaster.Checked = false;
-            
+
             checkBoxSlave.Visible = false;
             checkBoxSlave.Enabled = false;
             checkBoxSlave.Text = "";
             checkBoxSlave.Checked = false;
-            
+
             #endregion
 
             // Files 
@@ -191,7 +194,7 @@ namespace JAN0837_DP
                         {
 
                         }
-                        else if (checkBoxSlave.Checked == true) 
+                        else if (checkBoxSlave.Checked == true)
                         {
 
                         }
@@ -238,7 +241,7 @@ namespace JAN0837_DP
                         {
                             // error port not valid number 
                             return;
-                        }       
+                        }
 
                         if (checkBoxMaster.Checked == true)
                         {
@@ -500,7 +503,7 @@ namespace JAN0837_DP
             lblStatus.Text = "Generating template to TIA Portal V19.";
         }
 
-        private void btnOpenLocalhost_Click(object sender, EventArgs e)
+        private void btnLocalHost_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Openning localhost in browser.";
         }
@@ -638,12 +641,12 @@ namespace JAN0837_DP
             lblCheckBox.Visible = true;
             lblCheckBox.Enabled = true;
             lblCheckBox.Text = "What is this device?";
-                        
+
             checkBoxMaster.Visible = true;
             checkBoxMaster.Enabled = true;
             checkBoxMaster.Text = "Master";
             checkBoxMaster.Checked = false;
-                        
+
             checkBoxSlave.Visible = true;
             checkBoxSlave.Enabled = true;
             checkBoxSlave.Text = "Klient";
@@ -658,7 +661,7 @@ namespace JAN0837_DP
 
             // UI settings 
             #region UI settings 
-            
+
             // btns 
             btnStartCommunication.Visible = true;
             btnStartCommunication.Enabled = true;
@@ -688,12 +691,12 @@ namespace JAN0837_DP
             lblCheckBox.Visible = true;
             lblCheckBox.Enabled = true;
             lblCheckBox.Text = "What is this device?";
-                        
+
             checkBoxMaster.Visible = true;
             checkBoxMaster.Enabled = true;
             checkBoxMaster.Text = "Server/Broker";
             checkBoxMaster.Checked = true; // PC is always Broker, PLC cannot be broker
-                        
+
             checkBoxSlave.Visible = true;
             checkBoxSlave.Enabled = false;
             checkBoxSlave.Text = "Subscriber";
@@ -867,7 +870,5 @@ namespace JAN0837_DP
         {
             checkBoxMaster.Checked = false;
         }
-
-        
     }
 }

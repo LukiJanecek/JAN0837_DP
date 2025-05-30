@@ -90,10 +90,10 @@ namespace JAN0837_DP
             #region UI settings 
 
             // rbtn
-            rbtnOPCUA.Enabled = true;
-            rbtnOPCUA.Visible = true;
-            rbtnOPCUA.Checked = false;
-
+            rbtnModbusTCPIP.Enabled = true;
+            rbtnModbusTCPIP.Visible = true;
+            rbtnModbusTCPIP.Checked = false;
+            
             rbtnMQTT.Enabled = true;
             rbtnMQTT.Visible = true;
             rbtnMQTT.Checked = false;
@@ -173,7 +173,7 @@ namespace JAN0837_DP
         }
 
         // Threads Methods 
-        #region Thread Methods
+        #region
 
         private void Communication()
         {
@@ -498,6 +498,11 @@ namespace JAN0837_DP
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Generating template to TIA Portal V19.";
+        }
+
+        private void btnOpenLocalhost_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Openning localhost in browser.";
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -862,5 +867,7 @@ namespace JAN0837_DP
         {
             checkBoxMaster.Checked = false;
         }
+
+        
     }
 }

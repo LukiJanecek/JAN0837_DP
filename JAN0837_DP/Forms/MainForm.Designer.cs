@@ -73,7 +73,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnOpenLocalhost });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1096, 27);
@@ -259,6 +259,16 @@
             lblCheckBox.Size = new Size(139, 20);
             lblCheckBox.TabIndex = 18;
             lblCheckBox.Text = "What is this device?";
+            // 
+            // btnOpenLocalhost
+            // 
+            btnOpenLocalhost.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnOpenLocalhost.Image = (Image)resources.GetObject("btnOpenLocalhost.Image");
+            btnOpenLocalhost.ImageTransparentColor = Color.Magenta;
+            btnOpenLocalhost.Name = "btnOpenLocalhost";
+            btnOpenLocalhost.Size = new Size(113, 24);
+            btnOpenLocalhost.Text = "Open localhost";
+            btnOpenLocalhost.Click += btnOpenLocalhost_Click;
             // 
             // MainForm
             // 

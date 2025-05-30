@@ -38,7 +38,18 @@
             rbtnTCPIP = new RadioButton();
             rbtnRESTAPI = new RadioButton();
             rbtnModbusTCPIP = new RadioButton();
-            btnStart = new Button();
+            btnStartCommunication = new Button();
+            lblPara1 = new Label();
+            lblPara2 = new Label();
+            txtBoxPara1 = new TextBox();
+            txtBoxPara2 = new TextBox();
+            btnUsePreset = new Button();
+            btnStopCommunication = new Button();
+            checkBoxMaster = new CheckBox();
+            checkBoxSlave = new CheckBox();
+            listBox1 = new ListBox();
+            comboBox1 = new ComboBox();
+            lblCheckBox = new Label();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -118,7 +129,7 @@
             // rbtnRESTAPI
             // 
             rbtnRESTAPI.AutoSize = true;
-            rbtnRESTAPI.Location = new Point(45, 144);
+            rbtnRESTAPI.Location = new Point(45, 174);
             rbtnRESTAPI.Name = "rbtnRESTAPI";
             rbtnRESTAPI.Size = new Size(89, 24);
             rbtnRESTAPI.TabIndex = 5;
@@ -130,7 +141,7 @@
             // rbtnModbusTCPIP
             // 
             rbtnModbusTCPIP.AutoSize = true;
-            rbtnModbusTCPIP.Location = new Point(45, 174);
+            rbtnModbusTCPIP.Location = new Point(45, 144);
             rbtnModbusTCPIP.Name = "rbtnModbusTCPIP";
             rbtnModbusTCPIP.Size = new Size(130, 24);
             rbtnModbusTCPIP.TabIndex = 6;
@@ -139,22 +150,133 @@
             rbtnModbusTCPIP.UseVisualStyleBackColor = true;
             rbtnModbusTCPIP.CheckedChanged += rbtnModbusTCPIP_CheckedChanged;
             // 
-            // btnStart
+            // btnStartCommunication
             // 
-            btnStart.Location = new Point(230, 64);
-            btnStart.Name = "btnStart";
-            btnStart.Size = new Size(94, 29);
-            btnStart.TabIndex = 7;
-            btnStart.Text = "Start";
-            btnStart.UseVisualStyleBackColor = true;
-            btnStart.Click += btnStart_Click;
+            btnStartCommunication.Location = new Point(519, 54);
+            btnStartCommunication.Name = "btnStartCommunication";
+            btnStartCommunication.Size = new Size(180, 60);
+            btnStartCommunication.TabIndex = 7;
+            btnStartCommunication.Text = "Start Communication";
+            btnStartCommunication.UseVisualStyleBackColor = true;
+            btnStartCommunication.Click += btnStart_Click;
+            // 
+            // lblPara1
+            // 
+            lblPara1.AutoSize = true;
+            lblPara1.Location = new Point(247, 54);
+            lblPara1.Name = "lblPara1";
+            lblPara1.Size = new Size(87, 20);
+            lblPara1.TabIndex = 8;
+            lblPara1.Text = "Parameter1:";
+            // 
+            // lblPara2
+            // 
+            lblPara2.AutoSize = true;
+            lblPara2.Location = new Point(247, 107);
+            lblPara2.Name = "lblPara2";
+            lblPara2.Size = new Size(87, 20);
+            lblPara2.TabIndex = 9;
+            lblPara2.Text = "Parameter2:";
+            // 
+            // txtBoxPara1
+            // 
+            txtBoxPara1.Location = new Point(247, 77);
+            txtBoxPara1.Name = "txtBoxPara1";
+            txtBoxPara1.Size = new Size(211, 27);
+            txtBoxPara1.TabIndex = 10;
+            // 
+            // txtBoxPara2
+            // 
+            txtBoxPara2.Location = new Point(247, 130);
+            txtBoxPara2.Name = "txtBoxPara2";
+            txtBoxPara2.Size = new Size(211, 27);
+            txtBoxPara2.TabIndex = 11;
+            // 
+            // btnUsePreset
+            // 
+            btnUsePreset.Location = new Point(364, 256);
+            btnUsePreset.Name = "btnUsePreset";
+            btnUsePreset.Size = new Size(94, 29);
+            btnUsePreset.TabIndex = 12;
+            btnUsePreset.Text = "Use Preset";
+            btnUsePreset.UseVisualStyleBackColor = true;
+            btnUsePreset.Click += btnUsePreset_Click;
+            // 
+            // btnStopCommunication
+            // 
+            btnStopCommunication.Location = new Point(519, 126);
+            btnStopCommunication.Name = "btnStopCommunication";
+            btnStopCommunication.Size = new Size(180, 60);
+            btnStopCommunication.TabIndex = 13;
+            btnStopCommunication.Text = "Stop Communication";
+            btnStopCommunication.UseVisualStyleBackColor = true;
+            btnStopCommunication.Click += btnStopCommunication_Click;
+            // 
+            // checkBoxMaster
+            // 
+            checkBoxMaster.AutoSize = true;
+            checkBoxMaster.Location = new Point(247, 204);
+            checkBoxMaster.Name = "checkBoxMaster";
+            checkBoxMaster.Size = new Size(76, 24);
+            checkBoxMaster.TabIndex = 14;
+            checkBoxMaster.Text = "Master";
+            checkBoxMaster.UseVisualStyleBackColor = true;
+            checkBoxMaster.CheckedChanged += checkBoxMaster_CheckedChanged;
+            // 
+            // checkBoxSlave
+            // 
+            checkBoxSlave.AutoSize = true;
+            checkBoxSlave.Location = new Point(247, 234);
+            checkBoxSlave.Name = "checkBoxSlave";
+            checkBoxSlave.Size = new Size(66, 24);
+            checkBoxSlave.TabIndex = 15;
+            checkBoxSlave.Text = "Slave";
+            checkBoxSlave.UseVisualStyleBackColor = true;
+            checkBoxSlave.CheckedChanged += checkBoxSlave_CheckedChanged;
+            // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.Location = new Point(16, 234);
+            listBox1.Name = "listBox1";
+            listBox1.Size = new Size(150, 104);
+            listBox1.TabIndex = 16;
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(283, 417);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(211, 28);
+            comboBox1.TabIndex = 17;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
+            // lblCheckBox
+            // 
+            lblCheckBox.AutoSize = true;
+            lblCheckBox.Location = new Point(247, 183);
+            lblCheckBox.Name = "lblCheckBox";
+            lblCheckBox.Size = new Size(139, 20);
+            lblCheckBox.TabIndex = 18;
+            lblCheckBox.Text = "What is this device?";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1096, 588);
-            Controls.Add(btnStart);
+            Controls.Add(lblCheckBox);
+            Controls.Add(comboBox1);
+            Controls.Add(listBox1);
+            Controls.Add(checkBoxSlave);
+            Controls.Add(checkBoxMaster);
+            Controls.Add(btnStopCommunication);
+            Controls.Add(btnUsePreset);
+            Controls.Add(txtBoxPara2);
+            Controls.Add(txtBoxPara1);
+            Controls.Add(lblPara2);
+            Controls.Add(lblPara1);
+            Controls.Add(btnStartCommunication);
             Controls.Add(rbtnModbusTCPIP);
             Controls.Add(rbtnRESTAPI);
             Controls.Add(rbtnTCPIP);
@@ -184,6 +306,17 @@
         private RadioButton rbtnModbusTCPIP;
         private ToolStripStatusLabel lblStatus;
         private ToolStripButton btnGenerateTIATemplate;
-        private Button btnStart;
+        private Button btnStartCommunication;
+        private Label lblPara1;
+        private Label lblPara2;
+        private TextBox txtBoxPara1;
+        private TextBox txtBoxPara2;
+        private Button btnUsePreset;
+        private Button btnStopCommunication;
+        private CheckBox checkBoxMaster;
+        private CheckBox checkBoxSlave;
+        private ListBox listBox1;
+        private ComboBox comboBox1;
+        private Label lblCheckBox;
     }
 }

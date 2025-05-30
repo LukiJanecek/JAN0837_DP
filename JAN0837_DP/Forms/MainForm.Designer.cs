@@ -39,6 +39,7 @@
             rbtnRESTAPI = new RadioButton();
             rbtnModbusTCPIP = new RadioButton();
             btnStart = new Button();
+            btnOpenLocalhost = new ToolStripButton();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -62,7 +63,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnOpenLocalhost });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1096, 27);
@@ -149,6 +150,16 @@
             btnStart.UseVisualStyleBackColor = true;
             btnStart.Click += btnStart_Click;
             // 
+            // btnOpenLocalhost
+            // 
+            btnOpenLocalhost.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnOpenLocalhost.Image = (Image)resources.GetObject("btnOpenLocalhost.Image");
+            btnOpenLocalhost.ImageTransparentColor = Color.Magenta;
+            btnOpenLocalhost.Name = "btnOpenLocalhost";
+            btnOpenLocalhost.Size = new Size(113, 24);
+            btnOpenLocalhost.Text = "Open localhost";
+            btnOpenLocalhost.Click += btnOpenLocalhost_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -185,5 +196,6 @@
         private ToolStripStatusLabel lblStatus;
         private ToolStripButton btnGenerateTIATemplate;
         private Button btnStart;
+        private ToolStripButton btnOpenLocalhost;
     }
 }

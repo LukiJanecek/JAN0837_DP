@@ -50,7 +50,7 @@ namespace JAN0837_DP
             rbtnModbusTCPIP.Enabled = true;
             rbtnModbusTCPIP.Visible = true;
             rbtnModbusTCPIP.Checked = false;
-            
+
             rbtnMQTT.Enabled = true;
             rbtnMQTT.Visible = true;
             rbtnMQTT.Checked = false;
@@ -58,11 +58,11 @@ namespace JAN0837_DP
             rbtnOPCUA.Enabled = true;
             rbtnOPCUA.Visible = true;
             rbtnOPCUA.Checked = false;
-            
+
             rbtnRESTAPI.Enabled = true;
             rbtnRESTAPI.Visible = true;
             rbtnRESTAPI.Checked = false;
-            
+
             rbtnTCPIP.Enabled = true;
             rbtnTCPIP.Visible = true;
             rbtnTCPIP.Checked = false;
@@ -70,11 +70,11 @@ namespace JAN0837_DP
             //btns
             btnStart.Enabled = true;
             btnStart.Visible = true;
-            
+
             btnGenerateTIATemplate.Enabled = false;
             btnGenerateTIATemplate.Visible = false;
 
-            
+
         }
 
         // Threads Methods 
@@ -95,6 +95,11 @@ namespace JAN0837_DP
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Generating template to TIA Portal V19.";
+        }
+
+        private void btnOpenLocalhost_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Openning localhost in browser.";
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -126,5 +131,7 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Modbus TCP/IP selected.";
         }
+
+        
     }
 }

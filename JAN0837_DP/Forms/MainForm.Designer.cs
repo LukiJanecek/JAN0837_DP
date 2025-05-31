@@ -48,8 +48,6 @@
             btnStopCommunication = new Button();
             checkBoxMaster = new CheckBox();
             checkBoxSlave = new CheckBox();
-            listBox1 = new ListBox();
-            comboBox1 = new ComboBox();
             lblCheckBox = new Label();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
@@ -205,7 +203,7 @@
             // 
             // btnUsePreset
             // 
-            btnUsePreset.Location = new Point(364, 256);
+            btnUsePreset.Location = new Point(247, 264);
             btnUsePreset.Name = "btnUsePreset";
             btnUsePreset.Size = new Size(94, 29);
             btnUsePreset.TabIndex = 12;
@@ -245,23 +243,6 @@
             checkBoxSlave.UseVisualStyleBackColor = true;
             checkBoxSlave.CheckedChanged += checkBoxSlave_CheckedChanged;
             // 
-            // listBox1
-            // 
-            listBox1.FormattingEnabled = true;
-            listBox1.Location = new Point(16, 234);
-            listBox1.Name = "listBox1";
-            listBox1.Size = new Size(150, 104);
-            listBox1.TabIndex = 16;
-            // 
-            // comboBox1
-            // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(283, 417);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(211, 28);
-            comboBox1.TabIndex = 17;
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
-            // 
             // lblCheckBox
             // 
             lblCheckBox.AutoSize = true;
@@ -277,8 +258,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1096, 588);
             Controls.Add(lblCheckBox);
-            Controls.Add(comboBox1);
-            Controls.Add(listBox1);
             Controls.Add(checkBoxSlave);
             Controls.Add(checkBoxMaster);
             Controls.Add(btnStopCommunication);
@@ -326,8 +305,6 @@
         private Button btnStopCommunication;
         private CheckBox checkBoxMaster;
         private CheckBox checkBoxSlave;
-        private ListBox listBox1;
-        private ComboBox comboBox1;
         private Label lblCheckBox;
         private ToolStripButton btnLocalHost;
     }

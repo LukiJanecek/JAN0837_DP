@@ -49,7 +49,8 @@ using JAN0837_DP.Communication.TCPIP;
 using Sharp7;
 
 // Additional Libraries 
-using Newtonsoft; // JSON library
+using Newtonsoft;
+using System.Runtime.CompilerServices; // JSON library
 
 namespace JAN0837_DP
 {
@@ -70,7 +71,7 @@ namespace JAN0837_DP
         private bool restapiFlag = false;
         private bool modbustcpipFlag = false;
         //
-        private bool connected = false;
+        public bool connected = false;
 
         // Queues 
         private ConcurrentQueue<int> dataQueueIN = new ConcurrentQueue<int>();
@@ -516,7 +517,9 @@ namespace JAN0837_DP
             {
                 communicationRunningFlag = true;
                 communicationThread = new Thread(Communication);
+                communicationThread.IsBackground = true;
                 communicationThread.Start();
+                lblStatus.Text = "Communication started.";
             }
 
             // UI 
@@ -535,6 +538,8 @@ namespace JAN0837_DP
 
             btnUsePreset.Enabled = false;
 
+
+
             #endregion
 
             // tady by měli být ještě připojení .connect() pro dané komunikační protokoly
@@ -545,6 +550,14 @@ namespace JAN0837_DP
             lblStatus.Text = "Stopping communication.";
             // stoping communication thread
             communicationRunningFlag = false;
+
+            if (communicationThread != null && communicationThread.IsAlive)
+            {
+                communicationThread.Join(); // Počká na ukončení vlákna
+                lblStatus.Text = "Communication stopped.";
+            }
+
+            
 
             // UI 
             #region UI 
@@ -853,11 +866,6 @@ namespace JAN0837_DP
             checkBoxSlave.Checked = false;
 
             #endregion
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void checkBoxMaster_CheckedChanged(object sender, EventArgs e)

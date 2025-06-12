@@ -513,6 +513,11 @@ namespace JAN0837_DP
         private void btnExit_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Exitting...";
+
+            // threads stop 
+            // communication stop
+
+            Application.Exit();
         }
 
         #endregion

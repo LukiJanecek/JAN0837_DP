@@ -498,6 +498,8 @@ namespace JAN0837_DP
 
         #endregion
 
+        // toolStripMain components
+        #region toolStripMain components
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Generating template to TIA Portal V19.";
@@ -507,6 +509,13 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Openning localhost in browser.";
         }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Exitting...";
+        }
+
+        #endregion
 
         private void btnStart_Click(object sender, EventArgs e)
         {
@@ -558,7 +567,7 @@ namespace JAN0837_DP
                 lblStatus.Text = "Communication stopped.";
             }
 
-            
+
 
             // UI 
             #region UI 

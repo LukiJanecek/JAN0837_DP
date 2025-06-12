@@ -49,6 +49,7 @@
             checkBoxMaster = new CheckBox();
             checkBoxSlave = new CheckBox();
             lblCheckBox = new Label();
+            btnExit = new ToolStripButton();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -72,7 +73,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnLocalHost });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnLocalHost, btnExit });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1096, 27);
@@ -252,6 +253,17 @@
             lblCheckBox.TabIndex = 18;
             lblCheckBox.Text = "What is this device?";
             // 
+            // btnExit
+            // 
+            btnExit.Alignment = ToolStripItemAlignment.Right;
+            btnExit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnExit.Image = (Image)resources.GetObject("btnExit.Image");
+            btnExit.ImageTransparentColor = Color.Magenta;
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(37, 24);
+            btnExit.Text = "Exit";
+            btnExit.Click += btnExit_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -307,5 +319,6 @@
         private CheckBox checkBoxSlave;
         private Label lblCheckBox;
         private ToolStripButton btnLocalHost;
+        private ToolStripButton btnExit;
     }
 }

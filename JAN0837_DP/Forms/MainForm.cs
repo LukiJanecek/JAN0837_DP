@@ -538,7 +538,8 @@ namespace JAN0837_DP
 
             btnUsePreset.Enabled = false;
 
-
+            btnStartCommunication.Enabled = false;
+            btnStopCommunication.Enabled = true;
 
             #endregion
 
@@ -574,6 +575,9 @@ namespace JAN0837_DP
             txtBoxPara2.Enabled = true;
 
             btnUsePreset.Enabled = true;
+
+            btnStartCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             #endregion
 

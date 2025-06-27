@@ -32,8 +32,10 @@
             statusStripMain = new StatusStrip();
             lblStatus = new ToolStripStatusLabel();
             toolStripMain = new ToolStrip();
+            btnCommunicationControl = new ToolStripButton();
             btnGenerateTIATemplate = new ToolStripButton();
             btnLocalHost = new ToolStripButton();
+            btnExit = new ToolStripButton();
             rbtnOPCUA = new RadioButton();
             rbtnMQTT = new RadioButton();
             rbtnTCPIP = new RadioButton();
@@ -49,7 +51,9 @@
             checkBoxMaster = new CheckBox();
             checkBoxSlave = new CheckBox();
             lblCheckBox = new Label();
-            btnExit = new ToolStripButton();
+            rbtnS7 = new RadioButton();
+            lblCommunicationStatus = new Label();
+            mainWindow = new Panel();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -73,12 +77,22 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnGenerateTIATemplate, btnLocalHost, btnExit });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1096, 27);
             toolStripMain.TabIndex = 1;
             toolStripMain.Text = "toolStrip1";
+            // 
+            // btnCommunicationControl
+            // 
+            btnCommunicationControl.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnCommunicationControl.Image = (Image)resources.GetObject("btnCommunicationControl.Image");
+            btnCommunicationControl.ImageTransparentColor = Color.Magenta;
+            btnCommunicationControl.Name = "btnCommunicationControl";
+            btnCommunicationControl.Size = new Size(169, 24);
+            btnCommunicationControl.Text = "Communication control";
+            btnCommunicationControl.Click += btnCommunicationControl_Click;
             // 
             // btnGenerateTIATemplate
             // 
@@ -99,6 +113,17 @@
             btnLocalHost.Size = new Size(113, 24);
             btnLocalHost.Text = "Open localhost";
             btnLocalHost.Click += btnLocalHost_Click;
+            // 
+            // btnExit
+            // 
+            btnExit.Alignment = ToolStripItemAlignment.Right;
+            btnExit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnExit.Image = (Image)resources.GetObject("btnExit.Image");
+            btnExit.ImageTransparentColor = Color.Magenta;
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(37, 24);
+            btnExit.Text = "Exit";
+            btnExit.Click += btnExit_Click;
             // 
             // rbtnOPCUA
             // 
@@ -253,22 +278,42 @@
             lblCheckBox.TabIndex = 18;
             lblCheckBox.Text = "What is this device?";
             // 
-            // btnExit
+            // rbtnS7
             // 
-            btnExit.Alignment = ToolStripItemAlignment.Right;
-            btnExit.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnExit.Image = (Image)resources.GetObject("btnExit.Image");
-            btnExit.ImageTransparentColor = Color.Magenta;
-            btnExit.Name = "btnExit";
-            btnExit.Size = new Size(37, 24);
-            btnExit.Text = "Exit";
-            btnExit.Click += btnExit_Click;
+            rbtnS7.AutoSize = true;
+            rbtnS7.Location = new Point(45, 203);
+            rbtnS7.Name = "rbtnS7";
+            rbtnS7.Size = new Size(46, 24);
+            rbtnS7.TabIndex = 19;
+            rbtnS7.TabStop = true;
+            rbtnS7.Text = "S7";
+            rbtnS7.UseVisualStyleBackColor = true;
+            rbtnS7.CheckedChanged += rbtnS7_CheckedChanged;
+            // 
+            // lblCommunicationStatus
+            // 
+            lblCommunicationStatus.AutoSize = true;
+            lblCommunicationStatus.Location = new Point(705, 126);
+            lblCommunicationStatus.Name = "lblCommunicationStatus";
+            lblCommunicationStatus.Size = new Size(156, 20);
+            lblCommunicationStatus.TabIndex = 20;
+            lblCommunicationStatus.Text = "Communication status";
+            // 
+            // mainWindow
+            // 
+            mainWindow.Location = new Point(133, 368);
+            mainWindow.Name = "mainWindow";
+            mainWindow.Size = new Size(554, 164);
+            mainWindow.TabIndex = 21;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1096, 588);
+            Controls.Add(mainWindow);
+            Controls.Add(lblCommunicationStatus);
+            Controls.Add(rbtnS7);
             Controls.Add(lblCheckBox);
             Controls.Add(checkBoxSlave);
             Controls.Add(checkBoxMaster);
@@ -320,5 +365,9 @@
         private Label lblCheckBox;
         private ToolStripButton btnLocalHost;
         private ToolStripButton btnExit;
+        private RadioButton rbtnS7;
+        private Label lblCommunicationStatus;
+        private ToolStripButton btnCommunicationControl;
+        private Panel mainWindow;
     }
 }

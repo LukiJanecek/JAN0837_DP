@@ -176,7 +176,7 @@ namespace JAN0837_DP
         }
 
         // Threads Methods 
-        #region
+        #region 
 
         private void Communication()
         {
@@ -285,6 +285,11 @@ namespace JAN0837_DP
                         //RESTAPI();
 
                         string url = txtBoxPara1.Text;
+                    }
+                    else if (rbtnS7.Checked == true)
+                    {
+                        // S7 -> Sharp7
+                        string ipAddress = txtBoxPara1.Text;
                     }
                     else
                     {
@@ -510,6 +515,11 @@ namespace JAN0837_DP
             lblStatus.Text = "Openning localhost in browser.";
         }
 
+        private void btnCommunicationControl_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Openning communication control.";
+        }
+
         private void btnExit_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Exitting...";
@@ -572,8 +582,6 @@ namespace JAN0837_DP
                 lblStatus.Text = "Communication stopped.";
             }
 
-
-
             // UI 
             #region UI 
             rbtnOPCUA.Enabled = true;
@@ -630,6 +638,11 @@ namespace JAN0837_DP
                 // URL 
                 txtBoxPara1.Text = "";
             }
+            else if (rbtnS7.Checked == true)
+            {
+                // IP address
+                txtBoxPara1.Text = "";
+            }
             else
             {
                 // Error -> neni zaklikla predvolba 
@@ -648,7 +661,7 @@ namespace JAN0837_DP
             btnStartCommunication.Enabled = true;
 
             btnStopCommunication.Visible = true;
-            btnStopCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             btnUsePreset.Visible = true;
             btnUsePreset.Enabled = true;
@@ -697,7 +710,7 @@ namespace JAN0837_DP
             btnStartCommunication.Enabled = true;
 
             btnStopCommunication.Visible = true;
-            btnStopCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             btnUsePreset.Visible = true;
             btnUsePreset.Enabled = true;
@@ -747,7 +760,7 @@ namespace JAN0837_DP
             btnStartCommunication.Enabled = true;
 
             btnStopCommunication.Visible = true;
-            btnStopCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             btnUsePreset.Visible = true;
             btnUsePreset.Enabled = true;
@@ -797,7 +810,7 @@ namespace JAN0837_DP
             btnStartCommunication.Enabled = true;
 
             btnStopCommunication.Visible = true;
-            btnStopCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             btnUsePreset.Visible = true;
             btnUsePreset.Enabled = true;
@@ -848,7 +861,7 @@ namespace JAN0837_DP
             btnStartCommunication.Enabled = true;
 
             btnStopCommunication.Visible = true;
-            btnStopCommunication.Enabled = true;
+            btnStopCommunication.Enabled = false;
 
             btnUsePreset.Visible = true;
             btnUsePreset.Enabled = true;
@@ -886,6 +899,56 @@ namespace JAN0837_DP
             #endregion
         }
 
+        private void rbtnS7_CheckedChanged(object sender, EventArgs e)
+        {
+            lblStatus.Text = "S7 selected.";
+
+            // UI settings 
+            #region UI settings 
+
+            // btns 
+            btnStartCommunication.Visible = true;
+            btnStartCommunication.Enabled = true;
+
+            btnStopCommunication.Visible = true;
+            btnStopCommunication.Enabled = false;
+
+            btnUsePreset.Visible = true;
+            btnUsePreset.Enabled = true;
+
+            // para
+            lblPara1.Visible = true;
+            lblPara1.Enabled = true;
+            lblPara1.Text = "IP address: ";
+            txtBoxPara1.Visible = true;
+            txtBoxPara1.Enabled = true;
+            txtBoxPara1.Text = "Type IP address";
+
+            lblPara2.Visible = false;
+            lblPara2.Enabled = false;
+            lblPara2.Text = "";
+            txtBoxPara2.Visible = false;
+            txtBoxPara2.Enabled = false;
+            txtBoxPara2.Text = "";
+
+            // check box
+            lblCheckBox.Visible = false;
+            lblCheckBox.Enabled = false;
+            lblCheckBox.Text = "";
+
+            checkBoxMaster.Visible = false;
+            checkBoxMaster.Enabled = false;
+            checkBoxMaster.Text = "";
+            checkBoxMaster.Checked = false;
+
+            checkBoxSlave.Visible = false;
+            checkBoxSlave.Enabled = false;
+            checkBoxSlave.Text = "";
+            checkBoxSlave.Checked = false;
+
+            #endregion
+        }
+
         private void checkBoxMaster_CheckedChanged(object sender, EventArgs e)
         {
             checkBoxSlave.Checked = false;
@@ -895,5 +958,7 @@ namespace JAN0837_DP
         {
             checkBoxMaster.Checked = false;
         }
+
+        
     }
 }

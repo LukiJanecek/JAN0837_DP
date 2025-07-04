@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 // Communication Libraries 
-    // OPCUA
+// OPCUA
 using Opc;
 using Opc.Ua;
 using Opc.Ua.Server;
@@ -553,10 +553,14 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Openning localhost in browser.";
 
-            string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
-            string WebAppFile = Path.Combine("JAN0837_WebApp", "JAN0837_WebApp.csproj"); // rename 
-            string fullFilePath = Path.Combine(parentDirectory, WebAppFile);
+            string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
+            string serverFile = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
+            string clientFolder = Path.Combine("JAN0837_react", "JAN0837_react.Client");
+            string clientFile = Path.Combine(clientFolder, "JAN0837_react.CLient.csproj");
+            
+            string fullServerFilePath = Path.Combine(parentDirectory, serverFile);
+            string fullClientFilePath = Path.Combine(parentDirectory, clientFile);
 
             try
             {
@@ -564,7 +568,7 @@ namespace JAN0837_DP
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = $"run --project \"{fullFilePath}\"",
+                    Arguments = $"run --project \"{fullServerFilePath}\"",
                     UseShellExecute = true,
                     CreateNoWindow = false
                 };
@@ -589,11 +593,11 @@ namespace JAN0837_DP
                     UseShellExecute = true
                 });
 
-                /*
-                var processInfo = new ProcessStartInfo
+                
+                processInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = $"run --project \"{fullFilePath}\"",
+                    Arguments = $"run --project \"{fullServerFilePath}\"",
                     UseShellExecute = false,
                     RedirectStandardOutput = true, // Přesměrování výstupu
                     CreateNoWindow = false
@@ -621,7 +625,24 @@ namespace JAN0837_DP
                         }
                     }
                 }
-                */
+
+                // přímé spuštění klienta
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "npm",
+                    Arguments = "run dev",
+                    WorkingDirectory = fullClientFilePath,
+                    UseShellExecute = true
+                });
+
+                // spusteni dotnet server
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"run --project \"{fullServerFilePath}\"",
+                    UseShellExecute = true
+                });
+
 
                 lblStatus.Text = "Localhost openend on ...";
 

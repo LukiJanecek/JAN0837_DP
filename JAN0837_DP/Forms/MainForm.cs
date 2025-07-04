@@ -9,6 +9,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO.Ports;
+using System.Security.Policy;
+using System.Net.Http;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
@@ -42,6 +47,7 @@ using MQTTnet;
 
 // REST API 
 
+
 //TCP/IP
 using JAN0837_DP.Communication.TCPIP;
 
@@ -50,7 +56,10 @@ using Sharp7;
 
 // Additional Libraries 
 using Newtonsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Runtime.CompilerServices; // JSON library
+//using Microsoft.AspNetCore.Hosting; // 
 
 namespace JAN0837_DP
 {
@@ -70,12 +79,20 @@ namespace JAN0837_DP
         private bool tcpipFlag = false;
         private bool restapiFlag = false;
         private bool modbustcpipFlag = false;
+        private bool s7Flag = false;
         //
         public bool connected = false;
 
         // Queues 
         private ConcurrentQueue<int> dataQueueIN = new ConcurrentQueue<int>();
         private ConcurrentQueue<int> dataQueueOUT = new ConcurrentQueue<int>();
+
+        // 
+        Process serverProcess = null;
+
+        //Paths
+        public static string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
+        public static string dataDirectoryPath = Path.Combine(projectRootPath, "Data");
 
         // Lists 
 
@@ -110,11 +127,16 @@ namespace JAN0837_DP
             rbtnRESTAPI.Visible = true;
             rbtnRESTAPI.Checked = false;
 
+            rbtnS7.Enabled = true;
+            rbtnS7.Visible = true;
+            rbtnS7.Checked = false;
+
             rbtnOPCUA.Tag = "OPCUA";
             rbtnMQTT.Tag = "MQTT";
             rbtnTCPIP.Tag = "TCPIP";
             rbtnModbusTCPIP.Tag = "ModbusTCPIP";
             rbtnRESTAPI.Tag = "RestApi";
+            rbtnS7.Tag = "S7";
 
             // btns
             btnStartCommunication.Visible = false;
@@ -501,6 +523,23 @@ namespace JAN0837_DP
 
         #endregion
 
+        // S7 
+        #region S7 
+
+        private void S7(string ipAddress)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        #endregion
+
         #endregion
 
         // toolStripMain components
@@ -513,6 +552,84 @@ namespace JAN0837_DP
         private void btnLocalHost_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Openning localhost in browser.";
+
+            string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
+            string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
+            string WebAppFile = Path.Combine("JAN0837_WebApp", "JAN0837_WebApp.csproj"); // rename 
+            string fullFilePath = Path.Combine(parentDirectory, WebAppFile);
+
+            try
+            {
+                //starting ASP:NET project 
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"run --project \"{fullFilePath}\"",
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                };
+
+                Process.Start(processInfo);
+
+                var urlSwagger = "http://localhost:5203/swagger/index.html";
+
+                //starting localhost swagger window in browser 
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = urlSwagger,
+                    UseShellExecute = true
+                });
+
+                var urlReact = "http://localhost:5203/app";
+
+                //starting localhost react window in browser 
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = urlReact,
+                    UseShellExecute = true
+                });
+
+                /*
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"run --project \"{fullFilePath}\"",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true, // Přesměrování výstupu
+                    CreateNoWindow = false
+                };
+
+                using (var process = Process.Start(processInfo))
+                {
+                    // Čtení výstupu a hledání URL
+                    using (var reader = process.StandardOutput)
+                    {
+                        string? output;
+                        while ((output = reader.ReadLine()) != null)
+                        {
+                            if (output.Contains("Server running on:"))
+                            {
+                                var url = output.Split(": ")[1];
+                                // Otevření prohlížeče na správné URL
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = url,
+                                    UseShellExecute = true
+                                });
+                                break;
+                            }
+                        }
+                    }
+                }
+                */
+
+                lblStatus.Text = "Localhost openend on ...";
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
 
         private void btnCommunicationControl_Click(object sender, EventArgs e)
@@ -553,6 +670,7 @@ namespace JAN0837_DP
             rbtnTCPIP.Enabled = false;
             rbtnModbusTCPIP.Enabled = false;
             rbtnRESTAPI.Enabled = false;
+            rbtnS7.Enabled = false;
 
             checkBoxMaster.Enabled = false;
             checkBoxSlave.Enabled = false;
@@ -589,6 +707,7 @@ namespace JAN0837_DP
             rbtnTCPIP.Enabled = true;
             rbtnModbusTCPIP.Enabled = true;
             rbtnRESTAPI.Enabled = true;
+            rbtnS7.Enabled = true;
 
             checkBoxMaster.Enabled = true;
             checkBoxSlave.Enabled = true;

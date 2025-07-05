@@ -672,6 +672,7 @@ namespace JAN0837_DP
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            lblCommunicationStatus.Text = "Starting communication.";
             lblStatus.Text = "Starting communication.";
 
             // starting communication thread
@@ -681,7 +682,9 @@ namespace JAN0837_DP
                 communicationThread = new Thread(Communication);
                 communicationThread.IsBackground = true;
                 communicationThread.Start();
+                lblCommunicationStatus.Text = "Communication started.";
                 lblStatus.Text = "Communication started.";
+
             }
 
             // UI 
@@ -711,13 +714,17 @@ namespace JAN0837_DP
 
         private void btnStopCommunication_Click(object sender, EventArgs e)
         {
+            lblCommunicationStatus.Text = "Stoppping communication.";
             lblStatus.Text = "Stopping communication.";
+            
             // stoping communication thread
             communicationRunningFlag = false;
 
             if (communicationThread != null && communicationThread.IsAlive)
             {
                 communicationThread.Join(); // Počká na ukončení vlákna
+
+                lblCommunicationStatus.Text = "Communication stopped.";
                 lblStatus.Text = "Communication stopped.";
             }
 

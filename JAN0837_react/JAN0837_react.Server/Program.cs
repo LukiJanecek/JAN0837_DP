@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.SpaServices;
-using Microsoft.AspNetCore.SpaServices.Extensions;
+//using Microsoft.AspNetCore.SpaServices.Extensions;
 
 namespace JAN0837_react.Server
 {
@@ -21,14 +21,14 @@ namespace JAN0837_react.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
+                /*
                 app.UseSpa(spa =>
                 {
                     // relativní cesta z *.Server -> *.client
@@ -39,13 +39,16 @@ namespace JAN0837_react.Server
                     // pokud byste mìli CRA:
                     // spa.UseReactDevelopmentServer("start");
                 });
+                */
             }
             else
             {
+                /*
                 app.UseSpa(spa =>
                 {
                     spa.Options.SourcePath = "dist";  // nebo kam Vite vybuildí
                 });
+                */
             }
 
             app.UseHttpsRedirection();

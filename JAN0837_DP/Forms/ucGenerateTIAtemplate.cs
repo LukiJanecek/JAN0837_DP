@@ -16,5 +16,10 @@ namespace JAN0837_DP.Forms
         {
             InitializeComponent();
         }
+
+        private void ucGenerateTIAtemplate_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

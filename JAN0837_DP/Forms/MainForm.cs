@@ -58,7 +58,8 @@ using Sharp7;
 using Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Runtime.CompilerServices; // JSON library
+using System.Runtime.CompilerServices;
+using JAN0837_DP.Forms; // JSON library
 //using Microsoft.AspNetCore.Hosting; // 
 
 namespace JAN0837_DP
@@ -68,6 +69,8 @@ namespace JAN0837_DP
         // Threads 
         private Thread communicationThread;
         private Thread visualizationThread;
+        private string localhosturl;
+        private bool serverStarted = false;
 
         // FLags 
         // Thread Flags
@@ -547,11 +550,26 @@ namespace JAN0837_DP
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Generating template to TIA Portal V19.";
+
+            mainWindow.Controls.Clear();
+            var visual = new ucGenerateTIAtemplate();
+            visual.Dock = DockStyle.Fill;
+            mainWindow.Controls.Add(visual);
+        }
+
+        private void btnCommunicationControl_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Openning communication control.";
+
+            mainWindow.Controls.Clear();
+            var visual = new ucCommunicationControl();
+            visual.Dock = DockStyle.Fill;
+            mainWindow.Controls.Add(visual);
         }
 
         private void btnLocalHost_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Openning localhost in browser.";
+            lblStatus.Text = "Starting React dev server and ASP.NET server…"; // Openning localhost in browser.
 
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
             string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
@@ -564,6 +582,91 @@ namespace JAN0837_DP
 
             try
             {
+                if (serverStarted == false)
+                {
+                    lblStatus.Text = "Starting React dev server";
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "npm",
+                        Arguments = "run dev",
+                        WorkingDirectory = clientFolder,
+                        UseShellExecute = true,
+                        CreateNoWindow = false
+                    });
+
+                    // starting .NET server
+                    lblStatus.Text = "Starting .NET server";
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "dotnet",
+                        Arguments = $"run --project \"{fullServerFilePath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    var serverProc = Process.Start(psi);
+
+                    serverProc.OutputDataReceived += (s, ea) =>
+                    {
+                        if (ea.Data != null && ea.Data.Contains("Now listening on:"))
+                        {
+                            localhosturl = ea.Data.Split(new[] { "Now listening on:" }, StringSplitOptions.None)[1].Trim();
+
+                            lblStatus.Text = $"Now listening on {localhosturl}";
+
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = localhosturl, // $"{localhosturl}/app"
+                                UseShellExecute = true
+                            });
+
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = $"{localhosturl}/swagger/index.html",
+                                UseShellExecute = true
+                            });
+                        }
+                    };
+                    serverProc.BeginOutputReadLine();
+                    serverProc.BeginErrorReadLine();
+
+                    serverStarted = true;
+                }
+                else
+                {
+                    lblStatus.Text = $"Openning {localhosturl} in browser";
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = localhosturl, // $"{localhosturl}/app"
+                        UseShellExecute = true
+                    });
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = $"{localhosturl}/swagger/index.html",
+                        UseShellExecute = true
+                    });
+                }
+                
+                // starting React dev server
+              
+                /*
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = $"{url}/swagger/index.html",
+                    UseShellExecute = true
+                });
+                */
+                /*
                 //starting ASP:NET project 
                 var processInfo = new ProcessStartInfo
                 {
@@ -643,19 +746,15 @@ namespace JAN0837_DP
                     UseShellExecute = true
                 });
 
+                */
 
-                lblStatus.Text = "Localhost openend on ...";
+                lblStatus.Text = "Servers started. Check your browser."; // Localhost openend on ...
 
             }
             catch (Exception ex)
             {
-                
+                MessageBox.Show("Chyba při spouštění:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void btnCommunicationControl_Click(object sender, EventArgs e)
-        {
-            lblStatus.Text = "Openning communication control.";
         }
 
         private void btnExit_Click(object sender, EventArgs e)

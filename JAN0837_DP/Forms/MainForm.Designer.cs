@@ -301,9 +301,11 @@
             // 
             // mainWindow
             // 
-            mainWindow.Location = new Point(133, 368);
+            mainWindow.BorderStyle = BorderStyle.FixedSingle;
+            mainWindow.Dock = DockStyle.Bottom;
+            mainWindow.Location = new Point(0, 299);
             mainWindow.Name = "mainWindow";
-            mainWindow.Size = new Size(554, 164);
+            mainWindow.Size = new Size(1096, 263);
             mainWindow.TabIndex = 21;
             // 
             // MainForm

@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 using Microsoft.AspNetCore.SpaServices;
-//using Microsoft.AspNetCore.SpaServices.Extensions;
+using Microsoft.AspNetCore.SpaServices.Extensions;
 
 namespace JAN0837_react.Server
 {
@@ -20,10 +24,14 @@ namespace JAN0837_react.Server
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
-            //app.UseSpaStaticFiles();
+            builder.Services.AddSpaStaticFiles(options =>
+            {
+                // musí ukazovat na dist složku, kam Vite buildí
+                options.RootPath = Path.Combine("..", "JAN0837_react.client", "dist");
+            });
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -57,6 +65,30 @@ namespace JAN0837_react.Server
 
 
             app.MapControllers();
+
+            // SPA proxy
+            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/app"), spaApp =>
+            {
+                if (app.Environment.IsDevelopment())
+                {
+                    spaApp.UseSpa(spa =>
+                    {
+                        // relativnì vùèi výstupu serveru (bin/Debug/...)
+                        spa.Options.SourcePath = Path.Combine("..", "JAN0837_react.client");
+                        // spustí 'npm run dev' a bude proxyovat /app/* na Vite (5173)
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // 
+                    });
+                }
+                else
+                {
+                    spaApp.UseSpa(spa =>
+                    {
+                        // v produkci servírujeme už vybuildìné soubory
+                        spa.Options.SourcePath = Path.Combine("..", "JAN0837_react.client", "dist");
+                    });
+                }
+            });
+
 
             app.MapFallbackToFile("/index.html");
 

@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace JAN0837_DP.Forms
 {
-    public partial class CommunicationControl : UserControl
+    public partial class ucCommunicationControl : UserControl
     {
-        public CommunicationControl()
+        public ucCommunicationControl()
         {
             InitializeComponent();
+        }
+
+        private void CommunicationControl_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

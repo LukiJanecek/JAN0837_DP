@@ -32,7 +32,7 @@
             checkBox1 = new CheckBox();
             label1 = new Label();
             statusStripGenerateTIAtemplate = new StatusStrip();
-            status1 = new ToolStripStatusLabel();
+            lblStatus1 = new ToolStripStatusLabel();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -67,17 +67,17 @@
             // statusStripGenerateTIAtemplate
             // 
             statusStripGenerateTIAtemplate.ImageScalingSize = new Size(20, 20);
-            statusStripGenerateTIAtemplate.Items.AddRange(new ToolStripItem[] { status1 });
+            statusStripGenerateTIAtemplate.Items.AddRange(new ToolStripItem[] { lblStatus1 });
             statusStripGenerateTIAtemplate.Location = new Point(0, 389);
             statusStripGenerateTIAtemplate.Name = "statusStripGenerateTIAtemplate";
             statusStripGenerateTIAtemplate.Size = new Size(748, 26);
             statusStripGenerateTIAtemplate.TabIndex = 3;
             // 
-            // status1
+            // lblStatus1
             // 
-            status1.Name = "status1";
-            status1.Size = new Size(55, 20);
-            status1.Text = "status1";
+            lblStatus1.Name = "lblStatus1";
+            lblStatus1.Size = new Size(55, 20);
+            lblStatus1.Text = "status1";
             // 
             // ucGenerateTIAtemplate
             // 
@@ -102,6 +102,6 @@
         private CheckBox checkBox1;
         private Label label1;
         private StatusStrip statusStripGenerateTIAtemplate;
-        private ToolStripStatusLabel status1;
+        private ToolStripStatusLabel lblStatus1;
     }
 }

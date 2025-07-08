@@ -28,231 +28,242 @@
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
+            lblPara1 = new Label();
             statusStripCommunicationControl = new StatusStrip();
-            status1 = new ToolStripStatusLabel();
-            radioButton1 = new RadioButton();
-            radioButton2 = new RadioButton();
-            radioButton3 = new RadioButton();
-            radioButton4 = new RadioButton();
-            radioButton5 = new RadioButton();
-            radioButton6 = new RadioButton();
-            label2 = new Label();
-            label3 = new Label();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
-            label4 = new Label();
-            checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
+            lblStatus = new ToolStripStatusLabel();
+            rbtnOPCUA = new RadioButton();
+            rbtnMQTT = new RadioButton();
+            rbtnTCPIP = new RadioButton();
+            rbtnModbusTCPIP = new RadioButton();
+            rbtnRESTAPI = new RadioButton();
+            rbtnS7 = new RadioButton();
+            lblPara2 = new Label();
+            lblCheckBox = new Label();
+            btnPreSet = new Button();
+            btnStartCommunicationThread = new Button();
+            btnStopCommunicationThread = new Button();
+            lblCommunicationStatus = new Label();
+            checkBoxMaster = new CheckBox();
+            checkBoxSlave = new CheckBox();
+            txtBoxPara1 = new TextBox();
+            txtBoxPara2 = new TextBox();
             statusStripCommunicationControl.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
+            // lblPara1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(126, 3);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 2;
-            label1.Text = "label1";
+            lblPara1.AutoSize = true;
+            lblPara1.Location = new Point(323, 3);
+            lblPara1.Name = "lblPara1";
+            lblPara1.Size = new Size(87, 20);
+            lblPara1.TabIndex = 2;
+            lblPara1.Text = "Parameter1:";
             // 
             // statusStripCommunicationControl
             // 
             statusStripCommunicationControl.ImageScalingSize = new Size(20, 20);
-            statusStripCommunicationControl.Items.AddRange(new ToolStripItem[] { status1 });
-            statusStripCommunicationControl.Location = new Point(0, 372);
+            statusStripCommunicationControl.Items.AddRange(new ToolStripItem[] { lblStatus });
+            statusStripCommunicationControl.Location = new Point(0, 187);
             statusStripCommunicationControl.Name = "statusStripCommunicationControl";
             statusStripCommunicationControl.Size = new Size(732, 26);
             statusStripCommunicationControl.TabIndex = 3;
             statusStripCommunicationControl.Text = "statusStrip1";
             // 
-            // status1
+            // lblStatus
             // 
-            status1.Name = "status1";
-            status1.Size = new Size(55, 20);
-            status1.Text = "status1";
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(55, 20);
+            lblStatus.Text = "status1";
             // 
-            // radioButton1
+            // rbtnOPCUA
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(3, 3);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(117, 24);
-            radioButton1.TabIndex = 4;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "radioButton1";
-            radioButton1.UseVisualStyleBackColor = true;
+            rbtnOPCUA.AutoSize = true;
+            rbtnOPCUA.Location = new Point(3, 3);
+            rbtnOPCUA.Name = "rbtnOPCUA";
+            rbtnOPCUA.Size = new Size(82, 24);
+            rbtnOPCUA.TabIndex = 4;
+            rbtnOPCUA.TabStop = true;
+            rbtnOPCUA.Text = "OPC UA";
+            rbtnOPCUA.UseVisualStyleBackColor = true;
+            rbtnOPCUA.CheckedChanged += rbtnOPCUA_CheckedChanged;
             // 
-            // radioButton2
+            // rbtnMQTT
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(3, 33);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(117, 24);
-            radioButton2.TabIndex = 5;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "radioButton2";
-            radioButton2.UseVisualStyleBackColor = true;
+            rbtnMQTT.AutoSize = true;
+            rbtnMQTT.Location = new Point(3, 33);
+            rbtnMQTT.Name = "rbtnMQTT";
+            rbtnMQTT.Size = new Size(69, 24);
+            rbtnMQTT.TabIndex = 5;
+            rbtnMQTT.TabStop = true;
+            rbtnMQTT.Text = "MQTT";
+            rbtnMQTT.UseVisualStyleBackColor = true;
+            rbtnMQTT.CheckedChanged += rbtnMQTT_CheckedChanged;
             // 
-            // radioButton3
+            // rbtnTCPIP
             // 
-            radioButton3.AutoSize = true;
-            radioButton3.Location = new Point(3, 63);
-            radioButton3.Name = "radioButton3";
-            radioButton3.Size = new Size(117, 24);
-            radioButton3.TabIndex = 6;
-            radioButton3.TabStop = true;
-            radioButton3.Text = "radioButton3";
-            radioButton3.UseVisualStyleBackColor = true;
+            rbtnTCPIP.AutoSize = true;
+            rbtnTCPIP.Location = new Point(3, 63);
+            rbtnTCPIP.Name = "rbtnTCPIP";
+            rbtnTCPIP.Size = new Size(72, 24);
+            rbtnTCPIP.TabIndex = 6;
+            rbtnTCPIP.TabStop = true;
+            rbtnTCPIP.Text = "TCP/IP";
+            rbtnTCPIP.UseVisualStyleBackColor = true;
+            rbtnTCPIP.CheckedChanged += rbtnTCPIP_CheckedChanged;
             // 
-            // radioButton4
+            // rbtnModbusTCPIP
             // 
-            radioButton4.AutoSize = true;
-            radioButton4.Location = new Point(3, 93);
-            radioButton4.Name = "radioButton4";
-            radioButton4.Size = new Size(117, 24);
-            radioButton4.TabIndex = 7;
-            radioButton4.TabStop = true;
-            radioButton4.Text = "radioButton4";
-            radioButton4.UseVisualStyleBackColor = true;
+            rbtnModbusTCPIP.AutoSize = true;
+            rbtnModbusTCPIP.Location = new Point(3, 93);
+            rbtnModbusTCPIP.Name = "rbtnModbusTCPIP";
+            rbtnModbusTCPIP.Size = new Size(130, 24);
+            rbtnModbusTCPIP.TabIndex = 7;
+            rbtnModbusTCPIP.TabStop = true;
+            rbtnModbusTCPIP.Text = "Modbus TCP/IP";
+            rbtnModbusTCPIP.UseVisualStyleBackColor = true;
+            rbtnModbusTCPIP.CheckedChanged += rbtnModbusTCPIP_CheckedChanged;
             // 
-            // radioButton5
+            // rbtnRESTAPI
             // 
-            radioButton5.AutoSize = true;
-            radioButton5.Location = new Point(3, 123);
-            radioButton5.Name = "radioButton5";
-            radioButton5.Size = new Size(117, 24);
-            radioButton5.TabIndex = 8;
-            radioButton5.TabStop = true;
-            radioButton5.Text = "radioButton5";
-            radioButton5.UseVisualStyleBackColor = true;
+            rbtnRESTAPI.AutoSize = true;
+            rbtnRESTAPI.Location = new Point(3, 123);
+            rbtnRESTAPI.Name = "rbtnRESTAPI";
+            rbtnRESTAPI.Size = new Size(89, 24);
+            rbtnRESTAPI.TabIndex = 8;
+            rbtnRESTAPI.TabStop = true;
+            rbtnRESTAPI.Text = "REST API";
+            rbtnRESTAPI.UseVisualStyleBackColor = true;
+            rbtnRESTAPI.CheckedChanged += rbtnRESTAPI_CheckedChanged;
             // 
-            // radioButton6
+            // rbtnS7
             // 
-            radioButton6.AutoSize = true;
-            radioButton6.Location = new Point(3, 153);
-            radioButton6.Name = "radioButton6";
-            radioButton6.Size = new Size(117, 24);
-            radioButton6.TabIndex = 9;
-            radioButton6.TabStop = true;
-            radioButton6.Text = "radioButton6";
-            radioButton6.UseVisualStyleBackColor = true;
+            rbtnS7.AutoSize = true;
+            rbtnS7.Location = new Point(3, 153);
+            rbtnS7.Name = "rbtnS7";
+            rbtnS7.Size = new Size(46, 24);
+            rbtnS7.TabIndex = 9;
+            rbtnS7.TabStop = true;
+            rbtnS7.Text = "S7";
+            rbtnS7.UseVisualStyleBackColor = true;
+            rbtnS7.CheckedChanged += rbtnS7_CheckedChanged;
             // 
-            // label2
+            // lblPara2
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(126, 56);
-            label2.Name = "label2";
-            label2.Size = new Size(50, 20);
-            label2.TabIndex = 10;
-            label2.Text = "label2";
+            lblPara2.AutoSize = true;
+            lblPara2.Location = new Point(323, 56);
+            lblPara2.Name = "lblPara2";
+            lblPara2.Size = new Size(87, 20);
+            lblPara2.TabIndex = 10;
+            lblPara2.Text = "Parameter2:";
             // 
-            // label3
+            // lblCheckBox
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(126, 109);
-            label3.Name = "label3";
-            label3.Size = new Size(50, 20);
-            label3.TabIndex = 12;
-            label3.Text = "label3";
+            lblCheckBox.AutoSize = true;
+            lblCheckBox.Location = new Point(158, 35);
+            lblCheckBox.Name = "lblCheckBox";
+            lblCheckBox.Size = new Size(139, 20);
+            lblCheckBox.TabIndex = 12;
+            lblCheckBox.Text = "What is this device?";
             // 
-            // button3
+            // btnPreSet
             // 
-            button3.Location = new Point(126, 192);
-            button3.Name = "button3";
-            button3.Size = new Size(94, 29);
-            button3.TabIndex = 15;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
+            btnPreSet.Location = new Point(158, 3);
+            btnPreSet.Name = "btnPreSet";
+            btnPreSet.Size = new Size(94, 29);
+            btnPreSet.TabIndex = 15;
+            btnPreSet.Text = "Use PreSet";
+            btnPreSet.UseVisualStyleBackColor = true;
+            btnPreSet.Click += btnPreSet_Click;
             // 
-            // button4
+            // btnStartCommunicationThread
             // 
-            button4.Location = new Point(328, 3);
-            button4.Name = "button4";
-            button4.Size = new Size(94, 29);
-            button4.TabIndex = 16;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
+            btnStartCommunicationThread.Location = new Point(546, 6);
+            btnStartCommunicationThread.Name = "btnStartCommunicationThread";
+            btnStartCommunicationThread.Size = new Size(183, 51);
+            btnStartCommunicationThread.TabIndex = 16;
+            btnStartCommunicationThread.Text = "Start Commonication";
+            btnStartCommunicationThread.UseVisualStyleBackColor = true;
+            btnStartCommunicationThread.Click += btnStartCommunicationThread_Click;
             // 
-            // button5
+            // btnStopCommunicationThread
             // 
-            button5.Location = new Point(328, 38);
-            button5.Name = "button5";
-            button5.Size = new Size(94, 29);
-            button5.TabIndex = 17;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
+            btnStopCommunicationThread.Location = new Point(546, 63);
+            btnStopCommunicationThread.Name = "btnStopCommunicationThread";
+            btnStopCommunicationThread.Size = new Size(183, 51);
+            btnStopCommunicationThread.TabIndex = 17;
+            btnStopCommunicationThread.Text = "Stop Communication";
+            btnStopCommunicationThread.UseVisualStyleBackColor = true;
+            btnStopCommunicationThread.Click += btnStopCommunicationThread_Click;
             // 
-            // label4
+            // lblCommunicationStatus
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(328, 70);
-            label4.Name = "label4";
-            label4.Size = new Size(50, 20);
-            label4.TabIndex = 18;
-            label4.Text = "label4";
+            lblCommunicationStatus.AutoSize = true;
+            lblCommunicationStatus.Location = new Point(546, 122);
+            lblCommunicationStatus.Name = "lblCommunicationStatus";
+            lblCommunicationStatus.Size = new Size(163, 20);
+            lblCommunicationStatus.TabIndex = 18;
+            lblCommunicationStatus.Text = "Communication status. ";
             // 
-            // checkBox1
+            // checkBoxMaster
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(126, 132);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(101, 24);
-            checkBox1.TabIndex = 19;
-            checkBox1.Text = "checkBox1";
-            checkBox1.UseVisualStyleBackColor = true;
+            checkBoxMaster.AutoSize = true;
+            checkBoxMaster.Location = new Point(158, 58);
+            checkBoxMaster.Name = "checkBoxMaster";
+            checkBoxMaster.Size = new Size(101, 24);
+            checkBoxMaster.TabIndex = 19;
+            checkBoxMaster.Text = "checkBox1";
+            checkBoxMaster.UseVisualStyleBackColor = true;
+            checkBoxMaster.CheckedChanged += checkBoxMaster_CheckedChanged;
             // 
-            // checkBox2
+            // checkBoxSlave
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(126, 162);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(101, 24);
-            checkBox2.TabIndex = 20;
-            checkBox2.Text = "checkBox2";
-            checkBox2.UseVisualStyleBackColor = true;
+            checkBoxSlave.AutoSize = true;
+            checkBoxSlave.Location = new Point(158, 88);
+            checkBoxSlave.Name = "checkBoxSlave";
+            checkBoxSlave.Size = new Size(101, 24);
+            checkBoxSlave.TabIndex = 20;
+            checkBoxSlave.Text = "checkBox2";
+            checkBoxSlave.UseVisualStyleBackColor = true;
+            checkBoxSlave.CheckedChanged += checkBoxSlave_CheckedChanged;
             // 
-            // textBox1
+            // txtBoxPara1
             // 
-            textBox1.Location = new Point(126, 26);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(125, 27);
-            textBox1.TabIndex = 21;
+            txtBoxPara1.Location = new Point(323, 26);
+            txtBoxPara1.Name = "txtBoxPara1";
+            txtBoxPara1.Size = new Size(163, 27);
+            txtBoxPara1.TabIndex = 21;
             // 
-            // textBox2
+            // txtBoxPara2
             // 
-            textBox2.Location = new Point(126, 79);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(125, 27);
-            textBox2.TabIndex = 22;
+            txtBoxPara2.Location = new Point(323, 79);
+            txtBoxPara2.Name = "txtBoxPara2";
+            txtBoxPara2.Size = new Size(163, 27);
+            txtBoxPara2.TabIndex = 22;
             // 
             // ucCommunicationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
-            Controls.Add(checkBox2);
-            Controls.Add(checkBox1);
-            Controls.Add(label4);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(radioButton6);
-            Controls.Add(radioButton5);
-            Controls.Add(radioButton4);
-            Controls.Add(radioButton3);
-            Controls.Add(radioButton2);
-            Controls.Add(radioButton1);
+            Controls.Add(txtBoxPara2);
+            Controls.Add(txtBoxPara1);
+            Controls.Add(checkBoxSlave);
+            Controls.Add(checkBoxMaster);
+            Controls.Add(lblCommunicationStatus);
+            Controls.Add(btnStopCommunicationThread);
+            Controls.Add(btnStartCommunicationThread);
+            Controls.Add(btnPreSet);
+            Controls.Add(lblCheckBox);
+            Controls.Add(lblPara2);
+            Controls.Add(rbtnS7);
+            Controls.Add(rbtnRESTAPI);
+            Controls.Add(rbtnModbusTCPIP);
+            Controls.Add(rbtnTCPIP);
+            Controls.Add(rbtnMQTT);
+            Controls.Add(rbtnOPCUA);
             Controls.Add(statusStripCommunicationControl);
-            Controls.Add(label1);
+            Controls.Add(lblPara1);
             Name = "ucCommunicationControl";
-            Size = new Size(732, 398);
+            Size = new Size(732, 213);
             Load += CommunicationControl_Load;
             statusStripCommunicationControl.ResumeLayout(false);
             statusStripCommunicationControl.PerformLayout();
@@ -261,24 +272,24 @@
         }
 
         #endregion
-        private Label label1;
+        private Label lblPara1;
         private StatusStrip statusStripCommunicationControl;
-        private ToolStripStatusLabel status1;
-        private RadioButton radioButton1;
-        private RadioButton radioButton2;
-        private RadioButton radioButton3;
-        private RadioButton radioButton4;
-        private RadioButton radioButton5;
-        private RadioButton radioButton6;
-        private Label label2;
-        private Label label3;
-        private Button button3;
-        private Button button4;
-        private Button button5;
-        private Label label4;
-        private CheckBox checkBox1;
-        private CheckBox checkBox2;
-        private TextBox textBox1;
-        private TextBox textBox2;
+        private ToolStripStatusLabel lblStatus;
+        private RadioButton rbtnOPCUA;
+        private RadioButton rbtnMQTT;
+        private RadioButton rbtnTCPIP;
+        private RadioButton rbtnModbusTCPIP;
+        private RadioButton rbtnRESTAPI;
+        private RadioButton rbtnS7;
+        private Label lblPara2;
+        private Label lblCheckBox;
+        private Button btnPreSet;
+        private Button btnStartCommunicationThread;
+        private Button btnStopCommunicationThread;
+        private Label lblCommunicationStatus;
+        private CheckBox checkBoxMaster;
+        private CheckBox checkBoxSlave;
+        private TextBox txtBoxPara1;
+        private TextBox txtBoxPara2;
     }
 }

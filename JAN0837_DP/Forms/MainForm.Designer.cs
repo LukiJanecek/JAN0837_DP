@@ -36,23 +36,6 @@
             btnGenerateTIATemplate = new ToolStripButton();
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
-            rbtnOPCUA = new RadioButton();
-            rbtnMQTT = new RadioButton();
-            rbtnTCPIP = new RadioButton();
-            rbtnRESTAPI = new RadioButton();
-            rbtnModbusTCPIP = new RadioButton();
-            btnStartCommunication = new Button();
-            lblPara1 = new Label();
-            lblPara2 = new Label();
-            txtBoxPara1 = new TextBox();
-            txtBoxPara2 = new TextBox();
-            btnUsePreset = new Button();
-            btnStopCommunication = new Button();
-            checkBoxMaster = new CheckBox();
-            checkBoxSlave = new CheckBox();
-            lblCheckBox = new Label();
-            rbtnS7 = new RadioButton();
-            lblCommunicationStatus = new Label();
             mainWindow = new Panel();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
@@ -62,9 +45,9 @@
             // 
             statusStripMain.ImageScalingSize = new Size(20, 20);
             statusStripMain.Items.AddRange(new ToolStripItem[] { lblStatus });
-            statusStripMain.Location = new Point(0, 562);
+            statusStripMain.Location = new Point(0, 361);
             statusStripMain.Name = "statusStripMain";
-            statusStripMain.Size = new Size(1096, 26);
+            statusStripMain.Size = new Size(1034, 26);
             statusStripMain.TabIndex = 0;
             statusStripMain.Text = "statusStrip1";
             // 
@@ -80,7 +63,7 @@
             toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
-            toolStripMain.Size = new Size(1096, 27);
+            toolStripMain.Size = new Size(1034, 27);
             toolStripMain.TabIndex = 1;
             toolStripMain.Text = "toolStrip1";
             // 
@@ -125,212 +108,21 @@
             btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
-            // rbtnOPCUA
-            // 
-            rbtnOPCUA.AutoSize = true;
-            rbtnOPCUA.Location = new Point(45, 54);
-            rbtnOPCUA.Name = "rbtnOPCUA";
-            rbtnOPCUA.Size = new Size(82, 24);
-            rbtnOPCUA.TabIndex = 2;
-            rbtnOPCUA.TabStop = true;
-            rbtnOPCUA.Text = "OPC UA";
-            rbtnOPCUA.UseVisualStyleBackColor = true;
-            rbtnOPCUA.CheckedChanged += rbtnOPCUA_CheckedChanged;
-            // 
-            // rbtnMQTT
-            // 
-            rbtnMQTT.AutoSize = true;
-            rbtnMQTT.Location = new Point(45, 84);
-            rbtnMQTT.Name = "rbtnMQTT";
-            rbtnMQTT.Size = new Size(69, 24);
-            rbtnMQTT.TabIndex = 3;
-            rbtnMQTT.TabStop = true;
-            rbtnMQTT.Text = "MQTT";
-            rbtnMQTT.UseVisualStyleBackColor = true;
-            rbtnMQTT.CheckedChanged += rbtnMQTT_CheckedChanged;
-            // 
-            // rbtnTCPIP
-            // 
-            rbtnTCPIP.AutoSize = true;
-            rbtnTCPIP.Location = new Point(45, 114);
-            rbtnTCPIP.Name = "rbtnTCPIP";
-            rbtnTCPIP.Size = new Size(72, 24);
-            rbtnTCPIP.TabIndex = 4;
-            rbtnTCPIP.TabStop = true;
-            rbtnTCPIP.Text = "TCP/IP";
-            rbtnTCPIP.UseVisualStyleBackColor = true;
-            rbtnTCPIP.CheckedChanged += rbtnTCPIP_CheckedChanged;
-            // 
-            // rbtnRESTAPI
-            // 
-            rbtnRESTAPI.AutoSize = true;
-            rbtnRESTAPI.Location = new Point(45, 174);
-            rbtnRESTAPI.Name = "rbtnRESTAPI";
-            rbtnRESTAPI.Size = new Size(89, 24);
-            rbtnRESTAPI.TabIndex = 5;
-            rbtnRESTAPI.TabStop = true;
-            rbtnRESTAPI.Text = "REST API";
-            rbtnRESTAPI.UseVisualStyleBackColor = true;
-            rbtnRESTAPI.CheckedChanged += rbtnRESTAPI_CheckedChanged;
-            // 
-            // rbtnModbusTCPIP
-            // 
-            rbtnModbusTCPIP.AutoSize = true;
-            rbtnModbusTCPIP.Location = new Point(45, 144);
-            rbtnModbusTCPIP.Name = "rbtnModbusTCPIP";
-            rbtnModbusTCPIP.Size = new Size(130, 24);
-            rbtnModbusTCPIP.TabIndex = 6;
-            rbtnModbusTCPIP.TabStop = true;
-            rbtnModbusTCPIP.Text = "Modbus TCP/IP";
-            rbtnModbusTCPIP.UseVisualStyleBackColor = true;
-            rbtnModbusTCPIP.CheckedChanged += rbtnModbusTCPIP_CheckedChanged;
-            // 
-            // btnStartCommunication
-            // 
-            btnStartCommunication.Location = new Point(519, 54);
-            btnStartCommunication.Name = "btnStartCommunication";
-            btnStartCommunication.Size = new Size(180, 60);
-            btnStartCommunication.TabIndex = 7;
-            btnStartCommunication.Text = "Start Communication";
-            btnStartCommunication.UseVisualStyleBackColor = true;
-            btnStartCommunication.Click += btnStart_Click;
-            // 
-            // lblPara1
-            // 
-            lblPara1.AutoSize = true;
-            lblPara1.Location = new Point(247, 54);
-            lblPara1.Name = "lblPara1";
-            lblPara1.Size = new Size(87, 20);
-            lblPara1.TabIndex = 8;
-            lblPara1.Text = "Parameter1:";
-            // 
-            // lblPara2
-            // 
-            lblPara2.AutoSize = true;
-            lblPara2.Location = new Point(247, 107);
-            lblPara2.Name = "lblPara2";
-            lblPara2.Size = new Size(87, 20);
-            lblPara2.TabIndex = 9;
-            lblPara2.Text = "Parameter2:";
-            // 
-            // txtBoxPara1
-            // 
-            txtBoxPara1.Location = new Point(247, 77);
-            txtBoxPara1.Name = "txtBoxPara1";
-            txtBoxPara1.Size = new Size(211, 27);
-            txtBoxPara1.TabIndex = 10;
-            // 
-            // txtBoxPara2
-            // 
-            txtBoxPara2.Location = new Point(247, 130);
-            txtBoxPara2.Name = "txtBoxPara2";
-            txtBoxPara2.Size = new Size(211, 27);
-            txtBoxPara2.TabIndex = 11;
-            // 
-            // btnUsePreset
-            // 
-            btnUsePreset.Location = new Point(247, 264);
-            btnUsePreset.Name = "btnUsePreset";
-            btnUsePreset.Size = new Size(94, 29);
-            btnUsePreset.TabIndex = 12;
-            btnUsePreset.Text = "Use Preset";
-            btnUsePreset.UseVisualStyleBackColor = true;
-            btnUsePreset.Click += btnUsePreset_Click;
-            // 
-            // btnStopCommunication
-            // 
-            btnStopCommunication.Location = new Point(519, 126);
-            btnStopCommunication.Name = "btnStopCommunication";
-            btnStopCommunication.Size = new Size(180, 60);
-            btnStopCommunication.TabIndex = 13;
-            btnStopCommunication.Text = "Stop Communication";
-            btnStopCommunication.UseVisualStyleBackColor = true;
-            btnStopCommunication.Click += btnStopCommunication_Click;
-            // 
-            // checkBoxMaster
-            // 
-            checkBoxMaster.AutoSize = true;
-            checkBoxMaster.Location = new Point(247, 204);
-            checkBoxMaster.Name = "checkBoxMaster";
-            checkBoxMaster.Size = new Size(76, 24);
-            checkBoxMaster.TabIndex = 14;
-            checkBoxMaster.Text = "Master";
-            checkBoxMaster.UseVisualStyleBackColor = true;
-            checkBoxMaster.CheckedChanged += checkBoxMaster_CheckedChanged;
-            // 
-            // checkBoxSlave
-            // 
-            checkBoxSlave.AutoSize = true;
-            checkBoxSlave.Location = new Point(247, 234);
-            checkBoxSlave.Name = "checkBoxSlave";
-            checkBoxSlave.Size = new Size(66, 24);
-            checkBoxSlave.TabIndex = 15;
-            checkBoxSlave.Text = "Slave";
-            checkBoxSlave.UseVisualStyleBackColor = true;
-            checkBoxSlave.CheckedChanged += checkBoxSlave_CheckedChanged;
-            // 
-            // lblCheckBox
-            // 
-            lblCheckBox.AutoSize = true;
-            lblCheckBox.Location = new Point(247, 183);
-            lblCheckBox.Name = "lblCheckBox";
-            lblCheckBox.Size = new Size(139, 20);
-            lblCheckBox.TabIndex = 18;
-            lblCheckBox.Text = "What is this device?";
-            // 
-            // rbtnS7
-            // 
-            rbtnS7.AutoSize = true;
-            rbtnS7.Location = new Point(45, 203);
-            rbtnS7.Name = "rbtnS7";
-            rbtnS7.Size = new Size(46, 24);
-            rbtnS7.TabIndex = 19;
-            rbtnS7.TabStop = true;
-            rbtnS7.Text = "S7";
-            rbtnS7.UseVisualStyleBackColor = true;
-            rbtnS7.CheckedChanged += rbtnS7_CheckedChanged;
-            // 
-            // lblCommunicationStatus
-            // 
-            lblCommunicationStatus.AutoSize = true;
-            lblCommunicationStatus.Location = new Point(705, 126);
-            lblCommunicationStatus.Name = "lblCommunicationStatus";
-            lblCommunicationStatus.Size = new Size(156, 20);
-            lblCommunicationStatus.TabIndex = 20;
-            lblCommunicationStatus.Text = "Communication status";
-            // 
             // mainWindow
             // 
             mainWindow.BorderStyle = BorderStyle.FixedSingle;
-            mainWindow.Dock = DockStyle.Bottom;
-            mainWindow.Location = new Point(0, 299);
+            mainWindow.Dock = DockStyle.Left;
+            mainWindow.Location = new Point(0, 27);
             mainWindow.Name = "mainWindow";
-            mainWindow.Size = new Size(1096, 263);
+            mainWindow.Size = new Size(841, 334);
             mainWindow.TabIndex = 21;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1096, 588);
+            ClientSize = new Size(1034, 387);
             Controls.Add(mainWindow);
-            Controls.Add(lblCommunicationStatus);
-            Controls.Add(rbtnS7);
-            Controls.Add(lblCheckBox);
-            Controls.Add(checkBoxSlave);
-            Controls.Add(checkBoxMaster);
-            Controls.Add(btnStopCommunication);
-            Controls.Add(btnUsePreset);
-            Controls.Add(txtBoxPara2);
-            Controls.Add(txtBoxPara1);
-            Controls.Add(lblPara2);
-            Controls.Add(lblPara1);
-            Controls.Add(btnStartCommunication);
-            Controls.Add(rbtnModbusTCPIP);
-            Controls.Add(rbtnRESTAPI);
-            Controls.Add(rbtnTCPIP);
-            Controls.Add(rbtnMQTT);
-            Controls.Add(rbtnOPCUA);
             Controls.Add(toolStripMain);
             Controls.Add(statusStripMain);
             Name = "MainForm";
@@ -348,27 +140,10 @@
 
         private StatusStrip statusStripMain;
         private ToolStrip toolStripMain;
-        private RadioButton rbtnOPCUA;
-        private RadioButton rbtnMQTT;
-        private RadioButton rbtnTCPIP;
-        private RadioButton rbtnRESTAPI;
-        private RadioButton rbtnModbusTCPIP;
         private ToolStripStatusLabel lblStatus;
         private ToolStripButton btnGenerateTIATemplate;
-        private Button btnStartCommunication;
-        private Label lblPara1;
-        private Label lblPara2;
-        private TextBox txtBoxPara1;
-        private TextBox txtBoxPara2;
-        private Button btnUsePreset;
-        private Button btnStopCommunication;
-        private CheckBox checkBoxMaster;
-        private CheckBox checkBoxSlave;
-        private Label lblCheckBox;
         private ToolStripButton btnLocalHost;
         private ToolStripButton btnExit;
-        private RadioButton rbtnS7;
-        private Label lblCommunicationStatus;
         private ToolStripButton btnCommunicationControl;
         private Panel mainWindow;
     }

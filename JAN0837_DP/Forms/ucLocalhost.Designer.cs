@@ -29,41 +29,41 @@
         private void InitializeComponent()
         {
             statusStrip1 = new StatusStrip();
-            label1 = new Label();
-            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            lblStatus1 = new ToolStripStatusLabel();
+            lblLocalhost = new Label();
             statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { lblStatus1 });
             statusStrip1.Location = new Point(0, 180);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(260, 26);
             statusStrip1.TabIndex = 0;
             statusStrip1.Text = "statusStrip1";
             // 
-            // label1
+            // lblStatus1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(3, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 1;
-            label1.Text = "label1";
+            lblStatus1.Name = "lblStatus1";
+            lblStatus1.Size = new Size(55, 20);
+            lblStatus1.Text = "status1";
             // 
-            // toolStripStatusLabel1
+            // lblLocalhost
             // 
-            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(151, 20);
-            toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            lblLocalhost.AutoSize = true;
+            lblLocalhost.Location = new Point(3, 0);
+            lblLocalhost.Name = "lblLocalhost";
+            lblLocalhost.Size = new Size(50, 20);
+            lblLocalhost.TabIndex = 1;
+            lblLocalhost.Text = "label1";
             // 
             // ucLocalhost
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(label1);
+            Controls.Add(lblLocalhost);
             Controls.Add(statusStrip1);
             Name = "ucLocalhost";
             Size = new Size(260, 206);
@@ -76,7 +76,7 @@
         #endregion
 
         private StatusStrip statusStrip1;
-        private Label label1;
-        private ToolStripStatusLabel toolStripStatusLabel1;
+        private Label lblLocalhost;
+        private ToolStripStatusLabel lblStatus1;
     }
 }

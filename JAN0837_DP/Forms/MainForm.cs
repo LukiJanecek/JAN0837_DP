@@ -140,7 +140,7 @@ namespace JAN0837_DP
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
             string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
             string serverFile = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
-            string clientFolder = Path.Combine("JAN0837_react", "JAN0837_react.Client");
+            string clientFolder = Path.Combine("JAN0837_react", "JAN0837_react.client");
             string clientFile = Path.Combine(clientFolder, "JAN0837_react.CLient.csproj");
             
             string fullServerFilePath = Path.Combine(parentDirectory, serverFile);

@@ -106,6 +106,8 @@ namespace JAN0837_DP.Forms
             checkBoxSlave.Checked = false;
 
             #endregion
+
+            lblStatus.Text = "Select communication protocol.";
         }
 
         // radio buttons 

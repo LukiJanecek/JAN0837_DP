@@ -1,9 +1,13 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.SpaServices.Extensions;
+using Microsoft.AspNetCore.SpaProxy;
+
+using System.Diagnostics;
+using System.IO;
 
 namespace JAN0837_react.Server
 {
@@ -13,82 +17,89 @@ namespace JAN0837_react.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            string serverProjectDirectory = builder.Environment.ContentRootPath;
+            string solutionDirectory = Directory.GetParent(serverProjectDirectory)!.FullName;
+
+            string clientProjectDirectory = Path.Combine(solutionDirectory, "JAN0837_react.client");
+
+            string serverCsprojPath = Path.Combine(serverProjectDirectory, "JAN0837_react.Server.csproj");
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSpaStaticFiles(options =>
+            {
+                // musï¿½ ukazovat na dist sloï¿½ku, kam Vite buildï¿½
+                options.RootPath = Path.Combine(clientProjectDirectory, "dist");
+            });
 
             var app = builder.Build();
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
-            builder.Services.AddSpaStaticFiles(options =>
-            {
-                // musí ukazovat na dist složku, kam Vite buildí
-                options.RootPath = Path.Combine("..", "JAN0837_react.client", "dist");
-            });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*
+            // file path testing 
+            Console.WriteLine($"[DEBUG] ContentRootPath = {builder.Environment.ContentRootPath}");
+            var clientDir = Path.Combine(builder.Environment.ContentRootPath,
+                             "..",       // z net8.0 do bin/Debug/net8.0
+                             "..",       // do bin/Debug
+                             "..",       // do bin
+                             "..",       // do JAN0837_react.Server
+                             "jan0837_react.client");  // sloÅ¾ka klienta
+                var fullClientDir = Path.GetFullPath(clientDir);
+                Console.WriteLine($"[DEBUG] Full clientDir = {fullClientDir}");
+                Console.WriteLine($"[DEBUG] Exists? {Directory.Exists(fullClientDir)}");
+        */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                /*
-                app.UseSpa(spa =>
-                {
-                    // relativní cesta z *.Server -> *.client
-                    spa.Options.SourcePath = Path.Combine(Directory.GetCurrentDirectory(), "../JAN0837_react.client");
 
-                    // pro Vite použijeme npm run dev
-                    spa.UseProxyToSpaDevelopmentServer("npm run dev");
-                    // pokud byste mìli CRA:
-                    // spa.UseReactDevelopmentServer("start");
-                });
-                */
-            }
-            else
-            {
-                /*
-                app.UseSpa(spa =>
+                // start Reacts dev server -> FE
+                Process.Start(new ProcessStartInfo
                 {
-                    spa.Options.SourcePath = "dist";  // nebo kam Vite vybuildí
+                    FileName = "npm",
+                    Arguments = "run dev",
+                    WorkingDirectory = clientProjectDirectory,
+                    UseShellExecute = true,
+                    CreateNoWindow = false
                 });
-                */
+
+                // start dotnet run server -> BE
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"run --project \"{serverCsprojPath}\"",
+                    WorkingDirectory = serverProjectDirectory,
+                    UseShellExecute = true
+                });
             }
 
+            //app.UseDefaultFiles();
             app.UseHttpsRedirection();
+            //app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
+            app.UseRouting();
             app.UseAuthorization();
-
-
             app.MapControllers();
 
-            // SPA proxy
-            app.MapWhen(ctx => ctx.Request.Path.StartsWithSegments("/app"), spaApp =>
+            app.UseSpa(spa =>
             {
+                spa.Options.SourcePath = clientProjectDirectory;
+
                 if (app.Environment.IsDevelopment())
                 {
-                    spaApp.UseSpa(spa =>
-                    {
-                        // relativnì vùèi výstupu serveru (bin/Debug/...)
-                        spa.Options.SourcePath = Path.Combine("..", "JAN0837_react.client");
-                        // spustí 'npm run dev' a bude proxyovat /app/* na Vite (5173)
-                        spa.UseProxyToSpaDevelopmentServer("http://localhost:5173"); // 
-                    });
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
                 }
                 else
                 {
-                    spaApp.UseSpa(spa =>
-                    {
-                        // v produkci servírujeme už vybuildìné soubory
-                        spa.Options.SourcePath = Path.Combine("..", "JAN0837_react.client", "dist");
-                    });
+                    // in production, serve the files from ../client/dist
+                    spa.Options.SourcePath = Path.Combine(clientProjectDirectory, "dist");
                 }
-            });
-
+            }); 
 
             app.MapFallbackToFile("/index.html");
 

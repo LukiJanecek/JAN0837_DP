@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Communication\S7\**" />
+    <EmbeddedResource Remove="Communication\S7\**" />
+    <None Remove="Communication\S7\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NModbus4" Version="2.1.0" />
@@ -33,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Communication\S7\" />
     <Folder Include="Communication\Sharp7\" />
   </ItemGroup>
 

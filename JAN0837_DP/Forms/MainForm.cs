@@ -79,6 +79,9 @@ namespace JAN0837_DP
         public static string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
         public static string dataDirectoryPath = Path.Combine(projectRootPath, "Data");
 
+        public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
+        public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
+
         // Lists 
 
         public MainForm()
@@ -135,6 +138,12 @@ namespace JAN0837_DP
 
         private void btnLocalHost_Click(object sender, EventArgs e)
         {
+            
+            
+            
+
+            
+            
             lblStatus.Text = "Starting React dev server and ASP.NET server…"; // Openning localhost in browser.
 
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
@@ -156,16 +165,29 @@ namespace JAN0837_DP
             {
                 if (internalVariables.serverStarted == false)
                 {
+                    /*
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "npm",
+                        Arguments = "run dev",
+                        WorkingDirectory = clientProjectDirectory,
+                        UseShellExecute = true,
+                        CreateNoWindow = false
+                    });
+                    */
+
+                    
+                    // starting React 
                     lblStatus.Text = "Starting React dev server";
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = "npm",
                         Arguments = "run dev",
-                        WorkingDirectory = clientFolder,
+                        WorkingDirectory = clientProjectDirectory,
                         UseShellExecute = true,
                         CreateNoWindow = false
                     });
-
+                    
                     // starting .NET server
                     lblStatus.Text = "Starting .NET server";
                     var psi = new ProcessStartInfo
@@ -177,7 +199,7 @@ namespace JAN0837_DP
                         UseShellExecute = false,
                         CreateNoWindow = true
                     };
-
+                    
                     var serverProc = Process.Start(psi);
 
                     serverProc.OutputDataReceived += (s, ea) =>
@@ -204,40 +226,14 @@ namespace JAN0837_DP
                     serverProc.BeginOutputReadLine();
                     serverProc.BeginErrorReadLine();
 
+                    
+
                     internalVariables.serverStarted = true;
+                    
                 }
-                else
-                {
-                    lblStatus.Text = $"Openning {internalVariables.localhosturl} in browser";
-
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = internalVariables.localhosturl, // $"{localhosturl}/app"
-                        UseShellExecute = true
-                    });
-
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = $"{internalVariables.localhosturl}/swagger/index.html",
-                        UseShellExecute = true
-                    });
-                }
+               
                 
-                // starting React dev server
-              
-                /*
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true
-                });
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = $"{url}/swagger/index.html",
-                    UseShellExecute = true
-                });
-                */
+                
                 /*
                 //starting ASP:NET project 
                 var processInfo = new ProcessStartInfo
@@ -317,8 +313,8 @@ namespace JAN0837_DP
                     Arguments = $"run --project \"{fullServerFilePath}\"",
                     UseShellExecute = true
                 });
-
                 */
+                
 
                 lblStatus.Text = "Servers started. Check your browser."; // Localhost openend on ...
 
@@ -327,6 +323,7 @@ namespace JAN0837_DP
             {
                 MessageBox.Show("Chyba při spouštění:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            
         }
 
         private void btnExit_Click(object sender, EventArgs e)

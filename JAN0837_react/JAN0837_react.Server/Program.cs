@@ -33,23 +33,7 @@ namespace JAN0837_react.Server
                 options.RootPath = Path.Combine(clientProjectDirectory, "dist");
             });
 
-            var app = builder.Build();
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*
-            // file path testing 
-            Console.WriteLine($"[DEBUG] ContentRootPath = {builder.Environment.ContentRootPath}");
-            var clientDir = Path.Combine(builder.Environment.ContentRootPath,
-                             "..",       // z net8.0 do bin/Debug/net8.0
-                             "..",       // do bin/Debug
-                             "..",       // do bin
-                             "..",       // do JAN0837_react.Server
-                             "jan0837_react.client");  // složka klienta
-                var fullClientDir = Path.GetFullPath(clientDir);
-                Console.WriteLine($"[DEBUG] Full clientDir = {fullClientDir}");
-                Console.WriteLine($"[DEBUG] Exists? {Directory.Exists(fullClientDir)}");
-        */
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var app = builder.Build();       
 
             if (app.Environment.IsDevelopment())
             {
@@ -57,23 +41,12 @@ namespace JAN0837_react.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
-                // start Reacts dev server -> FE
-                Process.Start(new ProcessStartInfo
+                // Spouštět klienta z .cs nebudeme,
+                // jen proxy na dev-server:
+                app.UseSpa(spa =>
                 {
-                    FileName = "npm",
-                    Arguments = "run dev",
-                    WorkingDirectory = clientProjectDirectory,
-                    UseShellExecute = true,
-                    CreateNoWindow = false
-                });
-
-                // start dotnet run server -> BE
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    Arguments = $"run --project \"{serverCsprojPath}\"",
-                    WorkingDirectory = serverProjectDirectory,
-                    UseShellExecute = true
+                    spa.Options.SourcePath = clientProjectDirectory;
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
                 });
             }
 
@@ -85,21 +58,6 @@ namespace JAN0837_react.Server
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = clientProjectDirectory;
-
-                if (app.Environment.IsDevelopment())
-                {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
-                }
-                else
-                {
-                    // in production, serve the files from ../client/dist
-                    spa.Options.SourcePath = Path.Combine(clientProjectDirectory, "dist");
-                }
-            }); 
 
             app.MapFallbackToFile("/index.html");
 

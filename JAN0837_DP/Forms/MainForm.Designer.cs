@@ -37,6 +37,7 @@
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
             mainWindow = new Panel();
+            btnTest = new ToolStripButton();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -60,7 +61,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit, btnTest });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1034, 27);
@@ -117,6 +118,16 @@
             mainWindow.Size = new Size(841, 334);
             mainWindow.TabIndex = 21;
             // 
+            // btnTest
+            // 
+            btnTest.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnTest.Image = (Image)resources.GetObject("btnTest.Image");
+            btnTest.ImageTransparentColor = Color.Magenta;
+            btnTest.Name = "btnTest";
+            btnTest.Size = new Size(39, 24);
+            btnTest.Text = "Test";
+            btnTest.Click += btnTest_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -146,5 +157,6 @@
         private ToolStripButton btnExit;
         private ToolStripButton btnCommunicationControl;
         private Panel mainWindow;
+        private ToolStripButton btnTest;
     }
 }

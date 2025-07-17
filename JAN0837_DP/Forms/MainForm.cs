@@ -96,13 +96,13 @@ namespace JAN0837_DP
 
             btnCommunicationControl.Visible = true;
             btnCommunicationControl.Enabled = true;
-            
+
             btnGenerateTIATemplate.Visible = true;
             btnGenerateTIATemplate.Enabled = true;
 
             btnLocalHost.Visible = true;
             btnLocalHost.Enabled = true;
-                        
+
             #endregion
 
             // starting visualization thread
@@ -138,12 +138,6 @@ namespace JAN0837_DP
 
         private void btnLocalHost_Click(object sender, EventArgs e)
         {
-            
-            
-            
-
-            
-            
             lblStatus.Text = "Starting React dev server and ASP.NET server…"; // Openning localhost in browser.
 
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
@@ -151,7 +145,7 @@ namespace JAN0837_DP
             string serverFile = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
             string clientFolder = Path.Combine("JAN0837_react", "JAN0837_react.client");
             string clientFile = Path.Combine(clientFolder, "JAN0837_react.CLient.csproj");
-            
+
             string fullServerFilePath = Path.Combine(parentDirectory, serverFile);
             string fullClientFilePath = Path.Combine(parentDirectory, clientFile);
 
@@ -176,8 +170,9 @@ namespace JAN0837_DP
                     });
                     */
 
-                    
+
                     // starting React 
+                    /*
                     lblStatus.Text = "Starting React dev server";
                     Process.Start(new ProcessStartInfo
                     {
@@ -187,7 +182,8 @@ namespace JAN0837_DP
                         UseShellExecute = true,
                         CreateNoWindow = false
                     });
-                    
+                    */
+
                     // starting .NET server
                     lblStatus.Text = "Starting .NET server";
                     var psi = new ProcessStartInfo
@@ -199,10 +195,10 @@ namespace JAN0837_DP
                         UseShellExecute = false,
                         CreateNoWindow = true
                     };
-                    
-                    var serverProc = Process.Start(psi);
 
-                    serverProc.OutputDataReceived += (s, ea) =>
+                    var serverProcess = Process.Start(psi);
+
+                    serverProcess.OutputDataReceived += (s, ea) =>
                     {
                         if (ea.Data != null && ea.Data.Contains("Now listening on:"))
                         {
@@ -223,17 +219,26 @@ namespace JAN0837_DP
                             });
                         }
                     };
-                    serverProc.BeginOutputReadLine();
-                    serverProc.BeginErrorReadLine();
-
-                    
+                    serverProcess.BeginOutputReadLine();
+                    serverProcess.BeginErrorReadLine();
 
                     internalVariables.serverStarted = true;
-                    
                 }
-               
-                
-                
+                else
+                {
+                    lblStatus.Text = "Starting React dev server";
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "npm",
+                        Arguments = "run dev",
+                        WorkingDirectory = clientProjectDirectory,
+                        UseShellExecute = true,
+                        CreateNoWindow = false
+                    });
+                }
+
+
+
                 /*
                 //starting ASP:NET project 
                 var processInfo = new ProcessStartInfo
@@ -314,7 +319,7 @@ namespace JAN0837_DP
                     UseShellExecute = true
                 });
                 */
-                
+
 
                 lblStatus.Text = "Servers started. Check your browser."; // Localhost openend on ...
 
@@ -323,7 +328,7 @@ namespace JAN0837_DP
             {
                 MessageBox.Show("Chyba při spouštění:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -348,6 +353,20 @@ namespace JAN0837_DP
             {
 
             }
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            string reactPath = Path.Combine(solutionRootPath, "react_frontend");
+            
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "npm",
+                Arguments = "start",
+                WorkingDirectory = reactPath,
+                UseShellExecute = true,
+                CreateNoWindow = false
+            });
         }
     }
 }

@@ -5,11 +5,9 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JAN0837_DP", "JAN0837_DP\JAN0837_DP.csproj", "{864D69A4-1101-4BE2-9C2D-CF1FF3AF8777}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JAN0837_react.Server", "JAN0837_react\JAN0837_react.Server\JAN0837_react.Server.csproj", "{C42F9858-90C2-46B2-A011-79815631919F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JAN0837_WebAPI", "JAN0837_react\JAN0837_react.Server\JAN0837_WebAPI.csproj", "{C42F9858-90C2-46B2-A011-79815631919F}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "jan0837_react.client", "JAN0837_react\jan0837_react.client\jan0837_react.client.esproj", "{A2568B53-998F-44C0-AE6F-3923CDDFCE5C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAN0837_WebAPI", "JAN0837_WebAPI\JAN0837_WebAPI.csproj", "{8D28BD49-8FDE-4C32-941D-20E911740D76}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "JAN0837_reactFE", "JAN0837_react\jan0837_react.client\JAN0837_reactFE.esproj", "{A2568B53-998F-44C0-AE6F-3923CDDFCE5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{A2568B53-998F-44C0-AE6F-3923CDDFCE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2568B53-998F-44C0-AE6F-3923CDDFCE5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2568B53-998F-44C0-AE6F-3923CDDFCE5C}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{8D28BD49-8FDE-4C32-941D-20E911740D76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D28BD49-8FDE-4C32-941D-20E911740D76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D28BD49-8FDE-4C32-941D-20E911740D76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D28BD49-8FDE-4C32-941D-20E911740D76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

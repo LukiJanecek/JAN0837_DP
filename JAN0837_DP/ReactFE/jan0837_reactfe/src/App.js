@@ -14,7 +14,7 @@ function App() {
         <SideBar />
         <div style={{ flex: 1, padding: "20px" }}>
           <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/mainpage" element={<MainPage />} />
             <Route path="/crossroad" element={<CrossroadPage />} />
           </Routes>
         </div>

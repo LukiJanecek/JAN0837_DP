@@ -63,6 +63,8 @@ using System.Runtime.CompilerServices;
 using JAN0837_DP.Forms;
 using JAN0837_DP.Data;
 using JAN0837_DP.Communication;
+using System.Text.RegularExpressions;
+using Org.BouncyCastle.Asn1.Cmp;
 
 namespace JAN0837_DP
 {
@@ -355,10 +357,11 @@ namespace JAN0837_DP
             }
         }
 
-        private void btnTest_Click(object sender, EventArgs e)
+        private async void btnTest_Click(object sender, EventArgs e)
         {
-            string reactPath = Path.Combine(solutionRootPath, "react_frontend");
-            
+            string reactFolder = Path.Combine(projectRootPath, "ReactFE");
+            string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
+            /*
             Process.Start(new ProcessStartInfo
             {
                 FileName = "npm",
@@ -367,6 +370,72 @@ namespace JAN0837_DP
                 UseShellExecute = true,
                 CreateNoWindow = false
             });
+            */
+            string url = await StartReactAndGetUrlAsync(reactPath);
+
+            if (url != null)
+            {
+                lblStatus.Text = "Running React server on: " + url;
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+
+                internalVariables.localhosturl = url;
+            }
+            else
+            {
+                // error
+                lblStatus.Text = "Missing URL of React server.";
+                MessageBox.Show("Nenašel jsem URL React serveru.", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private Task<string> StartReactAndGetUrlAsync(string workingDir)
+        {
+            var tcs = new TaskCompletionSource<string>();
+            var rx = new Regex(@"Local:\s+(http://localhost:\d+)", RegexOptions.Compiled);
+            var psi = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c cd /d \"{workingDir}\" && npm start",
+                WorkingDirectory = workingDir,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            var proc = new Process { StartInfo = psi, EnableRaisingEvents = true };
+
+            // Regex na řádku, kde React vypisuje "Local: http://localhost:3000"
+            //var rx = new Regex(@"Local:\s+(http://localhost:\d+)", RegexOptions.Compiled);
+
+            proc.OutputDataReceived += (s, ea) => {
+                if (ea.Data == null) return;
+                var m = rx.Match(ea.Data);
+                if (m.Success)
+                {
+                    tcs.TrySetResult(m.Groups[1].Value);
+                }
+            };
+            proc.ErrorDataReceived += (s, ea) => {
+                // (volitelně logovat chyby)
+            };
+            proc.Exited += (s, ea) => {
+                // pokud proces skončí dřív, než najdeme URL
+                tcs.TrySetResult(null);
+            };
+
+            proc.Start();
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+
+            // Timeout třeba 20 sekund, pak vrátíme null
+            Task.Delay(20000).ContinueWith(_ => tcs.TrySetResult(null));
+
+            return tcs.Task;
         }
     }
 }

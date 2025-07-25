@@ -1,8 +1,30 @@
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import SideBar from './Components/SideBar';
+import MainPage from './Components/MainPage';
+import CrossroadPage from './Components/CrossroadPage';
 
 function App() {
   return (
+    <Router>
+      <div style={{ display: "flex" }}>
+        <SideBar />
+        <div style={{ flex: 1, padding: "20px" }}>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/crossroad" element={<CrossroadPage />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+/*
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -19,7 +41,4 @@ function App() {
         </a>
       </header>
     </div>
-  );
-}
-
-export default App;
+*/

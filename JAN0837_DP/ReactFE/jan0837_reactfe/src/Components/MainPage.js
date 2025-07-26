@@ -10,7 +10,11 @@ import Picture from './Picture.js';
 import Clock from './Clock.js';
 
 function MainPage() {
-  return <h1>Hey, this is my main page. xD</h1>;
+  return (
+    <div>
+      <h1>Hey, this is my main page. xD</h1>;
+    </div>
+  )
 }
 
 export default MainPage;

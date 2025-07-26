@@ -14,6 +14,7 @@ import Clock from './Components/Clock.js';
 import SideNavigationBar from './Components/SideNavigationBar.js';
 import MainPage from './Components/MainPage.js';
 import CrossroadPage from './Components/CrossroadPage.js';
+import CommunicationPage from './Components/CommunicationPage.js';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/" element={<Navigate to="/mainpage" replace />} />
             <Route path="/mainpage" element={<div className="default-content"><MainPage /></div>}/>
             <Route path="/crossroad" element={<div className="default-content"><CrossroadPage /></div>}/>
+            <Route path="/communication" element={<div className="default-content"><CommunicationPage /></div>}/>
           </Routes>
         </Col>
       </Row>

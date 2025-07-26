@@ -19,6 +19,9 @@ function SideNavigationBar() {
         <Nav.Link as={NavLink} to="/crossroad" className="custom-nav-link">
           <i className="bi bi-geo-alt-fill" /> Crossroad
         </Nav.Link>
+        <Nav.Link as={NavLink} to="/communication" className="custom-nav-link">
+          <i className="bi bi-geo-alt-fill" /> Communication
+        </Nav.Link>
       </Nav>
 
       <div className="sidebar-footer">

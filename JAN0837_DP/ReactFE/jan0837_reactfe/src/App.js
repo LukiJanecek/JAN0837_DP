@@ -1,29 +1,61 @@
-import React from 'react';
 import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import SideBar from './Components/SideBar';
-import MainPage from './Components/MainPage';
-import CrossroadPage from './Components/CrossroadPage';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
+
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import TimeDate from './Components/TimeDate.js';
+import Picture from './Components/Picture.js';
+import Clock from './Components/Clock.js';
+
+import SideNavigationBar from './Components/SideNavigationBar.js';
+import MainPage from './Components/MainPage.js';
+import CrossroadPage from './Components/CrossroadPage.js';
 
 function App() {
   return (
-    <Router>
-      <div style={{ display: "flex" }}>
-        <SideBar />
-        <div style={{ flex: 1, padding: "20px" }}>
+    <Container fluid className="app-container p-0">
+      <Row className="g-0"> 
+        <Col xs={12} md={3} lg={2}>
+          <SideNavigationBar />
+        </Col>
+
+
+        <Col xs={12} md={9} lg={10} className="custom-content">
           <Routes>
-            <Route path="/mainpage" element={<MainPage />} />
-            <Route path="/crossroad" element={<CrossroadPage />} />
+            <Route path="/" element={<Navigate to="/mainpage" replace />} />
+            <Route path="/mainpage" element={<div className="default-content"><MainPage /></div>}/>
+            <Route path="/crossroad" element={<div className="default-content"><CrossroadPage /></div>}/>
           </Routes>
-        </div>
-      </div>
-    </Router>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
 export default App;
+
+/*
+    <div>
+      <Container fluid>
+        <Col xxl={3} xl={3} lg={4} md={5} sm={5.5} xs={6} className='custom-sidebar'>
+          <SideNavigationBar />
+        </Col>
+        <Col xxl={9} xl={9} lg={8} md={7} sm={6.5} xs={6} className='custom-content custom-content-text'>
+          <div className>
+            <Routes>
+                <Route path="/mainpage" element={<div className='default-content'><MainPage /></div>} />
+                <Route path="/crossroad" element={<div className='default-content'><CrossroadPage /></div>}></Route>
+            </Routes>
+          </div>
+        </Col>
+      </Container>
+    </div>
+*/
+
 /*
     <div className="App">
       <header className="App-header">
@@ -42,3 +74,5 @@ export default App;
       </header>
     </div>
 */
+
+

@@ -36,8 +36,8 @@
             btnGenerateTIATemplate = new ToolStripButton();
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
-            mainWindow = new Panel();
             btnTest = new ToolStripButton();
+            mainWindow = new Panel();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -109,15 +109,6 @@
             btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
-            // mainWindow
-            // 
-            mainWindow.BorderStyle = BorderStyle.FixedSingle;
-            mainWindow.Dock = DockStyle.Left;
-            mainWindow.Location = new Point(0, 27);
-            mainWindow.Name = "mainWindow";
-            mainWindow.Size = new Size(841, 334);
-            mainWindow.TabIndex = 21;
-            // 
             // btnTest
             // 
             btnTest.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -127,6 +118,15 @@
             btnTest.Size = new Size(39, 24);
             btnTest.Text = "Test";
             btnTest.Click += btnTest_Click;
+            // 
+            // mainWindow
+            // 
+            mainWindow.BorderStyle = BorderStyle.FixedSingle;
+            mainWindow.Dock = DockStyle.Fill;
+            mainWindow.Location = new Point(0, 27);
+            mainWindow.Name = "mainWindow";
+            mainWindow.Size = new Size(1034, 334);
+            mainWindow.TabIndex = 21;
             // 
             // MainForm
             // 

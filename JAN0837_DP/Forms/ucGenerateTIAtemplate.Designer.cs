@@ -28,41 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            checkBox1 = new CheckBox();
-            label1 = new Label();
             statusStripGenerateTIAtemplate = new StatusStrip();
             lblStatus1 = new ToolStripStatusLabel();
+            btnGenerateTemplate = new Button();
+            textBox1 = new TextBox();
+            lblParameter1 = new Label();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(60, 42);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(226, 99);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(101, 24);
-            checkBox1.TabIndex = 1;
-            checkBox1.Text = "checkBox1";
-            checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(124, 202);
-            label1.Name = "label1";
-            label1.Size = new Size(50, 20);
-            label1.TabIndex = 2;
-            label1.Text = "label1";
             // 
             // statusStripGenerateTIAtemplate
             // 
@@ -79,14 +51,40 @@
             lblStatus1.Size = new Size(55, 20);
             lblStatus1.Text = "status1";
             // 
+            // btnGenerateTemplate
+            // 
+            btnGenerateTemplate.Location = new Point(404, 39);
+            btnGenerateTemplate.Name = "btnGenerateTemplate";
+            btnGenerateTemplate.Size = new Size(94, 63);
+            btnGenerateTemplate.TabIndex = 4;
+            btnGenerateTemplate.Text = "Generate template";
+            btnGenerateTemplate.UseVisualStyleBackColor = true;
+            btnGenerateTemplate.Click += btnGenerateTemplate_Click;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(29, 39);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(170, 27);
+            textBox1.TabIndex = 5;
+            // 
+            // lblParameter1
+            // 
+            lblParameter1.AutoSize = true;
+            lblParameter1.Location = new Point(29, 16);
+            lblParameter1.Name = "lblParameter1";
+            lblParameter1.Size = new Size(87, 20);
+            lblParameter1.TabIndex = 6;
+            lblParameter1.Text = "Parameter1:";
+            // 
             // ucGenerateTIAtemplate
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lblParameter1);
+            Controls.Add(textBox1);
+            Controls.Add(btnGenerateTemplate);
             Controls.Add(statusStripGenerateTIAtemplate);
-            Controls.Add(label1);
-            Controls.Add(checkBox1);
-            Controls.Add(button1);
             Name = "ucGenerateTIAtemplate";
             Size = new Size(748, 415);
             Load += ucGenerateTIAtemplate_Load;
@@ -97,11 +95,10 @@
         }
 
         #endregion
-
-        private Button button1;
-        private CheckBox checkBox1;
-        private Label label1;
         private StatusStrip statusStripGenerateTIAtemplate;
         private ToolStripStatusLabel lblStatus1;
+        private Button btnGenerateTemplate;
+        private TextBox textBox1;
+        private Label lblParameter1;
     }
 }

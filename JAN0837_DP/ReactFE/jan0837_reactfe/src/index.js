@@ -2,15 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { RefreshProvider } from './Components/RefreshContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <RefreshProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </RefreshProvider>
   </React.StrictMode>
 );
 

@@ -38,6 +38,7 @@
             btnExit = new ToolStripButton();
             btnTest = new ToolStripButton();
             mainWindow = new Panel();
+            btnSendData = new ToolStripButton();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -61,7 +62,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit, btnTest });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit, btnTest, btnSendData });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1034, 27);
@@ -128,6 +129,16 @@
             mainWindow.Size = new Size(1034, 334);
             mainWindow.TabIndex = 21;
             // 
+            // btnSendData
+            // 
+            btnSendData.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnSendData.Image = (Image)resources.GetObject("btnSendData.Image");
+            btnSendData.ImageTransparentColor = Color.Magenta;
+            btnSendData.Name = "btnSendData";
+            btnSendData.Size = new Size(117, 24);
+            btnSendData.Text = "Send data to FE";
+            btnSendData.Click += btnSendData_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -158,5 +169,6 @@
         private ToolStripButton btnCommunicationControl;
         private Panel mainWindow;
         private ToolStripButton btnTest;
+        private ToolStripButton btnSendData;
     }
 }

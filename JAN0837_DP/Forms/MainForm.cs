@@ -65,6 +65,8 @@ using JAN0837_DP.Data;
 using JAN0837_DP.Communication;
 using System.Text.RegularExpressions;
 using Org.BouncyCastle.Asn1.Cmp;
+using Microsoft.AspNetCore.Mvc;
+using JAN0837_DP.ReactFE;
 
 namespace JAN0837_DP
 {
@@ -84,11 +86,14 @@ namespace JAN0837_DP
         public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
         public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
 
-        // Lists 
+        private ReactFE.FEcommunicationControl _fe; 
 
         public MainForm()
         {
             InitializeComponent();
+
+            _fe = new FEcommunicationControl(internalVariables.communicationURL);
+            _fe.Start();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -204,19 +209,19 @@ namespace JAN0837_DP
                     {
                         if (ea.Data != null && ea.Data.Contains("Now listening on:"))
                         {
-                            internalVariables.localhosturl = ea.Data.Split(new[] { "Now listening on:" }, StringSplitOptions.None)[1].Trim();
+                            internalVariables.feURL = ea.Data.Split(new[] { "Now listening on:" }, StringSplitOptions.None)[1].Trim();
 
-                            lblStatus.Text = $"Now listening on {internalVariables.localhosturl}";
+                            lblStatus.Text = $"Now listening on {internalVariables.feURL}";
 
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = internalVariables.localhosturl, // $"{localhosturl}/app"
+                                FileName = internalVariables.feURL, // $"{localhosturl}/app"
                                 UseShellExecute = true
                             });
 
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = $"{internalVariables.localhosturl}/swagger/index.html",
+                                FileName = $"{internalVariables.feURL}/swagger/index.html",
                                 UseShellExecute = true
                             });
                         }
@@ -340,7 +345,9 @@ namespace JAN0837_DP
             // threads stop 
             // communication stop
 
-            Application.Exit();
+            _fe.Stop();
+            this.Close();
+            //Application.Exit();
         }
 
         #endregion
@@ -383,7 +390,7 @@ namespace JAN0837_DP
                     UseShellExecute = true
                 });
 
-                internalVariables.localhosturl = url;
+                internalVariables.feURL = url;
             }
             else
             {
@@ -412,7 +419,8 @@ namespace JAN0837_DP
             // Regex na řádku, kde React vypisuje "Local: http://localhost:3000"
             //var rx = new Regex(@"Local:\s+(http://localhost:\d+)", RegexOptions.Compiled);
 
-            proc.OutputDataReceived += (s, ea) => {
+            proc.OutputDataReceived += (s, ea) =>
+            {
                 if (ea.Data == null) return;
                 var m = rx.Match(ea.Data);
                 if (m.Success)
@@ -420,10 +428,12 @@ namespace JAN0837_DP
                     tcs.TrySetResult(m.Groups[1].Value);
                 }
             };
-            proc.ErrorDataReceived += (s, ea) => {
+            proc.ErrorDataReceived += (s, ea) =>
+            {
                 // (volitelně logovat chyby)
             };
-            proc.Exited += (s, ea) => {
+            proc.Exited += (s, ea) =>
+            {
                 // pokud proces skončí dřív, než najdeme URL
                 tcs.TrySetResult(null);
             };
@@ -436,6 +446,25 @@ namespace JAN0837_DP
             Task.Delay(20000).ContinueWith(_ => tcs.TrySetResult(null));
 
             return tcs.Task;
+        }
+
+        public async void btnSendData_Click(object sender, EventArgs e)
+        {
+            /*
+            var rnd = new Random();
+            int newVal = rnd.Next(1, 101);
+            int newInterval = 2000;
+            _fe.Update("status", "připojeno");
+            _fe.Update("parameter1", newVal);
+            _fe.Update("refreshInterval", newInterval);
+
+            lblStatus.Text = "Data Trasnfered";
+
+            using var client = new HttpClient();
+            var json = JsonSerializer.Serialize(new { refreshInterval = newInterval });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            await client.PostAsync(InternalVariables.CommunicationUrl + "config", content);
+            */
         }
     }
 }

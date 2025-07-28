@@ -39,7 +39,6 @@
   <ItemGroup>
     <Folder Include="Communication\S7\" />
     <Folder Include="Communication\Sharp7\" />
-    <Folder Include="ReactFE\" />
     <Folder Include="PythonScripts\" />
   </ItemGroup>
 

@@ -86,14 +86,13 @@ namespace JAN0837_DP
         public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
         public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
 
-        private ReactFE.FEcommunicationControl _fe; 
+        private FEserver _server;
+        private CancellationTokenSource _token;
+        private FEcommunicationControl _fe; 
 
         public MainForm()
         {
             InitializeComponent();
-
-            _fe = new FEcommunicationControl(internalVariables.communicationURL);
-            _fe.Start();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -356,7 +355,8 @@ namespace JAN0837_DP
         {
             try
             {
-
+                _fe = new FEcommunicationControl(internalVariables.communicationURL);
+                _fe.Start();
             }
             catch (Exception ex)
             {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using JAN0837_DP.ReactFE;
+
 namespace JAN0837_DP.Data
 {
     public static class internalVariables
@@ -14,6 +16,8 @@ namespace JAN0837_DP.Data
         public static Thread visualizationThread { get; set; }
         public static bool communicationRunningFlag { get; set; } = false;
         public static bool visualizationRunningFlag { get; set; } = false;
+        public static FEserver feServer { get; set; }
+        public static  CancellationTokenSource token { get; set; } // can it be static? 
 
 
         // communicationControl

@@ -9,6 +9,21 @@ using JAN0837_DP.ReactFE;
 
 namespace JAN0837_DP.Data
 {
+    public static class paths
+    {
+        public static string projectRootPath { get; set; } = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
+        public static string dataDirectoryPath { get; set; } = Path.Combine(projectRootPath, "Data");
+        public static string solutionRootPath { get; set; } = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
+        public static string clientProjectDirectory { get; set; } = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
+        public static string parentDirectory { get; set; } = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
+        public static string serverFolder { get; set; } = Path.Combine("JAN0837_react", "JAN0837_react.Server");
+        public static string serverFile { get; set; } = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
+        public static string clientFolder { get; set; } = Path.Combine("JAN0837_react", "JAN0837_react.client");
+        public static string clientFile { get; set; } = Path.Combine(clientFolder, "JAN0837_react.CLient.csproj");
+        public static string fullServerFilePath { get; set; } = Path.Combine(parentDirectory, serverFile);
+        public static string fullClientFilePath { get; set; } = Path.Combine(parentDirectory, clientFile);
+    }
+    
     public static class internalVariables
     {
         // threads
@@ -16,6 +31,12 @@ namespace JAN0837_DP.Data
         public static Thread visualizationThread { get; set; }
         public static bool communicationRunningFlag { get; set; } = false;
         public static bool visualizationRunningFlag { get; set; } = false;
+        
+        // localhost
+        public static string feURL { get; set; } = "http://localhost:3000/";
+        public static string communicationURL { get; set; } = "http://localhost:5000/api/";
+        public static bool serverStarted { get; set; } = false;
+
         public static FEserver feServer { get; set; }
         public static  CancellationTokenSource token { get; set; } // can it be static? 
 
@@ -40,11 +61,7 @@ namespace JAN0837_DP.Data
 
         // generateTIAtemplate
 
-        // localhost
-        public static string feURL { get; set; } = "http://localhost:3000/";
-        public static string communicationURL { get; set; } = "http://localhost:5000/api/";
-        public static bool serverStarted { get; set; } = false;
-
+        
         // communication
         public static bool connected { get; set; } = false;
         public static bool communicationStatus { get; set; } = false;

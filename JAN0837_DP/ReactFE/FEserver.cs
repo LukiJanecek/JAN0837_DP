@@ -5,52 +5,63 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+using Owin;
+using Microsoft.Owin.Cors;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.FileSystems;
+using Microsoft.Owin.StaticFiles;
+using Microsoft.Owin.Hosting;
+using Microsoft.Owin.Host.HttpListener;
 
 namespace JAN0837_DP.ReactFE
 {
     public class FEserver
     {
-        private IHost _host;
+        //private IHost _host;
+        private IDisposable _webApp;
 
-        public async Task StartAsync(CancellationToken token = default)
+        public Task StartAsync(string url = "http://localhost:5000", string buildFolderPath = "wwwroot")
         {
-            // Postavíme si hosta
-            _host = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder
-                        .UseKestrel()
-                        .UseUrls("http://localhost:5000")      // nebo "*:5000", jak potřebuješ
-                        .ConfigureServices(services =>
-                        {
-                            services.AddSignalR();
-                            services.AddSingleton<MyApp>();      // tvoje hlavní logika
-                            services.AddHostedService<StatePusher>(); // background push
-                        })
-                        .Configure(app =>
-                        {
-                            app.UseDefaultFiles();
-                            app.UseStaticFiles();               // React build složku musíš mít v wwwroot
-                            app.MapHub<MyHub>("/stateHub");
-                        });
-                })
-                .Build();
+            _webApp = WebApp.Start(url, app =>
+            {
+                // 1) CORS pro SignalR
+                app.UseCors(CorsOptions.AllowAll);
 
-            // Spustíme webový server
-            await _host.StartAsync(token);
+                // 2) SignalR hub mapping
+                app.Map("/signalr", map =>
+                {
+                    var hubConfig = new HubConfiguration
+                    {
+                        EnableDetailedErrors = true
+                    };
+                    map.RunSignalR(hubConfig);
+                });
+
+                // 3) Statické soubory z React build
+                var fileSystem = new PhysicalFileSystem(buildFolderPath);
+                app.UseFileServer(new FileServerOptions
+                {
+                    EnableDefaultFiles = true,
+                    FileSystem = fileSystem,
+                    StaticFileOptions = { FileSystem = fileSystem },
+                    DefaultFilesOptions = { DefaultFileNames = new[] { "index.html" } }
+                });
+            });
+
+            Console.WriteLine($"FE server běží na {url}, servíruje: {buildFolderPath}");
+            return Task.CompletedTask;
         }
 
-        public async Task StopAsync()
+        public Task StopAsync()
         {
-            if (_host != null)
-            {
-                await _host.StopAsync();
-                _host.Dispose();
-            }
+            _webApp?.Dispose();
+            Console.WriteLine("FE server zastaven.");
+            return Task.CompletedTask;
         }
     }
 }

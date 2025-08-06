@@ -86,9 +86,9 @@ namespace JAN0837_DP
         public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
         public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
 
-        private FEserver _server;
+        private FEserver _feServer;
         private CancellationTokenSource _token;
-        private FEcommunicationControl _fe; 
+        private FEcommunicationControl _feCommunication; 
 
         public MainForm()
         {
@@ -337,26 +337,27 @@ namespace JAN0837_DP
 
         }
 
-        private void btnExit_Click(object sender, EventArgs e)
+        private async void btnExit_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Exitting...";
 
             // threads stop 
             // communication stop
-
-            _fe.Stop();
+            await _feServer.StopAsync();
+            _feCommunication.Stop();
             this.Close();
             //Application.Exit();
         }
 
         #endregion
 
-        public void Visualization()
+        public async void Visualization()
         {
             try
             {
-                _fe = new FEcommunicationControl(internalVariables.communicationURL);
-                _fe.Start();
+                await _feServer.StartAsync();
+                _feCommunication = new FEcommunicationControl(internalVariables.communicationURL);
+                _feCommunication.Start();
             }
             catch (Exception ex)
             {

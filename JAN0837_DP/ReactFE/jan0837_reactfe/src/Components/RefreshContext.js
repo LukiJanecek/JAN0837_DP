@@ -1,7 +1,10 @@
 import { createContext, useContext, useState } from 'react';
 
+import { API_URL } from './variables';
+import { interval } from './variables';
+
 const RefreshContext = createContext({
-  interval: 2000,
+  interval,
   setInterval: () => {}
 });
 

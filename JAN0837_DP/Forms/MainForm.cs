@@ -58,7 +58,6 @@ using Sharp7;
 using Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Runtime.CompilerServices;
 
 using JAN0837_DP.Forms;
 using JAN0837_DP.Data;
@@ -341,10 +340,31 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Exitting...";
 
-            // threads stop 
-            // communication stop
-            await _feServer.StopAsync();
-            _feCommunication.Stop();
+            // communication thread stop
+            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
+            {
+                internalVariables.communicationRunningFlag = false;
+                internalVariables.communicationThread.Join();
+            }
+
+            // vizualization thread stop
+            if (internalVariables.visualizationThread != null && internalVariables.visualizationThread.IsAlive)
+            {
+                internalVariables.visualizationRunningFlag = false;
+
+                if (_feServer != null)
+                {
+                    await _feServer.StopAsync();
+                }
+                
+                if (_feCommunication != null)
+                {
+                    _feCommunication.Stop();
+                }
+                
+                internalVariables.visualizationThread.Join();
+            }
+
             this.Close();
             //Application.Exit();
         }
@@ -355,9 +375,11 @@ namespace JAN0837_DP
         {
             try
             {
-                await _feServer.StartAsync();
                 _feCommunication = new FEcommunicationControl(internalVariables.communicationURL);
                 _feCommunication.Start();
+
+                _feServer = new FEserver(_feCommunication);
+                await _feServer.StartAsync();
             }
             catch (Exception ex)
             {

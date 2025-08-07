@@ -6,14 +6,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RefreshProvider } from './Components/RefreshContext';
+import { DataProvider }    from './Components/DataProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <RefreshProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <DataProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </DataProvider>
     </RefreshProvider>
   </React.StrictMode>
 );

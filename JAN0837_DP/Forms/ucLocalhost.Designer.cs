@@ -30,15 +30,14 @@
         {
             webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel1 = new Panel();
+            lblCommunicationStatus = new Label();
             txtBoxParam3 = new TextBox();
             txtBoxParam2 = new TextBox();
             lblParam3 = new Label();
             lblParam2 = new Label();
             txtBoxParam1 = new TextBox();
-            btnSendDatatoFE = new Button();
             lblParam1 = new Label();
             btnStartFE = new Button();
-            lblCommunicationStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -64,7 +63,6 @@
             panel1.Controls.Add(lblParam3);
             panel1.Controls.Add(lblParam2);
             panel1.Controls.Add(txtBoxParam1);
-            panel1.Controls.Add(btnSendDatatoFE);
             panel1.Controls.Add(lblParam1);
             panel1.Controls.Add(btnStartFE);
             panel1.Dock = DockStyle.Right;
@@ -73,12 +71,22 @@
             panel1.Size = new Size(269, 581);
             panel1.TabIndex = 2;
             // 
+            // lblCommunicationStatus
+            // 
+            lblCommunicationStatus.AutoSize = true;
+            lblCommunicationStatus.Location = new Point(40, 326);
+            lblCommunicationStatus.Name = "lblCommunicationStatus";
+            lblCommunicationStatus.Size = new Size(160, 20);
+            lblCommunicationStatus.TabIndex = 8;
+            lblCommunicationStatus.Text = "Communication status ";
+            // 
             // txtBoxParam3
             // 
             txtBoxParam3.Location = new Point(40, 165);
             txtBoxParam3.Name = "txtBoxParam3";
             txtBoxParam3.Size = new Size(125, 27);
             txtBoxParam3.TabIndex = 7;
+            txtBoxParam3.TextChanged += txtBoxParam3_TextChanged;
             // 
             // txtBoxParam2
             // 
@@ -86,6 +94,7 @@
             txtBoxParam2.Name = "txtBoxParam2";
             txtBoxParam2.Size = new Size(125, 27);
             txtBoxParam2.TabIndex = 6;
+            txtBoxParam2.TextChanged += txtBoxParam2_TextChanged;
             // 
             // lblParam3
             // 
@@ -111,16 +120,7 @@
             txtBoxParam1.Name = "txtBoxParam1";
             txtBoxParam1.Size = new Size(125, 27);
             txtBoxParam1.TabIndex = 3;
-            // 
-            // btnSendDatatoFE
-            // 
-            btnSendDatatoFE.Location = new Point(40, 198);
-            btnSendDatatoFE.Name = "btnSendDatatoFE";
-            btnSendDatatoFE.Size = new Size(156, 63);
-            btnSendDatatoFE.TabIndex = 2;
-            btnSendDatatoFE.Text = "Send data to FE";
-            btnSendDatatoFE.UseVisualStyleBackColor = true;
-            btnSendDatatoFE.Click += btnSendDatatoFE_Click;
+            txtBoxParam1.TextChanged += txtBoxParam1_TextChanged;
             // 
             // lblParam1
             // 
@@ -133,22 +133,13 @@
             // 
             // btnStartFE
             // 
-            btnStartFE.Location = new Point(40, 267);
+            btnStartFE.Location = new Point(40, 198);
             btnStartFE.Name = "btnStartFE";
             btnStartFE.Size = new Size(125, 56);
             btnStartFE.TabIndex = 0;
             btnStartFE.Text = "Start FE";
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
-            // 
-            // lblCommunicationStatus
-            // 
-            lblCommunicationStatus.AutoSize = true;
-            lblCommunicationStatus.Location = new Point(40, 326);
-            lblCommunicationStatus.Name = "lblCommunicationStatus";
-            lblCommunicationStatus.Size = new Size(160, 20);
-            lblCommunicationStatus.TabIndex = 8;
-            lblCommunicationStatus.Text = "Communication status ";
             // 
             // ucLocalhost
             // 
@@ -168,7 +159,6 @@
         #endregion
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private Panel panel1;
-        private Button btnSendDatatoFE;
         private Label lblParam1;
         private Button btnStartFE;
         private TextBox txtBoxParam2;

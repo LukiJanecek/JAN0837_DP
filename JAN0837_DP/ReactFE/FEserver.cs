@@ -17,13 +17,20 @@ using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 using Microsoft.Owin.Hosting;
 using Microsoft.Owin.Host.HttpListener;
+using Newtonsoft.Json;
 
 namespace JAN0837_DP.ReactFE
 {
     public class FEserver
     {
+        private FEcommunicationControl _feCommunication;
         //private IHost _host;
         private IDisposable _webApp;
+
+        public FEserver(FEcommunicationControl control)
+        {
+            _feCommunication = control ?? throw new ArgumentNullException(nameof(control));
+        }
 
         public Task StartAsync(string url = "http://localhost:5000", string buildFolderPath = "wwwroot")
         {
@@ -40,6 +47,31 @@ namespace JAN0837_DP.ReactFE
                         EnableDetailedErrors = true
                     };
                     map.RunSignalR(hubConfig);
+                });
+
+                app.Use(async (ctx, next) =>
+                {
+                    if (ctx.Request.Path.Value.Equals("/api/data", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (ctx.Request.Method == "GET")
+                        {
+                            var state = _feCommunication.GetCurrentState();
+                            var json = JsonConvert.SerializeObject(state);
+                            ctx.Response.ContentType = "application/json";
+                            await ctx.Response.WriteAsync(json);
+                            return;
+                        }
+                        else if (ctx.Request.Method == "POST")
+                        {
+                            using var reader = new StreamReader(ctx.Request.Body);
+                            var body = await reader.ReadToEndAsync();
+                            var incoming = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
+                            _feCommunication.HandleUpdate(incoming);
+                            ctx.Response.StatusCode = 204;
+                            return;
+                        }
+                    }
+                    await next();
                 });
 
                 // 3) Statické soubory z React build

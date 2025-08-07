@@ -36,9 +36,9 @@ namespace JAN0837_DP.Forms
 
         private void ucLocalhost_Load(object sender, EventArgs e)
         {
-            txtBoxParam1.Text = "Parameter1";
-            txtBoxParam2.Text = "2000";
-            txtBoxParam3.Text = "Empty";
+            txtBoxParam1.Text = "Text";
+            txtBoxParam2.Text = "Number";
+            txtBoxParam3.Text = "Boolean state";
         }
 
         private void webView21_Click(object sender, EventArgs e)
@@ -49,9 +49,6 @@ namespace JAN0837_DP.Forms
         private void btnStartFE_Click(object sender, EventArgs e)
         {
 
-            string reactFolder = Path.Combine(MainForm.projectRootPath, "ReactFE");
-            string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
-
             FE = new FEcommunicationControl(internalVariables.communicationURL);
             FE.Start();
 
@@ -59,32 +56,27 @@ namespace JAN0837_DP.Forms
             {
                 FileName = "npm",
                 Arguments = "start",
-                WorkingDirectory = reactPath,
-                UseShellExecute = true,
-                CreateNoWindow = true
+                WorkingDirectory = paths.feReactProjectPath,
+                UseShellExecute = true//,
+                //CreateNoWindow = true
             });
-            
 
             webView21.CoreWebView2.Navigate(internalVariables.feURL);
         }
 
-        private async void btnSendDatatoFE_Click(object sender, EventArgs e)
+        private void txtBoxParam1_TextChanged(object sender, EventArgs e)
         {
-            FE.Update("status", "připojeno");
-            FE.Update("parameter1", txtBoxParam1.Text);
-            FE.Update("refreshInterval", int.Parse(txtBoxParam2.Text));
+            TestData.text = txtBoxParam1.Text;
+        }
 
-            var payload = new
-            {
-                refreshInterval = int.Parse(txtBoxParam2.Text)
-            };
-            string json = JsonConvert.SerializeObject(payload);
+        private void txtBoxParam2_TextChanged(object sender, EventArgs e)
+        {
+            TestData.number = int.Parse(txtBoxParam2.Text);
+        }
 
-            using var client = new HttpClient();
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(internalVariables.communicationURL + "config", content);
-            response.EnsureSuccessStatusCode();
-            lblCommunicationStatus.Text = "Data Trasnfered";
+        private void txtBoxParam3_TextChanged(object sender, EventArgs e)
+        {
+            TestData.toggle = Boolean.Parse(txtBoxParam3.Text);
         }
     }
 }

@@ -22,6 +22,9 @@ namespace JAN0837_DP.Data
         public static string clientFile { get; set; } = Path.Combine(clientFolder, "JAN0837_react.CLient.csproj");
         public static string fullServerFilePath { get; set; } = Path.Combine(parentDirectory, serverFile);
         public static string fullClientFilePath { get; set; } = Path.Combine(parentDirectory, clientFile);
+
+        public static string feReactFolder { get; set; } = Path.Combine(MainForm.projectRootPath, "ReactFE");
+        public static string feReactProjectPath { get; set; } = Path.Combine(feReactFolder, "jan0837_reactfe");
     }
     
     public static class internalVariables
@@ -36,9 +39,10 @@ namespace JAN0837_DP.Data
         public static string feURL { get; set; } = "http://localhost:3000/";
         public static string communicationURL { get; set; } = "http://localhost:5000/api/";
         public static bool serverStarted { get; set; } = false;
+        public static int communicationRefreshInterval { get; set; } 
 
         public static FEserver feServer { get; set; }
-        public static  CancellationTokenSource token { get; set; } // can it be static? 
+        public static CancellationTokenSource token { get; set; } // can it be static? 
 
 
         // communicationControl

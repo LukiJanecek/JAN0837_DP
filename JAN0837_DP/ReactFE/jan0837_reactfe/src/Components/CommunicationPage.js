@@ -13,21 +13,21 @@ import { useRefresh } from './RefreshContext';
 function CommunicationPage() {
     const [error, setError] = useState(null);
     const {interval, setInterval } = useRefresh();
-    const [parameter1, setParameter1] = useState(42);
-    const [status, setStatus] = useState('neznámý');
+    const [parameter1, setParameter1] = useState(0);
+    const [status, setStatus] = useState(false);
 
     const fetchState = async () => {
         try {
-            //  status
-            const s = await fetch('http://localhost:5000/api/status');
-            if (!s.ok) throw new Error(`Status fetch error ${s.status}`);
-            const statusText = await s.text();
-            setStatus(statusText.replace(/^"|"$/g, ''));
+            // get status
+            const status = await fetch('http://localhost:5000/api/status');
+            if (!status.ok) throw new Error(`Status fetch error ${status.status}`);
+            const statusState = await status.json();
+            setStatus(Boolean(statusState));
 
-            //  parameter1
-            const p = await fetch('http://localhost:5000/api/parameter1');
-            if (!p.ok) throw new Error(`Param fetch error ${p.status}`);
-            const paramVal = await p.json();
+            // get parameter1
+            const value = await fetch('http://localhost:5000/api/parameter1');
+            if (!value.ok) throw new Error(`Param fetch error ${value.status}`);
+            const paramVal = await value.json();
             setParameter1(paramVal);
 
             setError(null);
@@ -42,7 +42,52 @@ function CommunicationPage() {
         fetchState();
         const intervalId = setInterval(fetchState, interval);
         return () => clearInterval(intervalId);
-    }, []);
+    }, [interval]);
+
+    // POST helper
+    const postJson = async (url, payload) => {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`Failed ${url}: ${res.status}`);
+        return res;
+    };
+
+    //
+    const inc = async () => {
+        try {
+            const newVal = parameter1 + 1;
+            await postJson('http://localhost:5000/api/parameter1', newVal);
+            setParameter1(newVal);
+        } 
+        catch (e) {
+            setError(e.message);
+        }
+    };
+
+    const dec = async () => {
+        try {
+            const newVal = parameter1 - 1;
+            await postJson('http://localhost:5000/api/parameter1', newVal);
+            setParameter1(newVal);
+        } 
+        catch (e) {
+            setError(e.message);
+        }
+    };
+
+    const toggle = async () => {
+        try {
+            const newStatus = !status;
+            await postJson('http://localhost:5000/api/status', newStatus);
+            setStatus(newStatus);
+        }  
+        catch (e) {
+            setError(e.message);
+        }
+    };
 
     const toggleStatus = () => {
         setStatus(prev => (prev === 'ON' ? 'OFF' : 'ON'));
@@ -50,17 +95,23 @@ function CommunicationPage() {
 
     return (
     <div>
-        <h1>Communication Page</h1>
+        <h1>Communication Page</h1> 
+        {error && <div style={{color:'red'}}>Chyba: {error}</div>}
+        
         <label>Obnovovat každých <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value))} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
         <div><strong>Parameter1:</strong> {parameter1}</div>
 
-        <button style={{ marginTop: '0.5rem' }} onClick={() => setParameter1(prev => prev + 1)}>
+        <button style={{ marginTop: '0.5rem' }} onClick={inc}>
             Zvýšit o 1
+        </button>
+
+        <button style={{ marginTop: '0.5rem' }} onClick={dec}>
+            Snížit o 1
         </button>
 
         <div><strong>Status:</strong> {status}</div>
 
-        <button style={{ marginTop: '0.5rem' }} onClick={toggleStatus}>
+        <button style={{ marginTop: '0.5rem' }} onClick={toggle}>
             Přepnout status
         </button>
 

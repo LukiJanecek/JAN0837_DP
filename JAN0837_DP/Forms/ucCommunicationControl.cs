@@ -549,10 +549,9 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "Stopping communication.";
 
             // stoping communication thread
-            internalVariables.communicationRunningFlag = false;
-
             if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
             {
+                internalVariables.communicationRunningFlag = false;
                 internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
 
                 lblCommunicationStatus.Text = "Communication stopped.";

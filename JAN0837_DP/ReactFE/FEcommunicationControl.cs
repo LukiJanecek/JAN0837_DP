@@ -8,6 +8,10 @@ using System.Net;
 using System.Text.Json;
 using System.Threading;
 
+using Microsoft.AspNet.SignalR;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using JAN0837_DP.Data;
+
 namespace JAN0837_DP.ReactFE
 {
     public class FEcommunicationControl
@@ -15,10 +19,6 @@ namespace JAN0837_DP.ReactFE
         private readonly string _prefix;
         private HttpListener _listener;
         private CancellationTokenSource _cts;
-
-        public int refreshInterval = 2000;
-        private int parameter1 = 0;
-        private string status = "nenastaveno";
 
         public FEcommunicationControl(string prefix)
         {
@@ -46,13 +46,13 @@ namespace JAN0837_DP.ReactFE
             switch (key)
             {
                 case "status":
-                    status = Convert.ToString(value);
+                    TestData.text = Convert.ToString(value);
                     break;
                 case "parameter1":
-                    parameter1 = Convert.ToInt32(value);
+                    TestData.number = Convert.ToInt32(value);
                     break;
                 case "refreshInterval":
-                    refreshInterval = Convert.ToInt32(value);
+                    internalVariables.communicationRefreshInterval = Convert.ToInt32(value);
                     break;
             }
         }
@@ -70,18 +70,34 @@ namespace JAN0837_DP.ReactFE
         {
             var req = ctx.Request;
             var resp = ctx.Response;
-            var path = req.Url.AbsolutePath; // e.g. "/api/status"
+            var path = req.Url.AbsolutePath.ToLowerInvariant(); // e.g. "/api/status"
+
+            // Odstraňeme prefix "/api"
+            const string apiPrefix = "/api";
+            if (path.StartsWith(apiPrefix))
+                path = path.Substring(apiPrefix.Length);
 
             if (req.HttpMethod == "GET")
             {
-                if (path.EndsWith("/status"))
-                    WriteJSON(resp, status);
-                else if (path.EndsWith("/parameter1"))
-                    WriteJSON(resp, parameter1);
-                else if (path.EndsWith("/config"))
-                    WriteJSON(resp, refreshInterval);
-                else
-                    resp.StatusCode = 404;
+                switch (path)
+                {
+                    case "/status":
+                        WriteJSON(resp, TestData.text);
+                        break;
+
+                    case "/parameter1":
+                        WriteJSON(resp, TestData.number);
+                        break;
+
+                    case "/config":
+                        WriteJSON(resp, internalVariables.communicationRefreshInterval);
+                        break;
+
+                    default:
+                        resp.StatusCode = 404;
+                        resp.Close();
+                        break;
+                }
             }
             else if (req.HttpMethod == "POST")
             {
@@ -89,33 +105,39 @@ namespace JAN0837_DP.ReactFE
                 req.InputStream.CopyTo(ms);
                 var body = Encoding.UTF8.GetString(ms.ToArray());
 
-                if (path.EndsWith("/status"))
+                bool valid = true;
+
+                switch (path)
                 {
-                    status = JsonSerializer.Deserialize<string>(body);
-                }        
-                else if (path.EndsWith("/parameter1"))
-                {
-                    parameter1 = JsonSerializer.Deserialize<int>(body);
-                }
-                else if (path.EndsWith("/config"))
-                {
-                    var doc = JsonSerializer.Deserialize<JsonElement>(body);
-                    if (doc.TryGetProperty("refreshInterval", out var jv))
-                        refreshInterval = jv.GetInt32();
-                }
-                else
-                {
-                    resp.StatusCode = 404;
+                    case "/status":
+                        // Tady se můžeš rozhodnout, zda držet string nebo boolean
+                        TestData.text = JsonSerializer.Deserialize<string>(body);
+                        break;
+
+                    case "/parameter1":
+                        TestData.number = JsonSerializer.Deserialize<int>(body);
+                        break;
+
+                    case "/config":
+                        var doc = JsonSerializer.Deserialize<JsonElement>(body);
+                        if (doc.TryGetProperty("refreshInterval", out var jv))
+                            internalVariables.communicationRefreshInterval = jv.GetInt32();
+                        else
+                            valid = false;
+                        break;
+
+                    default:
+                        valid = false;
+                        break;
                 }
 
-                resp.StatusCode = 200;
+                resp.StatusCode = valid ? 200 : 400;
+                resp.Close();
             }
             else
             {
                 resp.StatusCode = 405;
             }
-
-            resp.Close();
         }
 
         private void WriteJSON(HttpListenerResponse resp, object data)
@@ -126,6 +148,22 @@ namespace JAN0837_DP.ReactFE
             resp.ContentLength64 = buf.Length;
             resp.OutputStream.Write(buf, 0, buf.Length);
             resp.Close();
+        }
+
+        // Vrátí aktuální stav jako anonymní objekt.
+        public object GetCurrentState()
+        => new
+        {
+            TestData.text,
+            TestData.number,
+            internalVariables.communicationRefreshInterval
+        };
+
+        // Aplikuje příchozí slovníkové změny.
+        public void HandleUpdate(Dictionary<string, object> updates)
+        {
+            foreach (var kv in updates)
+                Update(kv.Key, kv.Value);
         }
     }
 }

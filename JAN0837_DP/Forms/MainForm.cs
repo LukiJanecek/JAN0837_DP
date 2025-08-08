@@ -162,7 +162,7 @@ namespace JAN0837_DP
             // Vizualization
             try
             {
-                if (internalVariables.serverStarted == false)
+                if (internalVariables.reactServerStarted == false)
                 {
                     /*
                     Process.Start(new ProcessStartInfo
@@ -227,7 +227,7 @@ namespace JAN0837_DP
                     serverProcess.BeginOutputReadLine();
                     serverProcess.BeginErrorReadLine();
 
-                    internalVariables.serverStarted = true;
+                    internalVariables.reactServerStarted = true;
                 }
                 else
                 {

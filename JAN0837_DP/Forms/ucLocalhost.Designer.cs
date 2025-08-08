@@ -38,6 +38,7 @@
             txtBoxParam1 = new TextBox();
             lblParam1 = new Label();
             btnStartFE = new Button();
+            btnSendDataToFe = new Button();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -57,6 +58,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnSendDataToFe);
             panel1.Controls.Add(lblCommunicationStatus);
             panel1.Controls.Add(txtBoxParam3);
             panel1.Controls.Add(txtBoxParam2);
@@ -70,6 +72,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(269, 581);
             panel1.TabIndex = 2;
+            panel1.Paint += panel1_Paint;
             // 
             // lblCommunicationStatus
             // 
@@ -141,6 +144,16 @@
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
             // 
+            // btnSendDataToFe
+            // 
+            btnSendDataToFe.Location = new Point(40, 260);
+            btnSendDataToFe.Name = "btnSendDataToFe";
+            btnSendDataToFe.Size = new Size(150, 59);
+            btnSendDataToFe.TabIndex = 9;
+            btnSendDataToFe.Text = "Send data";
+            btnSendDataToFe.UseVisualStyleBackColor = true;
+            btnSendDataToFe.Click += btnSendDataToFe_Click;
+            // 
             // ucLocalhost
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -167,5 +180,6 @@
         private TextBox txtBoxParam1;
         private TextBox txtBoxParam3;
         private Label lblCommunicationStatus;
+        private Button btnSendDataToFe;
     }
 }

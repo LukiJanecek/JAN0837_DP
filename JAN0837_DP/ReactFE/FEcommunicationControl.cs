@@ -27,18 +27,34 @@ namespace JAN0837_DP.ReactFE
 
         public void Start()
         {
-            _listener = new HttpListener();
-            _listener.Prefixes.Add(_prefix);
-            _listener.Start();
+            if (internalVariables.communicationServerStarted == true)
+            {
+                return;
+            }
+            else
+            {
+                _listener = new HttpListener();
+                _listener.Prefixes.Add(_prefix);
+                _listener.Start();
 
-            _cts = new CancellationTokenSource();
-            Task.Run(() => HandleAsync(_cts.Token));
+                _cts = new CancellationTokenSource();
+                Task.Run(() => HandleAsync(_cts.Token));
+
+                internalVariables.communicationServerStarted = true;
+            }
         }
 
         public void Stop()
         {
-            _cts.Cancel();
-            _listener.Stop();
+            if (internalVariables.communicationServerStarted == true)
+            {
+                _cts.Cancel();
+                _listener.Stop();
+            }
+            else
+            {
+                return;
+            }
         }
 
         public void Update(string key, object value)
@@ -49,7 +65,7 @@ namespace JAN0837_DP.ReactFE
                     TestData.text = Convert.ToString(value);
                     break;
                 case "parameter1":
-                    TestData.number = Convert.ToInt32(value);
+                    TestData.number = Convert.ToInt32(value); 
                     break;
                 case "refreshInterval":
                     internalVariables.communicationRefreshInterval = Convert.ToInt32(value);

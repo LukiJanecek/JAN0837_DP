@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import { API_URL } from '../variables';
+import { API_URL } from '..npm /variables';
 import { useRefresh } from './RefreshContext';
 
 const DataContext = createContext({

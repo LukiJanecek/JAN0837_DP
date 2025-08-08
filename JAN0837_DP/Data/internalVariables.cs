@@ -38,7 +38,8 @@ namespace JAN0837_DP.Data
         // localhost
         public static string feURL { get; set; } = "http://localhost:3000/";
         public static string communicationURL { get; set; } = "http://localhost:5000/api/";
-        public static bool serverStarted { get; set; } = false;
+        public static bool communicationServerStarted { get; set; } = false;
+        public static bool reactServerStarted { get; set; } = false;
         public static int communicationRefreshInterval { get; set; } 
 
         public static FEserver feServer { get; set; }

@@ -229,8 +229,9 @@ namespace JAN0837_DP
 
                     internalVariables.reactServerStarted = true;
                 }
-                else
+                /*else
                 {
+                    
                     lblStatus.Text = "Starting React dev server";
                     Process.Start(new ProcessStartInfo
                     {
@@ -240,7 +241,8 @@ namespace JAN0837_DP
                         UseShellExecute = true,
                         CreateNoWindow = false
                     });
-                }
+                    
+                }*/
 
 
 

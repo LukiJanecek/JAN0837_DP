@@ -12,7 +12,7 @@ import Clock from './Clock.js';
 function MainPage() {
   return (
     <div>
-      <h1>Hey, this is my main page. xD</h1>;
+      <h1>Hey, this is my main page. xD</h1>
     </div>
   )
 }

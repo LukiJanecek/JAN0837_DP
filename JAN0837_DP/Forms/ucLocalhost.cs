@@ -39,11 +39,21 @@ namespace JAN0837_DP.Forms
             InitializeComponent();
         }
 
-        private void ucLocalhost_Load(object sender, EventArgs e)
+        private async void ucLocalhost_Load(object sender, EventArgs e)
         {
             txtBoxParam1.Text = "Text";
             txtBoxParam2.Text = "0";
             txtBoxParam3.Text = "false";
+
+            if (webView21.CoreWebView2 == null)
+            {
+                await webView21.EnsureCoreWebView2Async();
+            }
+
+            if (internalVariables.reactServerStarted == true)
+            {
+                webView21.CoreWebView2.Navigate(internalVariables.feURL);
+            }
         }
 
         private async Task<bool> IsAliveAsync(string url)
@@ -111,17 +121,12 @@ namespace JAN0837_DP.Forms
             }
         }
 
-        private void webView21_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private async void btnStartFE_Click(object sender, EventArgs e)
         {
 
             FE = new FEcommunicationControl(internalVariables.communicationURL);
             FE.Start();
-
+            /*
             Process.Start(new ProcessStartInfo
             {
                 FileName = "npm",
@@ -130,8 +135,8 @@ namespace JAN0837_DP.Forms
                 UseShellExecute = true//,
                 //CreateNoWindow = true
             });
-
-            webView21.CoreWebView2.Navigate(internalVariables.feURL);
+            */
+            
 
             try
             {
@@ -171,11 +176,6 @@ namespace JAN0837_DP.Forms
             }
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private async void btnSendDataToFe_Click(object sender, EventArgs e)
         {
             // připrav model
@@ -191,6 +191,21 @@ namespace JAN0837_DP.Forms
             response.EnsureSuccessStatusCode();
 
             lblCommunicationStatus.Text = "Data transferred";
+        }
+
+        private void webView21_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnShowPage_Click(object sender, EventArgs e)
+        {
+            webView21.CoreWebView2.Navigate(internalVariables.feURL);
         }
     }
 }

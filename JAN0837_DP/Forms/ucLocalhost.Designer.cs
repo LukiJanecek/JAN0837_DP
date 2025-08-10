@@ -30,6 +30,7 @@
         {
             webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel1 = new Panel();
+            btnSendDataToFe = new Button();
             lblCommunicationStatus = new Label();
             txtBoxParam3 = new TextBox();
             txtBoxParam2 = new TextBox();
@@ -38,7 +39,7 @@
             txtBoxParam1 = new TextBox();
             lblParam1 = new Label();
             btnStartFE = new Button();
-            btnSendDataToFe = new Button();
+            btnShowPage = new Button();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -58,6 +59,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnShowPage);
             panel1.Controls.Add(btnSendDataToFe);
             panel1.Controls.Add(lblCommunicationStatus);
             panel1.Controls.Add(txtBoxParam3);
@@ -73,6 +75,16 @@
             panel1.Size = new Size(269, 581);
             panel1.TabIndex = 2;
             panel1.Paint += panel1_Paint;
+            // 
+            // btnSendDataToFe
+            // 
+            btnSendDataToFe.Location = new Point(40, 260);
+            btnSendDataToFe.Name = "btnSendDataToFe";
+            btnSendDataToFe.Size = new Size(150, 59);
+            btnSendDataToFe.TabIndex = 9;
+            btnSendDataToFe.Text = "Send data";
+            btnSendDataToFe.UseVisualStyleBackColor = true;
+            btnSendDataToFe.Click += btnSendDataToFe_Click;
             // 
             // lblCommunicationStatus
             // 
@@ -144,15 +156,15 @@
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
             // 
-            // btnSendDataToFe
+            // btnShowPage
             // 
-            btnSendDataToFe.Location = new Point(40, 260);
-            btnSendDataToFe.Name = "btnSendDataToFe";
-            btnSendDataToFe.Size = new Size(150, 59);
-            btnSendDataToFe.TabIndex = 9;
-            btnSendDataToFe.Text = "Send data";
-            btnSendDataToFe.UseVisualStyleBackColor = true;
-            btnSendDataToFe.Click += btnSendDataToFe_Click;
+            btnShowPage.Location = new Point(43, 377);
+            btnShowPage.Name = "btnShowPage";
+            btnShowPage.Size = new Size(147, 101);
+            btnShowPage.TabIndex = 10;
+            btnShowPage.Text = "Show page";
+            btnShowPage.UseVisualStyleBackColor = true;
+            btnShowPage.Click += btnShowPage_Click;
             // 
             // ucLocalhost
             // 
@@ -181,5 +193,6 @@
         private TextBox txtBoxParam3;
         private Label lblCommunicationStatus;
         private Button btnSendDataToFe;
+        private Button btnShowPage;
     }
 }

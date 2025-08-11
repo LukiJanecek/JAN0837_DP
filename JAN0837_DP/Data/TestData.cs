@@ -12,6 +12,6 @@ namespace JAN0837_DP.Data
 
         public static string text { get; set; } = "";
 
-        public static bool toggle { get; set; } = false;
+        public static string toggle { get; set; } = "";
     }
 }

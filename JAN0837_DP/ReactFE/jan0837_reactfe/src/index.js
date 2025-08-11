@@ -5,8 +5,8 @@ import './index.css';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { RefreshProvider } from './Components/RefreshContext';
-import { DataProvider }    from './Components/DataProvider';
+import { RefreshProvider } from './Communication/RefreshContext';
+import { DataProvider }    from './Communication/DataProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

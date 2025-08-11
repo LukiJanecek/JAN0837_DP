@@ -5,9 +5,9 @@ import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
 import '../App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import TimeDate from './TimeDate.js';
-import Picture from './Picture.js';
-import Clock from './Clock.js'
+import TimeDate from '../Components/TimeDate.js';
+import Picture from '../Components/Picture.js';
+import Clock from '../Components/Clock.js'
 
 function SideNavigationBar() {
   return (

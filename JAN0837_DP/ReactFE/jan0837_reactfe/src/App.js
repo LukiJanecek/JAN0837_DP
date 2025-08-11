@@ -11,10 +11,10 @@ import TimeDate from './Components/TimeDate.js';
 import Picture from './Components/Picture.js';
 import Clock from './Components/Clock.js';
 
-import SideNavigationBar from './Components/SideNavigationBar.js';
-import MainPage from './Components/MainPage.js';
-import CrossroadPage from './Components/CrossroadPage.js';
-import CommunicationPage from './Components/CommunicationPage.js';
+import SideNavigationBar from './Pages/SideNavigationBar.js';
+import MainPage from './Pages/MainPage.js';
+import CrossroadPage from './Pages/CrossroadPage.js';
+import CommunicationPage from './Pages/CommunicationPage.js';
 
 function App() {
   return (

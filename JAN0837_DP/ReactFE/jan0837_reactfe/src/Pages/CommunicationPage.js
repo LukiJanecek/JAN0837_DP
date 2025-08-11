@@ -5,10 +5,10 @@ import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
 import '../App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import TimeDate from './TimeDate.js';
-import Picture from './Picture.js';
-import Clock from './Clock.js';
-import { useRefresh } from './RefreshContext';
+import TimeDate from '../Components/TimeDate.js';
+import Picture from '../Components/Picture.js';
+import Clock from '../Components/Clock.js';
+import { useRefresh } from '../Communication/RefreshContext.js';
 
 function CommunicationPage() {
     const [error, setError] = useState(null);

@@ -172,16 +172,18 @@ namespace JAN0837_DP.Forms
         {
             if (txtBoxParam3.Text != null && txtBoxParam3.Text != "")
             {
-                TestData.toggle = Boolean.Parse(txtBoxParam3.Text);
+                TestData.toggle = txtBoxParam3.Text;
             }
         }
 
         private async void btnSendDataToFe_Click(object sender, EventArgs e)
         {
             // připrav model
-            var data = new TestData
+            var data = new Dictionary<string, object>
             {
-                // this cant be empty 
+                ["number"] = TestData.number,
+                ["text"] = TestData.text,
+                ["toggle"] = TestData.toggle
             };
 
             // pošli na /api/data

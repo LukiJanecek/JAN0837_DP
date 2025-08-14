@@ -23,11 +23,20 @@ namespace JAN0837_DP.ReactFE
 
         public FEcommunicationControl(string prefix)
         {
-            _prefix = prefix;
+            var basePrefix = string.IsNullOrWhiteSpace(prefix) ? internalVariables.communicationBaseURL : prefix;
+
+            _prefix = (basePrefix ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
+
+            // var prefix = (internalVariables.communicationBaseURL ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
         }
 
         public void Start()
         {
+            if (_listener?.IsListening == true) 
+            {
+                return;
+            }
+
             if (internalVariables.communicationServerStarted == true)
             {
                 return;
@@ -35,6 +44,7 @@ namespace JAN0837_DP.ReactFE
             else
             {
                 _listener = new HttpListener();
+                _listener.Prefixes.Clear();
                 _listener.Prefixes.Add(_prefix);
                 _listener.Start();
 
@@ -49,8 +59,18 @@ namespace JAN0837_DP.ReactFE
         {
             if (internalVariables.communicationServerStarted == true)
             {
-                _cts.Cancel();
-                _listener.Stop();
+                try
+                {
+                    _cts?.Cancel();
+                    _listener?.Stop();
+                }
+                finally
+                {
+                    _listener = null;
+                    internalVariables.communicationServerStarted = false; 
+                }
+
+
             }
             else
             {
@@ -83,11 +103,24 @@ namespace JAN0837_DP.ReactFE
             }
         }
 
-        private void AddCors(HttpListenerResponse resp)
+        private void AddCors(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            resp.Headers["Access-Control-Allow-Origin"] = internalVariables.feURL; // nebo "*" pokud nechceš omezovat
+            var allowedOrigin = (internalVariables.feURL ?? "http://localhost:3000").TrimEnd('/');
+            var origin = (req.Headers["Origin"] ?? "").TrimEnd('/');
+
+            if (!string.IsNullOrEmpty(origin) && origin.Equals(allowedOrigin, StringComparison.OrdinalIgnoreCase))
+            {
+                resp.Headers["Access-Control-Allow-Origin"] = origin;
+            }
+            else
+            {
+                resp.Headers["Access-Control-Allow-Origin"] = allowedOrigin;
+            }
+
+            resp.Headers["Vary"] = "Origin";
             resp.Headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS";
             resp.Headers["Access-Control-Allow-Headers"] = "Content-Type";
+            resp.Headers["Access-Control-Max-Age"] = "600";
         }
 
         private void Process(HttpListenerContext ctx)
@@ -95,7 +128,7 @@ namespace JAN0837_DP.ReactFE
             var req = ctx.Request;
             var resp = ctx.Response;
 
-            AddCors(resp);
+            AddCors(req, resp);
 
             // Preflight pro CORS
             if (req.HttpMethod == "OPTIONS")
@@ -105,80 +138,57 @@ namespace JAN0837_DP.ReactFE
                 return;
             }
 
-            var path = req.Url.AbsolutePath.ToLowerInvariant();
+            var path = req.Url.AbsolutePath.ToLowerInvariant().TrimEnd('/');
             const string apiPrefix = "/api";
 
             if (path.StartsWith(apiPrefix))
             {
-                path = path.Substring(apiPrefix.Length);
+                path = path.Substring(4);
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                path = "/";
             }
 
             try
             {
-                if (req.HttpMethod == "GET")
+                if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
-                    switch (path)
+                    // celý stav
+                    WriteJSON(resp, new
                     {
-                        case "/data":
-                            // celý sdílený stav
-                            WriteJSON(resp, new
-                            {
-                                number = TestData.number,
-                                text = TestData.text,
-                                toggle = TestData.toggle
-                            });
-                            return;
-
-                        case "/status": WriteJSON(resp, TestData.text); return;
-                        case "/parameter1": WriteJSON(resp, TestData.number); return;
-                        case "/config": WriteJSON(resp, internalVariables.communicationRefreshInterval); return;
-
-                        default:
-                            resp.StatusCode = 404; resp.Close(); return;
-                    }
+                        number = TestData.number,
+                        text = TestData.text,
+                        toggle = TestData.toggle
+                    });
+                    return;
                 }
-                else if (req.HttpMethod == "POST")
+                else if (req.HttpMethod == "POST" && (path == "/data" || path == "/"))
                 {
-                    string body;
-                    using (var sr = new StreamReader(req.InputStream)) body = sr.ReadToEnd();
+                    using var sr = new StreamReader(req.InputStream);
+                    var body = sr.ReadToEnd();
 
-                    if (path == "/data")
+                    var updates = JsonConvert.DeserializeObject<Dictionary<string, object>>(body) ?? new Dictionary<string, object>();
+
+                    if (updates.TryGetValue("number", out var n))
                     {
-                        // přijmeme libovolnou kombinaci { number, text, toggle }
-                        var updates = JsonConvert.DeserializeObject<Dictionary<string, object>>(body)
-                                      ?? new Dictionary<string, object>();
-
-                        if (updates.TryGetValue("number", out var n)) TestData.number = Convert.ToInt32(n);
-                        if (updates.TryGetValue("text", out var t)) TestData.text = Convert.ToString(t);
-                        if (updates.TryGetValue("toggle", out var g)) TestData.toggle = Convert.ToString(g);
-
-                        resp.StatusCode = 200; resp.Close(); return;
+                        TestData.number = Convert.ToInt32(n);
                     }
 
-                    // legacy endpointy
-                    switch (path)
+                    if (updates.TryGetValue("text", out var t))
                     {
-                        case "/status":
-                            TestData.text = System.Text.Json.JsonSerializer.Deserialize<string>(body);
-                            resp.StatusCode = 200; resp.Close(); return;
-
-                        case "/parameter1":
-                            TestData.number = System.Text.Json.JsonSerializer.Deserialize<int>(body);
-                            resp.StatusCode = 200; resp.Close(); return;
-
-                        case "/config":
-                            var doc = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(body);
-                            if (doc.TryGetProperty("refreshInterval", out var jv))
-                            {
-                                internalVariables.communicationRefreshInterval = jv.GetInt32();
-                                resp.StatusCode = 200;
-                            }
-                            else resp.StatusCode = 400;
-                            resp.Close(); return;
-
-                        default:
-                            resp.StatusCode = 404; resp.Close(); return;
+                        TestData.text = Convert.ToString(t);
                     }
+
+                    if (updates.TryGetValue("toggle", out var g))
+                    {
+                        TestData.toggle = Convert.ToString(g);
+                    }
+
+                    resp.StatusCode = 200;
+                    resp.Close();
+                    return;
                 }
                 else
                 {

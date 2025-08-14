@@ -28,10 +28,11 @@ export function DataProvider({ children }) {
     };
 
     fetchData();
-    const timer = setInterval(fetchData, interval);
+    const ms = Number.isFinite(interval) && interval > 0 ? interval : 2000;
+    const timer = window.setInterval(fetchData, ms);
     return () => {
       isMounted = false;
-      clearInterval(timer);
+      window.clearInterval(timer);
     };
   }, [interval]);
 

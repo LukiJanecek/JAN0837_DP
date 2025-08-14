@@ -9,27 +9,26 @@ import TimeDate from '../Components/TimeDate.js';
 import Picture from '../Components/Picture.js';
 import Clock from '../Components/Clock.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
+import { API_URL } from '../variables.js'; 
 
 function CommunicationPage() {
     const [error, setError] = useState(null);
-    const {interval, setInterval } = useRefresh();
-    const [parameter1, setParameter1] = useState(0);
-    const [status, setStatus] = useState(false);
+    const { interval, setInterval: setRefreshInterval } = useRefresh(); // alias!
+    const [number, setNumber] = useState(0);
+    const [toggle, setToggle] = useState(false);
+    const [text, setText] = useState('');
 
     const fetchState = async () => {
         try {
-            // get status
-            const status = await fetch('http://localhost:5000/api/status');
-            if (!status.ok) throw new Error(`Status fetch error ${status.status}`);
-            const statusState = await status.json();
-            setStatus(Boolean(statusState));
-
-            // get parameter1
-            const value = await fetch('http://localhost:5000/api/parameter1');
-            if (!value.ok) throw new Error(`Param fetch error ${value.status}`);
-            const paramVal = await value.json();
-            setParameter1(paramVal);
-
+            const res = await fetch(API_URL);           // GET /api/data
+            if (!res.ok) throw new Error(res.statusText);
+            const json = await res.json();              // { number, text, toggle }
+            setNumber(Number(json.number) || 0);
+            setText(typeof json.text === 'string' ? json.text : '');
+            
+            // backend posílá toggle jako string ("true"/"false" nebo "ON"/"OFF")
+            const t = String(json.toggle || '').toLowerCase();
+            setToggle(t === 'true' || t === 'on' || t === '1');
             setError(null);
         } 
         catch (e) {
@@ -38,29 +37,52 @@ function CommunicationPage() {
     };
 
     useEffect(() => {
-    // Načti hned a pak každé 2 s
+        const fetchState = async () => {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error(res.statusText);
+                    const json = await res.json();
+                    // ... setNumber / setText / setToggle ...
+                } catch (e) {
+                setError('Failed to fetch: ' + e.message);
+                console.error(e);
+            }
+        };
+
         fetchState();
-        const intervalId = setInterval(fetchState, interval);
-        return () => clearInterval(intervalId);
+        const ms = Number.isFinite(interval) && interval > 0 ? interval : 2000;
+        const id = window.setInterval(fetchState, ms);
+        return () => window.clearInterval(id);
     }, [interval]);
 
     // POST helper
-    const postJson = async (url, payload) => {
-        const res = await fetch(url, {
+    const postJson = async (payload) => {
+        console.log('POST', API_URL, payload)
+        const res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error(`Failed ${url}: ${res.status}`);
-        return res;
+        if (!res.ok) {
+            const txt = await res.text().catch(() => '');
+            throw new Error(`${res.status} ${res.statusText} ${txt}`);
+        }
+        const len = res.headers.get('content-length');
+        if (len && len !== '0') {
+            return await res.json();
+        }
+        if (res.headers.get('content-type')?.includes('application/json')) {
+            try { return await res.json(); } catch {}
+        }
+        return null;
     };
 
     //
     const inc = async () => {
         try {
-            const newVal = parameter1 + 1;
-            await postJson('http://localhost:5000/api/parameter1', newVal);
-            setParameter1(newVal);
+            const newVal = number + 1;
+            await postJson({ number: newVal });
+            setNumber(newVal);
         } 
         catch (e) {
             setError(e.message);
@@ -69,58 +91,57 @@ function CommunicationPage() {
 
     const dec = async () => {
         try {
-            const newVal = parameter1 - 1;
-            await postJson('http://localhost:5000/api/parameter1', newVal);
-            setParameter1(newVal);
+            const newVal = number - 1;
+            await postJson({ number: newVal });
+            setNumber(newVal);
         } 
         catch (e) {
             setError(e.message);
         }
     };
 
-    const toggle = async () => {
+    const toggleAction  = async () => {
         try {
-            const newStatus = !status;
-            await postJson('http://localhost:5000/api/status', newStatus);
-            setStatus(newStatus);
+            const newToggle = !toggle;
+            await postJson({ toggle: newToggle ? 'true' : 'false' });
+            setToggle(newToggle);
         }  
         catch (e) {
             setError(e.message);
         }
     };
 
-    const toggleStatus = () => {
-        setStatus(prev => (prev === 'ON' ? 'OFF' : 'ON'));
-    };
-
     return (
-    <div>
-        <h1>Communication Page</h1> 
-        {error && <div style={{color:'red'}}>Chyba: {error}</div>}
-        
-        <label>Obnovovat každých <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value))} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
-        <div><strong>Parameter1:</strong> {parameter1}</div>
+        <div>
+            <h1>Communication Page</h1> 
+            {error && <div style={{color:'red'}}>Chyba: {error}</div>}
+            
+            <label>Obnovovat každých{' '} <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value) || 2000)} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
 
-        <button style={{ marginTop: '0.5rem' }} onClick={inc}>
-            Zvýšit o 1
-        </button>
+            <div style={{ marginTop: 12 }}><strong>Number:</strong> {number}</div>
 
-        <button style={{ marginTop: '0.5rem' }} onClick={dec}>
-            Snížit o 1
-        </button>
+            <button style={{ marginTop: '0.5rem' }} onClick={inc}>
+                Zvýšit o 1
+            </button>
 
-        <div><strong>Status:</strong> {status}</div>
+            <button style={{ marginTop: '0.5rem' }} onClick={dec}>
+                Snížit o 1
+            </button>
 
-        <button style={{ marginTop: '0.5rem' }} onClick={toggle}>
-            Přepnout status
-        </button>
+            <div><strong>Status:</strong> {toggle}</div>
 
-        <button onClick={fetchState} style={{ marginTop: '1rem' }}>
-            Obnovit teď
-        </button>
+            <button style={{ marginTop: '0.5rem' }} onClick={toggleAction}>
+                Přepnout status
+            </button>
 
-    </div>
-  );
+            <div style={{ marginTop: 12 }}><strong>Text:</strong> {text}</div>
+
+            <button onClick={fetchState} style={{ marginTop: '1rem' }}>
+                Obnovit teď
+            </button>
+
+        </div>
+    );
 }
 
 export default CommunicationPage;

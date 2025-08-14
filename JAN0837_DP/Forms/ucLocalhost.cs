@@ -50,6 +50,8 @@ namespace JAN0837_DP.Forms
                 await webView21.EnsureCoreWebView2Async();
             }
 
+            webView21.CoreWebView2.OpenDevToolsWindow();
+
             if (internalVariables.reactServerStarted == true)
             {
                 webView21.CoreWebView2.Navigate(internalVariables.feURL);
@@ -80,12 +82,12 @@ namespace JAN0837_DP.Forms
         private async Task EnsureCommunicationServiceAsync()
         {
             // API health-check: /api/status (nebo /api/data)
-            var apiHealth = internalVariables.communicationURL + "status";
+            var apiHealth = internalVariables.communicationDataURL;
 
             if (!await IsAliveAsync(apiHealth))
             {
                 // nespouštěj znovu, pokud FE už existuje a běží
-                if (FE == null) FE = new FEcommunicationControl(internalVariables.communicationURL);
+                if (FE == null) FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
                 FE.Start();
 
                 await WaitUntilAliveAsync(apiHealth, timeoutMs: 5000);
@@ -124,7 +126,7 @@ namespace JAN0837_DP.Forms
         private async void btnStartFE_Click(object sender, EventArgs e)
         {
 
-            FE = new FEcommunicationControl(internalVariables.communicationURL);
+            FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
             FE.Start();
             /*
             Process.Start(new ProcessStartInfo
@@ -186,10 +188,10 @@ namespace JAN0837_DP.Forms
                 ["toggle"] = TestData.toggle
             };
 
-            // pošli na /api/data
+            var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
             string json = JsonConvert.SerializeObject(data);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await http.PostAsync(internalVariables.communicationURL + "data", content);
+            var response = await client.PostAsync(internalVariables.communicationDataURL, content);
             response.EnsureSuccessStatusCode();
 
             lblCommunicationStatus.Text = "Data transferred";

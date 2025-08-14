@@ -377,7 +377,7 @@ namespace JAN0837_DP
         {
             try
             {
-                _feCommunication = new FEcommunicationControl(internalVariables.communicationURL);
+                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
                 _feCommunication.Start();
 
                 _feServer = new FEserver(_feCommunication);

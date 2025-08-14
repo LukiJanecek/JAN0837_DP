@@ -36,8 +36,9 @@ namespace JAN0837_DP.Data
         public static bool visualizationRunningFlag { get; set; } = false;
         
         // localhost
-        public static string feURL { get; set; } = "http://localhost:3000/";
-        public static string communicationURL { get; set; } = "http://localhost:5000/api/";
+        public static string feURL { get; set; } = "http://localhost:3000";
+        public static string communicationBaseURL { get; set; } = "http://localhost:5000/api";
+        public static string communicationDataURL => communicationBaseURL.TrimEnd('/') + "/data";
         public static bool communicationServerStarted { get; set; } = false;
         public static bool reactServerStarted { get; set; } = false;
         public static int communicationRefreshInterval { get; set; } 

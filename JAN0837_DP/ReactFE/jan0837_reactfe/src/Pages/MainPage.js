@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
 
 import '../App.css';
+import './MainPage.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import TimeDate from '../Components/TimeDate.js';

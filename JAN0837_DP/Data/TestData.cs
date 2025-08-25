@@ -14,4 +14,18 @@ namespace JAN0837_DP.Data
 
         public static string toggle { get; set; } = "";
     }
+
+    public class TestDataSnapshot
+    {
+        public int number { get; set; }
+        public string text { get; set; } = "";
+        public string toggle { get; set; } = "";
+
+        public bool ToggleBool =>
+            !string.IsNullOrWhiteSpace(toggle) &&
+            (toggle.Equals("true", System.StringComparison.OrdinalIgnoreCase) ||
+             toggle.Equals("on", System.StringComparison.OrdinalIgnoreCase) ||
+             toggle.Equals("1", System.StringComparison.OrdinalIgnoreCase) ||
+             toggle.Equals("yes", System.StringComparison.OrdinalIgnoreCase));
+    }
 }

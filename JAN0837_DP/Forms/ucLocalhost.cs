@@ -21,6 +21,7 @@ using Microsoft.Web.WebView2.Core;
 using Org.BouncyCastle.Asn1.Cmp;
 using JAN0837_DP.ReactFE;
 using static System.Net.WebRequestMethods;
+using Microsoft.VisualBasic;
 
 namespace JAN0837_DP.Forms
 {
@@ -31,6 +32,7 @@ namespace JAN0837_DP.Forms
         private ReactFE.FEcommunicationControl FE;
 
         private static readonly HttpClient http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(1500) };
+        private System.Windows.Forms.Timer _pollTimer;
 
         private Process reactDevServerProc;
 
@@ -138,7 +140,7 @@ namespace JAN0837_DP.Forms
                 //CreateNoWindow = true
             });
             */
-            
+
 
             try
             {
@@ -210,6 +212,43 @@ namespace JAN0837_DP.Forms
         private void btnShowPage_Click(object sender, EventArgs e)
         {
             webView21.CoreWebView2.Navigate(internalVariables.feURL);
+        }
+
+        private async Task<TestDataSnapshot> GetDataAsync()
+        {
+            var url = internalVariables.communicationDataURL; 
+            using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            resp.EnsureSuccessStatusCode();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TestDataSnapshot>(json) ?? new TestDataSnapshot();
+        }
+
+        private async void btnGetData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                btnGetData.Enabled = false; // proti 2x kliknutí
+                lblCommunicationStatus.Text = "Fetching...";
+
+                var snap = await GetDataAsync();
+
+                lblData.Text =
+                    $"number = {snap.number}\r\n" +
+                    $"text   = {snap.text}\r\n" +
+                    $"toggle = {snap.toggle}\r\n (bool: { snap.ToggleBool})";
+
+                lblCommunicationStatus.Text = "Get data OK";
+            }
+            catch (Exception ex)
+            {
+                lblCommunicationStatus.Text = "Get data failed";
+                lblData.Text = ex.Message; 
+            }
+            finally
+            {
+                btnGetData.Enabled = true;
+            }
         }
     }
 }

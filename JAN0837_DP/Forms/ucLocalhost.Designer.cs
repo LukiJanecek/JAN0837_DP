@@ -30,6 +30,8 @@
         {
             webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel1 = new Panel();
+            btnGetData = new Button();
+            btnShowPage = new Button();
             btnSendDataToFe = new Button();
             lblCommunicationStatus = new Label();
             txtBoxParam3 = new TextBox();
@@ -39,7 +41,7 @@
             txtBoxParam1 = new TextBox();
             lblParam1 = new Label();
             btnStartFE = new Button();
-            btnShowPage = new Button();
+            lblData = new Label();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -59,6 +61,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(lblData);
+            panel1.Controls.Add(btnGetData);
             panel1.Controls.Add(btnShowPage);
             panel1.Controls.Add(btnSendDataToFe);
             panel1.Controls.Add(lblCommunicationStatus);
@@ -76,6 +80,26 @@
             panel1.TabIndex = 2;
             panel1.Paint += panel1_Paint;
             // 
+            // btnGetData
+            // 
+            btnGetData.Location = new Point(40, 325);
+            btnGetData.Name = "btnGetData";
+            btnGetData.Size = new Size(150, 59);
+            btnGetData.TabIndex = 11;
+            btnGetData.Text = "Get data";
+            btnGetData.UseVisualStyleBackColor = true;
+            btnGetData.Click += btnGetData_Click;
+            // 
+            // btnShowPage
+            // 
+            btnShowPage.Location = new Point(18, 441);
+            btnShowPage.Name = "btnShowPage";
+            btnShowPage.Size = new Size(147, 101);
+            btnShowPage.TabIndex = 10;
+            btnShowPage.Text = "Show page";
+            btnShowPage.UseVisualStyleBackColor = true;
+            btnShowPage.Click += btnShowPage_Click;
+            // 
             // btnSendDataToFe
             // 
             btnSendDataToFe.Location = new Point(40, 260);
@@ -89,7 +113,7 @@
             // lblCommunicationStatus
             // 
             lblCommunicationStatus.AutoSize = true;
-            lblCommunicationStatus.Location = new Point(40, 326);
+            lblCommunicationStatus.Location = new Point(18, 545);
             lblCommunicationStatus.Name = "lblCommunicationStatus";
             lblCommunicationStatus.Size = new Size(160, 20);
             lblCommunicationStatus.TabIndex = 8;
@@ -156,15 +180,14 @@
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
             // 
-            // btnShowPage
+            // lblData
             // 
-            btnShowPage.Location = new Point(43, 377);
-            btnShowPage.Name = "btnShowPage";
-            btnShowPage.Size = new Size(147, 101);
-            btnShowPage.TabIndex = 10;
-            btnShowPage.Text = "Show page";
-            btnShowPage.UseVisualStyleBackColor = true;
-            btnShowPage.Click += btnShowPage_Click;
+            lblData.AutoSize = true;
+            lblData.Location = new Point(35, 402);
+            lblData.Name = "lblData";
+            lblData.Size = new Size(41, 20);
+            lblData.TabIndex = 12;
+            lblData.Text = "Data";
             // 
             // ucLocalhost
             // 
@@ -194,5 +217,7 @@
         private Label lblCommunicationStatus;
         private Button btnSendDataToFe;
         private Button btnShowPage;
+        private Button btnGetData;
+        private Label lblData;
     }
 }

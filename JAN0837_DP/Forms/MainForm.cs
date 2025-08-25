@@ -367,6 +367,8 @@ namespace JAN0837_DP
                 internalVariables.visualizationThread.Join();
             }
 
+            // stop polling 
+
             this.Close();
             //Application.Exit();
         }

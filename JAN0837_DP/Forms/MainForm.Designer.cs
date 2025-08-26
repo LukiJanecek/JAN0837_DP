@@ -36,9 +36,7 @@
             btnGenerateTIATemplate = new ToolStripButton();
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
-            btnTest = new ToolStripButton();
             mainWindow = new Panel();
-            btnSendData = new ToolStripButton();
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -62,7 +60,7 @@
             // toolStripMain
             // 
             toolStripMain.ImageScalingSize = new Size(20, 20);
-            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit, btnTest, btnSendData });
+            toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
             toolStripMain.Size = new Size(1034, 27);
@@ -110,16 +108,6 @@
             btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
-            // btnTest
-            // 
-            btnTest.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnTest.Image = (Image)resources.GetObject("btnTest.Image");
-            btnTest.ImageTransparentColor = Color.Magenta;
-            btnTest.Name = "btnTest";
-            btnTest.Size = new Size(39, 24);
-            btnTest.Text = "Test";
-            btnTest.Click += btnTest_Click;
-            // 
             // mainWindow
             // 
             mainWindow.BorderStyle = BorderStyle.FixedSingle;
@@ -128,16 +116,6 @@
             mainWindow.Name = "mainWindow";
             mainWindow.Size = new Size(1034, 334);
             mainWindow.TabIndex = 21;
-            // 
-            // btnSendData
-            // 
-            btnSendData.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            btnSendData.Image = (Image)resources.GetObject("btnSendData.Image");
-            btnSendData.ImageTransparentColor = Color.Magenta;
-            btnSendData.Name = "btnSendData";
-            btnSendData.Size = new Size(117, 24);
-            btnSendData.Text = "Send data to FE";
-            btnSendData.Click += btnSendData_Click;
             // 
             // MainForm
             // 
@@ -168,7 +146,5 @@
         private ToolStripButton btnExit;
         private ToolStripButton btnCommunicationControl;
         private Panel mainWindow;
-        private ToolStripButton btnTest;
-        private ToolStripButton btnSendData;
     }
 }

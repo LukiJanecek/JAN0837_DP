@@ -130,17 +130,6 @@ namespace JAN0837_DP.Forms
 
             FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
             FE.Start();
-            /*
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "npm",
-                Arguments = "start",
-                WorkingDirectory = paths.feReactProjectPath,
-                UseShellExecute = true//,
-                //CreateNoWindow = true
-            });
-            */
-
 
             try
             {

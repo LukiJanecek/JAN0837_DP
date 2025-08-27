@@ -1,60 +1,82 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 import { API_URL } from '../variables';
 import { useRefresh } from './RefreshContext';
+import { readState, writeState } from './service';
+import { normalizeBySchema } from './dataTypeNormalizer';
+import { STATE_SCHEMA } from './data';
 
 const DataContext = createContext({
   data: null,
+  error: null,
+  isFetching: false,
+  refresh: () => Promise.resolve(),
   saveData: () => Promise.resolve()
 });
 
 export function DataProvider({ children }) {
-  const [data, setData] = useState(null);
   const { interval } = useRefresh();
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
 
-  // 1) Polling GET
-  useEffect(() => {
-    let isMounted = true;
+  const abortRef = useRef(null);
+  const timerRef = useRef(null);
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error(res.statusText);
-        const json = await res.json();
-        if (isMounted) setData(json);
-      } catch (err) {
-        console.error("Chyba při načítání dat:", err);
-      }
-    };
+  const clearTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    } 
 
-    fetchData();
-    const ms = Number.isFinite(interval) && interval > 0 ? interval : 2000;
-    const timer = window.setInterval(fetchData, ms);
-    return () => {
-      isMounted = false;
-      window.clearInterval(timer);
-    };
-  }, [interval]);
+    timerRef.current = null;
+  };
 
-  // 2) Funkce pro zápis
-  const saveData = async (newValues) => {
+  const fetchOnce = async () => {
+    setIsFetching(true);
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newValues)
-      });
-      if (!res.ok) throw new Error(res.statusText);
-      // volitelně: refresh po zápisu
-      return await res.json();
-    } catch (err) {
-      console.error("Chyba při ukládání dat:", err);
-      throw err;
+      const json = await readState(ctrl.signal);
+      const normalized = normalizeBySchema(json || {}, STATE_SCHEMA);
+      setData(normalized);
+      setError(null);
+    } 
+    catch (e) {
+      if (e.name !== 'AbortError') {
+        setError(String(e.message || e));
+      } 
+    } 
+    finally {
+      setIsFetching(false);
     }
   };
 
+  const scheduleNext = (ms) => {
+    clearTimer();
+    const delay = Number.isFinite(interval) && interval > 0 ? interval : (ms ?? 2000);
+    timerRef.current = setTimeout(async () => {
+      await fetchOnce();
+      scheduleNext(); 
+    }, delay);
+  };
+
+  useEffect(() => {
+    fetchOnce().finally(() => scheduleNext());
+    return () => {
+      clearTimer();
+      abortRef.current?.abort();
+    };
+  }, [interval]);
+
+  const saveData = async (patch) => {
+    await writeState(patch);
+    await fetchOnce();
+  };
+
   return (
-    <DataContext.Provider value={{ data, saveData }}>
+    <DataContext.Provider value={{ data, error, isFetching, refresh: fetchOnce, saveData }}>
       {children}
     </DataContext.Provider>
   );

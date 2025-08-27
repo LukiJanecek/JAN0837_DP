@@ -36,6 +36,9 @@ namespace JAN0837_DP.Forms
 
         private Process reactDevServerProc;
 
+        public FEserver _feServer;
+        public FEcommunicationControl _feCommunication;
+
         public ucLocalhost()
         {
             InitializeComponent();
@@ -52,7 +55,23 @@ namespace JAN0837_DP.Forms
                 await webView21.EnsureCoreWebView2Async();
             }
 
-            webView21.CoreWebView2.OpenDevToolsWindow();
+            FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
+            FE.Start();
+
+            try
+            {
+                await EnsureCommunicationServiceAsync();  // port 5000
+                await EnsureReactDevServerAsync();        // port 3000
+
+                webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+
+                internalVariables.reactServerStarted = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             if (internalVariables.reactServerStarted == true)
             {
@@ -103,11 +122,9 @@ namespace JAN0837_DP.Forms
 
             if (!await IsAliveAsync(feRoot))
             {
-                // Pokud ne, spust ho
                 string reactFolder = Path.Combine(MainForm.projectRootPath, "ReactFE");
                 string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
 
-                // Pokud proces už máme a žije, nespouštěj znovu
                 if (reactDevServerProc == null || reactDevServerProc.HasExited)
                 {
                     reactDevServerProc = Process.Start(new ProcessStartInfo
@@ -122,26 +139,33 @@ namespace JAN0837_DP.Forms
 
                 // Počkej, než dev server naběhne
                 await WaitUntilAliveAsync(feRoot, timeoutMs: 60000);
+
+                internalVariables.reactServerStarted = true;
             }
         }
 
         private async void btnStartFE_Click(object sender, EventArgs e)
         {
-
-            FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
-            FE.Start();
-
-            try
+            if (internalVariables.communicationServerStarted != true)
             {
-                await EnsureCommunicationServiceAsync();  // port 5000
-                await EnsureReactDevServerAsync();        // port 3000
-
-                webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+                FE = new FEcommunicationControl(internalVariables.communicationBaseURL);
+                FE.Start();
             }
-            catch (Exception ex)
-            {
 
+            if (internalVariables.reactServerStarted != true)
+            {
+                try
+                {
+                    await EnsureCommunicationServiceAsync();  // port 5000
+                    await EnsureReactDevServerAsync();        // port 3000
+
+                    webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                    lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 
@@ -205,7 +229,7 @@ namespace JAN0837_DP.Forms
 
         private async Task<TestDataSnapshot> GetDataAsync()
         {
-            var url = internalVariables.communicationDataURL; 
+            var url = internalVariables.communicationDataURL;
             using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             resp.EnsureSuccessStatusCode();
 
@@ -225,18 +249,36 @@ namespace JAN0837_DP.Forms
                 lblData.Text =
                     $"number = {snap.number}\r\n" +
                     $"text   = {snap.text}\r\n" +
-                    $"toggle = {snap.toggle}\r\n (bool: { snap.ToggleBool})";
+                    $"toggle = {snap.toggle}\r\n (bool: {snap.ToggleBool})";
 
                 lblCommunicationStatus.Text = "Get data OK";
             }
             catch (Exception ex)
             {
                 lblCommunicationStatus.Text = "Get data failed";
-                lblData.Text = ex.Message; 
+                lblData.Text = ex.Message;
             }
             finally
             {
                 btnGetData.Enabled = true;
+            }
+        }
+
+        private void btnOpenDevTool_Click(object sender, EventArgs e)
+        {
+            webView21.CoreWebView2.OpenDevToolsWindow();
+        }
+
+        private async void btnStopFE_Click(object sender, EventArgs e)
+        {
+            if (_feServer != null)
+            {
+                await _feServer.StopAsync();
+            }
+
+            if (_feCommunication != null)
+            {
+                _feCommunication.Stop();
             }
         }
     }

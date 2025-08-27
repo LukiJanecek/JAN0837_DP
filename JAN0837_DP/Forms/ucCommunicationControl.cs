@@ -475,7 +475,7 @@ namespace JAN0837_DP.Forms
             // starting communication thread
             if (internalVariables.communicationThread == null || !internalVariables.communicationThread.IsAlive)
             {
-                internalVariables.communicationRunningFlag = true;
+                internalVariables.communicationThreadRunningFlag = true;
                 var communicationManager = new CommunicationManager();
                 internalVariables.communicationThread = new Thread(communicationManager.Communication);
                 internalVariables.communicationThread.IsBackground = true;
@@ -551,7 +551,7 @@ namespace JAN0837_DP.Forms
             // stoping communication thread
             if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
             {
-                internalVariables.communicationRunningFlag = false;
+                internalVariables.communicationThreadRunningFlag = false;
                 internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
 
                 lblCommunicationStatus.Text = "Communication stopped.";

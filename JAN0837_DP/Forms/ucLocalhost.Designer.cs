@@ -30,6 +30,9 @@
         {
             webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel1 = new Panel();
+            btnStopFE = new Button();
+            btnOpenDevTool = new Button();
+            lblData = new Label();
             btnGetData = new Button();
             btnShowPage = new Button();
             btnSendDataToFe = new Button();
@@ -41,7 +44,6 @@
             txtBoxParam1 = new TextBox();
             lblParam1 = new Label();
             btnStartFE = new Button();
-            lblData = new Label();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -61,6 +63,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(btnStopFE);
+            panel1.Controls.Add(btnOpenDevTool);
             panel1.Controls.Add(lblData);
             panel1.Controls.Add(btnGetData);
             panel1.Controls.Add(btnShowPage);
@@ -74,17 +78,46 @@
             panel1.Controls.Add(lblParam1);
             panel1.Controls.Add(btnStartFE);
             panel1.Dock = DockStyle.Right;
-            panel1.Location = new Point(551, 0);
+            panel1.Location = new Point(510, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(269, 581);
+            panel1.Size = new Size(310, 581);
             panel1.TabIndex = 2;
             panel1.Paint += panel1_Paint;
+            // 
+            // btnStopFE
+            // 
+            btnStopFE.Location = new Point(171, 198);
+            btnStopFE.Name = "btnStopFE";
+            btnStopFE.Size = new Size(125, 56);
+            btnStopFE.TabIndex = 14;
+            btnStopFE.Text = "Stop FE";
+            btnStopFE.UseVisualStyleBackColor = true;
+            btnStopFE.Click += btnStopFE_Click;
+            // 
+            // btnOpenDevTool
+            // 
+            btnOpenDevTool.Location = new Point(171, 390);
+            btnOpenDevTool.Name = "btnOpenDevTool";
+            btnOpenDevTool.Size = new Size(125, 59);
+            btnOpenDevTool.TabIndex = 13;
+            btnOpenDevTool.Text = "Open Dev Tool";
+            btnOpenDevTool.UseVisualStyleBackColor = true;
+            btnOpenDevTool.Click += btnOpenDevTool_Click;
+            // 
+            // lblData
+            // 
+            lblData.AutoSize = true;
+            lblData.Location = new Point(213, 545);
+            lblData.Name = "lblData";
+            lblData.Size = new Size(41, 20);
+            lblData.TabIndex = 12;
+            lblData.Text = "Data";
             // 
             // btnGetData
             // 
             btnGetData.Location = new Point(40, 325);
             btnGetData.Name = "btnGetData";
-            btnGetData.Size = new Size(150, 59);
+            btnGetData.Size = new Size(125, 59);
             btnGetData.TabIndex = 11;
             btnGetData.Text = "Get data";
             btnGetData.UseVisualStyleBackColor = true;
@@ -92,9 +125,9 @@
             // 
             // btnShowPage
             // 
-            btnShowPage.Location = new Point(18, 441);
+            btnShowPage.Location = new Point(40, 390);
             btnShowPage.Name = "btnShowPage";
-            btnShowPage.Size = new Size(147, 101);
+            btnShowPage.Size = new Size(125, 59);
             btnShowPage.TabIndex = 10;
             btnShowPage.Text = "Show page";
             btnShowPage.UseVisualStyleBackColor = true;
@@ -104,7 +137,7 @@
             // 
             btnSendDataToFe.Location = new Point(40, 260);
             btnSendDataToFe.Name = "btnSendDataToFe";
-            btnSendDataToFe.Size = new Size(150, 59);
+            btnSendDataToFe.Size = new Size(125, 59);
             btnSendDataToFe.TabIndex = 9;
             btnSendDataToFe.Text = "Send data";
             btnSendDataToFe.UseVisualStyleBackColor = true;
@@ -180,15 +213,6 @@
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
             // 
-            // lblData
-            // 
-            lblData.AutoSize = true;
-            lblData.Location = new Point(35, 402);
-            lblData.Name = "lblData";
-            lblData.Size = new Size(41, 20);
-            lblData.TabIndex = 12;
-            lblData.Text = "Data";
-            // 
             // ucLocalhost
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -219,5 +243,7 @@
         private Button btnShowPage;
         private Button btnGetData;
         private Label lblData;
+        private Button btnOpenDevTool;
+        private Button btnStopFE;
     }
 }

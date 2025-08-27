@@ -32,8 +32,8 @@ namespace JAN0837_DP.Data
         // threads
         public static Thread communicationThread { get; set; }
         public static Thread visualizationThread { get; set; }
-        public static bool communicationRunningFlag { get; set; } = false;
-        public static bool visualizationRunningFlag { get; set; } = false;
+        public static bool communicationThreadRunningFlag { get; set; } = false;
+        public static bool visualizationThreadRunningFlag { get; set; } = false;
         
         // localhost
         public static string feURL { get; set; } = "http://localhost:3000";

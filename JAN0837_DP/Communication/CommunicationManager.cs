@@ -16,7 +16,7 @@ namespace JAN0837_DP.Communication
         {
             try
             {
-                while (internalVariables.communicationRunningFlag) // communicationRunningFlag
+                while (internalVariables.communicationThreadRunningFlag) // communicationRunningFlag
                 {
                     if (internalVariables.opcuaFlag == true)
                     {

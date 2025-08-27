@@ -7,10 +7,6 @@ import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import TimeDate from './Components/TimeDate.js';
-import Picture from './Components/Picture.js';
-import Clock from './Components/Clock.js';
-
 import SideNavigationBar from './Pages/SideNavigationBar.js';
 import MainPage from './Pages/MainPage.js';
 import CrossroadPage from './Pages/CrossroadPage.js';
@@ -23,8 +19,6 @@ function App() {
         <Col xs={12} md={3} lg={2}>
           <SideNavigationBar />
         </Col>
-
-
         <Col xs={12} md={9} lg={10} className="custom-content">
           <Routes>
             <Route path="/" element={<Navigate to="/mainpage" replace />} />

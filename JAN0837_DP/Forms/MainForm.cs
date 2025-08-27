@@ -85,9 +85,8 @@ namespace JAN0837_DP
         public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
         public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
 
-        private FEserver _feServer;
-        private CancellationTokenSource _token;
-        private FEcommunicationControl _feCommunication; 
+        public FEserver _feServer;
+        public FEcommunicationControl _feCommunication; 
 
         public MainForm()
         {
@@ -113,7 +112,7 @@ namespace JAN0837_DP
             // starting visualization thread
             if (internalVariables.visualizationThread == null || !internalVariables.visualizationThread.IsAlive)
             {
-                internalVariables.visualizationRunningFlag = true;
+                internalVariables.visualizationThreadRunningFlag = true;
                 internalVariables.visualizationThread = new Thread(Visualization);
                 internalVariables.visualizationThread.Start();
             }
@@ -223,14 +222,14 @@ namespace JAN0837_DP
             // communication thread stop
             if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
             {
-                internalVariables.communicationRunningFlag = false;
+                internalVariables.communicationThreadRunningFlag = false;
                 internalVariables.communicationThread.Join();
             }
 
             // vizualization thread stop
             if (internalVariables.visualizationThread != null && internalVariables.visualizationThread.IsAlive)
             {
-                internalVariables.visualizationRunningFlag = false;
+                internalVariables.visualizationThreadRunningFlag = false;
 
                 if (_feServer != null)
                 {
@@ -240,6 +239,7 @@ namespace JAN0837_DP
                 if (_feCommunication != null)
                 {
                     _feCommunication.Stop();
+
                 }
                 
                 internalVariables.visualizationThread.Join();

@@ -16,7 +16,7 @@ const DataContext = createContext({
 
 export function DataProvider({ children }) {
   const { interval } = useRefresh();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState();
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 

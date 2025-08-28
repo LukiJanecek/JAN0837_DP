@@ -10,8 +10,19 @@ import { useData } from '../Communication/DataProvider';
 import { API_URL } from '../variables.js'; 
 
 function CommunicationPage() {
-    const { number, text, toggle, error, isFetching, inc, dec, setToggleAsync, setTextAsync, refresh } = useData();
+    //const { number, text, toggle, error, isFetching, inc, dec, setToggleAsync, setTextAsync, refresh } = useData();
     const { interval, setInterval } = useRefresh();
+    const { data, saveData, error, isFetching, refresh } = useData();
+
+    const number = Number(data?.number ?? 0);
+    const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
+    const toggle = (() => {
+        const t = String(data?.toggle ?? '').toLowerCase();
+        return t === 'true' || t === 'on' || t === '1';
+    })();
+    const inc = () => saveData({ number: number + 1 });
+    const dec = () => saveData({ number: number - 1 });
+    const setToggleAsync = () => saveData({ toggle: !toggle ? 'true' : 'false' });
 
     return (
         <div>
@@ -22,13 +33,11 @@ function CommunicationPage() {
 
             <div style={{ marginTop: 12 }}><strong>Number:</strong> {number}</div>
 
-            <button style={{ marginTop: '0.5rem' }} onClick={inc} disabled={isFetching}>
-                Zvýšit o 1
-            </button>
+            <button style={{ marginTop: '0.5rem' }} onClick={inc} disabled={isFetching}>Zvýšit o 1</button>
 
             <button style={{ marginTop: '0.5rem' }} onClick={dec} disabled={isFetching}>Snížit o 1</button>
 
-            <div><strong>Status:</strong> {toggle}</div>
+            <div><strong>Status:</strong> {String(toggle)}</div>
 
             <button style={{ marginTop: '0.5rem' }} onClick={() => setToggleAsync(!toggle)} disabled={isFetching}>Přepnout status</button>
 

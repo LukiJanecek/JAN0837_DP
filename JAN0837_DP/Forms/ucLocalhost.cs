@@ -132,8 +132,8 @@ namespace JAN0837_DP.Forms
                         FileName = "npm",
                         Arguments = "start",
                         WorkingDirectory = reactPath,
-                        UseShellExecute = true,
-                        CreateNoWindow = true
+                        UseShellExecute = false, 
+                        CreateNoWindow = true 
                     });
                 }
 

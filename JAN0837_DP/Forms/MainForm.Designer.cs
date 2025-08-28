@@ -37,6 +37,7 @@
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
             mainWindow = new Panel();
+            PeriodicalReading = new System.Windows.Forms.Timer(components);
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
@@ -108,6 +109,10 @@
             btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
+            // PeriodicalReading
+            // 
+            PeriodicalReading.Tick += PeriodicalReading_Tick;
+            // 
             // mainWindow
             // 
             mainWindow.BorderStyle = BorderStyle.FixedSingle;
@@ -145,6 +150,7 @@
         private ToolStripButton btnLocalHost;
         private ToolStripButton btnExit;
         private ToolStripButton btnCommunicationControl;
+        private System.Windows.Forms.Timer PeriodicalReading;
         private Panel mainWindow;
     }
 }

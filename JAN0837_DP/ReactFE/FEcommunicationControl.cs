@@ -12,6 +12,7 @@ using Microsoft.AspNet.SignalR;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using JAN0837_DP.Data;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace JAN0837_DP.ReactFE
 {
@@ -20,6 +21,10 @@ namespace JAN0837_DP.ReactFE
         private readonly string _prefix;
         private HttpListener _listener;
         private CancellationTokenSource _cts;
+
+        public Process reactDevServerProc;
+
+        public static readonly HttpClient http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(1500) };
 
         public FEcommunicationControl(string prefix)
         {
@@ -32,7 +37,7 @@ namespace JAN0837_DP.ReactFE
 
         public void Start()
         {
-            if (_listener?.IsListening == true) 
+            if (_listener?.IsListening == true)
             {
                 return;
             }
@@ -67,7 +72,7 @@ namespace JAN0837_DP.ReactFE
                 finally
                 {
                     _listener = null;
-                    internalVariables.communicationServerStarted = false; 
+                    internalVariables.communicationServerStarted = false;
                 }
 
 
@@ -86,7 +91,7 @@ namespace JAN0837_DP.ReactFE
                     TestData.text = Convert.ToString(value);
                     break;
                 case "parameter1":
-                    TestData.number = Convert.ToInt32(value); 
+                    TestData.number = Convert.ToInt32(value);
                     break;
                 case "refreshInterval":
                     internalVariables.communicationRefreshInterval = Convert.ToInt32(value);
@@ -94,7 +99,7 @@ namespace JAN0837_DP.ReactFE
             }
         }
 
-        private async Task HandleAsync(CancellationToken token)
+        public async Task HandleAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -103,7 +108,7 @@ namespace JAN0837_DP.ReactFE
             }
         }
 
-        private void AddCors(HttpListenerRequest req, HttpListenerResponse resp)
+        public void AddCors(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var allowedOrigin = (internalVariables.feURL ?? "http://localhost:3000").TrimEnd('/');
             var origin = (req.Headers["Origin"] ?? "").TrimEnd('/');
@@ -123,7 +128,7 @@ namespace JAN0837_DP.ReactFE
             resp.Headers["Access-Control-Max-Age"] = "600";
         }
 
-        private void Process(HttpListenerContext ctx)
+        public void Process(HttpListenerContext ctx)
         {
             var req = ctx.Request;
             var resp = ctx.Response;
@@ -205,75 +210,11 @@ namespace JAN0837_DP.ReactFE
                 resp.OutputStream.Write(payload, 0, payload.Length);
                 resp.Close();
             }
-
-            /*
-            if (req.HttpMethod == "GET")
-            {
-                switch (path)
-                {
-                    case "/status":
-                        WriteJSON(resp, TestData.text);
-                        break;
-
-                    case "/parameter1":
-                        WriteJSON(resp, TestData.number);
-                        break;
-
-                    case "/config":
-                        WriteJSON(resp, internalVariables.communicationRefreshInterval);
-                        break;
-
-                    default:
-                        resp.StatusCode = 404;
-                        resp.Close();
-                        break;
-                }
-            }
-            else if (req.HttpMethod == "POST")
-            {
-                using var ms = new MemoryStream();
-                req.InputStream.CopyTo(ms);
-                var body = Encoding.UTF8.GetString(ms.ToArray());
-
-                bool valid = true;
-
-                switch (path)
-                {
-                    case "/status":
-                        // Tady se můžeš rozhodnout, zda držet string nebo boolean
-                        TestData.text = JsonSerializer.Deserialize<string>(body);
-                        break;
-
-                    case "/parameter1":
-                        TestData.number = JsonSerializer.Deserialize<int>(body);
-                        break;
-
-                    case "/config":
-                        var doc = JsonSerializer.Deserialize<JsonElement>(body);
-                        if (doc.TryGetProperty("refreshInterval", out var jv))
-                            internalVariables.communicationRefreshInterval = jv.GetInt32();
-                        else
-                            valid = false;
-                        break;
-
-                    default:
-                        valid = false;
-                        break;
-                }
-
-                resp.StatusCode = valid ? 200 : 400;
-                resp.Close();
-            }
-            else
-            {
-                resp.StatusCode = 405;
-            }
-            */
         }
 
-        private void WriteJSON(HttpListenerResponse resp, object data)
+        public void WriteJSON(HttpListenerResponse resp, object data)
         {
-            var json = JsonConvert.SerializeObject(data);   
+            var json = JsonConvert.SerializeObject(data);
             var buf = Encoding.UTF8.GetBytes(json);
             resp.ContentType = "application/json";
             resp.ContentEncoding = Encoding.UTF8;
@@ -282,7 +223,6 @@ namespace JAN0837_DP.ReactFE
             resp.Close();
         }
 
-        // Vrátí aktuální stav jako anonymní objekt.
         public object GetCurrentState()
         => new
         {
@@ -291,11 +231,87 @@ namespace JAN0837_DP.ReactFE
             internalVariables.communicationRefreshInterval
         };
 
-        // Aplikuje příchozí slovníkové změny.
         public void HandleUpdate(Dictionary<string, object> updates)
         {
             foreach (var kv in updates)
                 Update(kv.Key, kv.Value);
+        }
+
+        public async Task<TestData> GetDataAsync()
+        {
+            var url = internalVariables.communicationDataURL;
+            using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            resp.EnsureSuccessStatusCode();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TestData>(json) ?? new TestData();
+        }
+
+        public void ApplySnapshot(dynamic snap)
+        {
+            TestData.Update(snap.number, snap.text, snap.ToggleBool);
+        }
+
+        public async Task<bool> IsAliveAsync(string url)
+        {
+            try
+            {
+                using var resp = await http.GetAsync(url);
+                return resp.IsSuccessStatusCode;
+            }
+            catch { return false; }
+        }
+
+        public async Task WaitUntilAliveAsync(string url, int timeoutMs = 30000, int pollMs = 500)
+        {
+            var start = Environment.TickCount;
+            while (Environment.TickCount - start < timeoutMs)
+            {
+                if (await IsAliveAsync(url)) return;
+                await Task.Delay(pollMs);
+            }
+            throw new TimeoutException($"Service not reachable: {url}");
+        }
+
+        public async Task EnsureCommunicationServiceAsync()
+        {
+            // API health-check: /api/status (nebo /api/data)
+            var apiHealth = internalVariables.communicationDataURL;
+
+            if (!await IsAliveAsync(apiHealth))
+            {
+
+                await WaitUntilAliveAsync(apiHealth, timeoutMs: 5000);
+            }
+        }
+
+        public async Task EnsureReactDevServerAsync()
+        {
+            // React dev server běží na http://localhost:3000/
+            var feRoot = internalVariables.feURL; // "http://localhost:3000/"
+
+            if (!await IsAliveAsync(feRoot))
+            {
+                string reactFolder = Path.Combine(MainForm.projectRootPath, "ReactFE");
+                string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
+
+                if (reactDevServerProc == null || reactDevServerProc.HasExited)
+                {
+                    reactDevServerProc = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "npm",
+                        Arguments = "start",
+                        WorkingDirectory = reactPath,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    });
+                }
+
+                // wait until server run
+                await WaitUntilAliveAsync(feRoot, timeoutMs: 60000);
+
+                internalVariables.reactServerStarted = true;
+            }
         }
     }
 }

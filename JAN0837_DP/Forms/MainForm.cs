@@ -75,9 +75,6 @@ namespace JAN0837_DP
         public ConcurrentQueue<int> dataQueueIN = new ConcurrentQueue<int>();
         public ConcurrentQueue<int> dataQueueOUT = new ConcurrentQueue<int>();
 
-        // 
-        Process serverProcess = null;
-
         //Paths
         public static string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
         public static string dataDirectoryPath = Path.Combine(projectRootPath, "Data");
@@ -87,6 +84,7 @@ namespace JAN0837_DP
 
         public FEserver _feServer;
         public FEcommunicationControl _feCommunication; 
+        public ucLocalhost ucLocalhost;
 
         public MainForm()
         {
@@ -243,6 +241,7 @@ namespace JAN0837_DP
                 }
                 
                 internalVariables.visualizationThread.Join();
+                PeriodicalReading.Stop();
             }
 
             // stop polling 
@@ -262,10 +261,33 @@ namespace JAN0837_DP
 
                 _feServer = new FEserver(_feCommunication);
                 await _feServer.StartAsync();
+
+                PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
+                PeriodicalReading.Start();
             }
             catch (Exception ex)
             {
 
+            }
+        }
+
+        public async void PeriodicalReading_Tick(object? sender, EventArgs e)
+        {
+            try
+            {
+                var snap = await _feCommunication.GetDataAsync();
+                _feCommunication.ApplySnapshot(snap);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                if (!IsDisposed && PeriodicalReading.Enabled == false)
+                {
+                    PeriodicalReading.Start();
+                }
             }
         }
     }

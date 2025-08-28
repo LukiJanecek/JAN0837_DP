@@ -104,7 +104,7 @@ namespace JAN0837_DP.ReactFE
             while (!token.IsCancellationRequested)
             {
                 var ctx = await _listener.GetContextAsync();
-                Process(ctx);
+                HandleRequest(ctx);
             }
         }
 
@@ -128,7 +128,7 @@ namespace JAN0837_DP.ReactFE
             resp.Headers["Access-Control-Max-Age"] = "600";
         }
 
-        public void Process(HttpListenerContext ctx)
+        public void HandleRequest(HttpListenerContext ctx)
         {
             var req = ctx.Request;
             var resp = ctx.Response;
@@ -302,7 +302,7 @@ namespace JAN0837_DP.ReactFE
                         FileName = "npm",
                         Arguments = "start",
                         WorkingDirectory = reactPath,
-                        UseShellExecute = false,
+                        UseShellExecute = true, // false
                         CreateNoWindow = true
                     });
                 }

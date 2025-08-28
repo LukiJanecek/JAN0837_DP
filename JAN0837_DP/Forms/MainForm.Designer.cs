@@ -37,6 +37,7 @@
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
             mainWindow = new Panel();
+            components = new System.ComponentModel.Container();
             PeriodicalReading = new System.Windows.Forms.Timer(components);
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();

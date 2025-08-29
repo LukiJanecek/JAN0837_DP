@@ -10,11 +10,11 @@ namespace JAN0837_DP.Data
 {
     public class TestData
     {
-        public static int number { get; set; } = 0;
+        public int number { get; set; } = 0;
 
-        public static string text { get; set; } = "";
+        public string text { get; set; } = "";
 
-        public static string toggle { get; set; } = "";
+        public string toggle { get; set; } = "";
 
         public bool ToggleBool =>
            !string.IsNullOrWhiteSpace(toggle) &&
@@ -23,7 +23,7 @@ namespace JAN0837_DP.Data
             toggle.Equals("1", System.StringComparison.OrdinalIgnoreCase) ||
             toggle.Equals("yes", System.StringComparison.OrdinalIgnoreCase));
 
-        public static void Update(int num, string txt, string tgl)
+        public void Update(int num, string txt, string tgl)
         {
             number = num;
             text = txt ?? "";

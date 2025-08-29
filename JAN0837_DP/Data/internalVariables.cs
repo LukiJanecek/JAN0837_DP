@@ -41,7 +41,7 @@ namespace JAN0837_DP.Data
         public static string communicationDataURL => communicationBaseURL.TrimEnd('/') + "/data";
         public static bool communicationServerStarted { get; set; } = false;
         public static bool reactServerStarted { get; set; } = false;
-        public static int communicationRefreshInterval { get; set; } 
+        public static int communicationRefreshInterval { get; set; } = 2000;
 
         public static FEserver feServer { get; set; }
         public static CancellationTokenSource token { get; set; } // can it be static? 

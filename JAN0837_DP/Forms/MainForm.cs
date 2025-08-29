@@ -142,6 +142,10 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Starting React dev server and ASP.NET server…"; // Openning localhost in browser.
 
+            // starting reading 
+            PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
+            PeriodicalReading.Start();
+
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
             string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
             string serverFile = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
@@ -170,7 +174,7 @@ namespace JAN0837_DP
                         Arguments = $"run --project \"{fullServerFilePath}\"",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        UseShellExecute = false,
+                        UseShellExecute = true, // false
                         CreateNoWindow = true
                     };
 
@@ -262,8 +266,8 @@ namespace JAN0837_DP
                 _feServer = new FEserver(_feCommunication);
                 await _feServer.StartAsync();
 
-                PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
-                PeriodicalReading.Start();
+                //PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
+                //PeriodicalReading.Start();
             }
             catch (Exception ex)
             {

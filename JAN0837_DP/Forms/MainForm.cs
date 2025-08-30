@@ -174,7 +174,7 @@ namespace JAN0837_DP
                         Arguments = $"run --project \"{fullServerFilePath}\"",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        UseShellExecute = true, // false
+                        UseShellExecute = false, // false
                         CreateNoWindow = true
                     };
 

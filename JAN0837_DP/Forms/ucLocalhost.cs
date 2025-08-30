@@ -22,6 +22,8 @@ using Org.BouncyCastle.Asn1.Cmp;
 using JAN0837_DP.ReactFE;
 using static System.Net.WebRequestMethods;
 using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Hosting.Server;
+using static JAN0837_DP.Data.TestData;
 
 namespace JAN0837_DP.Forms
 {
@@ -103,7 +105,9 @@ namespace JAN0837_DP.Forms
         {
             if (txtBoxParam1.Text != null && txtBoxParam1.Text != "")
             {
-                TestData.text = txtBoxParam1.Text;
+                var data = TestData.AppState.Get();
+                data.text = txtBoxParam1.Text ?? "";
+                TestData.AppState.Set(data);
             }
         }
 
@@ -111,7 +115,12 @@ namespace JAN0837_DP.Forms
         {
             if (txtBoxParam2.Text != null && txtBoxParam2.Text != "")
             {
-                TestData.number = int.Parse(txtBoxParam2.Text);
+                if (int.TryParse(txtBoxParam2.Text, out var number))
+                {
+                    var data = TestData.AppState.Get();
+                    data.number = number;
+                    TestData.AppState.Set(data);
+                }
             }
         }
 
@@ -119,22 +128,25 @@ namespace JAN0837_DP.Forms
         {
             if (txtBoxParam3.Text != null && txtBoxParam3.Text != "")
             {
-                TestData.toggle = txtBoxParam3.Text;
+                var data = TestData.AppState.Get();
+                data.toggle = txtBoxParam3.Text ?? "";
+                TestData.AppState.Set(data);
             }
         }
 
         private async void btnSendDataToFe_Click(object sender, EventArgs e)
         {
-            // připrav model
-            var data = new Dictionary<string, object>
+            var data = TestData.AppState.Get();
+
+            var payload = new Dictionary<string, object>
             {
-                ["number"] = TestData.number,
-                ["text"] = TestData.text,
-                ["toggle"] = TestData.toggle
+                ["number"] = data.number,
+                ["text"] = data.text,
+                ["toggle"] = data.toggle
             };
 
             var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-            string json = JsonConvert.SerializeObject(data);
+            string json = JsonConvert.SerializeObject(payload);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.PostAsync(internalVariables.communicationDataURL, content);
             response.EnsureSuccessStatusCode();
@@ -157,7 +169,7 @@ namespace JAN0837_DP.Forms
             webView21.CoreWebView2.Navigate(internalVariables.feURL);
         }
 
-        
+
 
         private async void btnGetData_Click(object sender, EventArgs e)
         {
@@ -197,6 +209,17 @@ namespace JAN0837_DP.Forms
             {
                 _feCommunication.Stop();
             }
+        }
+
+        private void btnShowData_Click(object sender, EventArgs e)
+        {
+            var data = TestData.AppState.Get();
+
+            lblData.Text =
+                $"number     = {data.number}\r\n" +
+                $"text       = {data.text}\r\n" +
+                $"toggle     = {data.toggle}\r\n" +
+                $"ToggleBool = {data.ToggleBool}";
         }
     }
 }

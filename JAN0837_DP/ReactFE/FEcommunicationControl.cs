@@ -85,18 +85,46 @@ namespace JAN0837_DP.ReactFE
 
         public void Update(string key, object value)
         {
+            var data = TestData.AppState.Get();
+
             switch (key)
             {
                 case "status":
-                    TestData.text = Convert.ToString(value);
+                    data.text = Convert.ToString(value) ?? "";
                     break;
+
                 case "parameter1":
-                    TestData.number = Convert.ToInt32(value);
+                    if (value is int i)
+                    {
+                        data.number = i;
+                    }
+                    else if (value is long l)
+                    {
+                        data.number = (int)l;
+                    }
+                    else if (int.TryParse(Convert.ToString(value), out var n))
+                    {
+                        data.number = n;
+                    }
                     break;
+
                 case "refreshInterval":
-                    internalVariables.communicationRefreshInterval = Convert.ToInt32(value);
+                    if (value is int ri)
+                    {
+                        internalVariables.communicationRefreshInterval = ri;
+                    }
+                    else if (value is long rl)
+                    {
+                        internalVariables.communicationRefreshInterval = (int)rl;
+                    }
+                    else if (int.TryParse(Convert.ToString(value), out var r))
+                    {
+                        internalVariables.communicationRefreshInterval = r;
+                    }
                     break;
             }
+
+            TestData.AppState.Set(data);
         }
 
         public async Task HandleAsync(CancellationToken token)
@@ -135,7 +163,7 @@ namespace JAN0837_DP.ReactFE
 
             AddCors(req, resp);
 
-            // Preflight pro CORS
+            // Preflight for CORS
             if (req.HttpMethod == "OPTIONS")
             {
                 resp.StatusCode = 204; // No Content
@@ -160,12 +188,13 @@ namespace JAN0837_DP.ReactFE
             {
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
-                    // celý stav
+                    var data = TestData.AppState.Get();
+
                     WriteJSON(resp, new
                     {
-                        number = TestData.number,
-                        text = TestData.text,
-                        toggle = TestData.toggle
+                        number = data.number,
+                        text = data.text,
+                        toggle = data.toggle
                     });
                     return;
                 }
@@ -174,22 +203,26 @@ namespace JAN0837_DP.ReactFE
                     using var sr = new StreamReader(req.InputStream);
                     var body = sr.ReadToEnd();
 
-                    var updates = JsonConvert.DeserializeObject<Dictionary<string, object>>(body) ?? new Dictionary<string, object>();
+                    var updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(body) ?? new Dictionary<string, string>();
 
-                    if (updates.TryGetValue("number", out var n))
+                    var data = TestData.AppState.Get();
+
+                    if (updates.TryGetValue("number", out var ns) && int.TryParse(ns, out var n))
                     {
-                        TestData.number = Convert.ToInt32(n);
+                        data.number = Convert.ToInt32(n);
                     }
 
                     if (updates.TryGetValue("text", out var t))
                     {
-                        TestData.text = Convert.ToString(t);
+                        data.text = Convert.ToString(t);
                     }
 
                     if (updates.TryGetValue("toggle", out var g))
                     {
-                        TestData.toggle = Convert.ToString(g);
+                        data.toggle = Convert.ToString(g);
                     }
+
+                    TestData.AppState.Set(data);
 
                     resp.StatusCode = 200;
                     resp.Close();
@@ -197,7 +230,9 @@ namespace JAN0837_DP.ReactFE
                 }
                 else
                 {
-                    resp.StatusCode = 405; resp.Close(); return;
+                    resp.StatusCode = 405; 
+                    resp.Close(); 
+                    return;
                 }
             }
             catch (Exception ex)
@@ -224,12 +259,15 @@ namespace JAN0837_DP.ReactFE
         }
 
         public object GetCurrentState()
-        => new
         {
-            TestData.text,
-            TestData.number,
-            internalVariables.communicationRefreshInterval
-        };
+            var data = TestData.AppState.Get();
+            return new
+            {
+                text = data.text,
+                number = data.number,
+                toggle = data.toggle
+            };
+        }
 
         public void HandleUpdate(Dictionary<string, object> updates)
         {
@@ -249,7 +287,13 @@ namespace JAN0837_DP.ReactFE
 
         public void ApplySnapshot(dynamic snap)
         {
-            TestData.Update(snap.number, snap.text, snap.ToggleBool);
+            //TestData.Update(snap.number, snap.text, snap.ToggleBool);
+
+            TestData.AppState.Set(snap);
+
+            Update("number", snap.number);
+            Update("text", snap.text);
+            Update("toggle", snap.toggle);
         }
 
         public async Task<bool> IsAliveAsync(string url)

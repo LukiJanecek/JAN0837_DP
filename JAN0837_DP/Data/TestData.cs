@@ -23,11 +23,46 @@ namespace JAN0837_DP.Data
             toggle.Equals("1", System.StringComparison.OrdinalIgnoreCase) ||
             toggle.Equals("yes", System.StringComparison.OrdinalIgnoreCase));
 
-        public void Update(int num, string txt, string tgl)
+        public void Update(TestData other)
         {
-            number = num;
-            text = txt ?? "";
-            toggle = tgl;
+            if (other == null)
+            {
+                return;
+            }
+            else
+            {
+                number = other.number;
+                text = other.text ?? "";
+                toggle = other.toggle ?? "";
+            }
+        }
+
+        public static class AppState
+        {
+            private static readonly object _lock = new();
+            private static TestData _data = new();
+
+            public static TestData Get()
+            {
+                lock (_lock)
+                {
+                    return new TestData
+                    {
+                        number = _data.number,
+                        text = _data.text,
+                        toggle = _data.toggle
+                    };
+                }
+            }
+
+            public static void Set(TestData value)
+            {
+                if (value == null) return;
+                lock (_lock)
+                {
+                    _data.Update(value);
+                }
+            }
         }
     }
 }

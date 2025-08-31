@@ -25,8 +25,10 @@ namespace JAN0837_DP.Data
 
         public static string feReactFolder { get; set; } = Path.Combine(MainForm.projectRootPath, "ReactFE");
         public static string feReactProjectPath { get; set; } = Path.Combine(feReactFolder, "jan0837_reactfe");
+
+        public static string tiaPath { get; set; } = Path.Combine(projectRootPath, "TIA");
     }
-    
+
     public static class internalVariables
     {
         // threads
@@ -34,7 +36,7 @@ namespace JAN0837_DP.Data
         public static Thread visualizationThread { get; set; }
         public static bool communicationThreadRunningFlag { get; set; } = false;
         public static bool visualizationThreadRunningFlag { get; set; } = false;
-        
+
         // localhost
         public static string feURL { get; set; } = "http://localhost:3000";
         public static string communicationBaseURL { get; set; } = "http://localhost:5000/api";
@@ -42,12 +44,6 @@ namespace JAN0837_DP.Data
         public static bool communicationServerStarted { get; set; } = false;
         public static bool reactServerStarted { get; set; } = false;
         public static int communicationRefreshInterval { get; set; } = 2000;
-
-        public static FEserver feServer { get; set; }
-        public static CancellationTokenSource token { get; set; } // can it be static? 
-
-
-        // communicationControl
 
         // checkboxes 
         public static bool checkBoxMaster { get; set; } = false;
@@ -64,12 +60,13 @@ namespace JAN0837_DP.Data
         public static bool restapiFlag { get; set; } = false;
         public static bool modbustcpipFlag { get; set; } = false;
         public static bool s7Flag { get; set; } = false;
-
-        // generateTIAtemplate
-
-        
+    
         // communication
         public static bool connected { get; set; } = false;
         public static bool communicationStatus { get; set; } = false;
+
+        // generateTIAtemplate
+
+
     }
 }

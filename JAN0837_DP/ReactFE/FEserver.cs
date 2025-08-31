@@ -25,6 +25,7 @@ namespace JAN0837_DP.ReactFE
     public class FEserver
     {
         private FEcommunicationControl _feCommunication;
+
         //private IHost _host;
         private IDisposable _webApp;
 
@@ -87,7 +88,7 @@ namespace JAN0837_DP.ReactFE
             });
 
             Console.WriteLine($"FE server běží na {url}, servíruje: {buildFolderPath}");
-            internalVariables.reactServerStarted = true;
+            internalVariables.communicationServerStarted = true;
             return Task.CompletedTask;
         }
 
@@ -95,7 +96,7 @@ namespace JAN0837_DP.ReactFE
         {
             _webApp?.Dispose();
             Console.WriteLine("FE server zastaven.");
-            internalVariables.reactServerStarted = false;
+            internalVariables.communicationServerStarted = false;
             return Task.CompletedTask;
         }
     }

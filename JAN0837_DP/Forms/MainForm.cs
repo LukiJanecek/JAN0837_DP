@@ -85,6 +85,7 @@ namespace JAN0837_DP
         public FEserver _feServer;
         public FEcommunicationControl _feCommunication; 
         public ucLocalhost ucLocalhost;
+        public ucGenerateTIAtemplate ucGenerateTIAtemplate;
 
         public MainForm()
         {

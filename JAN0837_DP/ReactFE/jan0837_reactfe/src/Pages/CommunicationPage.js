@@ -29,8 +29,10 @@ function CommunicationPage() {
             <h1>Communication Page</h1> 
             {error && <div style={{color:'red'}}>Chyba: {error}</div>}
             
+            <div style={{ marginTop: 12 }}><strong>Obnovovat každých:</strong> {interval}</div>
+            {/*
             <label>Obnovovat každých{' '} <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value) || 2000)} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
-
+            */}
             <div style={{ marginTop: 12 }}><strong>Number:</strong> {number}</div>
 
             <button style={{ marginTop: '0.5rem' }} onClick={inc} disabled={isFetching}>Zvýšit o 1</button>

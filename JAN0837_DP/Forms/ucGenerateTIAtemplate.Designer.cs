@@ -31,8 +31,9 @@
             statusStripGenerateTIAtemplate = new StatusStrip();
             lblStatus1 = new ToolStripStatusLabel();
             btnGenerateTemplate = new Button();
-            textBox1 = new TextBox();
+            txtParam1 = new TextBox();
             lblParameter1 = new Label();
+            btnStartTIA = new Button();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -61,12 +62,12 @@
             btnGenerateTemplate.UseVisualStyleBackColor = true;
             btnGenerateTemplate.Click += btnGenerateTemplate_Click;
             // 
-            // textBox1
+            // txtParam1
             // 
-            textBox1.Location = new Point(29, 39);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(170, 27);
-            textBox1.TabIndex = 5;
+            txtParam1.Location = new Point(29, 39);
+            txtParam1.Name = "txtParam1";
+            txtParam1.Size = new Size(170, 27);
+            txtParam1.TabIndex = 5;
             // 
             // lblParameter1
             // 
@@ -77,12 +78,23 @@
             lblParameter1.TabIndex = 6;
             lblParameter1.Text = "Parameter1:";
             // 
+            // btnStartTIA
+            // 
+            btnStartTIA.Location = new Point(404, 108);
+            btnStartTIA.Name = "btnStartTIA";
+            btnStartTIA.Size = new Size(94, 63);
+            btnStartTIA.TabIndex = 7;
+            btnStartTIA.Text = "Start TIA";
+            btnStartTIA.UseVisualStyleBackColor = true;
+            btnStartTIA.Click += btnStartTIA_Click;
+            // 
             // ucGenerateTIAtemplate
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(btnStartTIA);
             Controls.Add(lblParameter1);
-            Controls.Add(textBox1);
+            Controls.Add(txtParam1);
             Controls.Add(btnGenerateTemplate);
             Controls.Add(statusStripGenerateTIAtemplate);
             Name = "ucGenerateTIAtemplate";
@@ -98,7 +110,8 @@
         private StatusStrip statusStripGenerateTIAtemplate;
         private ToolStripStatusLabel lblStatus1;
         private Button btnGenerateTemplate;
-        private TextBox textBox1;
+        private TextBox txtParam1;
         private Label lblParameter1;
+        private Button btnStartTIA;
     }
 }

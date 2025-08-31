@@ -47,7 +47,14 @@
   <ItemGroup>
     <Folder Include="Communication\S7\" />
     <Folder Include="Communication\Sharp7\" />
+    <Folder Include="TIA\" />
     <Folder Include="PythonScripts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Siemens.Engineering">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Siemens\Automation\Portal V19\PublicAPI\V19\Siemens.Engineering.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

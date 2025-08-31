@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace JAN0837_DP.Data
 {
-    public class ReactData
-    {
-        public int communicationRefreshInterval { get; set; } = 2000;
-
-        public bool communicationActive { get; set; } = false;
-        public bool visualizationActive { get; set; } = false;
-    }
-
     public class crossroad
     {
         public bool btnCrosswalk1 { get; set; } = false;

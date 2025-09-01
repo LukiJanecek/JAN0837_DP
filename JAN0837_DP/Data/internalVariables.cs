@@ -43,7 +43,7 @@ namespace JAN0837_DP.Data
         public static string communicationDataURL => communicationBaseURL.TrimEnd('/') + "/data";
         public static bool communicationServerStarted { get; set; } = false;
         public static bool reactServerStarted { get; set; } = false;
-        public static int communicationRefreshInterval { get; set; } = 2000;
+        public static int communicationRefreshInterval { get; set; } = 50;
 
         // checkboxes 
         public static bool checkBoxMaster { get; set; } = false;

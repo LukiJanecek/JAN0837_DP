@@ -44,52 +44,55 @@ namespace JAN0837_DP.Forms
 
         private void btnGenerateTemplate_Click(object sender, EventArgs e)
         {
+            if (txtParam1.Text != "" || txtParam1.Text != null)
+            {
+                lblStatus1.Text = "Generating template in TIA.";
+
+                string tiaProjectFolder = Path.Combine(paths.tiaPath, txtParam1.Text);
+
+                Directory.CreateDirectory(tiaProjectFolder);
+                var projectFolderInfo = new DirectoryInfo(tiaProjectFolder);
+
+                lblStatus1.Text = "Running TIA Portal.";
+
+                tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface);
+
+                lblStatus1.Text = "Creating folder with project.";
+
+                Project project = tiaPortal.Projects.Create(projectFolderInfo, txtParam1.Text);
+                var devices = project.Devices;
+                //object deviceItemRef;
+
+                lblStatus1.Text = "Adding PLC.";
+                var device = devices.CreateWithItem("CPU_1212C_DC_DC_DC", "V4.5", txtParam1.Text);
+
+                // CPU module
+                DeviceItem plcDeviceItem = device.DeviceItems[0];
+
+                // PLC software
+                var softwareContainer = plcDeviceItem.GetService<SoftwareContainer>();
+                var plcSoftware = softwareContainer.Software as PlcSoftware;
+
+                // Data block 
+                lblStatus1.Text = "Adding FB + DB.";
+                var blockGroup = plcSoftware.BlockGroup;
+                var fb = blockGroup.Blocks.CreateFB("FB_test", true, 1, ProgrammingLanguage.LAD);
+                var db = blockGroup.Blocks.CreateInstanceDB("test", true, 1, "FB_test");
+
+                project.Save();
+                tiaPortal.Dispose();
+
+                lblStatus1.Text = "Template generated.";
+            }
+            else
+            {
+                lblStatus1.Text = "Type project name to Parameter1.";
+            }
+
+            /*
             try
             {
-                if (txtParam1.Text != "" || txtParam1.Text != null)
-                {
-                    lblStatus1.Text = "Generating template in TIA.";
-                    
-                    string tiaProjectFolder = Path.Combine(paths.tiaPath, txtParam1.Text);
-
-                    Directory.CreateDirectory(tiaProjectFolder);
-                    var projectFolderInfo = new DirectoryInfo(tiaProjectFolder);
-
-                    lblStatus1.Text = "Running TIA Portal.";
-
-                    tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface);
-
-                    lblStatus1.Text = "Creating folder with project.";
-
-                    Project project = tiaPortal.Projects.Create(projectFolderInfo, txtParam1.Text);
-                    var devices = project.Devices;
-                    //object deviceItemRef;
-
-                    lblStatus1.Text = "Adding PLC.";
-                    var device = devices.CreateWithItem("CPU_1212C_DC_DC_DC", "V4.5", txtParam1.Text);
-                    
-                    // CPU module
-                    DeviceItem plcDeviceItem = device.DeviceItems[0];
-
-                    // PLC software
-                    var softwareContainer = plcDeviceItem.GetService<SoftwareContainer>();
-                    var plcSoftware = softwareContainer.Software as PlcSoftware;
-
-                    // Data block 
-                    lblStatus1.Text = "Adding FB + DB.";
-                    var blockGroup = plcSoftware.BlockGroup;
-                    var fb = blockGroup.Blocks.CreateFB("FB_test", true, 1,ProgrammingLanguage.LAD);
-                    var db = blockGroup.Blocks.CreateInstanceDB("test", true, 1, "FB_test");
-
-                    project.Save();
-                    tiaPortal.Dispose();
-
-                    lblStatus1.Text = "Template generated.";
-                }
-                else
-                {
-                    lblStatus1.Text = "Type project name to Parameter1.";
-                }
+                
             }
             catch (Exception ex)
             {
@@ -99,6 +102,7 @@ namespace JAN0837_DP.Forms
             {
                 
             }
+            */
         }
 
         private void btnStartTIA_Click(object sender, EventArgs e)

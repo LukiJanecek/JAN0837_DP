@@ -8,7 +8,7 @@ const RefreshContext = createContext({
 });
 
 export function RefreshProvider({ children }) {
-  const [interval, setIntervalValue] = useState(2000);
+  const [interval, setIntervalValue] = useState(50);
   return (
     <RefreshContext.Provider value={{ interval, setInterval: setIntervalValue }}>
       {children}

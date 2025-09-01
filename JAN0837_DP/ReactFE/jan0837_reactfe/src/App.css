@@ -89,3 +89,10 @@
   max-width: 800px;
   margin: 0 auto;
 }
+
+.left-col {
+  position: sticky;
+  top: 0;
+  height: 100vh;       /* plná výška okna */
+  /*overflow-y: auto;    /* scroluje jen sidebar */
+}

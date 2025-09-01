@@ -12,7 +12,7 @@ import Clock from '../Components/Clock.js';
 
 function MainPage() {
   return (
-    <div>
+    <div className="default-content p-3">
       <h1>Hey, this is my main page. xD</h1>
     </div>
   )

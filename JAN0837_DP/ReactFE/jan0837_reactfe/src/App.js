@@ -15,16 +15,16 @@ import CommunicationPage from './Pages/CommunicationPage.js';
 function App() {
   return (
     <Container fluid className="app-container p-0">
-      <Row className="g-0"> 
-        <Col xs={12} md={3} lg={2}>
+      <Row className="g-0 flex-nowrap"> 
+        <Col xs={12} lg={2} className="bg-light border-end left-col">
           <SideNavigationBar />
         </Col>
-        <Col xs={12} md={9} lg={10} className="custom-content">
+        <Col xs={12} lg={10} className="custom-content">
           <Routes>
             <Route path="/" element={<Navigate to="/mainpage" replace />} />
-            <Route path="/mainpage" element={<div className="default-content"><MainPage /></div>}/>
-            <Route path="/crossroad" element={<div className="default-content"><CrossroadPage /></div>}/>
-            <Route path="/communication" element={<div className="default-content"><CommunicationPage /></div>}/>
+            <Route path="/mainpage" element={<MainPage />}/>
+            <Route path="/crossroad" element={<CrossroadPage />} />
+            <Route path="/communication" element={<CommunicationPage />} />
           </Routes>
         </Col>
       </Row>

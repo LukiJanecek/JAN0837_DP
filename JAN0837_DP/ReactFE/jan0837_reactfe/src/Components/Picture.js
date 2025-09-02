@@ -15,12 +15,7 @@ function Picture({name, ext = 'png', folder = 'images', alt, rounded = true, flu
   const cleanFolder = folder.replace(/^\/+/, ''); 
   const src = `${base}/${cleanFolder}/${name}.${ext}`;
   return (
-    <Image
-      src={src}
-      alt={alt ?? name}
-      rounded={rounded}
-      fluid={fluid}
-      className={className}
+    <Image src={src} alt={alt ?? name} rounded={rounded} fluid={fluid} className={className}
       onError={(e) => {
         //  fallback when picture not found 
         e.currentTarget.onerror = null;

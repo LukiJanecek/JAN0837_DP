@@ -50,6 +50,7 @@ namespace JAN0837_DP.Forms
             if (webView21.CoreWebView2 == null)
             {
                 await webView21.EnsureCoreWebView2Async();
+                webView21.DefaultBackgroundColor = Color.Transparent;
             }
 
             _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);

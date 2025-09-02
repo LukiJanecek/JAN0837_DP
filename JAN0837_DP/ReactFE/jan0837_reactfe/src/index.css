@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+img, picture, video, canvas { display: block; max-width: 100%; }
+:root{
+  /* 10 % sidebary, ale ne míň než 180px a ne víc než 320px */
+  --sidebar: clamp(180px, 10vw, 320px);
+  --gutter: 12px;
+}

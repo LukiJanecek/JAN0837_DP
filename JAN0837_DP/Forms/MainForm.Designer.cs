@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             statusStripMain = new StatusStrip();
             lblStatus = new ToolStripStatusLabel();
@@ -37,7 +38,6 @@
             btnLocalHost = new ToolStripButton();
             btnExit = new ToolStripButton();
             mainWindow = new Panel();
-            components = new System.ComponentModel.Container();
             PeriodicalReading = new System.Windows.Forms.Timer(components);
             statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
@@ -47,9 +47,9 @@
             // 
             statusStripMain.ImageScalingSize = new Size(20, 20);
             statusStripMain.Items.AddRange(new ToolStripItem[] { lblStatus });
-            statusStripMain.Location = new Point(0, 361);
+            statusStripMain.Location = new Point(0, 357);
             statusStripMain.Name = "statusStripMain";
-            statusStripMain.Size = new Size(1034, 26);
+            statusStripMain.Size = new Size(832, 26);
             statusStripMain.TabIndex = 0;
             statusStripMain.Text = "statusStrip1";
             // 
@@ -65,7 +65,7 @@
             toolStripMain.Items.AddRange(new ToolStripItem[] { btnCommunicationControl, btnGenerateTIATemplate, btnLocalHost, btnExit });
             toolStripMain.Location = new Point(0, 0);
             toolStripMain.Name = "toolStripMain";
-            toolStripMain.Size = new Size(1034, 27);
+            toolStripMain.Size = new Size(832, 27);
             toolStripMain.TabIndex = 1;
             toolStripMain.Text = "toolStrip1";
             // 
@@ -110,24 +110,24 @@
             btnExit.Text = "Exit";
             btnExit.Click += btnExit_Click;
             // 
-            // PeriodicalReading
-            // 
-            PeriodicalReading.Tick += PeriodicalReading_Tick;
-            // 
             // mainWindow
             // 
             mainWindow.BorderStyle = BorderStyle.FixedSingle;
             mainWindow.Dock = DockStyle.Fill;
             mainWindow.Location = new Point(0, 27);
             mainWindow.Name = "mainWindow";
-            mainWindow.Size = new Size(1034, 334);
+            mainWindow.Size = new Size(832, 330);
             mainWindow.TabIndex = 21;
+            // 
+            // PeriodicalReading
+            // 
+            PeriodicalReading.Tick += PeriodicalReading_Tick;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1034, 387);
+            ClientSize = new Size(832, 383);
             Controls.Add(mainWindow);
             Controls.Add(toolStripMain);
             Controls.Add(statusStripMain);

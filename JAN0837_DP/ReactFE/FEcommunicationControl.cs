@@ -303,7 +303,10 @@ namespace JAN0837_DP.ReactFE
                 using var resp = await http.GetAsync(url);
                 return resp.IsSuccessStatusCode;
             }
-            catch { return false; }
+            catch 
+            { 
+                return false; 
+            }
         }
 
         public async Task WaitUntilAliveAsync(string url, int timeoutMs = 30000, int pollMs = 500)
@@ -324,17 +327,13 @@ namespace JAN0837_DP.ReactFE
 
             if (!await IsAliveAsync(apiHealth))
             {
-
                 await WaitUntilAliveAsync(apiHealth, timeoutMs: 5000);
             }
         }
 
         public async Task EnsureReactDevServerAsync()
         {
-            // React dev server běží na http://localhost:3000/
-            var feRoot = internalVariables.feURL; // "http://localhost:3000/"
-
-            if (!await IsAliveAsync(feRoot))
+            if (!await IsAliveAsync(internalVariables.feURL) && internalVariables.reactServerStarted == false)
             {
                 string reactFolder = Path.Combine(MainForm.projectRootPath, "ReactFE");
                 string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
@@ -352,7 +351,7 @@ namespace JAN0837_DP.ReactFE
                 }
 
                 // wait until server run
-                await WaitUntilAliveAsync(feRoot, timeoutMs: 60000);
+                await WaitUntilAliveAsync(internalVariables.feURL, timeoutMs: 60000);
 
                 internalVariables.reactServerStarted = true;
             }

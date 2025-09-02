@@ -90,6 +90,7 @@ namespace JAN0837_DP
         public MainForm()
         {
             InitializeComponent();
+            this.MinimumSize = new Size(850, 430);
         }
 
         private void MainForm_Load(object sender, EventArgs e)

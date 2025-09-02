@@ -10,8 +10,9 @@ import TimeDate from '../Components/TimeDate.js';
 import Picture from '../Components/Picture.js';
 import Clock from '../Components/Clock.js';
 import PictureSwitcher from '../Components/PictureSwitcher.js';
+import ResponsiveImage from '../Components/ResponsiveImage.js';
 
-const names = ['crosswalk_ped_green19201080', 'crosswalk_vehicle_yellow19201080', 'crosswalk_vehicle_green19201080', 'crosswalk_800x600_ped_green43', 'crosswalk_800x600_vehicle_yellow43', 'crosswalk_800x600_vehicle_green43'];
+const names = ['crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
 const ext = 'png';         
 const folder = 'images'; 
 
@@ -44,7 +45,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
           </option>
         ))}
       </Form.Select>
-      
+
       <div className="d-grid gap-2">
         <Button variant="primary">Start</Button>
         <Button variant="outline-secondary">Stop</Button>
@@ -84,10 +85,22 @@ function CrossroadPage() {
   return (
     <Row className="g-0">
       <Col xs={12} lg={10} className="p-3">
+        {/*}
         <div className="mt-3">
           <Picture name={names[idx]} ext={ext} folder={folder} />
         </div>
+        */}
 
+        
+        <div style={{display:"grid", gap:12}}>
+          <ResponsiveImage name="/crosswalk_ped_green_1920x1080_169" alt="Schema křižovatky" aspect="16 / 9" fit="contain"/>
+        </div>
+        
+        {/*}
+        <div style={{display:"grid", gap:12}}>
+          <ResponsiveImage name="/crosswalk_ped_green_800x600_43" alt="Schema křižovatky" aspect="4 / 3" fit="contain"/>
+        </div>
+        */}
         {/*}
         <div className="mt-4">
           <PictureSwitcher names={names} ext="png" imgClassName="shadow-sm" />

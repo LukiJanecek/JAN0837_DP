@@ -96,7 +96,8 @@ namespace JAN0837_DP.ReactFE
         {
             _webApp?.Dispose();
             Console.WriteLine("FE server zastaven.");
-            internalVariables.communicationServerStarted = false;
+            //internalVariables.communicationServerStarted = false;
+            internalVariables.reactServerStarted = false;
             return Task.CompletedTask;
         }
     }

@@ -118,6 +118,7 @@
             mainWindow.Name = "mainWindow";
             mainWindow.Size = new Size(832, 330);
             mainWindow.TabIndex = 21;
+            mainWindow.Paint += mainWindow_Paint;
             // 
             // PeriodicalReading
             // 

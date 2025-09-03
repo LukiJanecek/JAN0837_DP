@@ -83,7 +83,7 @@ namespace JAN0837_DP
         public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
 
         public FEserver _feServer;
-        public FEcommunicationControl _feCommunication; 
+        public FEcommunicationControl _feCommunication;
         public ucLocalhost ucLocalhost;
         public ucGenerateTIAtemplate ucGenerateTIAtemplate;
 
@@ -239,13 +239,13 @@ namespace JAN0837_DP
                 {
                     await _feServer.StopAsync();
                 }
-                
+
                 if (_feCommunication != null)
                 {
                     _feCommunication.Stop();
 
                 }
-                
+
                 internalVariables.visualizationThread.Join();
                 PeriodicalReading.Stop();
             }
@@ -295,6 +295,11 @@ namespace JAN0837_DP
                     PeriodicalReading.Start();
                 }
             }
+        }
+
+        private void mainWindow_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

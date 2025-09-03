@@ -63,7 +63,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   );
 }
 
-function CrossroadPage() {
+function CrossroadPage({ setAside }) {
   const [idx, setIdx] = useState(0);
 
   const prev = () => setIdx((i) => (i - 1 + names.length) % names.length);
@@ -81,6 +81,17 @@ function CrossroadPage() {
     preload(names[(idx + 1) % names.length]);
     preload(names[(idx - 1 + names.length) % names.length]);
   }, [idx]);
+
+  useEffect(()=>{
+      setAside(
+        <div className="stack">
+          <strong>Parametry</strong>
+          <label>Limit <input type="number" defaultValue={50}/></label>
+          <button>Start</button>
+        </div>
+      );
+      return ()=> setAside(null);
+    }, [setAside]);
   
   return (
     <Row className="g-0">
@@ -116,3 +127,9 @@ function CrossroadPage() {
 }
 
 export default CrossroadPage;
+
+/*
+      <Col xs={12} lg={2}>
+        <CrossroadParamsSidebar names={names} idx={idx} onPrev={prev} onNext={next} onJump={jump}/>
+      </Col>
+*/

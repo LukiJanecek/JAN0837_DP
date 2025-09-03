@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, NavLink, useLocation } from 'react-router-dom';
 import { Container, Row, Col, Button, Nav, Image } from 'react-bootstrap';
 
 import './App.css';
@@ -13,7 +13,43 @@ import CrossroadPage from './Pages/CrossroadPage.js';
 import CommunicationPage from './Pages/CommunicationPage.js';
 
 function App() {
+  const [aside, setAside] = useState(null);
+  const location = useLocation();
+
+  useEffect(()=>{ setAside(null); }, [location.pathname]);
+
   return (
+    <div className="app" data-aside={aside ? "on" : "off"}>
+      <nav className="app__nav">
+        <SideNavigationBar />
+        {/* jednoduché odkazy */}
+        {/* 
+        <NavLink to="/mainpage" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Main Page</NavLink>
+        <NavLink to="/crossroad" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Crossroad</NavLink>
+        <NavLink to="/communication" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Communication</NavLink>
+        <div className="nav__footer">{new Date().toLocaleString()}</div>
+        */}
+      </nav>
+
+      <main className="app__main stack">
+        <Routes>
+          <Route path="/" element={<Navigate to="/mainpage" replace />} />
+          <Route path="/mainpage" element={<MainPage setAside={setAside} />} />
+          <Route path="/crossroad" element={<CrossroadPage setAside={setAside} />} />
+          <Route path="/communication" element={<CommunicationPage setAside={setAside} />} />
+        </Routes>
+      </main>
+
+      <aside className="app__aside">
+        {aside}
+      </aside>
+    </div>
+  );
+}
+
+export default App;
+
+/*
     <Container fluid className="app-container p-0">
       <Row className="g-0 flex-nowrap"> 
         <Col xs={12} lg={2} className="bg-light border-end left-col">
@@ -29,10 +65,7 @@ function App() {
         </Col>
       </Row>
     </Container>
-  );
-}
-
-export default App;
+*/
 
 /*
     <div>

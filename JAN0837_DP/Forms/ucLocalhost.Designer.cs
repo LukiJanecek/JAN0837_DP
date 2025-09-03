@@ -30,6 +30,7 @@
         {
             webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             panel1 = new Panel();
+            btnShowData = new Button();
             btnStopFE = new Button();
             btnOpenDevTool = new Button();
             lblData = new Label();
@@ -44,7 +45,6 @@
             txtBoxParam1 = new TextBox();
             lblParam1 = new Label();
             btnStartFE = new Button();
-            btnShowData = new Button();
             ((System.ComponentModel.ISupportInitialize)webView21).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -85,6 +85,16 @@
             panel1.Size = new Size(310, 581);
             panel1.TabIndex = 2;
             panel1.Paint += panel1_Paint;
+            // 
+            // btnShowData
+            // 
+            btnShowData.Location = new Point(40, 390);
+            btnShowData.Name = "btnShowData";
+            btnShowData.Size = new Size(125, 59);
+            btnShowData.TabIndex = 15;
+            btnShowData.Text = "Show data from class";
+            btnShowData.UseVisualStyleBackColor = true;
+            btnShowData.Click += btnShowData_Click;
             // 
             // btnStopFE
             // 
@@ -214,16 +224,6 @@
             btnStartFE.Text = "Start FE";
             btnStartFE.UseVisualStyleBackColor = true;
             btnStartFE.Click += btnStartFE_Click;
-            // 
-            // btnShowData
-            // 
-            btnShowData.Location = new Point(40, 390);
-            btnShowData.Name = "btnShowData";
-            btnShowData.Size = new Size(125, 59);
-            btnShowData.TabIndex = 15;
-            btnShowData.Text = "Show data from class";
-            btnShowData.UseVisualStyleBackColor = true;
-            btnShowData.Click += btnShowData_Click;
             // 
             // ucLocalhost
             // 

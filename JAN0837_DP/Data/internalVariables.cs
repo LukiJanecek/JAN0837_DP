@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using JAN0837_DP.ReactFE;
+using Siemens.Engineering.HW;
 
 namespace JAN0837_DP.Data
 {
@@ -26,6 +27,7 @@ namespace JAN0837_DP.Data
         public static string feReactFolder { get; set; } = Path.Combine(MainForm.projectRootPath, "ReactFE");
         public static string feReactProjectPath { get; set; } = Path.Combine(feReactFolder, "jan0837_reactfe");
 
+        public static string tiaDLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
         public static string tiaPath { get; set; } = Path.Combine(projectRootPath, "TIA");
     }
 

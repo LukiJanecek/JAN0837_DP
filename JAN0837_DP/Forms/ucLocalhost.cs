@@ -43,9 +43,9 @@ namespace JAN0837_DP.Forms
 
         private async void ucLocalhost_Load(object sender, EventArgs e)
         {
-            txtBoxParam1.Text = "Text";
-            txtBoxParam2.Text = "0";
-            txtBoxParam3.Text = "false";
+            //txtBoxParam1.Text = "Text";
+            //txtBoxParam2.Text = "0";
+            //txtBoxParam3.Text = "false";
 
             if (webView21.CoreWebView2 == null)
             {
@@ -62,7 +62,7 @@ namespace JAN0837_DP.Forms
                 await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
                 webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+                //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
 
                 internalVariables.reactServerStarted = true;
             }
@@ -93,7 +93,7 @@ namespace JAN0837_DP.Forms
                     await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
                     webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                    lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+                    //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
                 }
                 catch (Exception ex)
                 {
@@ -101,7 +101,7 @@ namespace JAN0837_DP.Forms
                 }
             }
         }
-
+        /*
         private void txtBoxParam1_TextChanged(object sender, EventArgs e)
         {
             if (txtBoxParam1.Text != null && txtBoxParam1.Text != "")
@@ -134,7 +134,9 @@ namespace JAN0837_DP.Forms
                 TestData.AppState.Set(data);
             }
         }
+        */
 
+        /*
         private async void btnSendDataToFe_Click(object sender, EventArgs e)
         {
             var data = TestData.AppState.Get();
@@ -154,6 +156,7 @@ namespace JAN0837_DP.Forms
 
             lblCommunicationStatus.Text = "Data transferred";
         }
+        */
 
         private void webView21_Click(object sender, EventArgs e)
         {
@@ -171,7 +174,7 @@ namespace JAN0837_DP.Forms
         }
 
 
-
+        /*
         private async void btnGetData_Click(object sender, EventArgs e)
         {
             try
@@ -193,6 +196,7 @@ namespace JAN0837_DP.Forms
                 btnGetData.Enabled = true;
             }
         }
+        */
 
         private void btnOpenDevTool_Click(object sender, EventArgs e)
         {
@@ -211,7 +215,7 @@ namespace JAN0837_DP.Forms
                 _feCommunication.Stop();
             }
         }
-
+        /*
         private void btnShowData_Click(object sender, EventArgs e)
         {
             var data = TestData.AppState.Get();
@@ -222,5 +226,6 @@ namespace JAN0837_DP.Forms
                 $"toggle     = {data.toggle}\r\n" +
                 $"ToggleBool = {data.ToggleBool}";
         }
+        */
     }
 }

@@ -116,6 +116,14 @@ namespace JAN0837_DP
                 internalVariables.visualizationThread = new Thread(Visualization);
                 internalVariables.visualizationThread.Start();
             }
+
+            // TIA version resolver
+            AppDomain.CurrentDomain.AssemblyResolve += (s, args) =>
+            {
+                var name = new System.Reflection.AssemblyName(args.Name).Name + ".dll";
+                var path = System.IO.Path.Combine(paths.tiaDLLPath, name);
+                return System.IO.File.Exists(path) ? System.Reflection.Assembly.LoadFrom(path) : null;
+            };
         }
 
         // toolStripMain components

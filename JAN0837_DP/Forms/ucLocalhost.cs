@@ -63,8 +63,6 @@ namespace JAN0837_DP.Forms
 
                 webView21.CoreWebView2.Navigate(internalVariables.feURL);
                 //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
-
-                internalVariables.reactServerStarted = true;
             }
             catch (Exception ex)
             {

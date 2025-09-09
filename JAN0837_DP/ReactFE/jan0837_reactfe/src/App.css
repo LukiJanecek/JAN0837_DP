@@ -4,19 +4,19 @@
   --gap: 12px;
   --radius: 12px;
 
-  --left: clamp(200px, 12vw, 320px);
-  --right: clamp(220px, 18vw, 360px);
+  --app-min: 200px; 
+  --left: 200px;
+  --right: 200px; /*clamp(220px, 18vw, 360px);*/
 
   --bg: #ffffff;
-  --text: #111827;
+  --text: #000000;
   --border: #e5e7eb;
 
-  --nav-bg: #2b2d42;
-  --nav-fg: #edf2f4;
-  --nav-active: #8d99ae;
-  --nav-active: #8d99ae;  
-  --nav-accent: #2563eb;  
-  --nav-accent-w: 6px; 
+  --nav-bg: #ffffff;
+  --nav-fg: #000000;
+  --nav-active: #3c3d3f; 
+  --nav-accent: #000000;  
+  --nav-accent-w: 10px; 
 }
 
 /* //////////////////////////////////////////////////////////////////////////// */
@@ -30,17 +30,14 @@ body{ background:var(--bg); color:var(--text); }
 /* //////////////////////////////////////////////////////////////////////////// */
 /* App layout (grid) */
 .app{
-  display:grid;
+  display: grid;
   grid-template-columns: var(--left) minmax(0,1fr) var(--right);
-  grid-template-rows: auto minmax(0,1fr) auto;
-  grid-template-areas:
-    "header header header"
-    "nav    main   aside"
-    "footer footer footer";
+  grid-template-areas: "nav main aside";
   gap: var(--gap);
   min-height: 100dvh;
+  min-width: var(--app-min);    /* místo „rozpadání“ dostane uživatel H-scroll */
   padding: var(--gap);
-  overflow: hidden;
+  overflow: hidden;             /* regiony mají vlastní scroll */
 }
 
 /* vypnutí pravé lišty per-page: <div class="app" data-aside="off"> */
@@ -52,21 +49,25 @@ body{ background:var(--bg); color:var(--text); }
 .app__header{ 
   grid-area: header; 
 }
+
 .app__nav   { 
   grid-area: nav;   
   min-width:0; 
   overflow:auto; 
 }
+
 .app__main  { 
   grid-area: main;  
   min-width:0; 
   overflow:auto; 
 }
+
 .app__aside { 
   grid-area: aside; 
   min-width:0; 
   overflow:auto; 
 }
+
 .app__footer{ 
   grid-area: footer; 
 }
@@ -74,19 +75,19 @@ body{ background:var(--bg); color:var(--text); }
 /* //////////////////////////////////////////////////////////////////////////// */
 /* Vzhled panelů/obsahu */
 .app__nav{
-  position: relative;                /* kvůli ::before */
-  display:flex; flex-direction:column;
-  padding: 1rem 1rem 1rem calc(1rem + var(--nav-accent-w) + 6px); /* místo na pruh */
+  position: relative;
+  display: flex; flex-direction: column;
+  padding: 1rem 1rem 1rem calc(1rem + var(--nav-accent-w) + 8px);
   color: var(--nav-fg);
   background: var(--nav-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow:auto;
+  align-items: center;
 }
 
 .app__nav::before{
   content:"";
-  position:absolute; inset:0 auto 0 0; /* top:0; left:0; bottom:0 */
+  position:absolute; inset:0 auto 0 0;
   width: var(--nav-accent-w);
   background: var(--nav-accent);
   border-top-left-radius: var(--radius);
@@ -95,36 +96,44 @@ body{ background:var(--bg); color:var(--text); }
 
 .nav__link{
   color: var(--nav-fg);
-  text-decoration:none;
-  display:flex; 
-  align-items:center; 
-  gap:.5rem;
-  padding:.5rem .6rem;
+  text-decoration: none;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .5rem .6rem;
   border-radius: 6px;
 }
+
 .nav__link:hover{ 
-  background: rgba(237,242,244,.08); 
+  background: rgba(98, 189, 24, 0.08); 
 }
+
 .nav__link.is-active{ 
   background: var(--nav-active); 
   color:#fff; 
   font-weight:600; 
 }
+
 .nav__footer{ 
   margin-top:auto; 
   font-size:.9rem; 
   text-align:center; 
+  opacity:.9;
 }
 
+.nav__
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* ===== Main + Aside ===== */
 .app__main{
   background:#f8f9fa;
-  border: 1px solid var(--border);
+  border: #000000 2px dashed;
+  /*border: 1px solid var(--border);*/
   border-radius: var(--radius);
   padding: 1rem;
 }
 
 .app__aside{
-  border: 1px solid var(--border);
+  border: #000000 2px dashed;
+  /*border: 1px solid var(--border);*/
   border-radius: var(--radius);
   padding: 1rem;
   background: var(--bg);
@@ -148,60 +157,12 @@ body{ background:var(--bg); color:var(--text); }
 /* //////////////////////////////////////////////////////////////////////////// */
 /* Utility*/
 .stack{ display:grid; gap:var(--gap); }
+.truncate{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nowrap{ white-space:nowrap; }
+.aspect{ position:relative; width:100%; aspect-ratio: var(--ratio,16/9); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg);}
+.aspect>img{ position:absolute; inset:0; width:100%; height:100%; object-fit: var(--fit, contain); }
 .panel{ border:1px solid var(--border); border-radius:var(--radius); padding:12px; background:var(--bg); }
 .hidden{ display:none !important; }
 .min-w-0{ min-width:0 !important; }
 
-/* //////////////////////////////////////////////////////////////////////////// */
-/* Motion */
-@media (prefers-reduced-motion:no-preference){
-  .spin{ animation: spin 20s linear infinite; }
-  @keyframes spin{ to{ transform: rotate(360deg); } }
-}
 
-/* //////////////////////////////////////////////////////////////////////////// */
-/* Breakpoint ≤1100px */
-@media (max-width:1100px){
-  .app{
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
-  }
-  .app__aside{ display:none; }
-
-  /* levá lišta jako off-canvas */
-  .app__nav{
-    position: fixed; top:0; left:0; bottom:0;
-    width: min(82vw, 320px); max-width:100%;
-    transform: translateX(-100%);
-    transition: transform .25s ease;
-    z-index: 40;
-    border-radius: 0;
-    border-right: 1px solid var(--border);
-  }
-  .app.nav-open .app__nav{ transform: translateX(0); }
-
-  .app__backdrop{
-    display:block; position:fixed; inset:0;
-    background: rgba(0,0,0,.35);
-    opacity:0; visibility:hidden; transition: opacity .2s ease, visibility .2s;
-    z-index:30;
-  }
-  .app.nav-open .app__backdrop{ opacity:1; visibility:visible; }
-}
-
-/* //////////////////////////////////////////////////////////////////////////// */
-/* Extra ≤700px */
-@media (max-width:700px){
-  :root{ --gap:10px; }
-  .app__main, .app__aside{ padding:.8rem; }
-}
-
-/* //////////////////////////////////////////////////////////////////////////// */
-/* Print */
-@media print{
-  .app__nav, .app__aside, .app__backdrop{ display:none !important; }
-  .app{ padding:0; gap:8px; }
-}

@@ -81,7 +81,7 @@ function CrossroadPage({ setAside }) {
     preload(names[(idx + 1) % names.length]);
     preload(names[(idx - 1 + names.length) % names.length]);
   }, [idx]);
-
+  {/*
   useEffect(()=>{
       setAside(
         <div className="stack">
@@ -92,36 +92,37 @@ function CrossroadPage({ setAside }) {
       );
       return ()=> setAside(null);
     }, [setAside]);
-  
+  */}
   return (
-    <Row className="g-0">
-      <Col xs={12} lg={10} className="p-3">
+    <Row className="crossroadpage">
+      <Col /*xs={12} lg={10}*/>
         {/*}
         <div className="mt-3">
           <Picture name={names[idx]} ext={ext} folder={folder} />
         </div>
         */}
 
-        
+        {/*}
         <div style={{display:"grid", gap:12}}>
           <ResponsiveImage name="/crosswalk_ped_green_1920x1080_169" alt="Schema křižovatky" aspect="16 / 9" fit="contain"/>
         </div>
-        
+        */}
         {/*}
         <div style={{display:"grid", gap:12}}>
           <ResponsiveImage name="/crosswalk_ped_green_800x600_43" alt="Schema křižovatky" aspect="4 / 3" fit="contain"/>
         </div>
         */}
-        {/*}
-        <div className="mt-4">
+        
+        <div>
           <PictureSwitcher names={names} ext="png" imgClassName="shadow-sm" />
         </div>
-        */}
+        
       </Col>
-
-      <Col xs={12} lg={2}>
+      
+      <Col /*xs={12} lg={2}*/>
         <CrossroadParamsSidebar names={names} idx={idx} onPrev={prev} onNext={next} onJump={jump}/>
       </Col>
+      
     </Row>
   );
 }

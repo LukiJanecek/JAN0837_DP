@@ -11,6 +11,7 @@ import Picture from '../Components/Picture.js';
 import Clock from '../Components/Clock.js';
 
 function MainPage({ setAside }) {
+  {/*
   useEffect(()=>{
     setAside(
       <div className="stack">
@@ -21,7 +22,7 @@ function MainPage({ setAside }) {
     );
     return ()=> setAside(null);
   }, [setAside]);
-
+  */}
   return (
     <div className="default-content p-3">
       <h1>Hey, this is my main page.</h1>

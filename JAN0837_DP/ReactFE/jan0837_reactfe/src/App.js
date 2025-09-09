@@ -20,17 +20,21 @@ function App() {
 
   return (
     <div className="app" data-aside={aside ? "on" : "off"}>
-      <nav className="app__nav">
-        <SideNavigationBar />
-        {/* jednoduché odkazy */}
-        {/* 
-        <NavLink to="/mainpage" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Main Page</NavLink>
-        <NavLink to="/crossroad" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Crossroad</NavLink>
-        <NavLink to="/communication" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Communication</NavLink>
-        <div className="nav__footer">{new Date().toLocaleString()}</div>
-        */}
-      </nav>
-
+      <div className="app__nav">
+        <nav >
+          <SideNavigationBar />
+          {/* jednoduché odkazy */}
+          {/* 
+          <NavLink to="/mainpage" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Main Page</NavLink>
+          <NavLink to="/crossroad" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Crossroad</NavLink>
+          <NavLink to="/communication" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Communication</NavLink>
+          <div className="nav__footer">{new Date().toLocaleString()}</div>
+          */}
+        </nav>
+      </div>
+      
+      
+    
       <main className="app__main stack">
         <Routes>
           <Route path="/" element={<Navigate to="/mainpage" replace />} />

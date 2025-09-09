@@ -12,16 +12,16 @@ import Clock from '../Components/Clock.js'
 
 function SideNavigationBar() {
   return (
-    <aside className="custom-sidebar">
-      <Nav className="flex-column">
-        <Nav.Link as={NavLink} to="/mainpage" className="custom-nav-link" end>
-          <i className="bi bi-house-door-fill" /> Main Page
+    <aside>
+      <Nav classname="nav_text">
+        <Nav.Link as={NavLink} to="/mainpage">
+          Main Page
         </Nav.Link>
-        <Nav.Link as={NavLink} to="/crossroad" className="custom-nav-link">
-          <i className="bi bi-geo-alt-fill" /> Crossroad
+        <Nav.Link as={NavLink} to="/crossroad">
+           Crossroad
         </Nav.Link>
-        <Nav.Link as={NavLink} to="/communication" className="custom-nav-link">
-          <i className="bi bi-geo-alt-fill" /> Communication
+        <Nav.Link as={NavLink} to="/communication">
+           Communication
         </Nav.Link>
       </Nav>
 

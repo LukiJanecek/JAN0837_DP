@@ -303,9 +303,9 @@ namespace JAN0837_DP.ReactFE
                 using var resp = await http.GetAsync(url);
                 return resp.IsSuccessStatusCode;
             }
-            catch 
-            { 
-                return false; 
+            catch
+            {
+                return false;
             }
         }
 
@@ -333,18 +333,15 @@ namespace JAN0837_DP.ReactFE
 
         public async Task EnsureReactDevServerAsync()
         {
-            if (!await IsAliveAsync(internalVariables.feURL) && internalVariables.reactServerStarted == false)
+            if (!await IsAliveAsync(internalVariables.feURL))
             {
-                string reactFolder = Path.Combine(MainForm.projectRootPath, "ReactFE");
-                string reactPath = Path.Combine(reactFolder, "jan0837_reactfe");
-
                 if (reactDevServerProc == null || reactDevServerProc.HasExited)
                 {
                     reactDevServerProc = Process.Start(new ProcessStartInfo
                     {
                         FileName = "npm",
                         Arguments = "start",
-                        WorkingDirectory = reactPath,
+                        WorkingDirectory = paths.feReactProjectPath,
                         UseShellExecute = true, // false
                         CreateNoWindow = true
                     });

@@ -75,10 +75,11 @@ function CommunicationPage() {
                 </div>
             </Col>
 
-            {/* RIGHT: 2/12 na lg (≈ 16.7 %) nebo přepni na lg={1} (≈ 8.33 %) */}
+            {/*
             <Col xs={12} lg={2}>
                 <CommunicationParamsSidebar />
             </Col>
+            */}
         </Row>
     );
 }

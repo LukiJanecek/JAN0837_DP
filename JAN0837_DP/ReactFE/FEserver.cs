@@ -34,7 +34,7 @@ namespace JAN0837_DP.ReactFE
             _feCommunication = control ?? throw new ArgumentNullException(nameof(control));
         }
 
-        public Task StartAsync(string url = "http://localhost:5000", string buildFolderPath = "wwwroot")
+        public Task serverStart(string url = "http://localhost:5000", string buildFolderPath = "wwwroot")
         {
             _webApp = WebApp.Start(url, app =>
             {
@@ -92,12 +92,12 @@ namespace JAN0837_DP.ReactFE
             return Task.CompletedTask;
         }
 
-        public Task StopAsync()
+        public Task serverStop()
         {
             _webApp?.Dispose();
-            Console.WriteLine("FE server zastaven.");
+            Console.WriteLine("FE server stopped.");
             //internalVariables.communicationServerStarted = false;
-            internalVariables.reactServerStarted = false;
+            internalVariables.feServerStarted = false;
             return Task.CompletedTask;
         }
     }

@@ -85,8 +85,8 @@
             btnGenerateTIATemplate.Image = (Image)resources.GetObject("btnGenerateTIATemplate.Image");
             btnGenerateTIATemplate.ImageTransparentColor = Color.Magenta;
             btnGenerateTIATemplate.Name = "btnGenerateTIATemplate";
-            btnGenerateTIATemplate.Size = new Size(165, 24);
-            btnGenerateTIATemplate.Text = "Generate TIA Template";
+            btnGenerateTIATemplate.Size = new Size(128, 24);
+            btnGenerateTIATemplate.Text = "TIA Portal control";
             btnGenerateTIATemplate.Click += btnGenerateTIATemplate_Click;
             // 
             // btnLocalHost
@@ -95,8 +95,8 @@
             btnLocalHost.Image = (Image)resources.GetObject("btnLocalHost.Image");
             btnLocalHost.ImageTransparentColor = Color.Magenta;
             btnLocalHost.Name = "btnLocalHost";
-            btnLocalHost.Size = new Size(113, 24);
-            btnLocalHost.Text = "Open localhost";
+            btnLocalHost.Size = new Size(110, 24);
+            btnLocalHost.Text = "Open frontend";
             btnLocalHost.Click += btnLocalHost_Click;
             // 
             // btnExit

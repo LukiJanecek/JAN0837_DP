@@ -35,7 +35,7 @@ namespace JAN0837_DP.ReactFE
             // var prefix = (internalVariables.communicationBaseURL ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
         }
 
-        public void Start()
+        public void communicationStart()
         {
             if (_listener?.IsListening == true)
             {
@@ -60,7 +60,7 @@ namespace JAN0837_DP.ReactFE
             }
         }
 
-        public void Stop()
+        public void communicationStop()
         {
             if (internalVariables.communicationServerStarted == true)
             {
@@ -74,8 +74,6 @@ namespace JAN0837_DP.ReactFE
                     _listener = null;
                     internalVariables.communicationServerStarted = false;
                 }
-
-
             }
             else
             {
@@ -350,7 +348,7 @@ namespace JAN0837_DP.ReactFE
                 // wait until server run
                 await WaitUntilAliveAsync(internalVariables.feURL, timeoutMs: 60000);
 
-                internalVariables.reactServerStarted = true;
+                internalVariables.feServerStarted = true;
             }
         }
     }

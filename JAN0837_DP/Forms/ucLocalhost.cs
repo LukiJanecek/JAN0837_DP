@@ -54,22 +54,16 @@ namespace JAN0837_DP.Forms
             }
 
             _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-            _feCommunication.Start();
+            _feCommunication.communicationStart();
 
-            try
-            {
-                await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
-                await _feCommunication.EnsureReactDevServerAsync();        // port 3000
+            await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
+            await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
-                webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
-            }
-            catch (Exception ex)
-            {
+            webView21.CoreWebView2.Navigate(internalVariables.feURL);
+            //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
 
-            }
 
-            if (internalVariables.reactServerStarted == true)
+            if (internalVariables.feServerStarted == true)
             {
                 webView21.CoreWebView2.Navigate(internalVariables.feURL);
             }
@@ -80,10 +74,10 @@ namespace JAN0837_DP.Forms
             if (internalVariables.communicationServerStarted != true)
             {
                 _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                _feCommunication.Start();
+                _feCommunication.communicationStart();
             }
 
-            if (internalVariables.reactServerStarted != true)
+            if (internalVariables.feServerStarted != true)
             {
                 try
                 {
@@ -205,12 +199,12 @@ namespace JAN0837_DP.Forms
         {
             if (_feServer != null)
             {
-                await _feServer.StopAsync();
+                await _feServer.serverStop();
             }
 
             if (_feCommunication != null)
             {
-                _feCommunication.Stop();
+                _feCommunication.communicationStop();
             }
         }
         /*

@@ -181,7 +181,7 @@
             btnStartCommunicationThread.Name = "btnStartCommunicationThread";
             btnStartCommunicationThread.Size = new Size(183, 51);
             btnStartCommunicationThread.TabIndex = 16;
-            btnStartCommunicationThread.Text = "Start Commonication";
+            btnStartCommunicationThread.Text = "Start Communication";
             btnStartCommunicationThread.UseVisualStyleBackColor = true;
             btnStartCommunicationThread.Click += btnStartCommunicationThread_Click;
             // 

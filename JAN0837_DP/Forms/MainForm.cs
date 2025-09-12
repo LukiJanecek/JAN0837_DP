@@ -155,7 +155,7 @@ namespace JAN0837_DP
             // starting reading 
             PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
             PeriodicalReading.Start();
-
+            /*
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
             string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
             string serverFile = Path.Combine(serverFolder, "JAN0837_react.Server.csproj"); // "JAN0837_react.Server.csproj.user"
@@ -164,16 +164,17 @@ namespace JAN0837_DP
 
             string fullServerFilePath = Path.Combine(parentDirectory, serverFile);
             string fullClientFilePath = Path.Combine(parentDirectory, clientFile);
-
+            */
             mainWindow.Controls.Clear();
             var visual = new ucLocalhost();
             visual.Dock = DockStyle.Fill;
             mainWindow.Controls.Add(visual);
 
             // Vizualization
+            /*
             try
             {
-                if (internalVariables.reactServerStarted == false)
+                if (internalVariables.feServerStarted == false)
                 {
 
                     // starting .NET server
@@ -214,7 +215,7 @@ namespace JAN0837_DP
                     serverProcess.BeginOutputReadLine();
                     serverProcess.BeginErrorReadLine();
 
-                    internalVariables.reactServerStarted = true;
+                    internalVariables.feServerStarted = true;
                 }
 
                 lblStatus.Text = "Servers started. Check your browser."; // Localhost openend on ...
@@ -224,7 +225,7 @@ namespace JAN0837_DP
             {
                 MessageBox.Show("Chyba při spouštění:\n" + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
+            */
         }
 
         private async void btnExit_Click(object sender, EventArgs e)
@@ -232,30 +233,28 @@ namespace JAN0837_DP
             lblStatus.Text = "Exitting...";
 
             // communication thread stop
-            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
+            if (internalVariables.communicationThread != null || internalVariables.communicationThreadRunningFlag == true)
             {
                 internalVariables.communicationThreadRunningFlag = false;
                 internalVariables.communicationThread.Join();
             }
 
             // vizualization thread stop
-            if (internalVariables.visualizationThread != null && internalVariables.visualizationThread.IsAlive)
+            if (internalVariables.visualizationThread != null || internalVariables.visualizationThread.IsAlive || internalVariables.visualizationThreadRunningFlag == true)
             {
-                internalVariables.visualizationThreadRunningFlag = false;
-
                 if (_feServer != null)
                 {
-                    await _feServer.StopAsync();
+                    await _feServer.serverStop();
                 }
 
                 if (_feCommunication != null)
                 {
-                    _feCommunication.Stop();
-
+                    _feCommunication.communicationStop();
                 }
 
                 internalVariables.visualizationThread.Join();
                 PeriodicalReading.Stop();
+                internalVariables.visualizationThreadRunningFlag = false;
             }
 
             // stop polling 
@@ -271,10 +270,10 @@ namespace JAN0837_DP
             try
             {
                 _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                _feCommunication.Start();
+                _feCommunication.communicationStart();
 
                 _feServer = new FEserver(_feCommunication);
-                await _feServer.StartAsync();
+                await _feServer.serverStart();
 
                 //PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
                 //PeriodicalReading.Start();

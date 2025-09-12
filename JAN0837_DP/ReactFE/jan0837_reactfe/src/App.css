@@ -17,6 +17,25 @@
   --nav-active: #3c3d3f; 
   --nav-accent: #000000;  
   --nav-accent-w: 10px; 
+
+  --red: #ef4444;
+  --green: #22c55e;
+  --green-light: #bbf7d0;
+  --green-dark: #166534;
+  --green-tree: #16a34a;
+  --blue: #3b82f6;
+  --blue-light: #bfdbfe;
+  --blue-dark: #1e40af;
+  --yellow: #eab308;
+  --white: #ffffff;
+  --black: #000000;
+  --gray: #6b7280;
+  --gray-light: #f3f4f6;
+  --gray-dark: #374151;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink: #ec4899;
+  --purple: #a855f7;
+  --indigo: #6366f1;
 }
 
 /* //////////////////////////////////////////////////////////////////////////// */

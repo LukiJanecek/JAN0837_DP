@@ -24,57 +24,78 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const { interval, setInterval } = useRefresh();
   const { data, saveData, error, isFetching, refresh } = useData();
 
-  const bool = (() => {const t = String(data?.toggle ?? '').toLowerCase();return t === 'true' || t === 'on' || t === '1';})();
-  const trafficLight1_green = (() => {const t = String(data?.trafficLight1_green ?? '').toLowerCase();})();
+  const number = Number(data?.number ?? 0);
+  const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
+  const toggle = (() => {
+        const t = String(data?.toggle ?? '').toLowerCase();
+        return t === 'true' || t === 'on' || t === '1';
+  })();
+
+  const trafficLight1_green = Boolean(data?.trafficLight1_green ?? false);
   const trafficLight1_yellow = Boolean(data?.trafficLight1_yellow ?? false);
-  const trafficLight1_red = Boolean(data?.trafficLight1_red ?? true); 
+  const trafficLight1_red = Boolean(data?.trafficLight1_red ?? false); 
   const trafficLight2_green = Boolean(data?.trafficLight2_green ?? false);
   const trafficLight2_yellow = Boolean(data?.trafficLight2_yellow ?? false);
-  const trafficLight2_red = Boolean(data?.trafficLight2_red ?? true); 
+  const trafficLight2_red = Boolean(data?.trafficLight2_red ?? false); 
   const pedestrian1_green = Boolean(data?.pedestrian1_green ?? false);
-  const pedestrian1_red = Boolean(data?.pedestrian1_red ?? true); 
+  const pedestrian1_red = Boolean(data?.pedestrian1_red ?? false); 
   const pedestrian2_green = Boolean(data?.pedestrian2_green ?? false);
-  const pedestrian2_red = Boolean(data?.pedestrian2_red ?? true);
+  const pedestrian2_red = Boolean(data?.pedestrian2_red ?? false);
 
   return (
-    <div className="p-3 border-start h-100">
-      <div className="fw-semibold mb-3">Parametry</div>
-      
-      <div className="d-grid gap-2 mb-2">
+    <div>
+      <h3>Parametry:</h3>
+      <div className="gap-2 mb-2">
         <div className="text-muted small text-center">
           Obrázek {idx + 1} / {names.length}
         </div>
+        
         <Button variant="outline-secondary" onClick={onPrev}>
           &laquo; Předchozí
         </Button>
+        
         <Button variant="primary" onClick={onNext}>
           Další &raquo;
         </Button>
+
+        <Form.Select value={idx} onChange={(e) => onJump(Number(e.target.value))} className="mb-3">          
+          {names.map((n, i) => (
+            <option key={n} value={i}>
+              {n}
+            </option>
+          ))}
+        </Form.Select>
+
       </div>
-
-      <Form.Select
-        value={idx}
-        onChange={(e) => onJump(Number(e.target.value))}
-        className="mb-3"
-      >
-        {names.map((n, i) => (
-          <option key={n} value={i}>
-            {n}
-          </option>
-        ))}
-      </Form.Select>
-
+      
       <div>
-        <div><strong>TL1_G:</strong>{trafficLight1_green}</div>
-        <div><strong>TL1_Y:</strong>{trafficLight1_yellow}</div>
-        <div><strong>TL1_R:</strong>{trafficLight1_red}</div>
-        <div><strong>TL2_G:</strong>{trafficLight2_green}</div>
-        <div><strong>TL2_Y:</strong>{trafficLight2_yellow}</div>
-        <div><strong>TL2_R:</strong>{trafficLight2_red}</div>
-        <div><strong>PL1_G:</strong>{pedestrian1_green}</div>
-        <div><strong>PL1_R:</strong>{pedestrian1_red}</div>
-        <div><strong>PL2_G:</strong>{pedestrian2_green}</div>
-        <div><strong>PL2_R:</strong>{pedestrian2_red}</div>
+        <div><strong>Number:</strong> {number}</div>
+        <div><strong>Status:</strong> {String(toggle)}</div>
+        <div><strong>Text:</strong> {text}</div>
+
+        <div><strong>TL1_G:</strong> {String(trafficLight1_green)}</div>
+        <div><strong>TL1_Y:</strong> {String(trafficLight1_yellow)}</div>
+        <div><strong>TL1_R:</strong> {String(trafficLight1_red)}</div>
+        <div><strong>TL2_G:</strong> {String(trafficLight2_green)}</div>
+        <div><strong>TL2_Y:</strong> {String(trafficLight2_yellow)}</div>
+        <div><strong>TL2_R:</strong> {String(trafficLight2_red)}</div>
+        <div><strong>PL1_G:</strong> {String(pedestrian1_green)}</div>
+        <div><strong>PL1_R:</strong> {String(pedestrian1_red)}</div>
+        <div><strong>PL2_G:</strong> {String(pedestrian2_green)}</div>
+        <div><strong>PL2_R:</strong> {String(pedestrian2_red)}</div>
+
+        <Col>
+          <div className="gap-2 mb-2">
+            <Button variant="success" className="btn--start" /*onClick={}*/ /*disabled={isFetching}*/>
+              Start
+            </Button>
+          </div>
+          <div className="gap-2 mb-2">
+            <Button variant="danger" className="btn--stop" /*onClick={}*/ /*disabled={isFetching}*/>
+              Stop
+            </Button>  
+          </div>
+        </Col>
       </div>
     </div>
   );
@@ -114,7 +135,7 @@ function CrossroadPage({ setAside }) {
 
   return (
     <Row className="crossroadpage">
-      <Col /*xs={12} lg={10}*/>
+      <Col xs={12} lg={10}>
         
         <div className="mt-3">
           <Picture name={names[idx]} ext={ext} folder={folder} />
@@ -122,21 +143,21 @@ function CrossroadPage({ setAside }) {
         
         {/*}
         */}
-        
+        {/*}
         <div style={{display:"grid", gap:12}}>
           <ResponsiveImage name="/crosswalk_ped_green_1920x1080_169" alt="Schema křižovatky 16:9" aspect="16 / 9" fit="contain"/>
         </div>
-        
-        
+        */}
+        {/*}
         <div style={{display:"grid", gap:12}}>
           <ResponsiveImage name="/crosswalk_ped_green_800x600_43" alt="Schema křižovatky 4:3" aspect="4 / 3" fit="contain"/>
         </div>
-        
-        
+        */}
+        {/*}
         <div>
           <PictureSwitcher names={names} ext="png" imgClassName="shadow-sm" />
         </div>
-        
+        */}
       </Col>
       
       <Col /*xs={12} lg={2}*/>

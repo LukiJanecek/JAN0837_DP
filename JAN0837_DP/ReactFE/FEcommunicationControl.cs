@@ -83,26 +83,27 @@ namespace JAN0837_DP.ReactFE
 
         public void Update(string key, object value)
         {
-            var data = TestData.AppState.Get();
+            var testdata = TestData.AppState.Get();
+            var crossroaddata = CrossroadData.AppState.Get();
 
             switch (key)
             {
                 case "status":
-                    data.text = Convert.ToString(value) ?? "";
+                    testdata.text = Convert.ToString(value) ?? "";
                     break;
 
                 case "parameter1":
                     if (value is int i)
                     {
-                        data.number = i;
+                        testdata.number = i;
                     }
                     else if (value is long l)
                     {
-                        data.number = (int)l;
+                        testdata.number = (int)l;
                     }
                     else if (int.TryParse(Convert.ToString(value), out var n))
                     {
-                        data.number = n;
+                        testdata.number = n;
                     }
                     break;
 
@@ -120,9 +121,38 @@ namespace JAN0837_DP.ReactFE
                         internalVariables.communicationRefreshInterval = r;
                     }
                     break;
+
+                case "toggle":
+                    break;
+
+                case "btnCrosswalk1":
+                    break;
+                case "btnCrosswalk2":
+                    break;
+                case "trafficLight1_green":
+                    break;
+                case "trafficLight1_yellow":
+                    break;
+                case "trafficLight1_red":
+                    break;
+                case "trafficLight2_green":
+                    break;
+                case "trafficLight2_yellow":
+                    break;
+                case "trafficLight2_red":
+                    break;
+                case "pedestrian1_green":
+                    break;
+                case "pedestrian1_red":
+                    break;
+                case "pedestrian2_green":
+                    break;
+                case "pedestrian2_red":
+                    break;
             }
 
-            TestData.AppState.Set(data);
+            TestData.AppState.Set(testdata);
+            CrossroadData.AppState.Set(crossroaddata);
         }
 
         public async Task HandleAsync(CancellationToken token)
@@ -186,13 +216,29 @@ namespace JAN0837_DP.ReactFE
             {
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
-                    var data = TestData.AppState.Get();
+                    var testdata = TestData.AppState.Get();
+                    var crossroaddata = CrossroadData.AppState.Get();
 
                     WriteJSON(resp, new
                     {
-                        number = data.number,
-                        text = data.text,
-                        toggle = data.toggle
+                        // TestData
+                        number = testdata.number,
+                        text = testdata.text,
+                        toggle = testdata.toggle,
+
+                        // CrossroadData
+                        btnCrosswalk1 = crossroaddata.btnCrosswalk1,
+                        btnCrosswalk2 = crossroaddata.btnCrosswalk2,
+                        trafficLight1_green = crossroaddata.trafficLight1_green,
+                        trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
+                        trafficLight1_red = crossroaddata.trafficLight1_red,
+                        trafficLight2_green = crossroaddata.trafficLight2_green,
+                        trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
+                        trafficLight2_red = crossroaddata.trafficLight2_red,
+                        pedestrian1_green = crossroaddata.pedestrian1_green,
+                        pedestrian1_red = crossroaddata.pedestrian1_red,
+                        pedestrian2_green = crossroaddata.pedestrian2_green,
+                        pedestrian2_red = crossroaddata.pedestrian2_red
                     });
                     return;
                 }
@@ -203,24 +249,88 @@ namespace JAN0837_DP.ReactFE
 
                     var updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(body) ?? new Dictionary<string, string>();
 
-                    var data = TestData.AppState.Get();
+                    var testdata = TestData.AppState.Get();
+                    var crossroaddata = CrossroadData.AppState.Get();
 
+                    // TestData
                     if (updates.TryGetValue("number", out var ns) && int.TryParse(ns, out var n))
                     {
-                        data.number = Convert.ToInt32(n);
+                        testdata.number = Convert.ToInt32(n);
                     }
 
                     if (updates.TryGetValue("text", out var t))
                     {
-                        data.text = Convert.ToString(t);
+                        testdata.text = Convert.ToString(t);
                     }
 
                     if (updates.TryGetValue("toggle", out var g))
                     {
-                        data.toggle = Convert.ToString(g);
+                        testdata.toggle = Convert.ToString(g);
                     }
 
-                    TestData.AppState.Set(data);
+                    // CrossroadData
+                    if (updates.TryGetValue("btnCrosswalk1", out var btnCrosswalk1))
+                    {
+                        crossroaddata.btnCrosswalk1 = Convert.ToBoolean(btnCrosswalk1);
+                    }
+                    
+                    if (updates.TryGetValue("btnCrosswalk2", out var btnCrosswalk2))
+                    {
+                        crossroaddata.btnCrosswalk2 = Convert.ToBoolean(btnCrosswalk2);
+                    }
+
+                    if (updates.TryGetValue("trafficLight1_green", out var trafficLight1_green))
+                    {
+                        crossroaddata.trafficLight1_green = Convert.ToBoolean(trafficLight1_green);
+                    }
+
+                    if (updates.TryGetValue("trafficLight1_yellow", out var trafficLight1_yellow))
+                    {
+                        crossroaddata.trafficLight1_yellow = Convert.ToBoolean(trafficLight1_yellow);
+                    }
+
+                    if (updates.TryGetValue("trafficLight1_red", out var trafficLight1_red))
+                    {
+                        crossroaddata.trafficLight1_red = Convert.ToBoolean(trafficLight1_red);
+                    }
+
+                    if (updates.TryGetValue("trafficLight2_green", out var trafficLight2_green))
+                    {
+                        crossroaddata.trafficLight2_green = Convert.ToBoolean(trafficLight2_green);
+                    }
+
+                    if (updates.TryGetValue("trafficLight2_yellow", out var trafficLight2_yellow))
+                    {
+                        crossroaddata.trafficLight2_yellow = Convert.ToBoolean(trafficLight2_yellow);
+                    }
+
+                    if (updates.TryGetValue("trafficLight2_red", out var trafficLight2_red))
+                    {
+                        crossroaddata.trafficLight2_red = Convert.ToBoolean(trafficLight2_red);
+                    }
+
+                    if (updates.TryGetValue("pedestrian1_green", out var pedestrian1_green))
+                    {
+                        crossroaddata.pedestrian1_green = Convert.ToBoolean(pedestrian1_green);
+                    }
+
+                    if (updates.TryGetValue("pedestrian1_red", out var pedestrian1_red))
+                    {
+                        crossroaddata.pedestrian1_red = Convert.ToBoolean(pedestrian1_red);
+                    }
+
+                    if (updates.TryGetValue("pedestrian2_green", out var pedestrian2_green))
+                    {
+                        crossroaddata.pedestrian2_green = Convert.ToBoolean(pedestrian2_green);
+                    }
+
+                    if (updates.TryGetValue("pedestrian2_red", out var pedestrian2_red))
+                    {
+                        crossroaddata.pedestrian2_red = Convert.ToBoolean(pedestrian2_red);
+                    }
+
+                    TestData.AppState.Set(testdata);
+                    CrossroadData.AppState.Set(crossroaddata);
 
                     resp.StatusCode = 200;
                     resp.Close();
@@ -258,12 +368,29 @@ namespace JAN0837_DP.ReactFE
 
         public object GetCurrentState()
         {
-            var data = TestData.AppState.Get();
+            var testdata = TestData.AppState.Get();
+            var crossroaddata = CrossroadData.AppState.Get();
+
             return new
             {
-                text = data.text,
-                number = data.number,
-                toggle = data.toggle
+                // TestData
+                text = testdata.text,
+                number = testdata.number,
+                toggle = testdata.toggle,
+
+                // CrossroadData
+                btnCrosswalk1 = crossroaddata.btnCrosswalk1,
+                btnCrosswalk2 = crossroaddata.btnCrosswalk2,
+                trafficLight1_green = crossroaddata.trafficLight1_green,
+                trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
+                trafficLight1_red = crossroaddata.trafficLight1_red,
+                trafficLight2_green = crossroaddata.trafficLight2_green,
+                trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
+                trafficLight2_red = crossroaddata.trafficLight2_red,
+                pedestrian1_green = crossroaddata.pedestrian1_green,
+                pedestrian1_red = crossroaddata.pedestrian1_red,
+                pedestrian2_green = crossroaddata.pedestrian2_green,
+                pedestrian2_red = crossroaddata.pedestrian2_red
             };
         }
 
@@ -272,6 +399,26 @@ namespace JAN0837_DP.ReactFE
             foreach (var kv in updates)
                 Update(kv.Key, kv.Value);
         }
+
+        public async Task<T> GetDataAsync<T>(string url)
+        {
+            using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            resp.EnsureSuccessStatusCode();
+
+            var json = await resp.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json) ?? Activator.CreateInstance<T>();
+        }
+
+        public Task<TestData> GetTestDataAsync()
+        {
+            return GetDataAsync<TestData>(internalVariables.communicationDataURL);
+        }
+
+        public Task<CrossroadData> GetCrossroadDataAsync()
+        {
+            return GetDataAsync<CrossroadData>(internalVariables.communicationDataURL);
+        }
+
 
         public async Task<TestData> GetDataAsync()
         {
@@ -292,6 +439,21 @@ namespace JAN0837_DP.ReactFE
             Update("number", snap.number);
             Update("text", snap.text);
             Update("toggle", snap.toggle);
+
+            CrossroadData.AppState.Set(snap);
+
+            Update("btnCrosswalk1", snap.btnCrosswalk1);
+            Update("btnCrosswalk2", snap.btnCrosswalk2);
+            Update("trafficlight1_green", snap.trafficlight1_green);
+            Update("trafficLight1_yellow", snap.trafficLight1_yellow);
+            Update("trafficLight1_red", snap.trafficLight1_red);
+            Update("trafficLight2_green", snap.trafficLight2_green);
+            Update("trafficLight2_yellow", snap.trafficLight2_yellow);
+            Update("trafficLight2_red", snap.trafficLight2_red);
+            Update("pedestrian1_green", snap.pedestrian1_green);
+            Update("pedestrian1_red", snap.pedestrian1_red);
+            Update("pedestrian2_green", snap.pedestrian2_green);
+            Update("pedestrian2_red", snap.pedestrian2_red);
         }
 
         public async Task<bool> IsAliveAsync(string url)

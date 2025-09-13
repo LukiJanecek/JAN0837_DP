@@ -288,8 +288,11 @@ namespace JAN0837_DP
         {
             try
             {
-                var snap = await _feCommunication.GetDataAsync();
-                _feCommunication.ApplySnapshot(snap);
+                var snapTestData = await _feCommunication.GetTestDataAsync();
+                _feCommunication.ApplySnapshot(snapTestData);
+
+                var snapCrossroadData = await _feCommunication.GetCrossroadDataAsync();
+                _feCommunication.ApplySnapshot(snapCrossroadData);
             }
             catch (Exception ex)
             {

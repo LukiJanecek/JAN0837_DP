@@ -15,14 +15,14 @@ export const STATE_SCHEMA = {
   btnCrosswalk2: { type: 'boolean', default: false },
   trafficLight1_green: { type: 'boolean', default: false },
   trafficLight1_yellow: { type: 'boolean', default: false },
-  trafficLight1_red: { type: 'boolean', default: true },
+  trafficLight1_red: { type: 'boolean', default: false },
   trafficLight2_green: { type: 'boolean', default: false },
   trafficLight2_yellow: { type: 'boolean', default: false },
-  trafficLight2_red: { type: 'boolean', default: true },
+  trafficLight2_red: { type: 'boolean', default: false },
   pedestrian1_green: { type: 'boolean', default: false },
-  pedestrian1_red: { type: 'boolean', default: true },
+  pedestrian1_red: { type: 'boolean', default: false },
   pedestrian2_green: { type: 'boolean', default: false },
-  pedestrian2_red: { type: 'boolean', default: true },
+  pedestrian2_red: { type: 'boolean', default: false },
 
   // 
   '*': { type: 'any' }

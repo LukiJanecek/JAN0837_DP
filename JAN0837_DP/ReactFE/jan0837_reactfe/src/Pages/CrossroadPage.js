@@ -24,6 +24,22 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const { interval, setInterval } = useRefresh();
   const { data, saveData, error, isFetching, refresh } = useData();
 
+  const btnCrossroadStart = Boolean(data?.btnCrossroadStart);
+  const btnCrossroadPause = Boolean(data?.btnCrossroadPause);
+  const btnCrossroadStop = Boolean(data?.btnCrossroadStop);
+
+  {/*
+  const toggleBtn = (key, value) => saveData({ [key]: value });
+  */}
+
+  const toggleBtn = (key, value) => {
+    saveData({
+      btnCrossroadStart: key === "btnCrossroadStart" ? value : btnCrossroadStart,
+      btnCrossroadPause: key === "btnCrossroadPause" ? value : btnCrossroadPause,
+      btnCrossroadStop: key === "btnCrossroadStop"  ? value : btnCrossroadStop,
+    });
+  };
+
   const number = Number(data?.number ?? 0);
   const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
   const toggle = (() => {
@@ -72,6 +88,10 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         <div><strong>Number:</strong> {number}</div>
         <div><strong>Status:</strong> {String(toggle)}</div>
         <div><strong>Text:</strong> {text}</div>
+        
+        <div><strong>btnCrossroadStart:</strong> {String(btnCrossroadStart)}</div>
+        <div><strong>btnCrossroadPause:</strong> {String(btnCrossroadPause)}</div>
+        <div><strong>btnCrossroadStop:</strong> {String(btnCrossroadStop)}</div>
 
         <div><strong>TL1_G:</strong> {String(trafficLight1_green)}</div>
         <div><strong>TL1_Y:</strong> {String(trafficLight1_yellow)}</div>
@@ -86,13 +106,18 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
         <Col>
           <div className="gap-2 mb-2">
-            <Button variant="success" className="btn--start" /*onClick={}*/ /*disabled={isFetching}*/>
-              Start
+            <Button variant="success" className="btn--start" onClick={() => toggleBtn("btnCrossroadStart", !btnCrossroadStart)} disabled={isFetching}>
+              Start ({String(btnCrossroadStart)})
             </Button>
           </div>
           <div className="gap-2 mb-2">
-            <Button variant="danger" className="btn--stop" /*onClick={}*/ /*disabled={isFetching}*/>
-              Stop
+            <Button variant="warning" className="btn--pause" onClick={() => toggleBtn("btnCrossroadPause", !btnCrossroadPause)} disabled={isFetching}>
+              Pause ({String(btnCrossroadPause)})
+            </Button>
+          </div>
+          <div className="gap-2 mb-2">
+            <Button variant="danger" className="btn--stop" onClick={() => toggleBtn("btnCrossroadStop", !btnCrossroadStop)} disabled={isFetching}>
+              Stop ({String(btnCrossroadStop)})
             </Button>  
           </div>
         </Col>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Opc.Ua;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,10 @@ namespace JAN0837_DP.Data
 {
     public class CrossroadData
     {
+        public bool btnCrossroadStart { get; set; } = false;
+        public bool btnCrossroadPause { get; set; } = false;
+        public bool btnCrossroadStop { get; set; } = false;
+
         public bool btnCrosswalk1 { get; set; } = false;
         public bool btnCrosswalk2 { get; set; } = false;
         public bool trafficLight1_green { get; set; } = false;

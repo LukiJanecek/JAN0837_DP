@@ -11,6 +11,10 @@ export const STATE_SCHEMA = {
   visualizationActive: { type: 'boolean', default: false },
 
   // Crossroad  
+  btnCrossroadStart: { type: 'boolean', default: false },
+  btnCrossroadPause: { type: 'boolean', default: false },
+  btnCrossroadStop: { type: 'boolean', default: false },
+  
   btnCrosswalk1: { type: 'boolean', default: false },
   btnCrosswalk2: { type: 'boolean', default: false },
   trafficLight1_green: { type: 'boolean', default: false },

@@ -124,7 +124,12 @@ namespace JAN0837_DP.ReactFE
 
                 case "toggle":
                     break;
-
+                case "btnCrossroadStart":
+                    break;
+                case "btnCrossroadPause":
+                    break;
+                case "btnCrossroadStop":
+                    break;
                 case "btnCrosswalk1":
                     break;
                 case "btnCrosswalk2":
@@ -227,6 +232,9 @@ namespace JAN0837_DP.ReactFE
                         toggle = testdata.toggle,
 
                         // CrossroadData
+                        btnCrossroadStart = crossroaddata.btnCrossroadStart,
+                        btnCrossroadPause = crossroaddata.btnCrossroadPause,
+                        btnCrossroadStop = crossroaddata.btnCrossroadStop,
                         btnCrosswalk1 = crossroaddata.btnCrosswalk1,
                         btnCrosswalk2 = crossroaddata.btnCrosswalk2,
                         trafficLight1_green = crossroaddata.trafficLight1_green,
@@ -269,6 +277,21 @@ namespace JAN0837_DP.ReactFE
                     }
 
                     // CrossroadData
+                    if (updates.TryGetValue("btnCrossroadStart", out var btnCrossroadStart))
+                    {
+                        crossroaddata.btnCrossroadStart = Convert.ToBoolean(btnCrossroadStart);
+                    }
+
+                    if (updates.TryGetValue("btnCrossroadPause", out var btnCrossroadPause))
+                    {
+                        crossroaddata.btnCrossroadPause = Convert.ToBoolean(btnCrossroadPause);
+                    }
+
+                    if (updates.TryGetValue("btnCrossroadStop", out var btnCrossroadStop))
+                    {
+                        crossroaddata.btnCrossroadStop = Convert.ToBoolean(btnCrossroadStop);
+                    }
+
                     if (updates.TryGetValue("btnCrosswalk1", out var btnCrosswalk1))
                     {
                         crossroaddata.btnCrosswalk1 = Convert.ToBoolean(btnCrosswalk1);
@@ -379,6 +402,9 @@ namespace JAN0837_DP.ReactFE
                 toggle = testdata.toggle,
 
                 // CrossroadData
+                btnCrossroadStart = crossroaddata.btnCrossroadStart,
+                btnCrossroadPause = crossroaddata.btnCrossroadPause,
+                btnCrossroadStop = crossroaddata.btnCrossroadStop,
                 btnCrosswalk1 = crossroaddata.btnCrosswalk1,
                 btnCrosswalk2 = crossroaddata.btnCrosswalk2,
                 trafficLight1_green = crossroaddata.trafficLight1_green,
@@ -442,6 +468,9 @@ namespace JAN0837_DP.ReactFE
 
             CrossroadData.AppState.Set(snap);
 
+            Update("btnCrossroadStart", snap.btnCrossroadStart);
+            Update("btnCrossroadPause", snap.btnCrossroadPause);
+            Update("btnCrossroadStop", snap.btnCrossroadStop);
             Update("btnCrosswalk1", snap.btnCrosswalk1);
             Update("btnCrosswalk2", snap.btnCrosswalk2);
             Update("trafficlight1_green", snap.trafficlight1_green);

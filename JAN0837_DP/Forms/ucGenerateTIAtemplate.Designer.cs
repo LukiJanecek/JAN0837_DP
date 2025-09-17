@@ -31,9 +31,11 @@
             statusStripGenerateTIAtemplate = new StatusStrip();
             lblStatus1 = new ToolStripStatusLabel();
             btnGenerateTemplate = new Button();
-            txtParam1 = new TextBox();
-            lblParameter1 = new Label();
+            txtBoxParam1 = new TextBox();
+            lblParam1 = new Label();
             btnStartTIA = new Button();
+            lblParam2 = new Label();
+            txtBoxParam2 = new TextBox();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -62,21 +64,21 @@
             btnGenerateTemplate.UseVisualStyleBackColor = true;
             btnGenerateTemplate.Click += btnGenerateTemplate_Click;
             // 
-            // txtParam1
+            // txtBoxParam1
             // 
-            txtParam1.Location = new Point(29, 39);
-            txtParam1.Name = "txtParam1";
-            txtParam1.Size = new Size(170, 27);
-            txtParam1.TabIndex = 5;
+            txtBoxParam1.Location = new Point(29, 39);
+            txtBoxParam1.Name = "txtBoxParam1";
+            txtBoxParam1.Size = new Size(170, 27);
+            txtBoxParam1.TabIndex = 5;
             // 
-            // lblParameter1
+            // lblParam1
             // 
-            lblParameter1.AutoSize = true;
-            lblParameter1.Location = new Point(29, 16);
-            lblParameter1.Name = "lblParameter1";
-            lblParameter1.Size = new Size(87, 20);
-            lblParameter1.TabIndex = 6;
-            lblParameter1.Text = "Parameter1:";
+            lblParam1.AutoSize = true;
+            lblParam1.Location = new Point(29, 16);
+            lblParam1.Name = "lblParam1";
+            lblParam1.Size = new Size(87, 20);
+            lblParam1.TabIndex = 6;
+            lblParam1.Text = "Parameter1:";
             // 
             // btnStartTIA
             // 
@@ -88,13 +90,31 @@
             btnStartTIA.UseVisualStyleBackColor = true;
             btnStartTIA.Click += btnStartTIA_Click;
             // 
+            // lblParam2
+            // 
+            lblParam2.AutoSize = true;
+            lblParam2.Location = new Point(29, 82);
+            lblParam2.Name = "lblParam2";
+            lblParam2.Size = new Size(87, 20);
+            lblParam2.TabIndex = 9;
+            lblParam2.Text = "Parameter2:";
+            // 
+            // txtBoxParam2
+            // 
+            txtBoxParam2.Location = new Point(29, 105);
+            txtBoxParam2.Name = "txtBoxParam2";
+            txtBoxParam2.Size = new Size(170, 27);
+            txtBoxParam2.TabIndex = 8;
+            // 
             // ucGenerateTIAtemplate
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lblParam2);
+            Controls.Add(txtBoxParam2);
             Controls.Add(btnStartTIA);
-            Controls.Add(lblParameter1);
-            Controls.Add(txtParam1);
+            Controls.Add(lblParam1);
+            Controls.Add(txtBoxParam1);
             Controls.Add(btnGenerateTemplate);
             Controls.Add(statusStripGenerateTIAtemplate);
             Name = "ucGenerateTIAtemplate";
@@ -110,8 +130,10 @@
         private StatusStrip statusStripGenerateTIAtemplate;
         private ToolStripStatusLabel lblStatus1;
         private Button btnGenerateTemplate;
-        private TextBox txtParam1;
-        private Label lblParameter1;
+        private TextBox txtBoxParam1;
+        private Label lblParam1;
         private Button btnStartTIA;
+        private Label lblParam2;
+        private TextBox txtBoxParam2;
     }
 }

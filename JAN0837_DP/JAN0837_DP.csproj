@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PythonScripts\" />
+    <Folder Include="TIA\PythonScripts\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,9 +13,9 @@ using System.Diagnostics;
 
 namespace JAN0837_DP.TIA
 {
-    public class TIA
+    public class tia
     {
-        TiaPortal tiaPortal;
+        public TiaPortal tiaPortal;
         public void GenerateTemplate(string name, string label)
         {
             if (name != "" || name != null)
@@ -158,7 +158,7 @@ namespace JAN0837_DP.TIA
             }
         }
 
-        private static async Task<(int exitCode, string stdOut, string stdErr)> RunOpennessBridgeAsync(string projectDir, string projectName, string cpuTypeId, bool withUI)
+        public static async Task<(int exitCode, string stdOut, string stdErr)> RunOpennessBridgeAsync(string projectDir, string projectName, string cpuTypeId, bool withUI)
         {
             // Umísti OpennessBridge.exe vedle tvé .NET 8 aplikace (nebo změň cestu)
             string bridgePath = Path.Combine(AppContext.BaseDirectory, "OpennessBridge.exe");
@@ -194,6 +194,25 @@ namespace JAN0837_DP.TIA
 
             await Task.WhenAll(stdOutTask, stdErrTask, p.WaitForExitAsync());
             return (p.ExitCode, stdOutTask.Result, stdErrTask.Result);
+        }
+
+        public static async Task<(int code, string stdout, string stderr)> runPY(string pythonexe, string scriptPath, params string[] args)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = scriptPath, // 64-bit Python
+                Arguments = args,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            using var p = Process.Start(psi)!;
+            var so = await p.StandardOutput.ReadToEndAsync();
+            var se = await p.StandardError.ReadToEndAsync();
+            await p.WaitForExitAsync();
+
+            return (p.ExitCode, so, se);
         }
     }
 }

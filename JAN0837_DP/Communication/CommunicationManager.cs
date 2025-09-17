@@ -125,6 +125,11 @@ namespace JAN0837_DP.Communication
                         // S7 -> Sharp7
                         string ipAddress = internalVariables.txtBoxParam1;
                     }
+                    else if (internalVariables.sharp7Flag == true)
+                    {
+                        //
+                        string ipAddress = internalVariables.txtBoxParam1;
+                    }
                     else
                     {
                         // Error -> neni zaklikla predvolba 

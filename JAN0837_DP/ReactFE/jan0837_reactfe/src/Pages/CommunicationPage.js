@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { Link, NavLink } from "react-router-dom";
-import { Container, Row, Col, Button, Nav, Image, Form  } from 'react-bootstrap';
+import { Container, Row, Col, Button, Nav, Image, Form, Card, Badge  } from 'react-bootstrap';
 
 import '../App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -9,23 +9,51 @@ import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData } from '../Communication/DataProvider';
 import { API_URL } from '../variables.js'; 
 
-function CommunicationParamsSidebar() {
+function CommunicationParamsSidebar({data, refresh, isFetching}) {
+  const [lastUpdated, setLastUpdated] = useState(null);
+  useEffect(() => {
+    setLastUpdated(new Date());
+  }, [JSON.stringify(data)]);
+  
   return (
     <div className="p-3 border-start h-100">
-      <div className="fw-semibold mb-3">Parametry</div>
-      <div className="d-grid gap-2">
-        <Button variant="primary">Start</Button>
-        <Button variant="outline-secondary">Stop</Button>
-        <Form.Group className="mt-3">
-          <Form.Label>Název</Form.Label>
-          <Form.Control type="text" placeholder="Zadej název…" />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Poznámky</Form.Label>
-          <Form.Control as="textarea" rows={4} placeholder="…" />
-        </Form.Group>
-        <Button variant="success">Uložit</Button>
-      </div>
+      <Card>
+                <Card.Header>
+                  <span>Aktuální data z API</span>
+                  <Badge bg="light" text="dark">
+                    {lastUpdated ? lastUpdated.toLocaleTimeString() : '—'}
+                  </Badge>
+                </Card.Header>
+                <Card.Body style={{ overflow: 'auto' }}>
+                  <div className="gap-2 mb-2">
+                    <small className="text-muted">Endpoint: <code>{API_URL}</code></small>
+                  </div>
+                  <pre
+                    style={{
+                      background: '#f6f8fa',
+                      padding: 8,
+                      borderRadius: 6,
+                      marginTop: 8,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontSize: 13,
+                      lineHeight: 1.4,
+                      maxHeight: 420,
+                      overflow: 'auto',
+                    }}
+                  >
+                  {JSON.stringify(data, null, 2)}
+                  </pre>
+                </Card.Body>
+                <Card.Footer className="d-flex justify-content-between">
+                  <small className="text-muted">
+                    Stav: {isFetching ? 'Načítám…' : 'Hotovo'}
+                  </small>
+                  <Button size="sm" variant="outline-secondary" onClick={refresh}>
+                    Refresh
+                  </Button>
+                </Card.Footer>
+              </Card>
     </div>
   );
 }
@@ -47,7 +75,7 @@ function CommunicationPage() {
 
     return (
         <Row className="g-0">
-            <Col xs={12} lg={10} className="p-3">
+            <Col xs={12} lg={8} className="p-3">
                 <div>
                     <h1>Communication Page</h1> 
                     {error && <div style={{color:'red'}}>Chyba: {error}</div>}
@@ -64,7 +92,7 @@ function CommunicationPage() {
 
                     <div><strong>Status:</strong> {String(toggle)}</div>
 
-                    <button style={{ marginTop: '0.5rem' }} onClick={() => setToggleAsync(!toggle)} disabled={isFetching}>Přepnout status</button>
+                    <button style={{ marginTop: '0.5rem' }} onClick={() => setToggleAsync(!toggle)} /*disabled={isFetching}*/>Přepnout status ({String(toggle)})</button>
 
                     <div style={{ marginTop: 12 }}><strong>Text:</strong> {text}</div>
 
@@ -75,11 +103,10 @@ function CommunicationPage() {
                 </div>
             </Col>
 
-            {/*
-            <Col xs={12} lg={2}>
-                <CommunicationParamsSidebar />
+            <Col lg={4}>
+                <CommunicationParamsSidebar data={data} refresh={refresh} isFetching={isFetching}/>
             </Col>
-            */}
+
         </Row>
     );
 }

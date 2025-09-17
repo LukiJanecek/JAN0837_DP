@@ -47,6 +47,7 @@
             checkBoxSlave = new CheckBox();
             txtBoxPara1 = new TextBox();
             txtBoxPara2 = new TextBox();
+            rbtnSharp7 = new RadioButton();
             statusStripCommunicationControl.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             // 
             statusStripCommunicationControl.ImageScalingSize = new Size(20, 20);
             statusStripCommunicationControl.Items.AddRange(new ToolStripItem[] { lblStatus });
-            statusStripCommunicationControl.Location = new Point(0, 187);
+            statusStripCommunicationControl.Location = new Point(0, 234);
             statusStripCommunicationControl.Name = "statusStripCommunicationControl";
             statusStripCommunicationControl.Size = new Size(732, 26);
             statusStripCommunicationControl.TabIndex = 3;
@@ -240,10 +241,23 @@
             txtBoxPara2.Size = new Size(163, 27);
             txtBoxPara2.TabIndex = 22;
             // 
+            // rbtnSharp7
+            // 
+            rbtnSharp7.AutoSize = true;
+            rbtnSharp7.Location = new Point(3, 183);
+            rbtnSharp7.Name = "rbtnSharp7";
+            rbtnSharp7.Size = new Size(76, 24);
+            rbtnSharp7.TabIndex = 23;
+            rbtnSharp7.TabStop = true;
+            rbtnSharp7.Text = "Sharp7";
+            rbtnSharp7.UseVisualStyleBackColor = true;
+            rbtnSharp7.CheckedChanged += rbtnSharp7_CheckedChanged;
+            // 
             // ucCommunicationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(rbtnSharp7);
             Controls.Add(txtBoxPara2);
             Controls.Add(txtBoxPara1);
             Controls.Add(checkBoxSlave);
@@ -263,7 +277,7 @@
             Controls.Add(statusStripCommunicationControl);
             Controls.Add(lblPara1);
             Name = "ucCommunicationControl";
-            Size = new Size(732, 213);
+            Size = new Size(732, 260);
             Load += CommunicationControl_Load;
             statusStripCommunicationControl.ResumeLayout(false);
             statusStripCommunicationControl.PerformLayout();
@@ -291,5 +305,7 @@
         private CheckBox checkBoxSlave;
         private TextBox txtBoxPara1;
         private TextBox txtBoxPara2;
+        private RadioButton rBtnSharp7;
+        private RadioButton rbtnSharp7;
     }
 }

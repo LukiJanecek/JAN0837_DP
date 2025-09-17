@@ -279,77 +279,77 @@ namespace JAN0837_DP.ReactFE
                     // CrossroadData
                     if (updates.TryGetValue("btnCrossroadStart", out var btnCrossroadStart))
                     {
-                        crossroaddata.btnCrossroadStart = Convert.ToBoolean(btnCrossroadStart);
+                        crossroaddata.btnCrossroadStart = Convert.ToString(btnCrossroadStart);
                     }
 
                     if (updates.TryGetValue("btnCrossroadPause", out var btnCrossroadPause))
                     {
-                        crossroaddata.btnCrossroadPause = Convert.ToBoolean(btnCrossroadPause);
+                        crossroaddata.btnCrossroadPause = Convert.ToString(btnCrossroadPause);
                     }
 
                     if (updates.TryGetValue("btnCrossroadStop", out var btnCrossroadStop))
                     {
-                        crossroaddata.btnCrossroadStop = Convert.ToBoolean(btnCrossroadStop);
+                        crossroaddata.btnCrossroadStop = Convert.ToString(btnCrossroadStop);
                     }
 
                     if (updates.TryGetValue("btnCrosswalk1", out var btnCrosswalk1))
                     {
-                        crossroaddata.btnCrosswalk1 = Convert.ToBoolean(btnCrosswalk1);
+                        crossroaddata.btnCrosswalk1 = Convert.ToString(btnCrosswalk1);
                     }
                     
                     if (updates.TryGetValue("btnCrosswalk2", out var btnCrosswalk2))
                     {
-                        crossroaddata.btnCrosswalk2 = Convert.ToBoolean(btnCrosswalk2);
+                        crossroaddata.btnCrosswalk2 = Convert.ToString(btnCrosswalk2);
                     }
 
                     if (updates.TryGetValue("trafficLight1_green", out var trafficLight1_green))
                     {
-                        crossroaddata.trafficLight1_green = Convert.ToBoolean(trafficLight1_green);
+                        crossroaddata.trafficLight1_green = Convert.ToString(trafficLight1_green);
                     }
 
                     if (updates.TryGetValue("trafficLight1_yellow", out var trafficLight1_yellow))
                     {
-                        crossroaddata.trafficLight1_yellow = Convert.ToBoolean(trafficLight1_yellow);
+                        crossroaddata.trafficLight1_yellow = Convert.ToString(trafficLight1_yellow);
                     }
 
                     if (updates.TryGetValue("trafficLight1_red", out var trafficLight1_red))
                     {
-                        crossroaddata.trafficLight1_red = Convert.ToBoolean(trafficLight1_red);
+                        crossroaddata.trafficLight1_red = Convert.ToString(trafficLight1_red);
                     }
 
                     if (updates.TryGetValue("trafficLight2_green", out var trafficLight2_green))
                     {
-                        crossroaddata.trafficLight2_green = Convert.ToBoolean(trafficLight2_green);
+                        crossroaddata.trafficLight2_green = Convert.ToString(trafficLight2_green);
                     }
 
                     if (updates.TryGetValue("trafficLight2_yellow", out var trafficLight2_yellow))
                     {
-                        crossroaddata.trafficLight2_yellow = Convert.ToBoolean(trafficLight2_yellow);
+                        crossroaddata.trafficLight2_yellow = Convert.ToString(trafficLight2_yellow);
                     }
 
                     if (updates.TryGetValue("trafficLight2_red", out var trafficLight2_red))
                     {
-                        crossroaddata.trafficLight2_red = Convert.ToBoolean(trafficLight2_red);
+                        crossroaddata.trafficLight2_red = Convert.ToString(trafficLight2_red);
                     }
 
                     if (updates.TryGetValue("pedestrian1_green", out var pedestrian1_green))
                     {
-                        crossroaddata.pedestrian1_green = Convert.ToBoolean(pedestrian1_green);
+                        crossroaddata.pedestrian1_green = Convert.ToString(pedestrian1_green);
                     }
 
                     if (updates.TryGetValue("pedestrian1_red", out var pedestrian1_red))
                     {
-                        crossroaddata.pedestrian1_red = Convert.ToBoolean(pedestrian1_red);
+                        crossroaddata.pedestrian1_red = Convert.ToString(pedestrian1_red);
                     }
 
                     if (updates.TryGetValue("pedestrian2_green", out var pedestrian2_green))
                     {
-                        crossroaddata.pedestrian2_green = Convert.ToBoolean(pedestrian2_green);
+                        crossroaddata.pedestrian2_green = Convert.ToString(pedestrian2_green);
                     }
 
                     if (updates.TryGetValue("pedestrian2_red", out var pedestrian2_red))
                     {
-                        crossroaddata.pedestrian2_red = Convert.ToBoolean(pedestrian2_red);
+                        crossroaddata.pedestrian2_red = Convert.ToString(pedestrian2_red);
                     }
 
                     TestData.AppState.Set(testdata);

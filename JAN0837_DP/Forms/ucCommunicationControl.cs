@@ -122,6 +122,7 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = false;
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = false;
 
             // UI settings 
             #region UI settings 
@@ -179,6 +180,7 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = false;
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = false;
 
             // UI settings 
             #region UI settings 
@@ -238,6 +240,7 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = false;
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = false;
 
             // UI settings 
             #region UI sttings 
@@ -297,6 +300,7 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = false;
             internalVariables.modbustcpipFlag = true;
             internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = false;
 
             // UI settings 
             #region UI settings 
@@ -357,6 +361,7 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = true;
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = false;
 
             // UI settings 
             #region UI settings 
@@ -416,6 +421,67 @@ namespace JAN0837_DP.Forms
             internalVariables.restapiFlag = false;
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = true;
+            internalVariables.sharp7Flag = false;
+
+            // UI settings 
+            #region UI settings 
+
+            // btns 
+            btnStartCommunicationThread.Visible = true;
+            btnStartCommunicationThread.Enabled = true;
+
+            btnStopCommunicationThread.Visible = true;
+            btnStopCommunicationThread.Enabled = false;
+
+            btnPreSet.Visible = true;
+            btnPreSet.Enabled = true;
+
+            lblCommunicationStatus.Visible = true;
+
+            // para
+            lblPara1.Visible = true;
+            lblPara1.Enabled = true;
+            lblPara1.Text = "IP address: ";
+            txtBoxPara1.Visible = true;
+            txtBoxPara1.Enabled = true;
+            txtBoxPara1.Text = "Type IP address";
+
+            lblPara2.Visible = false;
+            lblPara2.Enabled = false;
+            lblPara2.Text = "";
+            txtBoxPara2.Visible = false;
+            txtBoxPara2.Enabled = false;
+            txtBoxPara2.Text = "";
+
+            // check box
+            lblCheckBox.Visible = false;
+            lblCheckBox.Enabled = false;
+            lblCheckBox.Text = "";
+
+            checkBoxMaster.Visible = false;
+            checkBoxMaster.Enabled = false;
+            checkBoxMaster.Text = "";
+            checkBoxMaster.Checked = false;
+
+            checkBoxSlave.Visible = false;
+            checkBoxSlave.Enabled = false;
+            checkBoxSlave.Text = "";
+            checkBoxSlave.Checked = false;
+
+            #endregion
+        }
+
+        private void rbtnSharp7_CheckedChanged(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Sharp7 selected";
+
+            internalVariables.opcuaFlag = false;
+            internalVariables.mqttFlag = false;
+            internalVariables.tcpipFlag = false;
+            internalVariables.restapiFlag = false;
+            internalVariables.modbustcpipFlag = false;
+            internalVariables.s7Flag = false;
+            internalVariables.sharp7Flag = true;
 
             // UI settings 
             #region UI settings 
@@ -511,6 +577,11 @@ namespace JAN0837_DP.Forms
                     lblCommunicationStatus.Text = "S7 communication started.";
                     lblStatus.Text = "S7 communication started.";
                 }
+                else if (internalVariables.sharp7Flag == true)
+                {
+                    lblCommunicationStatus.Text = "Sharp7 communication started.";
+                    lblStatus.Text = "Sharp7 communication started.";
+                }
                 else
                 {
                     lblCommunicationStatus.Text = "No communication protocol selected.";
@@ -526,6 +597,7 @@ namespace JAN0837_DP.Forms
             rbtnModbusTCPIP.Enabled = false;
             rbtnRESTAPI.Enabled = false;
             rbtnS7.Enabled = false;
+            rbtnSharp7.Enabled = false;
 
             checkBoxMaster.Enabled = false;
             checkBoxSlave.Enabled = false;
@@ -566,6 +638,7 @@ namespace JAN0837_DP.Forms
             rbtnModbusTCPIP.Enabled = true;
             rbtnRESTAPI.Enabled = true;
             rbtnS7.Enabled = true;
+            rbtnSharp7.Enabled = true;
 
             checkBoxMaster.Enabled = true;
             checkBoxSlave.Enabled = true;
@@ -600,7 +673,7 @@ namespace JAN0837_DP.Forms
             else if (rbtnTCPIP.Checked == true)
             {
                 // IP address 
-                txtBoxPara1.Text = "";
+                txtBoxPara1.Text = "192.168.0.1";
             }
             else if (rbtnModbusTCPIP.Checked == true)
             {
@@ -617,11 +690,16 @@ namespace JAN0837_DP.Forms
             else if (rbtnS7.Checked == true)
             {
                 // IP address
-                txtBoxPara1.Text = "";
+                txtBoxPara1.Text = "192.168.0.1";
+            }
+            else if (rbtnSharp7.Checked == true)
+            {
+                // IP address
+                txtBoxPara1.Text = "192.168.0.1";
             }
             else
             {
-                // Error -> neni zaklikla predvolba 
+                // Error -> preset is not checked 
                 return;
             }
         }

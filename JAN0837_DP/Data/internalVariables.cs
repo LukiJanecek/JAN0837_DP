@@ -62,6 +62,7 @@ namespace JAN0837_DP.Data
         public static bool restapiFlag { get; set; } = false;
         public static bool modbustcpipFlag { get; set; } = false;
         public static bool s7Flag { get; set; } = false;
+        public static bool sharp7Flag {  get; set; } = false;
     
         // communication
         public static bool connected { get; set; } = false;

@@ -11,22 +11,22 @@ namespace JAN0837_DP.Data
 {
     public class CrossroadData
     {
-        public bool btnCrossroadStart { get; set; } = false;
-        public bool btnCrossroadPause { get; set; } = false;
-        public bool btnCrossroadStop { get; set; } = false;
+        public string btnCrossroadStart { get; set; } = "";
+        public string btnCrossroadPause { get; set; } = "";
+        public string btnCrossroadStop { get; set; } = "";
 
-        public bool btnCrosswalk1 { get; set; } = false;
-        public bool btnCrosswalk2 { get; set; } = false;
-        public bool trafficLight1_green { get; set; } = false;
-        public bool trafficLight1_yellow { get; set; } = false;
-        public bool trafficLight1_red { get; set; } = false;
-        public bool trafficLight2_green { get; set; } = false;
-        public bool trafficLight2_yellow { get;set; } = false;
-        public bool trafficLight2_red { get;set; } = false;
-        public bool pedestrian1_green { get; set; } = false;
-        public bool pedestrian1_red { get; set; } = false;
-        public bool pedestrian2_green { get; set; } = false;
-        public bool pedestrian2_red { get; set; } = false;
+        public string btnCrosswalk1 { get; set; } = "";
+        public string btnCrosswalk2 { get; set; } = "";
+        public string trafficLight1_green { get; set; } = "";
+        public string trafficLight1_yellow { get; set; } = "";
+        public string trafficLight1_red { get; set; } = "";
+        public string trafficLight2_green { get; set; } = "";
+        public string trafficLight2_yellow { get;set; } = "";
+        public string trafficLight2_red { get;set; } = "";
+        public string pedestrian1_green { get; set; } = "";
+        public string pedestrian1_red { get; set; } = "";
+        public string pedestrian2_green { get; set; } = "";
+        public string pedestrian2_red { get; set; } = "";
 
         public void Update(CrossroadData other)
         {

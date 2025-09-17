@@ -1,3 +1,63 @@
 .crossroadpage {
     min-width: 500px;
 }
+
+.btn.btn--start{
+  --bs-btn-color: var(--black);
+  --bs-btn-bg: var(--green-light);
+  --bs-btn-border-color: var(--green-tree);
+
+  --bs-btn-hover-color: var(--green);
+  --bs-btn-hover-bg: var(--green-tree);
+  --bs-btn-hover-border-color: var(--green);
+
+  --bs-btn-active-color: var(--white);
+  --bs-btn-active-bg: var(--green-dark);
+  --bs-btn-active-border-color: var(--green-dark);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.btn.btn--pause{
+  --bs-btn-color: var(--black);
+  --bs-btn-bg: var(--yellow);
+  --bs-btn-border-color: var(--black);
+
+  --bs-btn-hover-color: var(--yellow);
+  --bs-btn-hover-bg: var(--yellow-light);
+  --bs-btn-hover-border-color: var(--yellow);
+
+  --bs-btn-active-color: var(--white);
+  --bs-btn-active-bg: var(--yellow-dark);
+  --bs-btn-active-border-color: var(--yellow-dark);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease; 
+}
+
+.btn.btn--stop{
+  --bs-btn-color: var(--white);
+  --bs-btn-bg: var(--red);
+  --bs-btn-border-color: var(--red);
+
+  --bs-btn-hover-color: var(--red);
+  --bs-btn-hover-bg: var(--red-dark);         
+  --bs-btn-hover-border-color: var(--red-dark);
+
+  --bs-btn-active-color: var(--black);
+  --bs-btn-active-bg: var(--red-light);         
+  --bs-btn-active-border-color: var(--red-light);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}

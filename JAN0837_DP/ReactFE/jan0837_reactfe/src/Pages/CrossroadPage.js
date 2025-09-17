@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from "react-router-dom";
-import { Container, Row, Col, Button, Nav, Image as RBImage, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Nav, Image as RBImage, Form, Card, Badge } from 'react-bootstrap';
 
 import '../App.css';
 import './CrossroadPage.css';
@@ -24,22 +24,20 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const { interval, setInterval } = useRefresh();
   const { data, saveData, error, isFetching, refresh } = useData();
 
-  const btnCrossroadStart = Boolean(data?.btnCrossroadStart);
-  const btnCrossroadPause = Boolean(data?.btnCrossroadPause);
-  const btnCrossroadStop = Boolean(data?.btnCrossroadStop);
-
-  {/*
-  const toggleBtn = (key, value) => saveData({ [key]: value });
-  */}
+  const toBool = (v) => {
+    if (typeof v === 'string') return v;
+    const s = String(v ?? '').trim().toLowerCase();
+    return s === 'true' || s === '1' || s === 'on';
+  };
 
   const toggleBtn = (key, value) => {
     saveData({
-      btnCrossroadStart: key === "btnCrossroadStart" ? value : btnCrossroadStart,
-      btnCrossroadPause: key === "btnCrossroadPause" ? value : btnCrossroadPause,
-      btnCrossroadStop: key === "btnCrossroadStop"  ? value : btnCrossroadStop,
+      btnCrossroadStart: key === 'btnCrossroadStart' ? (value ? 'true' : 'false') : 'false',
+      btnCrossroadPause: key === 'btnCrossroadPause' ? (value ? 'true' : 'false') : 'false',
+      btnCrossroadStop:  key === 'btnCrossroadStop'  ? (value ? 'true' : 'false') : 'false',
     });
   };
-
+  
   const number = Number(data?.number ?? 0);
   const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
   const toggle = (() => {
@@ -47,17 +45,29 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         return t === 'true' || t === 'on' || t === '1';
   })();
 
-  const trafficLight1_green = Boolean(data?.trafficLight1_green ?? false);
-  const trafficLight1_yellow = Boolean(data?.trafficLight1_yellow ?? false);
-  const trafficLight1_red = Boolean(data?.trafficLight1_red ?? false); 
-  const trafficLight2_green = Boolean(data?.trafficLight2_green ?? false);
-  const trafficLight2_yellow = Boolean(data?.trafficLight2_yellow ?? false);
-  const trafficLight2_red = Boolean(data?.trafficLight2_red ?? false); 
-  const pedestrian1_green = Boolean(data?.pedestrian1_green ?? false);
-  const pedestrian1_red = Boolean(data?.pedestrian1_red ?? false); 
-  const pedestrian2_green = Boolean(data?.pedestrian2_green ?? false);
-  const pedestrian2_red = Boolean(data?.pedestrian2_red ?? false);
+  const btnCrossroadStart = toBool(data?.btnCrossroadStart ?? false);
+  const btnCrossroadPause = toBool(data?.btnCrossroadPause ?? false);
+  const btnCrossroadStop = toBool(data?.btnCrossroadStop ?? false);
 
+  const trafficLight1_green = toBool(data?.trafficLight1_green ?? false);
+  const trafficLight1_yellow = toBool(data?.trafficLight1_yellow ?? false);
+  const trafficLight1_red = toBool(data?.trafficLight1_red ?? false); 
+  const trafficLight2_green = toBool(data?.trafficLight2_green ?? false);
+  const trafficLight2_yellow = toBool(data?.trafficLight2_yellow ?? false);
+  const trafficLight2_red = toBool(data?.trafficLight2_red ?? false); 
+  const pedestrian1_green = toBool(data?.pedestrian1_green ?? false);
+  const pedestrian1_red = toBool(data?.pedestrian1_red ?? false); 
+  const pedestrian2_green = toBool(data?.pedestrian2_green ?? false);
+  const pedestrian2_red = toBool(data?.pedestrian2_red ?? false);
+
+  const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
+
+  const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart ? 'true' : 'false' });
+  const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause ? 'true' : 'false' });
+  const setStopAsync  = () => saveData({ btnCrossroadStop: !btnCrossroadStop ? 'true' : 'false' });
+
+  {/*const toggleBtn = (key, value) => saveData({ [key]: !value ? 'true' : 'false' });
+  */}
   return (
     <div>
       <h3>Parametry:</h3>
@@ -106,21 +116,29 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
         <Col>
           <div className="gap-2 mb-2">
-            <Button variant="success" className="btn--start" onClick={() => toggleBtn("btnCrossroadStart", !btnCrossroadStart)} disabled={isFetching}>
+            <Button className="btn--start" onClick={() => setStartAsync(!btnCrossroadStart) /*toggleBtn("btnCrossroadStart", !btnCrossroadStart)*/} /*disabled={isFetching}*/>
               Start ({String(btnCrossroadStart)})
             </Button>
           </div>
           <div className="gap-2 mb-2">
-            <Button variant="warning" className="btn--pause" onClick={() => toggleBtn("btnCrossroadPause", !btnCrossroadPause)} disabled={isFetching}>
+            <Button className="btn--pause" onClick={() => setPauseAsync(!btnCrossroadPause) /*toggleBtn("btnCrossroadPause", !btnCrossroadPause)*/} /*disabled={isFetching}*/>
               Pause ({String(btnCrossroadPause)})
             </Button>
           </div>
           <div className="gap-2 mb-2">
-            <Button variant="danger" className="btn--stop" onClick={() => toggleBtn("btnCrossroadStop", !btnCrossroadStop)} disabled={isFetching}>
+            <Button className="btn--stop" onClick={() => setStopAsync(!btnCrossroadStop) /*toggleBtn("btnCrossroadStop", !btnCrossroadStop)*/} /*disabled={isFetching}*/>
               Stop ({String(btnCrossroadStop)})
             </Button>  
           </div>
         </Col>
+
+        {/*}
+        */}
+        <pre style={{background:'#f6f8fa', padding:8, borderRadius:6, marginTop:12}}>
+          {JSON.stringify(data, null, 2)}
+        </pre>
+        
+        
       </div>
     </div>
   );
@@ -160,7 +178,7 @@ function CrossroadPage({ setAside }) {
 
   return (
     <Row className="crossroadpage">
-      <Col xs={12} lg={10}>
+      <Col xs={12} lg={8}>
         
         <div className="mt-3">
           <Picture name={names[idx]} ext={ext} folder={folder} />
@@ -185,7 +203,7 @@ function CrossroadPage({ setAside }) {
         */}
       </Col>
       
-      <Col /*xs={12} lg={2}*/>
+      <Col lg={4}>
         <CrossroadParamsSidebar names={names} idx={idx} onPrev={prev} onNext={next} onJump={jump}/>
       </Col>
       

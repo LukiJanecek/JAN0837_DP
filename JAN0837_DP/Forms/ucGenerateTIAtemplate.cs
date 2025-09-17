@@ -72,10 +72,9 @@ namespace JAN0837_DP.Forms
 
             string args = $"--dir {projectDir} --name {projectName} --type-id {cputype} --ui";
 
-            string pythonPath = Path.Combine(paths.pythonScriptsFolder, "");
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
 
-            var (code, so, se) = await tia.runPY(pythonPath, pythonScriptPath, args);
+            var (code, stdout, stderr) = await tia.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
 
             if (code == 0)
             {
@@ -83,7 +82,7 @@ namespace JAN0837_DP.Forms
             }
             else
             {
-                lblStatus1.Text = "";
+                lblStatus1.Text = "Template generation failed.";
             }
         }
 

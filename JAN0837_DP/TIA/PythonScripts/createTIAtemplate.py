@@ -1,6 +1,7 @@
 import clr
 import sys
 import os
+import argparse
 
 TIA_DLL_PATH = r"C:\Program Files\Siemens\Automation\Portal V19\PublicAPI\V19"
 sys.path.append(TIA_DLL_PATH)
@@ -15,18 +16,29 @@ from Siemens.Engineering.HW import StartMode, ProtectionLevel
 from Siemens.Engineering.SW import PlcBlockType, PlcProgrammingLanguage
 from Siemens.Engineering import DataType
 
-tia = TiaPortal(TiaPortalMode.WithUserInterface)
-print("TIA Portal running")
+parser = argparse.ArgumentParser(description="Create TIA Portal project")
+parser.add_argument("--dir", required=True, help="Target directory for project")
+parser.add_argument("--name", required=True, help="Project name")
+parser.add_argument("--type-id", required=True, help="PLC type (e.g. CPU_1212C_DC_DC_DC)")
+parser.add_argument("--ui", action="store_true", help="Start TIA with user interface")
+args = parser.parse_args()
 
-project_path = r"C:\TIAProjects\MyPythonProject"
-project_name = "MyPythonProject"
+#tia = TiaPortal(TiaPortalMode.WithUserInterface)
+#print("TIA Portal running")
+
+mode = TiaPortalMode.WithUserInterface if args.ui else TiaPortalMode.WithoutUserInterface
+tia = TiaPortal(mode)
+print(f"TIA Portal running in mode: {mode}")
+
+project_path = args.dir
+project_name = args.name
 
 project = tia.Projects.Create(project_path, project_name)
-devices = project.Devices
 
 # Add CPU
+devices = project.Devices
 deviceItemRef = clr.Reference[object]()
-device = devices.CreateWithItem("CPU_1212C_DC_DC_DC", "V4.5", "PLC_1", deviceItemRef)
+device = devices.CreateWithItem(args.type_id, "V4.5", "PLC_1", deviceItemRef)
 plc_device_item = deviceItemRef.Value
 
 # Set protection
@@ -52,7 +64,7 @@ static_section.Create("myRealVar", DataType.Real)
 
 # Save project
 project.Save()
-print("Projekt vytvo�en a ulo�en")
+print("Project craeted and saved.")
 
 
 

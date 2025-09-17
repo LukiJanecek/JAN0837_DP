@@ -43,9 +43,9 @@
             // 
             statusStripGenerateTIAtemplate.ImageScalingSize = new Size(20, 20);
             statusStripGenerateTIAtemplate.Items.AddRange(new ToolStripItem[] { lblStatus1 });
-            statusStripGenerateTIAtemplate.Location = new Point(0, 389);
+            statusStripGenerateTIAtemplate.Location = new Point(0, 258);
             statusStripGenerateTIAtemplate.Name = "statusStripGenerateTIAtemplate";
-            statusStripGenerateTIAtemplate.Size = new Size(748, 26);
+            statusStripGenerateTIAtemplate.Size = new Size(424, 26);
             statusStripGenerateTIAtemplate.TabIndex = 3;
             // 
             // lblStatus1
@@ -56,7 +56,7 @@
             // 
             // btnGenerateTemplate
             // 
-            btnGenerateTemplate.Location = new Point(404, 39);
+            btnGenerateTemplate.Location = new Point(257, 16);
             btnGenerateTemplate.Name = "btnGenerateTemplate";
             btnGenerateTemplate.Size = new Size(94, 63);
             btnGenerateTemplate.TabIndex = 4;
@@ -82,11 +82,11 @@
             // 
             // btnStartTIA
             // 
-            btnStartTIA.Location = new Point(404, 108);
+            btnStartTIA.Location = new Point(257, 85);
             btnStartTIA.Name = "btnStartTIA";
             btnStartTIA.Size = new Size(94, 63);
             btnStartTIA.TabIndex = 7;
-            btnStartTIA.Text = "Start TIA";
+            btnStartTIA.Text = "Start \r\nTIA Portal";
             btnStartTIA.UseVisualStyleBackColor = true;
             btnStartTIA.Click += btnStartTIA_Click;
             // 
@@ -118,7 +118,7 @@
             Controls.Add(btnGenerateTemplate);
             Controls.Add(statusStripGenerateTIAtemplate);
             Name = "ucGenerateTIAtemplate";
-            Size = new Size(748, 415);
+            Size = new Size(424, 284);
             Load += ucGenerateTIAtemplate_Load;
             statusStripGenerateTIAtemplate.ResumeLayout(false);
             statusStripGenerateTIAtemplate.PerformLayout();

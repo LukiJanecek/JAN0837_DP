@@ -200,13 +200,21 @@ namespace JAN0837_DP.TIA
         {
             var psi = new ProcessStartInfo
             {
-                FileName = scriptPath, // 64-bit Python
-                Arguments = args,
+                FileName = pythonexe, // 64-bit Python
+                //Arguments = $"{scriptPath} {string.Join(" ", args)}",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = Path.GetDirectoryName(scriptPath) ?? Environment.CurrentDirectory
             };
+
+            psi.ArgumentList.Add(scriptPath);
+            foreach (var a in args)
+                psi.ArgumentList.Add(a);
+
+            psi.Environment["PYTHONUTF8"] = "1";
+
             using var p = Process.Start(psi)!;
             var so = await p.StandardOutput.ReadToEndAsync();
             var se = await p.StandardError.ReadToEndAsync();

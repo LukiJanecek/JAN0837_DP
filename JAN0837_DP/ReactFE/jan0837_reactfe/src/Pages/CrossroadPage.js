@@ -15,7 +15,7 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData } from '../Communication/DataProvider';
 
-const names = ['crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
+const names = ['crossroad_basic','crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
 const ext = 'png';         
 const folder = 'images'; 
 

@@ -19,6 +19,10 @@ const names = ['crossroad_basic','crosswalk_ped_green_1920x1080_169', 'crosswalk
 const ext = 'png';         
 const folder = 'images'; 
 
+const crossroad = ['crossroad_day', 'crossroad_night']
+const crosswalkLights = ['crosswalk_red', 'crosswalk_green', 'crosswalk_blank']
+const trafficLights = ['traffic_light_red', 'traffic_light_yellow', 'traffic_light_green', 'traffic_light_red_yellow', 'traffic_light_blank']
+
 function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,}) 
 {
   const { interval, setInterval } = useRefresh();

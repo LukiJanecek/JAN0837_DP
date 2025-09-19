@@ -2,7 +2,9 @@
 
 import os, sys, clr
 from pathlib import Path
+from System.IO import DirectoryInfo
 import argparse
+from collections import deque
 
 # ===== 1) Import/loader BLOK (POUŽÍVEJ V KAŽDÉM SKRIPTU) =====
 TIA_ROOT = r"C:\Program Files\Siemens\Automation\Portal V19"
@@ -97,6 +99,192 @@ def create_var_with_datatype(static_iface, var_name: str, datatype_name: str) ->
             return True
     return False
 
+def get_or_start_tia(with_ui: bool) -> TiaPortal:
+    """
+    - Pokud TIA už běží, připojí se k první nalezené instanci.
+    - Jinak spustí novou (s UI podle with_ui).
+    """
+    try:
+        procs = list(TiaPortal.GetProcesses())  # běžící TIA procesy
+    except Exception:
+        procs = []
+
+    if procs:
+        # připojit k existující instanci
+        proc = procs[0]
+        try:
+            # v některých verzích stačí TiaPortal(proc)
+            return TiaPortal(proc)
+        except TypeError:
+            # fallback overload (některé buildy vyžadují bool)
+            return TiaPortal(proc, True)
+
+    # žádná neběží → spustit novou
+    mode = TiaPortalMode.WithUserInterface if with_ui else TiaPortalMode.WithoutUserInterface
+    return TiaPortal(mode)
+
+def walk_items_and_find_software_container(device):
+    """
+    Projde celý strom device.DeviceItems (BFS).
+    Vrací tuple (cpu_item, software_container) nebo (None, None).
+    Současně sbírá diagnostické řádky pro případný výpis.
+    """
+    diag_lines = []
+    from collections import deque
+    q = deque()
+    # začneme všemi top-level itemy
+    try:
+        for it in device.DeviceItems:
+            q.append((it, 0))
+    except Exception:
+        pass
+
+    while q:
+        it, depth = q.popleft()
+        name = ""
+        try:
+            name = it.Name
+        except Exception:
+            name = "<unnamed>"
+
+        # zkusíme typické služby
+        has_sc = False
+        try:
+            sc = it.GetService("SoftwareContainer")
+            has_sc = sc is not None
+        except Exception:
+            sc = None
+
+        try:
+            prot = it.GetService("Protection")
+        except Exception:
+            prot = None
+
+        try:
+            si = it.GetService("StartInfo")
+        except Exception:
+            si = None
+
+        # logovací řádek
+        diag_lines.append(
+            f"{'  '*depth}- {name}  "
+            f"[SC={'Y' if has_sc else 'n'}, Prot={'Y' if prot else 'n'}, StartInfo={'Y' if si else 'n'}]"
+        )
+
+        if has_sc:
+            return it, sc, diag_lines  # hotovo
+
+        # rozšíříme o děti
+        try:
+            for ch in it.DeviceItems:
+                q.append((ch, depth+1))
+        except Exception:
+            pass
+
+    return None, None, diag_lines
+
+def list_services(obj):
+    names = []
+    try:
+        svc_prop = obj.GetType().GetProperty("Services")
+        if svc_prop:
+            col = svc_prop.GetValue(obj, None)
+            for s in col:
+                try:
+                    names.append(getattr(s, "Name", str(s)))
+                except:
+                    pass
+    except:
+        pass
+    return names
+
+def try_get_any_sw_container(obj):
+    """Zkus známé varianty služeb na zadaném objektu (device nebo deviceItem)."""
+    for candidate in ("SoftwareContainer", "PlcSoftware", "Software"):
+        try:
+            svc = obj.GetService(candidate)
+            if svc is not None:
+                # Pokud jsme dostali rovnou PlcSoftware, normalizujme na objekt se .Software
+                # tzn. vytvoříme wrapper s property Software
+                if hasattr(svc, "Software"):
+                    return ("SC", svc)  # standardní SoftwareContainer
+                # některé buildy vrátí přímo SW instanci
+                if svc.GetType().Name.endswith("PlcSoftware"):
+                    class _Wrap: pass
+                    w = _Wrap()
+                    setattr(w, "Software", svc)
+                    return ("SW", w)
+        except:
+            pass
+    return (None, None)
+
+def list_services_on(obj):
+    names = []
+    try:
+        for s in obj.Services:
+            try:
+                names.append(getattr(s, "Name", s.GetType().Name))
+            except:
+                pass
+    except:
+        pass
+    return names
+
+def find_plc_software(dev):
+    # zkus přímo na zařízení
+    try:
+        sc = dev.GetService("SoftwareContainer")
+        if sc is not None and getattr(sc, "Software", None) is not None:
+            return dev, sc.Software
+    except Exception:
+        pass
+    # fallback: jakákoli služba vracející SW
+    try:
+        for svc in dev.Services:
+            st = svc.GetType()
+            # pokud má property 'Software' končící na PlcSoftware, použij ji
+            p = st.GetProperty("Software")
+            if p:
+                sw = p.GetValue(svc, None)
+                if sw is not None and sw.GetType().Name.endswith("PlcSoftware"):
+                    return dev, sw
+    except Exception:
+        pass
+    # projdi strom itemů
+    q = deque()
+    try:
+        for it in dev.DeviceItems:
+            q.append(it)
+    except Exception:
+        pass
+
+    while q:
+        it = q.popleft()
+        # varianta se SoftwareContainer
+        try:
+            sc = it.GetService("SoftwareContainer")
+            if sc is not None and getattr(sc, "Software", None) is not None:
+                return it, sc.Software
+        except Exception:
+            pass
+        # varianta s property Software na jiné službě
+        try:
+            for svc in it.Services:
+                p = svc.GetType().GetProperty("Software")
+                if p:
+                    sw = p.GetValue(svc, None)
+                    if sw is not None and sw.GetType().Name.endswith("PlcSoftware"):
+                        return it, sw
+        except Exception:
+            pass
+        # enqueue children
+        try:
+            for ch in it.DeviceItems:
+                q.append(ch)
+        except Exception:
+            pass
+    return None, None
+
 # ===== 3) Argumenty =====
 parser = argparse.ArgumentParser(description="Create TIA V19 project and add DB")
 parser.add_argument("--dir", required=False, default=r"C:\TIAProjects", help="Parent folder for project")
@@ -110,21 +298,46 @@ args = parser.parse_args()
 # ===== 4) Vytvoření projektu + PLC + DB =====
 mode = TiaPortalMode.WithUserInterface if args.ui else TiaPortalMode.WithoutUserInterface
 tia = TiaPortal(mode)
-print(f"[INFO] TIA running (UI={args.ui}).")
+#tia = get_or_start_tia(args.ui)
+print(f"[INFO] TIA attached={bool(list(TiaPortal.GetProcesses()))} (UI={args.ui})")
 
-Path(args.dir).mkdir(parents=True, exist_ok=True)
-project = tia.Projects.Create(args.dir, args.name)
-print(f"[OK] Project created: {args.name} in {args.dir}")
+Path(args.dir).mkdir(parents=True, exist_ok=True) # exist root folder 
+parent_dir = DirectoryInfo(args.dir)
+project_name = args.name
+proj_folder = Path(args.dir) / f"{project_name}.ap19"
+if proj_folder.exists():
+    project = tia.Projects.Open(DirectoryInfo(str(proj_folder)))
+    print(f"[OK] Project opened: {proj_folder}")
+else:
+    project = tia.Projects.Create(parent_dir, project_name)
+    print(f"[OK] Project created: {project_name} in {args.dir}")
 print(f"[NOTE] Ve File Exploreru hledej složku: {os.path.join(args.dir, args.name)}.ap19")
 
-import clr as _clr
-deviceItemRef = _clr.Reference[object]()
-device = project.Devices.CreateWithItem(args.type_id, args.plc_version, args.plc_name, deviceItemRef)
-root_item = deviceItemRef.Value
+#import clr as _clr
+#deviceItemRef = _clr.Reference[object]()
+#device = project.Devices.CreateWithItem(args.type_id, args.plc_version, args.plc_name, deviceItemRef)
+#root_item = deviceItemRef.Value
+#print("[OK] PLC device added.")
+
+#dc = project.Devices.GetType()
+#for m in dc.GetMethods():
+#    if m.Name == "CreateWithItem":
+#        sig = ", ".join(p.ParameterType.FullName for p in m.GetParameters())
+#        print("CreateWithItem(", sig, ")")
+
+device = project.Devices.CreateWithItem(
+    args.type_id, args.plc_name, args.plc_name
+)
 print("[OK] PLC device added.")
 
-cpu_item = find_cpu_item(root_item)
-if cpu_item is None: raise RuntimeError("CPU item with SoftwareContainer not found.")
+print("[INFO] Služby na zařízení:", list_services_on(device))
+
+cpu_item, plc_sw = find_plc_software(device)
+if plc_sw is None:
+    raise RuntimeError("Nenalezl jsem PLC software ani po pokusu o vytvoření. " +
+                       "Ověř v TIA, že zařízení podporuje SW a je nainstalován příslušný katalog.")
+
+print(f"[OK] Našel jsem PLC software na: {getattr(cpu_item, 'Name', '<device>')}  ({plc_sw.GetType().FullName})")
 
 # Protection
 prot = cpu_item.GetService("Protection")

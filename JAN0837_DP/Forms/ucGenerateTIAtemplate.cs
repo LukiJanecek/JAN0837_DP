@@ -103,5 +103,10 @@ namespace JAN0837_DP.Forms
                 lblStatus1.Text = "TIA Portal started.";
             }
         }
+
+        private void btnPreSet_Click(object sender, EventArgs e)
+        {
+            txtBoxParam2.Text = "";
+        }
     }
 }

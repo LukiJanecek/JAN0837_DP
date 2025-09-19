@@ -1,8 +1,8 @@
 import os, sys
-from pathlib import Path
 import clr
 
 TIA_DLL_PATH = r"C:\Program Files\Siemens\Automation\Portal V19\PublicAPI\V19"
+
 if hasattr(os, "add_dll_directory"):
     os.add_dll_directory(TIA_DLL_PATH)
 sys.path.append(TIA_DLL_PATH)

@@ -36,6 +36,7 @@
             btnStartTIA = new Button();
             lblParam2 = new Label();
             txtBoxParam2 = new TextBox();
+            btnPreSet = new Button();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -106,10 +107,21 @@
             txtBoxParam2.Size = new Size(170, 27);
             txtBoxParam2.TabIndex = 8;
             // 
+            // btnPreSet
+            // 
+            btnPreSet.Location = new Point(241, 161);
+            btnPreSet.Name = "btnPreSet";
+            btnPreSet.Size = new Size(94, 29);
+            btnPreSet.TabIndex = 10;
+            btnPreSet.Text = "Use PreSet";
+            btnPreSet.UseVisualStyleBackColor = true;
+            btnPreSet.Click += btnPreSet_Click;
+            // 
             // ucGenerateTIAtemplate
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(btnPreSet);
             Controls.Add(lblParam2);
             Controls.Add(txtBoxParam2);
             Controls.Add(btnStartTIA);
@@ -135,5 +147,6 @@
         private Button btnStartTIA;
         private Label lblParam2;
         private TextBox txtBoxParam2;
+        private Button btnPreSet;
     }
 }

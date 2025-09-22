@@ -71,26 +71,26 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         return t === 'true' || t === 'on' || t === '1';
   })();
 
-  const btnCrossroadStart = toBool(data?.btnCrossroadStart ?? false);
-  const btnCrossroadPause = toBool(data?.btnCrossroadPause ?? false);
-  const btnCrossroadStop = toBool(data?.btnCrossroadStop ?? false);
+  const btnCrossroadStart = toBool(data?.btnCrossroadStart);
+  const btnCrossroadPause = toBool(data?.btnCrossroadPause);
+  const btnCrossroadStop = toBool(data?.btnCrossroadStop);
 
-  const trafficLight1_green = toBool(data?.trafficLight1_green ?? false);
-  const trafficLight1_yellow = toBool(data?.trafficLight1_yellow ?? false);
-  const trafficLight1_red = toBool(data?.trafficLight1_red ?? false); 
-  const trafficLight2_green = toBool(data?.trafficLight2_green ?? false);
-  const trafficLight2_yellow = toBool(data?.trafficLight2_yellow ?? false);
-  const trafficLight2_red = toBool(data?.trafficLight2_red ?? false); 
-  const pedestrian1_green = toBool(data?.pedestrian1_green ?? false);
-  const pedestrian1_red = toBool(data?.pedestrian1_red ?? false); 
-  const pedestrian2_green = toBool(data?.pedestrian2_green ?? false);
-  const pedestrian2_red = toBool(data?.pedestrian2_red ?? false);
+  const trafficLight1_green = toBool(data?.trafficLight1_green);
+  const trafficLight1_yellow = toBool(data?.trafficLight1_yellow);
+  const trafficLight1_red = toBool(data?.trafficLight1_red); 
+  const trafficLight2_green = toBool(data?.trafficLight2_green);
+  const trafficLight2_yellow = toBool(data?.trafficLight2_yellow);
+  const trafficLight2_red = toBool(data?.trafficLight2_red); 
+  const pedestrian1_green = toBool(data?.pedestrian1_green);
+  const pedestrian1_red = toBool(data?.pedestrian1_red); 
+  const pedestrian2_green = toBool(data?.pedestrian2_green);
+  const pedestrian2_red = toBool(data?.pedestrian2_red);
 
   const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
 
-  const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart ? 'true' : 'false' });
-  const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause ? 'true' : 'false' });
-  const setStopAsync  = () => saveData({ btnCrossroadStop: !btnCrossroadStop ? 'true' : 'false' });
+  const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart });
+  const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause });
+  const setStopAsync  = () => saveData({ btnCrossroadStop: !btnCrossroadStop });
 
   {/*const toggleBtn = (key, value) => saveData({ [key]: !value ? 'true' : 'false' });
   */}

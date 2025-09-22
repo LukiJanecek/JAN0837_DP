@@ -17,6 +17,7 @@ namespace JAN0837_DP.Data
 
         public string btnCrosswalk1 { get; set; } = "";
         public string btnCrosswalk2 { get; set; } = "";
+
         public string trafficLight1_green { get; set; } = "";
         public string trafficLight1_yellow { get; set; } = "";
         public string trafficLight1_red { get; set; } = "";
@@ -38,6 +39,10 @@ namespace JAN0837_DP.Data
             {
                 btnCrosswalk1 = other.btnCrosswalk1;
                 btnCrosswalk2 = other.btnCrosswalk2;
+
+                btnCrossroadStart = other.btnCrossroadStart;
+                btnCrossroadPause = other.btnCrossroadPause;
+                btnCrossroadStop = other.btnCrossroadStop;
 
                 trafficLight1_green = other.trafficLight1_green;
                 trafficLight1_yellow = other.trafficLight1_yellow;
@@ -67,6 +72,9 @@ namespace JAN0837_DP.Data
                     {
                         btnCrosswalk1 = _data.btnCrosswalk1,
                         btnCrosswalk2 = _data.btnCrosswalk2,
+                        btnCrossroadStart = _data.btnCrossroadStart,
+                        btnCrossroadPause = _data.btnCrossroadPause,
+                        btnCrossroadStop = _data.btnCrossroadStop,
                         trafficLight1_green = _data.trafficLight1_green,
                         trafficLight1_yellow = _data.trafficLight1_yellow,
                         trafficLight1_red = _data.trafficLight1_red,

@@ -8,7 +8,10 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import TimeDate from '../Components/TimeDate.js';
 import Picture from '../Components/Picture.js';
-import Clock from '../Components/Clock.js'
+import Clock from '../Components/Clock.js';
+
+import PictureSwitcher from '../Components/PictureSwitcher.js';
+import ResponsiveImage from '../Components/ResponsiveImage.js';
 
 function SideNavigationBar() {
   return (
@@ -27,6 +30,9 @@ function SideNavigationBar() {
 
       <div className="sidebar-footer">
         <Clock />
+      </div>
+      <div>
+        <ResponsiveImage name="/450 FEI-CZ" /*alt=""*/ aspect="16 / 9" fit="contain"/>
       </div>
     </aside>
   );

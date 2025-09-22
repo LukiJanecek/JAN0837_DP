@@ -18,42 +18,42 @@ function CommunicationParamsSidebar({data, refresh, isFetching}) {
   return (
     <div className="p-3 border-start h-100">
       <Card>
-                <Card.Header>
-                  <span>Aktuální data z API</span>
-                  <Badge bg="light" text="dark">
-                    {lastUpdated ? lastUpdated.toLocaleTimeString() : '—'}
-                  </Badge>
-                </Card.Header>
-                <Card.Body style={{ overflow: 'auto' }}>
-                  <div className="gap-2 mb-2">
-                    <small className="text-muted">Endpoint: <code>{API_URL}</code></small>
-                  </div>
-                  <pre
-                    style={{
-                      background: '#f6f8fa',
-                      padding: 8,
-                      borderRadius: 6,
-                      marginTop: 8,
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word',
-                      fontSize: 13,
-                      lineHeight: 1.4,
-                      maxHeight: 420,
-                      overflow: 'auto',
-                    }}
-                  >
-                  {JSON.stringify(data, null, 2)}
-                  </pre>
-                </Card.Body>
-                <Card.Footer className="d-flex justify-content-between">
-                  <small className="text-muted">
-                    Stav: {isFetching ? 'Načítám…' : 'Hotovo'}
-                  </small>
-                  <Button size="sm" variant="outline-secondary" onClick={refresh}>
-                    Refresh
-                  </Button>
-                </Card.Footer>
-              </Card>
+        <Card.Header>
+          <span>Aktuální data z API</span>
+            <Badge bg="light" text="dark">
+              {lastUpdated ? lastUpdated.toLocaleTimeString() : '—'}
+            </Badge>
+        </Card.Header>
+        <Card.Body style={{ overflow: 'auto' }}>
+          <div className="gap-2 mb-2">
+            <small className="text-muted">Endpoint: <code>{API_URL}</code></small>
+          </div>
+          <pre
+            style={{
+              background: '#f6f8fa',
+              padding: 8,
+              borderRadius: 6,
+              marginTop: 8,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              fontSize: 13,
+              lineHeight: 1.4,
+              maxHeight: 420,
+              overflow: 'auto',
+            }}
+          >
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        </Card.Body>
+        <Card.Footer className="d-flex justify-content-between">
+          <small className="text-muted">
+            Stav: {isFetching ? 'Načítám…' : 'Hotovo'}
+          </small>
+          <Button size="sm" variant="outline-secondary" onClick={refresh}>
+            Refresh
+          </Button>
+        </Card.Footer>
+      </Card>
     </div>
   );
 }

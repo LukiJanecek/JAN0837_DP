@@ -15,13 +15,36 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData } from '../Communication/DataProvider';
 
-const names = ['crossroad_basic','crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
+const names = ['crossroad_basic', 'crossroad_day', 'crossroad_night', 'crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
 const ext = 'png';         
 const folder = 'images'; 
 
-const crossroad = ['crossroad_day', 'crossroad_night']
+const crossroad = ['crossroad_basic', 'crossroad_day', 'crossroad_night']
 const crosswalkLights = ['crosswalk_red', 'crosswalk_green', 'crosswalk_blank']
 const trafficLights = ['traffic_light_red', 'traffic_light_yellow', 'traffic_light_green', 'traffic_light_red_yellow', 'traffic_light_blank']
+
+const crossroad_light_green = ["traffic_light_green_0", "traffic_light_green_90", "traffic_light_green_180", "traffic_light_green_270"]
+const crossroad_light_yellow = ["traffic_light_yellow_0", "traffic_light_yellow_90", "traffic_light_yellow_180", "traffic_light_yellow_270"]
+const crossroad_light_red = ["traffic_light_red_0", "traffic_light_red_90", "traffic_light_red_180", "traffic_light_red_270"]
+const crossroad_light_blank = ["traffic_light_blank_0", "traffic_light_blank_90", "traffic_light_blank_180", "traffic_light_blank_270"]
+const pedestrian_light_green = ["crosswalk_light_green_0", "crosswalk_light_green_90", "crosswalk_light_green_180", "crosswalk_light_green_270"]
+const pedestrian_light_red = ["crosswalk_light_red_0", "crosswalk_light_red_90", "crosswalk_light_red_180", "crosswalk_light_red_270"]
+const pedestrian_light_red_blank = ["crosswalk_light_red_blank_0", "crosswalk_light_red_blank_90", "crosswalk_light_red_blank_180", "crosswalk_light_red_blank_270"]
+const pedestrian_light_green_blank = ["crosswalk_light_green_blank_0", "crosswalk_light_green_blank_90", "crosswalk_light_green_blank_180", "crosswalk_light_green_blank_270"]
+
+const switcherGroups = [
+  { key: 'crossroad', label: 'Křižovatka',          names: crossroad },
+  { key: 'crosswalk', label: 'Přechod pro chodce', names: crosswalkLights },
+  { key: 'traffic',  label: 'Dopravní světla',     names: trafficLights },
+  { key: 'tl_green',  label: 'Auto – zelená',          names: crossroad_light_green },
+  { key: 'tl_yellow', label: 'Auto – žlutá',           names: crossroad_light_yellow },
+  { key: 'tl_red',    label: 'Auto – červená',         names: crossroad_light_red },
+  { key: 'tl_blank',  label: 'Auto – prázdná',         names: crossroad_light_blank },
+  { key: 'ped_green', label: 'Chodec – zelená',        names: pedestrian_light_green },
+  { key: 'ped_red',   label: 'Chodec – červená',       names: pedestrian_light_red },
+  { key: 'ped_r_b',   label: 'Chodec – červená (blik)', names: pedestrian_light_red_blank },
+  { key: 'ped_g_b',   label: 'Chodec – zelená (blik)',  names: pedestrian_light_green_blank },
+];
 
 function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,}) 
 {
@@ -29,7 +52,6 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const { data, saveData, error, isFetching, refresh } = useData();
 
   const toBool = (v) => {
-    if (typeof v === 'string') return v;
     const s = String(v ?? '').trim().toLowerCase();
     return s === 'true' || s === '1' || s === 'on';
   };
@@ -188,6 +210,22 @@ function CrossroadPage({ setAside }) {
           <Picture name={names[idx]} ext={ext} folder={folder} />
         </div>
         
+        <div className="switchers-grid mt-4">
+          {switcherGroups.map(g => (
+            <Card key={g.key} className="h-100">
+              <Card.Header className="py-2">{g.label}</Card.Header>
+                <Card.Body>
+                  <PictureSwitcher
+                    names={g.names}
+                    ext="png"
+                    folder="images"
+                    imgClassName="shadow-sm w-100"
+                  />
+                </Card.Body>
+              </Card>
+          ))}
+        </div>
+
         {/*}
         */}
         {/*}

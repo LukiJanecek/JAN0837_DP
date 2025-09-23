@@ -15,8 +15,8 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 
 function SideNavigationBar() {
   return (
-    <aside>
-      <Nav classname="nav_text">
+    <>
+      <Nav className="nav_text">
         <Nav.Link as={NavLink} to="/mainpage">
           Main Page
         </Nav.Link>
@@ -30,11 +30,9 @@ function SideNavigationBar() {
 
       <div className="sidebar-footer">
         <Clock />
-      </div>
-      <div>
         <ResponsiveImage name="/450 FEI-CZ" /*alt=""*/ aspect="16 / 9" fit="contain"/>
       </div>
-    </aside>
+    </>
   );
 }
 

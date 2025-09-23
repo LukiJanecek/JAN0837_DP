@@ -21,7 +21,7 @@ const folder = 'images';
 
 const crossroad = ['crossroad_basic', 'crossroad_day', 'crossroad_night']
 const crosswalkLights = ['crosswalk_red', 'crosswalk_green', 'crosswalk_blank']
-const trafficLights = ['traffic_light_red', 'traffic_light_yellow', 'traffic_light_green', 'traffic_light_red_yellow', 'traffic_light_blank']
+const trafficLights = ['traffic_lights_red', 'traffic_lights_yellow', 'traffic_lights_green', 'traffic_lights_yellow_red', 'traffic_lights_blank']
 
 const crossroad_light_green = ["traffic_light_green_0", "traffic_light_green_90", "traffic_light_green_180", "traffic_light_green_270"]
 const crossroad_light_yellow = ["traffic_light_yellow_0", "traffic_light_yellow_90", "traffic_light_yellow_180", "traffic_light_yellow_270"]

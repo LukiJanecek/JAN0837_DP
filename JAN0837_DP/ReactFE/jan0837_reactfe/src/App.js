@@ -21,8 +21,7 @@ function App() {
   return (
     <div className="app" data-aside={aside ? "on" : "off"}>
       <div className="app__nav">
-        <nav >
-          <SideNavigationBar />
+        <SideNavigationBar />
           {/* jednoduché odkazy */}
           {/* 
           <NavLink to="/mainpage" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Main Page</NavLink>
@@ -30,7 +29,6 @@ function App() {
           <NavLink to="/communication" className={({isActive})=>`nav__link ${isActive?'is-active':''}`}>Communication</NavLink>
           <div className="nav__footer">{new Date().toLocaleString()}</div>
           */}
-        </nav>
       </div>
       
       

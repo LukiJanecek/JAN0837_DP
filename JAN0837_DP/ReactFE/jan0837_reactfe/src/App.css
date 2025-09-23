@@ -99,13 +99,14 @@ body{ background:var(--bg); color:var(--text); }
 /* Vzhled panelů/obsahu */
 .app__nav{
   position: relative;
-  display: flex; flex-direction: column;
+  display: flex; 
+  flex-direction: column;
   padding: 1rem 1rem 1rem calc(1rem + var(--nav-accent-w) + 8px);
   color: var(--nav-fg);
   background: var(--nav-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  align-items: center;
+  align-items: stretch;
 }
 
 .app__nav::before{
@@ -136,10 +137,13 @@ body{ background:var(--bg); color:var(--text); }
 }
 
 .nav__footer{ 
-  margin-top:auto; 
-  font-size:.9rem; 
-  text-align:center; 
-  opacity:.9;
+  margin-top: auto; 
+  font-size: .9rem; 
+  text-align: center; 
+  opacity: .9;
+  gap: .5rem;
+  justify-items: center;
+  display: grid;
 }
 
 .nav__

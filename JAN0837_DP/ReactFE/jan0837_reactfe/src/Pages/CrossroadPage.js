@@ -15,6 +15,12 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData } from '../Communication/DataProvider';
 
+const toBool = (v) => {
+  if (typeof v === 'boolean') return v;
+  const s = String(v ?? '').trim().toLowerCase();
+  return s === 'true' || s === '1' || s === 'on';
+};
+
 const names = ['crossroad_basic', 'crossroad_day', 'crossroad_night', 'crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
 const ext = 'png';         
 const folder = 'images'; 
@@ -46,15 +52,161 @@ const switcherGroups = [
   { key: 'ped_g_b',   label: 'Chodec – zelená (blik)',  names: pedestrian_light_green_blank },
 ];
 
+const LIGHT_SOURCES = {
+  car: {
+    green0: 'traffic_light_green_0.png',
+    green90: 'traffic_light_green_90.png',
+    green180: 'traffic_light_green_180.png',
+    green270: 'traffic_light_green_270.png',
+
+    yellow0: 'traffic_light_yellow_0.png',
+    yellow90: 'traffic_light_yellow_90.png',
+    yellow180: 'traffic_light_yellow_180.png',
+    yellow270: 'traffic_light_yellow_270.png',
+
+    red0: 'traffic_light_red_0.png',
+    red90: 'traffic_light_red_90.png',
+    red180: 'traffic_light_red_180.png',
+    red270: 'traffic_light_red_270.png',
+
+    blank0: 'traffic_light_blank_0.png',
+    blank90: 'traffic_light_blank_90.png',
+    blank180: 'traffic_light_blank_180.png',
+    blank270: 'traffic_light_blank_270.png'
+  },
+  ped: {
+    green0: 'crosswalk_light_green_0.png',
+    green90: 'crosswalk_light_green_90.png',
+    green180: 'crosswalk_light_green_180.png',
+    green270: 'crosswalk_light_green_270.png',
+
+    red0: 'crosswalk_light_red_0.png',
+    red90: 'crosswalk_light_red_90.png',
+    red180: 'crosswalk_light_red_180.png',
+    red270: 'crosswalk_light_red_270.png',
+
+    greenblank0: 'crosswalk_light_green_blank_0.png',
+    greenblank90: 'crosswalk_light_green_blank_90.png',
+    greenblank180: 'crosswalk_light_green_blank_180.png',
+    greenblank270: 'crosswalk_light_green_blank_270.png',
+
+    redblank0: 'crosswalk_light_red_blank_0.png',
+    redblank90: 'crosswalk_light_red_blank_90.png',
+    redblank180: 'crosswalk_light_red_blank_180.png',
+    redblank270: 'crosswalk_light_red_blank_270.png'
+  }
+};
+
+function pickCarSrc({ green, yellow, red }, dir = 0) {
+  const d = String(dir);
+  const r = toBool(red);
+  const y = toBool(yellow);
+  const g = toBool(green);
+  if (r) return `/images/${LIGHT_SOURCES.car['red' + d]}`;
+  if (y) return `/images/${LIGHT_SOURCES.car['yellow' + d]}`;
+  if (g) return `/images/${LIGHT_SOURCES.car['green' + d]}`;
+  return `/images/${LIGHT_SOURCES.car['blank' + d]}`;
+}
+
+function pickPedRedSrc(red, dir = 0) {
+  const d = String(dir);
+  const r = toBool(red);
+  return r
+    ? `/images/${LIGHT_SOURCES.ped['red' + d]}`
+    : `/images/${LIGHT_SOURCES.ped['redblank' + d]}`;
+}
+
+function pickPedGreenSrc(green, dir = 0) {
+  const d = String(dir);
+  const g = toBool(green);
+  return g
+    ? `/images/${LIGHT_SOURCES.ped['green' + d]}`
+    : `/images/${LIGHT_SOURCES.ped['greenblank' + d]}`;
+}
+
+function pickCarLensSrc(color, state, dir = 0) {
+  const d = String(dir);
+  const on = toBool(state?.[color]); // green, yellow, red
+  const key = on ? `${color}${d}` : `blank${d}`;
+  return `/images/${LIGHT_SOURCES.car[key]}`;
+}
+
+function pickPedLensSrc(color, state, dir = 0) {
+  const d = String(dir);
+  const on = toBool(state?.[color]); // green, red
+  const key = on ? `${color}${d}` : `${color}blank${d}`;
+  return `/images/${LIGHT_SOURCES.ped[key]}`;
+}
+
+function PedLens({ color, state, dir=0, x, y, alt }) {
+  const src = pickPedLensSrc(color, state, dir);
+  const style = { left: x, top: y };
+  return <img className="light light--uniform" src={src} alt={alt ?? `ped-${color}`} style={style} />;
+}
+
+function CarLens({ color, state, dir=0, x, y, alt }) {
+  const src = pickCarLensSrc(color, state, dir);
+  const style = { left: x, top: y };
+  return <img className="light light--uniform" src={src} alt={alt ?? `car-${color}`} style={style} />;
+}
+
+function TrafficLight({ state, dir = 0, x, y, alt }) {
+  const src = pickCarSrc(state, dir);
+  const style = { left: x, top: y };
+  return (
+    <img className="light light--uniform" src={src} alt={alt ?? "car light"} style={style}/>
+  );
+}
+
+function PedestrianLight({ state, dir = 0, x, y, alt }) {
+  const redSrc = pickPedRedSrc(state.red, dir);
+  const greenSrc = pickPedGreenSrc(state.green, dir);
+  const style = { left: x, top: y };
+
+  return (
+    <>
+      <img className="light light--uniform" src={redSrc} alt={alt + ' red'} style={style} />
+      <img className="light light--uniform" src={greenSrc} alt={alt + ' green'} style={style} />
+    </>
+  );
+}
+
+function CrossroadCanvas({ background, lights }) {
+  const style = { backgroundImage: `url(${background})` };
+  return (
+    <div className="crossroad" style={style}>
+      {lights.map(l => l.kind === 'car' ? (
+          <CarLens 
+            key={l.id}
+            kind={l.kind}
+            state={l.state}
+            dir={l.dir ?? 0}
+            x={l.x}
+            y={l.y}
+            w={l.w}
+            alt={l.id}
+          />
+        ) : (
+          <PedLens
+            key={l.id}
+            kind={l.kind}
+            state={l.state}
+            dir={l.dir ?? 0}
+            x={l.x}
+            y={l.y}
+            w={l.w}
+            alt={l.id}
+          />
+        )
+      )}
+    </div>
+  );
+}
+
 function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,}) 
 {
   const { interval, setInterval } = useRefresh();
   const { data, saveData, error, isFetching, refresh } = useData();
-
-  const toBool = (v) => {
-    const s = String(v ?? '').trim().toLowerCase();
-    return s === 'true' || s === '1' || s === 'on';
-  };
 
   const toggleBtn = (key, value) => {
     saveData({
@@ -172,10 +324,35 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
 function CrossroadPage({ setAside }) {
   const [idx, setIdx] = useState(0);
+  const { data, saveData } = useData();
 
-  const prev = () => setIdx((i) => (i - 1 + names.length) % names.length);
-  const next = () => setIdx((i) => (i + 1) % names.length);
-  const jump = (i) => setIdx(i);
+    useEffect(() => {
+    if (
+      data?.trafficLight1_green === undefined &&
+      data?.trafficLight1_yellow === undefined &&
+      data?.trafficLight1_red === undefined &&
+      data?.trafficLight2_green === undefined &&
+      data?.trafficLight2_yellow === undefined &&
+      data?.trafficLight2_red === undefined &&
+      data?.pedestrian1_green === undefined &&
+      data?.pedestrian1_red === undefined &&
+      data?.pedestrian2_green === undefined &&
+      data?.pedestrian2_red === undefined
+    ) {
+      saveData({
+        trafficLight1_green: 'true',
+        trafficLight1_yellow: 'true',
+        trafficLight1_red: 'true',
+        trafficLight2_green: 'false',
+        trafficLight2_yellow: 'false',
+        trafficLight2_red: 'false',
+        pedestrian1_green: 'false',
+        pedestrian1_red: 'false',
+        pedestrian2_green: 'false',
+        pedestrian2_red: 'false',
+      });
+    }
+  }, [data, saveData]);
 
   useEffect(() => {
     const preload = (name) => {
@@ -188,6 +365,10 @@ function CrossroadPage({ setAside }) {
     preload(names[(idx + 1) % names.length]);
     preload(names[(idx - 1 + names.length) % names.length]);
   }, [idx]);
+
+  const prev = () => setIdx((i) => (i - 1 + names.length) % names.length);
+  const next = () => setIdx((i) => (i + 1) % names.length);
+  const jump = (i) => setIdx(i);
 
   {/*
   useEffect(()=>{
@@ -202,12 +383,51 @@ function CrossroadPage({ setAside }) {
     }, [setAside]);
   */}
 
+  const CARW = {
+    green: data?.trafficLight1_green ?? false,
+    yellow: data?.trafficLight1_yellow ?? false,
+    red: data?.trafficLight1_red ?? false,
+  };
+
+  const CARE = {
+    green: data?.trafficLight2_green ?? false,
+    yellow: data?.trafficLight2_yellow ?? false,
+    red: data?.trafficLight2_red ?? false,
+  };
+
+  const PEDN = {
+    green: data?.pedestrian1_green ?? false,
+    red: data?.pedestrian1_red ?? false,
+  };
+
+  const PEDS = {
+    green: data?.pedestrian2_green ?? false,
+    red: data?.pedestrian2_red ?? false,
+  };
+
+  const lights = [
+    // car – west (W) and east (E)
+    { id: 'car-W-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '38%', y: '77%' }, // W = 90° 
+    { id: 'car-W-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '42%', y: '77%' }, // W = 90° 
+    { id: 'car-W-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '46%', y: '77%' }, // W = 90° 
+    { id: 'car-E-green', kind: 'car', color: 'green', state: CARE,  dir: 270, x: '71%', y: '8%'  }, // E = 270°
+    { id: 'car-E-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '67%', y: '8%'  }, // E = 270° 
+    { id: 'car-E-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '63%', y: '8%'  }, // E = 270° 
+
+    // pedestrians – north (N) and south (S)
+    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.5%', y: '9%' }, // N = 180° 
+    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.5%', y: '2.5%' }, // N = 180° 
+    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63%', y: '75%' }, // S = 0° 
+    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63%', y: '81.5%' }, // S = 0°
+  ];
+
   return (
     <Row className="crossroadpage">
       <Col xs={12} lg={8}>
         
         <div className="mt-3">
-          <Picture name={names[idx]} ext={ext} folder={folder} />
+          {/*<Picture name={names[idx]} ext={ext} folder={folder} />*/}
+          <CrossroadCanvas background = "/images/crossroad_basic.png" lights = {lights}/>
         </div>
         
         <div className="switchers-grid mt-4">

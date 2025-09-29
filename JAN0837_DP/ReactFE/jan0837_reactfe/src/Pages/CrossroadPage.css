@@ -2,6 +2,40 @@
     min-width: 500px;
 }
 
+.crossroad {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden; 
+}
+
+.light {
+  position: absolute;
+  height: auto; 
+  z-index: 2;
+  pointer-events: none; 
+}
+
+.light--uniform { width: 4%; } 
+
+.crossroadlight {
+  position: absolute;
+  /* x, y, w se nastaví inline stylem v % (viz komponenta) */
+  pointer-events: none;    /* ať neblokuje kliky, pokud nechceš interakci */
+  image-rendering: auto;   /* hezčí škálování */
+  z-index: 2;              /* nad podkladem */
+}
+
+.pedestrianlight {
+  position: absolute;
+  /* x, y, w se nastaví inline stylem v % (viz komponenta) */
+  pointer-events: none;    /* ať neblokuje kliky, pokud nechceš interakci */
+  image-rendering: auto;   /* hezčí škálování */
+  z-index: 2;              /* nad podkladem */
+}
+
 .btn.btn--start{
   --bs-btn-color: var(--black);
   --bs-btn-bg: var(--green-light);

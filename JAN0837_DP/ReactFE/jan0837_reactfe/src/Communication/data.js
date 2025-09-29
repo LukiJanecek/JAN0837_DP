@@ -18,9 +18,9 @@ export const STATE_SCHEMA = {
   // Crossroad variables
   btnCrosswalk1: { type: 'boolean', default: false },
   btnCrosswalk2: { type: 'boolean', default: false },
-  trafficLight1_green: { type: 'boolean', default: false },
-  trafficLight1_yellow: { type: 'boolean', default: false },
-  trafficLight1_red: { type: 'boolean', default: false },
+  trafficLight1_green: { type: 'boolean', default: true },
+  trafficLight1_yellow: { type: 'boolean', default: true },
+  trafficLight1_red: { type: 'boolean', default: true },
   trafficLight2_green: { type: 'boolean', default: false },
   trafficLight2_yellow: { type: 'boolean', default: false },
   trafficLight2_red: { type: 'boolean', default: false },

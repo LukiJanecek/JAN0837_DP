@@ -244,11 +244,23 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause });
   const setStopAsync  = () => saveData({ btnCrossroadStop: !btnCrossroadStop });
 
+  const setCrossroadLightGreen1 = () => saveData({ trafficLight1_green: !trafficLight1_green });
+  const setCrossroadLightYellow1 = () => saveData({ trafficLight1_yellow: !trafficLight1_yellow });
+  const setCrossroadLightRed1 = () => saveData({ trafficLight1_red: !trafficLight1_red });
+  const setCrossroadLightGreen2 = () => saveData({ trafficLight2_green: !trafficLight2_green });
+  const setCrossroadLightYellow2 = () => saveData({ trafficLight2_yellow: !trafficLight2_yellow });
+  const setCrossroadLightRed2 = () => saveData({ trafficLight2_red: !trafficLight2_red });
+  const setPedestrianLightGreen1 = () => saveData({ pedestrian1_green: !pedestrian1_green });
+  const setPedestrianLightRed1 = () => saveData({ pedestrian1_red: !pedestrian1_red });
+  const setPedestrianLightGreen2 = () => saveData({ pedestrian2_green: !pedestrian2_green });
+  const setPedestrianLightRed2 = () => saveData({ pedestrian2_red: !pedestrian2_red });
+
   {/*const toggleBtn = (key, value) => saveData({ [key]: !value ? 'true' : 'false' });
   */}
   return (
     <div>
       <h3>Parametry:</h3>
+      {/*
       <div className="gap-2 mb-2">
         <div className="text-muted small text-center">
           Obrázek {idx + 1} / {names.length}
@@ -271,42 +283,64 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         </Form.Select>
 
       </div>
+      */}
       
       <div>
-        <div><strong>Number:</strong> {number}</div>
-        <div><strong>Status:</strong> {String(toggle)}</div>
-        <div><strong>Text:</strong> {text}</div>
-        
-        <div><strong>btnCrossroadStart:</strong> {String(btnCrossroadStart)}</div>
-        <div><strong>btnCrossroadPause:</strong> {String(btnCrossroadPause)}</div>
-        <div><strong>btnCrossroadStop:</strong> {String(btnCrossroadStop)}</div>
-
-        <div><strong>TL1_G:</strong> {String(trafficLight1_green)}</div>
-        <div><strong>TL1_Y:</strong> {String(trafficLight1_yellow)}</div>
-        <div><strong>TL1_R:</strong> {String(trafficLight1_red)}</div>
-        <div><strong>TL2_G:</strong> {String(trafficLight2_green)}</div>
-        <div><strong>TL2_Y:</strong> {String(trafficLight2_yellow)}</div>
-        <div><strong>TL2_R:</strong> {String(trafficLight2_red)}</div>
-        <div><strong>PL1_G:</strong> {String(pedestrian1_green)}</div>
-        <div><strong>PL1_R:</strong> {String(pedestrian1_red)}</div>
-        <div><strong>PL2_G:</strong> {String(pedestrian2_green)}</div>
-        <div><strong>PL2_R:</strong> {String(pedestrian2_red)}</div>
-
         <Col>
           <div className="gap-2 mb-2">
             <Button className="btn--start" onClick={() => setStartAsync(!btnCrossroadStart) /*toggleBtn("btnCrossroadStart", !btnCrossroadStart)*/} /*disabled={isFetching}*/>
               Start ({String(btnCrossroadStart)})
             </Button>
-          </div>
-          <div className="gap-2 mb-2">
+          
             <Button className="btn--pause" onClick={() => setPauseAsync(!btnCrossroadPause) /*toggleBtn("btnCrossroadPause", !btnCrossroadPause)*/} /*disabled={isFetching}*/>
               Pause ({String(btnCrossroadPause)})
             </Button>
-          </div>
-          <div className="gap-2 mb-2">
+          
             <Button className="btn--stop" onClick={() => setStopAsync(!btnCrossroadStop) /*toggleBtn("btnCrossroadStop", !btnCrossroadStop)*/} /*disabled={isFetching}*/>
               Stop ({String(btnCrossroadStop)})
             </Button>  
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={() => setCrossroadLightGreen1(!trafficLight1_green)}>
+              Crossroad green 1 ({String(trafficLight1_green)})
+            </Button>
+            <Button onClick={() => setCrossroadLightYellow1(!trafficLight1_yellow)}>
+              Crossroad yellow 1 ({String(trafficLight1_yellow)})
+            </Button>
+            <Button onClick={() => setCrossroadLightRed1(!trafficLight1_red)}>
+              Crossroad red 1 ({String(trafficLight1_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={() => setCrossroadLightGreen2(!trafficLight2_green)}>
+              Crossroad green 2 ({String(trafficLight2_green)})
+            </Button>
+            <Button onClick={() => setCrossroadLightYellow2(!trafficLight2_yellow)}>
+              Crossroad yellow 2 ({String(trafficLight2_yellow)})
+            </Button>
+            <Button onClick={() => setCrossroadLightRed2(!trafficLight2_red)}>
+              Crossroad red 2 ({String(trafficLight2_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={() => setPedestrianLightGreen1(!pedestrian1_green)}>
+              Pedestrian green 1 ({String(pedestrian1_green)})
+            </Button>
+            <Button onClick={() => setPedestrianLightRed1(!pedestrian1_red)}>
+              Pedestrian red 1 ({String(pedestrian1_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={() => setPedestrianLightGreen2(!pedestrian2_green)}>
+              Pedestrian green 2 ({String(pedestrian2_green)})
+            </Button>
+            <Button onClick={() => setPedestrianLightRed2(!pedestrian2_red)}>
+              Pedestrian red 2 ({String(pedestrian2_red)})
+            </Button>
           </div>
         </Col>
 

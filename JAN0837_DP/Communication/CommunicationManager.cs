@@ -6,12 +6,25 @@ using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 
 using JAN0837_DP.Communication.ModbusTCPIP;
+using JAN0837_DP.Communication.S7;
+using JAN0837_DP.Communication.Sharp7;
+using JAN0837_DP.Communication.TCPIP;
+using JAN0837_DP.Communication.RESTAPI;
+using JAN0837_DP.Communication.OPCUA;
+using JAN0837_DP.Communication.MQTT;
 using JAN0837_DP.Data;
+using Siemens.Engineering.HW;
+using System.Security.Cryptography.X509Certificates;
+using JAN0837_DP.Forms;
 
 namespace JAN0837_DP.Communication
 {
     public class CommunicationManager
     {
+        public S7.S7 _s7;
+        public Sharp7.Sharp7 sharp7;
+        public ucCommunicationControl ucCommunicationControl;
+
         public void Communication()
         {
             try
@@ -89,7 +102,7 @@ namespace JAN0837_DP.Communication
                                 // Čtení jednoho registru
                                 ushort[] values = modbusClient.ReadHoldingRegisters(slaveId, startAddress, 1);
                                 if (values != null)
-                                    Console.WriteLine($"📥 Přečtená hodnota: {values[0]}");
+                                    Console.WriteLine($"Přečtená hodnota: {values[0]}");
 
                                 // Zápis do registru
                                 modbusClient.WriteSingleRegister(slaveId, startAddress, 1234);
@@ -124,11 +137,30 @@ namespace JAN0837_DP.Communication
                     {
                         // S7 -> Sharp7
                         string ipAddress = internalVariables.txtBoxParam1;
+                        string cpuType = internalVariables.txtBoxParam2;
+                        
+                        if (_s7.plc.IsConnected != true)
+                        {
+                            // connect 
+                            _s7.connectToPLC(cpuType, ipAddress);
+                        }
+
+                        // get data from plc
+
+                        // crossroad
+                        _s7.getBytes(CrossroadData.CrossroadDBnumber, 0, CrossroadData.CrossroadReadBuffer.Length, CrossroadData.CrossroadReadBuffer);
                     }
                     else if (internalVariables.sharp7Flag == true)
                     {
                         //
                         string ipAddress = internalVariables.txtBoxParam1;
+
+                        if (sharp7.client != null)
+                        {
+                            sharp7.connectToPLC(ipAddress);
+                        }
+
+                        sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
                     }
                     else
                     {

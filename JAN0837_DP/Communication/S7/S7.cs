@@ -12,7 +12,7 @@ namespace JAN0837_DP.Communication.S7
 {
     public class S7
     {
-        public static Plc plc;
+        public Plc plc;
 
         public bool connectToPLC(string cpuType, string ip)
         {
@@ -81,7 +81,7 @@ namespace JAN0837_DP.Communication.S7
             try
             {
                 plc.WriteBytes(DataType.DataBlock, DBnumber, buffer_length, buffer);
-
+                
                 return true;
             }
             catch

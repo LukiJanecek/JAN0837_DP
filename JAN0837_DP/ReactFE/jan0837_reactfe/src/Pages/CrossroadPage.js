@@ -185,6 +185,7 @@ function CrossroadCanvas({ background, lights }) {
             y={l.y}
             w={l.w}
             alt={l.id}
+            color = {l.color}
           />
         ) : (
           <PedLens
@@ -196,6 +197,7 @@ function CrossroadCanvas({ background, lights }) {
             y={l.y}
             w={l.w}
             alt={l.id}
+            color = {l.color}
           />
         )
       )}
@@ -449,10 +451,10 @@ function CrossroadPage({ setAside }) {
     { id: 'car-E-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '63%', y: '8%'  }, // E = 270° 
 
     // pedestrians – north (N) and south (S)
-    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.5%', y: '9%' }, // N = 180° 
-    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.5%', y: '2.5%' }, // N = 180° 
-    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63%', y: '75%' }, // S = 0° 
-    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63%', y: '81.5%' }, // S = 0°
+    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.5%', y: '2.5%' }, // N = 180°  
+    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.5%', y: '9%' }, // N = 180° 
+    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63%', y: '81.5%' }, // S = 0° 
+    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63%', y: '75%' }, // S = 0° 
   ];
 
   return (

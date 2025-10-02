@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using JAN0837_DP.Data;
 using Sharp7;
 
 namespace JAN0837_DP.Communication.Sharp7
 {
-    public  class Sharp7
+    public class Sharp7
     {
         public S7Client client = new S7Client();
 
@@ -91,7 +91,7 @@ namespace JAN0837_DP.Communication.Sharp7
             int result = client.DBRead(DBnumber, startBit, buffer.Length, buffer);
 
             if (result == 0)
-            {
+            {       
                 return true;
             }
             else

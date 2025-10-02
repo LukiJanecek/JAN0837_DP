@@ -161,6 +161,7 @@ namespace JAN0837_DP.Communication
                         }
 
                         sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                        sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
                     }
                     else
                     {

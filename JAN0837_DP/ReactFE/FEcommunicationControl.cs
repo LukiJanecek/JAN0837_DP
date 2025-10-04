@@ -84,7 +84,8 @@ namespace JAN0837_DP.ReactFE
         public void Update(string key, object value)
         {
             var testdata = TestData.AppState.Get();
-            var crossroaddata = CrossroadData.AppState.Get();
+
+            string newValue = Convert.ToString(value) ?? "";
 
             switch (key)
             {
@@ -123,41 +124,85 @@ namespace JAN0837_DP.ReactFE
                     break;
 
                 case "toggle":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "btnCrossroadStart":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "btnCrossroadPause":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "btnCrossroadStop":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "btnCrosswalk1":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "btnCrosswalk2":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight1_green":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight1_yellow":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight1_red":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight2_green":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight2_yellow":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "trafficLight2_red":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "pedestrian1_green":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "pedestrian1_red":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "pedestrian2_green":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
                 case "pedestrian2_red":
+                    ApplyCrossroadUpdate(key, newValue);
                     break;
             }
 
             TestData.AppState.Set(testdata);
-            CrossroadData.AppState.Set(crossroaddata);
+        }
+
+        private static void ApplyCrossroadUpdate(string key, string value)
+        {
+            CrossroadData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "btnCrossroadStart": CrossroadData.btnCrossroadStart = value; break;
+                    case "btnCrossroadPause": CrossroadData.btnCrossroadPause = value; break;
+                    case "btnCrossroadStop": CrossroadData.btnCrossroadStop = value; break;
+
+                    case "btnCrosswalk1": CrossroadData.btnCrosswalk1 = value; break;
+                    case "btnCrosswalk2": CrossroadData.btnCrosswalk2 = value; break;
+
+                    case "trafficLight1_green": CrossroadData.trafficLight1_green = value; break;
+                    case "trafficLight1_yellow": CrossroadData.trafficLight1_yellow = value; break;
+                    case "trafficLight1_red": CrossroadData.trafficLight1_red = value; break;
+
+                    case "trafficLight2_green": CrossroadData.trafficLight2_green = value; break;
+                    case "trafficLight2_yellow": CrossroadData.trafficLight2_yellow = value; break;
+                    case "trafficLight2_red": CrossroadData.trafficLight2_red = value; break;
+
+                    case "pedestrian1_green": CrossroadData.pedestrian1_green = value; break;
+                    case "pedestrian1_red": CrossroadData.pedestrian1_red = value; break;
+                    case "pedestrian2_green": CrossroadData.pedestrian2_green = value; break;
+                    case "pedestrian2_red": CrossroadData.pedestrian2_red = value; break;
+                }
+            });
         }
 
         public async Task HandleAsync(CancellationToken token)
@@ -222,7 +267,7 @@ namespace JAN0837_DP.ReactFE
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
                     var testdata = TestData.AppState.Get();
-                    var crossroaddata = CrossroadData.AppState.Get();
+                    var crossroaddata = CrossroadData.Get();
 
                     WriteJSON(resp, new
                     {
@@ -258,7 +303,6 @@ namespace JAN0837_DP.ReactFE
                     var updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(body) ?? new Dictionary<string, string>();
 
                     var testdata = TestData.AppState.Get();
-                    var crossroaddata = CrossroadData.AppState.Get();
 
                     // TestData
                     if (updates.TryGetValue("number", out var ns) && int.TryParse(ns, out var n))
@@ -276,84 +320,60 @@ namespace JAN0837_DP.ReactFE
                         testdata.toggle = Convert.ToString(g);
                     }
 
-                    // CrossroadData
-                    if (updates.TryGetValue("btnCrossroadStart", out var btnCrossroadStart))
-                    {
-                        crossroaddata.btnCrossroadStart = Convert.ToString(btnCrossroadStart);
-                    }
-
-                    if (updates.TryGetValue("btnCrossroadPause", out var btnCrossroadPause))
-                    {
-                        crossroaddata.btnCrossroadPause = Convert.ToString(btnCrossroadPause);
-                    }
-
-                    if (updates.TryGetValue("btnCrossroadStop", out var btnCrossroadStop))
-                    {
-                        crossroaddata.btnCrossroadStop = Convert.ToString(btnCrossroadStop);
-                    }
-
-                    if (updates.TryGetValue("btnCrosswalk1", out var btnCrosswalk1))
-                    {
-                        crossroaddata.btnCrosswalk1 = Convert.ToString(btnCrosswalk1);
-                    }
-                    
-                    if (updates.TryGetValue("btnCrosswalk2", out var btnCrosswalk2))
-                    {
-                        crossroaddata.btnCrosswalk2 = Convert.ToString(btnCrosswalk2);
-                    }
-
-                    if (updates.TryGetValue("trafficLight1_green", out var trafficLight1_green))
-                    {
-                        crossroaddata.trafficLight1_green = Convert.ToString(trafficLight1_green);
-                    }
-
-                    if (updates.TryGetValue("trafficLight1_yellow", out var trafficLight1_yellow))
-                    {
-                        crossroaddata.trafficLight1_yellow = Convert.ToString(trafficLight1_yellow);
-                    }
-
-                    if (updates.TryGetValue("trafficLight1_red", out var trafficLight1_red))
-                    {
-                        crossroaddata.trafficLight1_red = Convert.ToString(trafficLight1_red);
-                    }
-
-                    if (updates.TryGetValue("trafficLight2_green", out var trafficLight2_green))
-                    {
-                        crossroaddata.trafficLight2_green = Convert.ToString(trafficLight2_green);
-                    }
-
-                    if (updates.TryGetValue("trafficLight2_yellow", out var trafficLight2_yellow))
-                    {
-                        crossroaddata.trafficLight2_yellow = Convert.ToString(trafficLight2_yellow);
-                    }
-
-                    if (updates.TryGetValue("trafficLight2_red", out var trafficLight2_red))
-                    {
-                        crossroaddata.trafficLight2_red = Convert.ToString(trafficLight2_red);
-                    }
-
-                    if (updates.TryGetValue("pedestrian1_green", out var pedestrian1_green))
-                    {
-                        crossroaddata.pedestrian1_green = Convert.ToString(pedestrian1_green);
-                    }
-
-                    if (updates.TryGetValue("pedestrian1_red", out var pedestrian1_red))
-                    {
-                        crossroaddata.pedestrian1_red = Convert.ToString(pedestrian1_red);
-                    }
-
-                    if (updates.TryGetValue("pedestrian2_green", out var pedestrian2_green))
-                    {
-                        crossroaddata.pedestrian2_green = Convert.ToString(pedestrian2_green);
-                    }
-
-                    if (updates.TryGetValue("pedestrian2_red", out var pedestrian2_red))
-                    {
-                        crossroaddata.pedestrian2_red = Convert.ToString(pedestrian2_red);
-                    }
-
                     TestData.AppState.Set(testdata);
-                    CrossroadData.AppState.Set(crossroaddata);
+
+                    // CrossroadData
+                    foreach (var kv in updates)
+                    {
+                        switch (kv.Key)
+                        {
+                            case "btnCrossroadStart":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "btnCrossroadPause":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "btnCrossroadStop":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "btnCrosswalk1":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "btnCrosswalk2":   
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight1_green":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight1_yellow":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight1_red":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight2_green":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight2_yellow":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "trafficLight2_red":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "pedestrian1_green":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "pedestrian1_red":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "pedestrian2_green":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                            case "pedestrian2_red":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
+                        }
+                    }
 
                     resp.StatusCode = 200;
                     resp.Close();
@@ -392,7 +412,7 @@ namespace JAN0837_DP.ReactFE
         public object GetCurrentState()
         {
             var testdata = TestData.AppState.Get();
-            var crossroaddata = CrossroadData.AppState.Get();
+            var crossroaddata = CrossroadData.Get();
 
             return new
             {
@@ -440,9 +460,9 @@ namespace JAN0837_DP.ReactFE
             return GetDataAsync<TestData>(internalVariables.communicationDataURL);
         }
 
-        public Task<CrossroadData> GetCrossroadDataAsync()
+        public Task<CrossroadData.State> GetCrossroadDataAsync()
         {
-            return GetDataAsync<CrossroadData>(internalVariables.communicationDataURL);
+            return GetDataAsync<CrossroadData.State>(internalVariables.communicationDataURL);
         }
 
 
@@ -466,7 +486,7 @@ namespace JAN0837_DP.ReactFE
             Update("text", snap.text);
             Update("toggle", snap.toggle);
 
-            CrossroadData.AppState.Set(snap);
+            CrossroadData.Set(snap);
 
             Update("btnCrossroadStart", snap.btnCrossroadStart);
             Update("btnCrossroadPause", snap.btnCrossroadPause);

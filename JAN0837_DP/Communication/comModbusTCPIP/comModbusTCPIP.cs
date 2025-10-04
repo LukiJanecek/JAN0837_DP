@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using System.IO.Ports;
 
-namespace JAN0837_DP.Communication.ModbusTCPIP
+namespace JAN0837_DP.Communication.comModbusTCPIP
 {
     public class ModbusTCPIPimMaster
     {

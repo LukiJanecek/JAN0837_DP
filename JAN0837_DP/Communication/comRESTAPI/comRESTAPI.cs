@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JAN0837_DP.Communication.RESTAPI
+namespace JAN0837_DP.Communication.comRESTAPI
 {
-    public class RESTAPI
+    public class comRESTAPI
     {
 
     }

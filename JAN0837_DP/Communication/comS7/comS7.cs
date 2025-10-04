@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using S7.Net;
 using Siemens.Engineering.HW;
 
-namespace JAN0837_DP.Communication.S7
+namespace JAN0837_DP.Communication.comS7
 {
-    public class S7
+    public class comS7
     {
         public Plc plc;
 

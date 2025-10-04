@@ -16,7 +16,7 @@ using Opc.Ua.Buffers;
 using Opc.Ua.Export;
 using Opc.Ua.Security;
 
-namespace JAN0837_DP.Communication.OPCUA
+namespace JAN0837_DP.Communication.comOPCUA
 {
     public class OPCUAimServer
     {

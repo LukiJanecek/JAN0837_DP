@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using JAN0837_DP.Data;
 using Sharp7;
 
-namespace JAN0837_DP.Communication.Sharp7
+namespace JAN0837_DP.Communication.comSharp7
 {
-    public class Sharp7
+    public class comSharp7
     {
         public S7Client client = new S7Client();
 
@@ -60,6 +60,7 @@ namespace JAN0837_DP.Communication.Sharp7
 
             if (result == 0)
             {
+                //CrossroadData.btnCrossroadStart = S7.GetBitAt(buffer, 0, 0);
                 return true;
             }
             else

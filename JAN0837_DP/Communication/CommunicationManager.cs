@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 
-using JAN0837_DP.Communication.ModbusTCPIP;
-using JAN0837_DP.Communication.S7;
-using JAN0837_DP.Communication.Sharp7;
-using JAN0837_DP.Communication.TCPIP;
-using JAN0837_DP.Communication.RESTAPI;
-using JAN0837_DP.Communication.OPCUA;
-using JAN0837_DP.Communication.MQTT;
+using JAN0837_DP.Communication.comModbusTCPIP;
+using JAN0837_DP.Communication.comS7;
+using JAN0837_DP.Communication.comSharp7;
+using JAN0837_DP.Communication.comTCPIP;
+using JAN0837_DP.Communication.comRESTAPI;
+using JAN0837_DP.Communication.comOPCUA;
+using JAN0837_DP.Communication.comMQTT;
 using JAN0837_DP.Data;
 using Siemens.Engineering.HW;
 using System.Security.Cryptography.X509Certificates;
@@ -21,8 +21,8 @@ namespace JAN0837_DP.Communication
 {
     public class CommunicationManager
     {
-        public S7.S7 _s7;
-        public Sharp7.Sharp7 sharp7;
+        public comS7.comS7 _s7;
+        public comSharp7.comSharp7 _sharp7;
         public ucCommunicationControl ucCommunicationControl;
 
         public void Communication()
@@ -155,13 +155,14 @@ namespace JAN0837_DP.Communication
                         //
                         string ipAddress = internalVariables.txtBoxParam1;
 
-                        if (sharp7.client != null)
+                        if (_sharp7.client != null)
                         {
-                            sharp7.connectToPLC(ipAddress);
+                            _sharp7.connectToPLC(ipAddress);
                         }
 
-                        sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
-                        sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                        // choose between these two methods -> please test me
+                        _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                        _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
                     }
                     else
                     {
@@ -172,7 +173,7 @@ namespace JAN0837_DP.Communication
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error in communication: {ex.Message}");
             }
         }
     }

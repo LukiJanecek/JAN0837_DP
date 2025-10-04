@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace JAN0837_DP.Communication.TCPIP
+namespace JAN0837_DP.Communication.comTCPIP
 {
-    public class TCPIP
+    public class comTCPIP
     {
         private Socket socket;
         private IPEndPoint endPoint;
 
-        public TCPIP(string ipAddress, int port) 
+        public comTCPIP(string ipAddress, int port) 
         {
             endPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

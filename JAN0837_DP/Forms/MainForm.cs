@@ -27,7 +27,7 @@ using Opc.Ua.Configuration;
 using Opc.Ua.Buffers;
 using Opc.Ua.Export;
 using Opc.Ua.Security;
-using JAN0837_DP.Communication.OPCUA;
+using JAN0837_DP.Communication.comOPCUA;
 
     // Modbus
 using Modbus;
@@ -37,7 +37,7 @@ using Modbus.Data;
 using Modbus.Extensions;
 using Modbus.IO;
 using Modbus.Message;
-using JAN0837_DP.Communication.ModbusTCPIP;
+using JAN0837_DP.Communication.comModbusTCPIP;
 
     // MQTT
 using MQTTnet;
@@ -49,7 +49,7 @@ using MQTTnet;
 
 
 //TCP/IP
-using JAN0837_DP.Communication.TCPIP;
+using JAN0837_DP.Communication.comTCPIP;
 
 // Sharp7
 using Sharp7;

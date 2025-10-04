@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 // MQTT
 using MQTTnet;
 
-namespace JAN0837_DP.Communication.MQTT
+namespace JAN0837_DP.Communication.comMQTT
 {
     public class MQTTBroker
     {

@@ -161,8 +161,79 @@ namespace JAN0837_DP.Communication
                         }
 
                         // choose between these two methods -> please test me
-                        _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
-                        _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+
+                        int activeDBnumber = CrossroadData.CrossroadDBnumber;
+
+                        bool read1 = _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                        bool read2 = _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+
+                        if (read1 = true)
+                        {
+                            switch (activeDBnumber)
+                            {
+                                case CrossroadData.CrossroadDBnumber:
+                                    
+                                    CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
+                                    CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
+                                    CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
+                                    CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
+                                    CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
+
+                                    CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
+                                    CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
+                                    CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
+                                    CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
+                                    CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
+                                    CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
+                                    CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
+                                    CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
+                                    CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
+                                    CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
+                                    
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            // read failed -> Exception?
+                        }
+
+                        if (read2 = true)
+                        {
+                            switch (activeDBnumber)
+                            {
+                                case CrossroadData.CrossroadDBnumber:
+                                    /*
+                                    CrossroadData.btnCrossroadStart = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0);
+                                    CrossroadData.btnCrossroadPause = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1);
+                                    CrossroadData.btnCrossroadStop = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2);
+                                    CrossroadData.btnCrosswalk1 = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3);
+                                    CrossroadData.btnCrosswalk2 = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4);
+
+                                    CrossroadData.trafficLight1_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0);
+                                    CrossroadData.trafficLight1_yellow = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1);
+                                    CrossroadData.trafficLight1_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2);
+                                    CrossroadData.trafficLight2_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3);
+                                    CrossroadData.trafficLight2_yellow = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4);
+                                    CrossroadData.trafficLight2_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5);
+                                    CrossroadData.pedestrian1_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6);
+                                    CrossroadData.pedestrian1_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7);
+                                    CrossroadData.pedestrian2_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0);
+                                    CrossroadData.pedestrian2_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1);
+                                    */
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            // read failed -> Exception?
+                        }
                     }
                     else
                     {

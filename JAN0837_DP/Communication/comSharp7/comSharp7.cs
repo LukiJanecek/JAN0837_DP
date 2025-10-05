@@ -60,7 +60,6 @@ namespace JAN0837_DP.Communication.comSharp7
 
             if (result == 0)
             {
-                //CrossroadData.btnCrossroadStart = S7.GetBitAt(buffer, 0, 0);
                 return true;
             }
             else

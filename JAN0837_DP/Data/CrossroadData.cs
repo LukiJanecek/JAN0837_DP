@@ -16,23 +16,23 @@ namespace JAN0837_DP.Data
         public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
         public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
 
-        public static string btnCrossroadStart { get; set; } = "";
-        public static string btnCrossroadPause { get; set; } = "";
-        public static string btnCrossroadStop { get; set; } = "";
+        public static string btnCrossroadStart { get; set; } = ""; // bool
+        public static string btnCrossroadPause { get; set; } = ""; // bool
+        public static string btnCrossroadStop { get; set; } = ""; // bool
 
-        public static string btnCrosswalk1 { get; set; } = "";
-        public static string btnCrosswalk2 { get; set; } = "";
+        public static string btnCrosswalk1 { get; set; } = ""; // bool
+        public static string btnCrosswalk2 { get; set; } = ""; // bool
 
-        public static string trafficLight1_green { get; set; } = "";
-        public static string trafficLight1_yellow { get; set; } = "";
-        public static string trafficLight1_red { get; set; } = "";
-        public static string trafficLight2_green { get; set; } = "";
-        public static string trafficLight2_yellow { get;set; } = "";
-        public static string trafficLight2_red { get;set; } = "";
-        public static string pedestrian1_green { get; set; } = "";
-        public static string pedestrian1_red { get; set; } = "";
-        public static string pedestrian2_green { get; set; } = "";
-        public static string pedestrian2_red { get; set; } = "";
+        public static string trafficLight1_green { get; set; } = ""; // bool
+        public static string trafficLight1_yellow { get; set; } = ""; // bool
+        public static string trafficLight1_red { get; set; } = ""; // bool
+        public static string trafficLight2_green { get; set; } = ""; // bool
+        public static string trafficLight2_yellow { get;set; } = ""; // bool
+        public static string trafficLight2_red { get;set; } = ""; // bool
+        public static string pedestrian1_green { get; set; } = ""; // bool
+        public static string pedestrian1_red { get; set; } = ""; // bool
+        public static string pedestrian2_green { get; set; } = ""; // bool
+        public static string pedestrian2_red { get; set; } = ""; // bool
 
         // thread safety 
         private static readonly object _lock = new();

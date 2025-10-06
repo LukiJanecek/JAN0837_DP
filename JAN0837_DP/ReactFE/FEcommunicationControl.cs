@@ -126,6 +126,7 @@ namespace JAN0837_DP.ReactFE
                 case "toggle":
                     ApplyCrossroadUpdate(key, newValue);
                     break;
+
                 case "crossroadType":
                     ApplyCrossroadUpdate(key, newValue);
                     break;
@@ -458,6 +459,7 @@ namespace JAN0837_DP.ReactFE
                 toggle = testdata.toggle,
 
                 // CrossroadData
+                crossroadType = crossroaddata.crossroadType,
                 btnCrossroadStart = crossroaddata.btnCrossroadStart,
                 btnCrossroadPause = crossroaddata.btnCrossroadPause,
                 btnCrossroadStop = crossroaddata.btnCrossroadStop,
@@ -524,6 +526,7 @@ namespace JAN0837_DP.ReactFE
 
             CrossroadData.Set(snap);
 
+            Update("crossroadType", snap.crossroadType);
             Update("btnCrossroadStart", snap.btnCrossroadStart);
             Update("btnCrossroadPause", snap.btnCrossroadPause);
             Update("btnCrossroadStop", snap.btnCrossroadStop);

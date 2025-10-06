@@ -202,7 +202,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         return t === 'true' || t === 'on' || t === '1';
   })();
 
-  const crossroadType = Number.parseInt(data?.crossroadType ?? 1, 10);
+  const crossroadType = toBool(data?.crossroadType);
 
   const btnCrossroadStart = toBool(data?.btnCrossroadStart);
   const btnCrossroadPause = toBool(data?.btnCrossroadPause);
@@ -221,7 +221,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
   const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
 
-  const setCrossroadType = (val) => saveData({ crossroadType: val });
+  const setCrossroadType = () => saveData({ crossroadType: !crossroadType });
 
   const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart });
   const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause });
@@ -269,15 +269,9 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       */}
       
       <div className="gap-2 mb-3">
-        <div className="small text-muted">Scéna: {crossroadType === 0 ? 'Night' : 'Day'}</div>
-        <Button variant={crossroadType === 1 ? 'primary' : 'outline-primary'}
-                onClick={() => setCrossroadType(1)}>
-          Day (type = 1)
-        </Button>
-        <Button variant={crossroadType === 0 ? 'primary' : 'outline-primary'}
-                onClick={() => setCrossroadType(0)}>
-          Night (type = 0)
-        </Button>
+        <Button onClick={() => setCrossroadType(!crossroadType)} /*disabled={isFetching}*/>
+              CrossroadType ({String(crossroadType)})
+            </Button>
       </div>
 
       <div>
@@ -369,9 +363,9 @@ function CrossroadPage({ setAside }) {
       data?.pedestrian2_red === undefined
     ) {
       saveData({
-        trafficLight1_green: 'true',
-        trafficLight1_yellow: 'true',
-        trafficLight1_red: 'true',
+        trafficLight1_green: 'false',
+        trafficLight1_yellow: 'false',
+        trafficLight1_red: 'false',
         trafficLight2_green: 'false',
         trafficLight2_yellow: 'false',
         trafficLight2_red: 'false',
@@ -382,18 +376,6 @@ function CrossroadPage({ setAside }) {
       });
     }
   }, [data, saveData]);
-
-  useEffect(() => {
-    if (data?.crossroadType === undefined) {
-      saveData({ crossroadType: 1 });
-    }
-  }, [data?.crossroadType, saveData]);
-
-  const crossroadType = Number.parseInt(data?.crossroadType ?? 1, 10);
-  const isNight = crossroadType === 0;
-  const background = isNight
-    ? '/images/crossroad_night_blank.png'
-    : '/images/crossroad_day_blank.png';
 
   useEffect(() => {
     const preload = (name) => {

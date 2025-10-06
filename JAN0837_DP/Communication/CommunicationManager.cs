@@ -162,6 +162,7 @@ namespace JAN0837_DP.Communication
 
                         // choose between these two methods -> please test me
 
+                        // reading from PLC 
                         int activeDBnumber = CrossroadData.CrossroadDBnumber;
 
                         bool read1 = _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
@@ -206,24 +207,24 @@ namespace JAN0837_DP.Communication
                             switch (activeDBnumber)
                             {
                                 case CrossroadData.CrossroadDBnumber:
-                                    /*
-                                    CrossroadData.btnCrossroadStart = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0);
-                                    CrossroadData.btnCrossroadPause = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1);
-                                    CrossroadData.btnCrossroadStop = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2);
-                                    CrossroadData.btnCrosswalk1 = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3);
-                                    CrossroadData.btnCrosswalk2 = GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4);
+                                    
+                                    //CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
+                                    //CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
+                                    //CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
+                                    //CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
+                                    //CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
 
-                                    CrossroadData.trafficLight1_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0);
-                                    CrossroadData.trafficLight1_yellow = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1);
-                                    CrossroadData.trafficLight1_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2);
-                                    CrossroadData.trafficLight2_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3);
-                                    CrossroadData.trafficLight2_yellow = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4);
-                                    CrossroadData.trafficLight2_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5);
-                                    CrossroadData.pedestrian1_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6);
-                                    CrossroadData.pedestrian1_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7);
-                                    CrossroadData.pedestrian2_green = GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0);
-                                    CrossroadData.pedestrian2_red = GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1);
-                                    */
+                                    CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
+                                    CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
+                                    CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
+                                    CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
+                                    CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
+                                    CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
+                                    CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
+                                    CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
+                                    CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
+                                    CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
+                                    
                                     break;
 
                                 default:
@@ -234,6 +235,36 @@ namespace JAN0837_DP.Communication
                         {
                             // read failed -> Exception?
                         }
+
+                        // writting to PLC 
+
+                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 0, Convert.ToBoolean(CrossroadData.btnCrossroadStart));
+                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnCrossroadPause));
+                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnCrossroadStop));
+                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnCrosswalk1));
+                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnCrosswalk2));
+
+                        bool write1 = _sharp7.writeDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
+                        bool write2 = _sharp7.writeS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
+
+                        if (write1 = true)
+                        {
+                            // write was successful
+                        }
+                        else
+                        {
+                            // write failed -> Exception?
+                        }
+
+                        if (write2 = true)
+                        {
+                            // write was successful
+                        }
+                        else
+                        {
+                            // write failed -> Exception?
+                        }
+
                     }
                     else
                     {

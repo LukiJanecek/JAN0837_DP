@@ -30,7 +30,8 @@ function SideNavigationBar() {
 
       <div className="sidebar-footer">
         <Clock />
-        <ResponsiveImage name="/450 FEI-CZ" /*alt=""*/ aspect="16 / 9" fit="contain"/>
+        <ResponsiveImage name="/KKBI" /*alt=""*/ aspect="1 / 1" fit="contain"/>
+        <ResponsiveImage name="/450 FEI-CZ_edited" /*alt=""*/ aspect="80 / 15" fit="contain"/>
       </div>
     </>
   );

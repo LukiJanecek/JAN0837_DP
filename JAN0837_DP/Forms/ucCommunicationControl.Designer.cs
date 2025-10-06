@@ -36,7 +36,6 @@
             rbtnTCPIP = new RadioButton();
             rbtnModbusTCPIP = new RadioButton();
             rbtnRESTAPI = new RadioButton();
-            rbtnS7 = new RadioButton();
             lblPara2 = new Label();
             lblCheckBox = new Label();
             btnPreSet = new Button();
@@ -136,18 +135,6 @@
             rbtnRESTAPI.UseVisualStyleBackColor = true;
             rbtnRESTAPI.CheckedChanged += rbtnRESTAPI_CheckedChanged;
             // 
-            // rbtnS7
-            // 
-            rbtnS7.AutoSize = true;
-            rbtnS7.Location = new Point(3, 153);
-            rbtnS7.Name = "rbtnS7";
-            rbtnS7.Size = new Size(46, 24);
-            rbtnS7.TabIndex = 9;
-            rbtnS7.TabStop = true;
-            rbtnS7.Text = "S7";
-            rbtnS7.UseVisualStyleBackColor = true;
-            rbtnS7.CheckedChanged += rbtnS7_CheckedChanged;
-            // 
             // lblPara2
             // 
             lblPara2.AutoSize = true;
@@ -244,7 +231,7 @@
             // rbtnSharp7
             // 
             rbtnSharp7.AutoSize = true;
-            rbtnSharp7.Location = new Point(3, 183);
+            rbtnSharp7.Location = new Point(3, 153);
             rbtnSharp7.Name = "rbtnSharp7";
             rbtnSharp7.Size = new Size(76, 24);
             rbtnSharp7.TabIndex = 23;
@@ -268,7 +255,6 @@
             Controls.Add(btnPreSet);
             Controls.Add(lblCheckBox);
             Controls.Add(lblPara2);
-            Controls.Add(rbtnS7);
             Controls.Add(rbtnRESTAPI);
             Controls.Add(rbtnModbusTCPIP);
             Controls.Add(rbtnTCPIP);
@@ -294,7 +280,6 @@
         private RadioButton rbtnTCPIP;
         private RadioButton rbtnModbusTCPIP;
         private RadioButton rbtnRESTAPI;
-        private RadioButton rbtnS7;
         private Label lblPara2;
         private Label lblCheckBox;
         private Button btnPreSet;

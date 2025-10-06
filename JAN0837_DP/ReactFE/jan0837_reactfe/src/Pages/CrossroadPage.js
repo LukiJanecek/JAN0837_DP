@@ -29,71 +29,48 @@ const crossroad = ['crossroad_basic', 'crossroad_day', 'crossroad_night']
 const crosswalkLights = ['crosswalk_red', 'crosswalk_green', 'crosswalk_blank']
 const trafficLights = ['traffic_lights_red', 'traffic_lights_yellow', 'traffic_lights_green', 'traffic_lights_yellow_red', 'traffic_lights_blank']
 
-const crossroad_light_green = ["traffic_light_green_0", "traffic_light_green_90", "traffic_light_green_180", "traffic_light_green_270"]
-const crossroad_light_yellow = ["traffic_light_yellow_0", "traffic_light_yellow_90", "traffic_light_yellow_180", "traffic_light_yellow_270"]
-const crossroad_light_red = ["traffic_light_red_0", "traffic_light_red_90", "traffic_light_red_180", "traffic_light_red_270"]
-const crossroad_light_blank = ["traffic_light_blank_0", "traffic_light_blank_90", "traffic_light_blank_180", "traffic_light_blank_270"]
-const pedestrian_light_green = ["crosswalk_light_green_0", "crosswalk_light_green_90", "crosswalk_light_green_180", "crosswalk_light_green_270"]
-const pedestrian_light_red = ["crosswalk_light_red_0", "crosswalk_light_red_90", "crosswalk_light_red_180", "crosswalk_light_red_270"]
-const pedestrian_light_red_blank = ["crosswalk_light_red_blank_0", "crosswalk_light_red_blank_90", "crosswalk_light_red_blank_180", "crosswalk_light_red_blank_270"]
-const pedestrian_light_green_blank = ["crosswalk_light_green_blank_0", "crosswalk_light_green_blank_90", "crosswalk_light_green_blank_180", "crosswalk_light_green_blank_270"]
-
-const switcherGroups = [
-  { key: 'crossroad', label: 'Křižovatka',          names: crossroad },
-  { key: 'crosswalk', label: 'Přechod pro chodce', names: crosswalkLights },
-  { key: 'traffic',  label: 'Dopravní světla',     names: trafficLights },
-  { key: 'tl_green',  label: 'Auto – zelená',          names: crossroad_light_green },
-  { key: 'tl_yellow', label: 'Auto – žlutá',           names: crossroad_light_yellow },
-  { key: 'tl_red',    label: 'Auto – červená',         names: crossroad_light_red },
-  { key: 'tl_blank',  label: 'Auto – prázdná',         names: crossroad_light_blank },
-  { key: 'ped_green', label: 'Chodec – zelená',        names: pedestrian_light_green },
-  { key: 'ped_red',   label: 'Chodec – červená',       names: pedestrian_light_red },
-  { key: 'ped_r_b',   label: 'Chodec – červená (blik)', names: pedestrian_light_red_blank },
-  { key: 'ped_g_b',   label: 'Chodec – zelená (blik)',  names: pedestrian_light_green_blank },
-];
-
 const LIGHT_SOURCES = {
   car: {
-    green0: 'traffic_light_green_0.png',
-    green90: 'traffic_light_green_90.png',
-    green180: 'traffic_light_green_180.png',
-    green270: 'traffic_light_green_270.png',
+    green0: 'traffic_light_0_green.png',
+    green90: 'traffic_light_90_green.png',
+    green180: 'traffic_light_180_green.png',
+    green270: 'traffic_light_270_green.png',
 
-    yellow0: 'traffic_light_yellow_0.png',
-    yellow90: 'traffic_light_yellow_90.png',
-    yellow180: 'traffic_light_yellow_180.png',
-    yellow270: 'traffic_light_yellow_270.png',
+    yellow0: 'traffic_light_0_yellow.png',
+    yellow90: 'traffic_light_90_yellow.png',
+    yellow180: 'traffic_light_180_yellow.png',
+    yellow270: 'traffic_light_270_yellow.png',
 
-    red0: 'traffic_light_red_0.png',
-    red90: 'traffic_light_red_90.png',
-    red180: 'traffic_light_red_180.png',
-    red270: 'traffic_light_red_270.png',
+    red0: 'traffic_light_0_red.png',
+    red90: 'traffic_light_90_red.png',
+    red180: 'traffic_light_180_red.png',
+    red270: 'traffic_light_270_red.png',
 
-    blank0: 'traffic_light_blank_0.png',
-    blank90: 'traffic_light_blank_90.png',
-    blank180: 'traffic_light_blank_180.png',
-    blank270: 'traffic_light_blank_270.png'
+    blank0: 'traffic_light_0_blank.png',
+    blank90: 'traffic_light_90_blank.png',
+    blank180: 'traffic_light_180_blank.png',
+    blank270: 'traffic_light_270_blank.png'
   },
   ped: {
-    green0: 'crosswalk_light_green_0.png',
-    green90: 'crosswalk_light_green_90.png',
-    green180: 'crosswalk_light_green_180.png',
-    green270: 'crosswalk_light_green_270.png',
+    green0: 'pedestrian_light_0_green.png',
+    green90: 'pedestrian_light_90_green.png',
+    green180: 'pedestrian_light_180_green.png',
+    green270: 'pedestrian_light_270_green.png',
 
-    red0: 'crosswalk_light_red_0.png',
-    red90: 'crosswalk_light_red_90.png',
-    red180: 'crosswalk_light_red_180.png',
-    red270: 'crosswalk_light_red_270.png',
+    red0: 'pedestrian_light_0_red.png',
+    red90: 'pedestrian_light_90_red.png',
+    red180: 'pedestrian_light_180_red.png',
+    red270: 'pedestrian_light_270_red.png',
 
-    greenblank0: 'crosswalk_light_green_blank_0.png',
-    greenblank90: 'crosswalk_light_green_blank_90.png',
-    greenblank180: 'crosswalk_light_green_blank_180.png',
-    greenblank270: 'crosswalk_light_green_blank_270.png',
+    greenblank0: 'pedestrian_light_0_green_blank.png',
+    greenblank90: 'pedestrian_light_90_green_blank.png',
+    greenblank180: 'pedestrian_light_180_green_blank.png',
+    greenblank270: 'pedestrian_light_270_green_blank.png',
 
-    redblank0: 'crosswalk_light_red_blank_0.png',
-    redblank90: 'crosswalk_light_red_blank_90.png',
-    redblank180: 'crosswalk_light_red_blank_180.png',
-    redblank270: 'crosswalk_light_red_blank_270.png'
+    redblank0: 'pedestrian_light_0_red_blank.png',
+    redblank90: 'pedestrian_light_90_red_blank.png',
+    redblank180: 'pedestrian_light_180_red_blank.png',
+    redblank270: 'pedestrian_light_270_red_blank.png'
   }
 };
 
@@ -225,6 +202,8 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
         return t === 'true' || t === 'on' || t === '1';
   })();
 
+  const crossroadType = Number.parseInt(data?.crossroadType ?? 1, 10);
+
   const btnCrossroadStart = toBool(data?.btnCrossroadStart);
   const btnCrossroadPause = toBool(data?.btnCrossroadPause);
   const btnCrossroadStop = toBool(data?.btnCrossroadStop);
@@ -241,6 +220,8 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const pedestrian2_red = toBool(data?.pedestrian2_red);
 
   const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
+
+  const setCrossroadType = (val) => saveData({ crossroadType: val });
 
   const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart });
   const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause });
@@ -287,6 +268,18 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       </div>
       */}
       
+      <div className="gap-2 mb-3">
+        <div className="small text-muted">Scéna: {crossroadType === 0 ? 'Night' : 'Day'}</div>
+        <Button variant={crossroadType === 1 ? 'primary' : 'outline-primary'}
+                onClick={() => setCrossroadType(1)}>
+          Day (type = 1)
+        </Button>
+        <Button variant={crossroadType === 0 ? 'primary' : 'outline-primary'}
+                onClick={() => setCrossroadType(0)}>
+          Night (type = 0)
+        </Button>
+      </div>
+
       <div>
         <Col>
           <div className="gap-2 mb-2">
@@ -391,6 +384,18 @@ function CrossroadPage({ setAside }) {
   }, [data, saveData]);
 
   useEffect(() => {
+    if (data?.crossroadType === undefined) {
+      saveData({ crossroadType: 1 });
+    }
+  }, [data?.crossroadType, saveData]);
+
+  const crossroadType = Number.parseInt(data?.crossroadType ?? 1, 10);
+  const isNight = crossroadType === 0;
+  const background = isNight
+    ? '/images/crossroad_night_blank.png'
+    : '/images/crossroad_day_blank.png';
+
+  useEffect(() => {
     const preload = (name) => {
       const img = new Image();
       const viteBase = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '';
@@ -443,18 +448,18 @@ function CrossroadPage({ setAside }) {
 
   const lights = [
     // car – west (W) and east (E)
-    { id: 'car-W-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '38%', y: '77%' }, // W = 90° 
-    { id: 'car-W-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '42%', y: '77%' }, // W = 90° 
-    { id: 'car-W-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '46%', y: '77%' }, // W = 90° 
-    { id: 'car-E-green', kind: 'car', color: 'green', state: CARE,  dir: 270, x: '71%', y: '8%'  }, // E = 270°
-    { id: 'car-E-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '67%', y: '8%'  }, // E = 270° 
-    { id: 'car-E-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '63%', y: '8%'  }, // E = 270° 
+    { id: 'car-W-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '37.6%', y: '77.6%' }, // W = 90° 
+    { id: 'car-W-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '41.5%', y: '77.6%' }, // W = 90° 
+    { id: 'car-W-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '45.4%', y: '77.6%' }, // W = 90° 
+    { id: 'car-E-green', kind: 'car', color: 'green', state: CARE,  dir: 270, x: '72%', y: '7.8%' }, // E = 270°
+    { id: 'car-E-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '68.1%', y: '7.8%' }, // E = 270° 
+    { id: 'car-E-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '64.2%', y: '7.8%' }, // E = 270° 
 
     // pedestrians – north (N) and south (S)
-    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.5%', y: '2.5%' }, // N = 180°  
-    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.5%', y: '9%' }, // N = 180° 
-    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63%', y: '81.5%' }, // S = 0° 
-    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63%', y: '75%' }, // S = 0° 
+    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.6%', y: '2.5%' }, // N = 180°  
+    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.6%', y: '9.5%' }, // N = 180° 
+    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63.4%', y: '82.5%' }, // S = 0° 
+    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
   ];
 
   return (
@@ -463,25 +468,9 @@ function CrossroadPage({ setAside }) {
         
         <div className="mt-3">
           {/*<Picture name={names[idx]} ext={ext} folder={folder} />*/}
-          <CrossroadCanvas background = "/images/crossroad_basic.png" lights = {lights}/>
+          <CrossroadCanvas background = {"/images/crossroad_night_blank.png"} lights = {lights}/>
         </div>
         
-        <div className="switchers-grid mt-4">
-          {switcherGroups.map(g => (
-            <Card key={g.key} className="h-100">
-              <Card.Header className="py-2">{g.label}</Card.Header>
-                <Card.Body>
-                  <PictureSwitcher
-                    names={g.names}
-                    ext="png"
-                    folder="images"
-                    imgClassName="shadow-sm w-100"
-                  />
-                </Card.Body>
-              </Card>
-          ))}
-        </div>
-
         {/*}
         */}
         {/*}

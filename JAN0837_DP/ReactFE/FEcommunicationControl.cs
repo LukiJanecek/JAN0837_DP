@@ -126,6 +126,9 @@ namespace JAN0837_DP.ReactFE
                 case "toggle":
                     ApplyCrossroadUpdate(key, newValue);
                     break;
+                case "crossroadType":
+                    ApplyCrossroadUpdate(key, newValue);
+                    break;
                 case "btnCrossroadStart":
                     ApplyCrossroadUpdate(key, newValue);
                     break;
@@ -182,25 +185,57 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnCrossroadStart": CrossroadData.btnCrossroadStart = value; break;
-                    case "btnCrossroadPause": CrossroadData.btnCrossroadPause = value; break;
-                    case "btnCrossroadStop": CrossroadData.btnCrossroadStop = value; break;
+                    case "crossroadType": 
+                        CrossroadData.crossroadType = value; 
+                        break;
 
-                    case "btnCrosswalk1": CrossroadData.btnCrosswalk1 = value; break;
-                    case "btnCrosswalk2": CrossroadData.btnCrosswalk2 = value; break;
+                    case "btnCrossroadStart": 
+                        CrossroadData.btnCrossroadStart = value; 
+                        break;
+                    case "btnCrossroadPause": 
+                        CrossroadData.btnCrossroadPause = value; 
+                        break;
+                    case "btnCrossroadStop": 
+                        CrossroadData.btnCrossroadStop = value; 
+                        break;
 
-                    case "trafficLight1_green": CrossroadData.trafficLight1_green = value; break;
-                    case "trafficLight1_yellow": CrossroadData.trafficLight1_yellow = value; break;
-                    case "trafficLight1_red": CrossroadData.trafficLight1_red = value; break;
+                    case "btnCrosswalk1": 
+                        CrossroadData.btnCrosswalk1 = value; 
+                        break;
+                    case "btnCrosswalk2": 
+                        CrossroadData.btnCrosswalk2 = value; 
+                        break;
 
-                    case "trafficLight2_green": CrossroadData.trafficLight2_green = value; break;
-                    case "trafficLight2_yellow": CrossroadData.trafficLight2_yellow = value; break;
+                    case "trafficLight1_green": 
+                        CrossroadData.trafficLight1_green = value; 
+                        break;
+                    case "trafficLight1_yellow": 
+                        CrossroadData.trafficLight1_yellow = value; 
+                        break;
+                    case "trafficLight1_red": 
+                        CrossroadData.trafficLight1_red = value; 
+                        break;
+
+                    case "trafficLight2_green": 
+                        CrossroadData.trafficLight2_green = value; 
+                        break;
+                    case "trafficLight2_yellow": 
+                        CrossroadData.trafficLight2_yellow = value; 
+                        break;
                     case "trafficLight2_red": CrossroadData.trafficLight2_red = value; break;
 
-                    case "pedestrian1_green": CrossroadData.pedestrian1_green = value; break;
-                    case "pedestrian1_red": CrossroadData.pedestrian1_red = value; break;
-                    case "pedestrian2_green": CrossroadData.pedestrian2_green = value; break;
-                    case "pedestrian2_red": CrossroadData.pedestrian2_red = value; break;
+                    case "pedestrian1_green": 
+                        CrossroadData.pedestrian1_green = value; 
+                        break;
+                    case "pedestrian1_red": 
+                        CrossroadData.pedestrian1_red = value; 
+                        break;
+                    case "pedestrian2_green": 
+                        CrossroadData.pedestrian2_green = value; 
+                        break;
+                    case "pedestrian2_red": 
+                        CrossroadData.pedestrian2_red = value; 
+                        break;
                 }
             });
         }
@@ -277,6 +312,7 @@ namespace JAN0837_DP.ReactFE
                         toggle = testdata.toggle,
 
                         // CrossroadData
+                        crossroadType = crossroaddata.crossroadType,
                         btnCrossroadStart = crossroaddata.btnCrossroadStart,
                         btnCrossroadPause = crossroaddata.btnCrossroadPause,
                         btnCrossroadStop = crossroaddata.btnCrossroadStop,

@@ -16,6 +16,9 @@ namespace JAN0837_DP.Data
         public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
         public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
 
+        public static string crossroadType { get; set; } = ""; // bool
+        //public static string crossroadDay { get; set; } = "";
+        //public static string crossroadNight { get; set; } = "";
         public static string btnCrossroadStart { get; set; } = ""; // bool
         public static string btnCrossroadPause { get; set; } = ""; // bool
         public static string btnCrossroadStop { get; set; } = ""; // bool
@@ -39,6 +42,7 @@ namespace JAN0837_DP.Data
 
         // snapshot
         public readonly record struct State(
+            string crossroadType,
             string btnCrossroadStart,
             string btnCrossroadPause,
             string btnCrossroadStop,
@@ -61,6 +65,7 @@ namespace JAN0837_DP.Data
             lock (_lock)
             {
                 return new State(
+                    crossroadType,
                     btnCrossroadStart,
                     btnCrossroadPause,
                     btnCrossroadStop,
@@ -84,6 +89,8 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
+                crossroadType = s.crossroadType;
+
                 btnCrossroadStart = s.btnCrossroadStart;
                 btnCrossroadPause = s.btnCrossroadPause;
                 btnCrossroadStop = s.btnCrossroadStop;
@@ -112,16 +119,27 @@ namespace JAN0837_DP.Data
             lock (_lock) updater();
         }
 
+        // optional 
         public static void Reset()
         {
             lock (_lock)
             {
-                btnCrossroadStart = btnCrossroadPause = btnCrossroadStop = "";
-                btnCrosswalk1 = btnCrosswalk2 = "";
-                trafficLight1_green = trafficLight1_yellow = trafficLight1_red = "";
-                trafficLight2_green = trafficLight2_yellow = trafficLight2_red = "";
-                pedestrian1_green = pedestrian1_red = "";
-                pedestrian2_green = pedestrian2_red = "";
+                crossroadType = "";
+                btnCrossroadStart = "";
+                btnCrossroadPause = "";
+                btnCrossroadStop = "";
+                btnCrosswalk1 = "";
+                btnCrosswalk2 = "";
+                trafficLight1_green = "";
+                trafficLight1_yellow = "";
+                trafficLight1_red = "";
+                trafficLight2_green = "";
+                trafficLight2_yellow = "";
+                trafficLight2_red = "";
+                pedestrian1_green = "";
+                pedestrian1_red = "";
+                pedestrian2_green = "";
+                pedestrian2_red = "";
                 Array.Clear(CrossroadReadBuffer, 0, CrossroadReadBuffer.Length);
                 Array.Clear(CrossroadWriteBuffer, 0, CrossroadWriteBuffer.Length);
             }

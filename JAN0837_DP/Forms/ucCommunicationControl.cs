@@ -52,16 +52,18 @@ namespace JAN0837_DP.Forms
             rbtnRESTAPI.Visible = true;
             rbtnRESTAPI.Checked = false;
 
+            /*
             rbtnS7.Enabled = true;
             rbtnS7.Visible = true;
             rbtnS7.Checked = false;
+            */
 
             rbtnOPCUA.Tag = "OPCUA";
             rbtnMQTT.Tag = "MQTT";
             rbtnTCPIP.Tag = "TCPIP";
             rbtnModbusTCPIP.Tag = "ModbusTCPIP";
             rbtnRESTAPI.Tag = "RestApi";
-            rbtnS7.Tag = "S7";
+            //rbtnS7.Tag = "S7";
 
             // btns
             btnStartCommunicationThread.Visible = false;
@@ -596,7 +598,7 @@ namespace JAN0837_DP.Forms
             rbtnTCPIP.Enabled = false;
             rbtnModbusTCPIP.Enabled = false;
             rbtnRESTAPI.Enabled = false;
-            rbtnS7.Enabled = false;
+            //rbtnS7.Enabled = false;
             rbtnSharp7.Enabled = false;
 
             checkBoxMaster.Enabled = false;
@@ -637,7 +639,7 @@ namespace JAN0837_DP.Forms
             rbtnTCPIP.Enabled = true;
             rbtnModbusTCPIP.Enabled = true;
             rbtnRESTAPI.Enabled = true;
-            rbtnS7.Enabled = true;
+            //rbtnS7.Enabled = true;
             rbtnSharp7.Enabled = true;
 
             checkBoxMaster.Enabled = true;
@@ -687,11 +689,13 @@ namespace JAN0837_DP.Forms
                 // URL 
                 txtBoxPara1.Text = "";
             }
+            /*
             else if (rbtnS7.Checked == true)
             {
                 // IP address
                 txtBoxPara1.Text = "192.168.0.1";
             }
+            */
             else if (rbtnSharp7.Checked == true)
             {
                 // IP address

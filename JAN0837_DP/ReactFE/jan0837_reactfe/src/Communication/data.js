@@ -16,18 +16,19 @@ export const STATE_SCHEMA = {
   visualizationActive: { type: 'boolean', default: false },
   
   // Crossroad variables
+  crossroadType : { type: 'boolean', default: false },  // 0 - night, everything else - day
   btnCrosswalk1: { type: 'boolean', default: false },
   btnCrosswalk2: { type: 'boolean', default: false },
-  trafficLight1_green: { type: 'boolean', default: true },
-  trafficLight1_yellow: { type: 'boolean', default: true },
-  trafficLight1_red: { type: 'boolean', default: true },
-  trafficLight2_green: { type: 'boolean', default: false },
-  trafficLight2_yellow: { type: 'boolean', default: false },
-  trafficLight2_red: { type: 'boolean', default: false },
-  pedestrian1_green: { type: 'boolean', default: false },
-  pedestrian1_red: { type: 'boolean', default: false },
-  pedestrian2_green: { type: 'boolean', default: false },
-  pedestrian2_red: { type: 'boolean', default: false },
+  traffic_light1_green: { type: 'boolean', default: false },
+  traffic_light1_yellow: { type: 'boolean', default: false },
+  traffic_light1_red: { type: 'boolean', default: false },
+  traffic_light2_green: { type: 'boolean', default: false },
+  traffic_light2_yellow: { type: 'boolean', default: false },
+  traffic_light2_red: { type: 'boolean', default: false },
+  pedestrian_light1_green: { type: 'boolean', default: false },
+  pedestrian_light1_red: { type: 'boolean', default: false },
+  pedestrian_light2_green: { type: 'boolean', default: false },
+  pedestrian_light2_red: { type: 'boolean', default: false },
 
   // 
   '*': { type: 'any' }

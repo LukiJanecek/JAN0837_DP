@@ -364,6 +364,9 @@ namespace JAN0837_DP.ReactFE
                     {
                         switch (kv.Key)
                         {
+                            case "crossroadType":
+                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
+                                break;
                             case "btnCrossroadStart":
                                 ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
                                 break;

@@ -25,10 +25,6 @@ const names = ['crossroad_basic', 'crossroad_day', 'crossroad_night', 'crosswalk
 const ext = 'png';         
 const folder = 'images'; 
 
-const crossroad = ['crossroad_basic', 'crossroad_day', 'crossroad_night']
-const crosswalkLights = ['crosswalk_red', 'crosswalk_green', 'crosswalk_blank']
-const trafficLights = ['traffic_lights_red', 'traffic_lights_yellow', 'traffic_lights_green', 'traffic_lights_yellow_red', 'traffic_lights_blank']
-
 const LIGHT_SOURCES = {
   car: {
     green0: 'traffic_light_0_green.png',
@@ -187,13 +183,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const { interval, setInterval } = useRefresh();
   const { data, saveData, error, isFetching, refresh } = useData();
 
-  const toggleBtn = (key, value) => {
-    saveData({
-      btnCrossroadStart: key === 'btnCrossroadStart' ? (value ? 'true' : 'false') : 'false',
-      btnCrossroadPause: key === 'btnCrossroadPause' ? (value ? 'true' : 'false') : 'false',
-      btnCrossroadStop:  key === 'btnCrossroadStop'  ? (value ? 'true' : 'false') : 'false',
-    });
-  };
+  const [status, setStatus] = React.useState('');
   
   const number = Number(data?.number ?? 0);
   const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
@@ -219,7 +209,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const pedestrian2_green = toBool(data?.pedestrian2_green);
   const pedestrian2_red = toBool(data?.pedestrian2_red);
 
-  const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
+  //const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
 
   const setCrossroadType = () => saveData({ crossroadType: !crossroadType });
 
@@ -238,8 +228,34 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const setPedestrianLightGreen2 = () => saveData({ pedestrian2_green: !pedestrian2_green });
   const setPedestrianLightRed2 = () => saveData({ pedestrian2_red: !pedestrian2_red });
 
-  {/*const toggleBtn = (key, value) => saveData({ [key]: !value ? 'true' : 'false' });
-  */}
+  const toggleCrossroadType = async () => {
+    try {
+      const current = toBool(data?.crossroadType ?? data?.crossroad_type);
+      const next = !current;
+
+      setStatus(`sending… (current=${String(current)} → next=${String(next)})`);
+      console.log('toggleCrossroadType', { current, next, data });
+
+      // DŮLEŽITÉ: pošli camel i snake variantu, aby to prošlo i přes případné mapování/whitelist
+      // Pokud tvůj provider snake/camel NEMÁ, druhý klíč ignoruje.
+      const payload = {
+        crossroadType: next,
+        crossroad_type: next,
+      };
+      const maybePromise = saveData(payload);
+
+      // saveData může být sync nebo async → ošetříme obě varianty
+      if (maybePromise && typeof maybePromise.then === 'function') {
+        await maybePromise;
+      }
+
+      setStatus(`ok ✔ (store now: ${String(toBool((data?.crossroadType ?? data?.crossroad_type)))})`);
+    } catch (e) {
+      console.error(e);
+      setStatus(`error ✖ ${e?.message ?? e}`);
+    }
+  };
+
   return (
     <div>
       <h3>Parametry:</h3>
@@ -267,9 +283,15 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
       </div>
       */}
+      <div>
+        {status || '—'}
+        <div>
+          raw: crossroadType={String(data?.crossroadType)} &nbsp;|&nbsp; crossroad_type={String(data?.crossroad_type)}
+        </div>
+      </div>
       
       <div className="gap-2 mb-3">
-        <Button onClick={() => setCrossroadType(!crossroadType)} /*disabled={isFetching}*/>
+        <Button onClick={setCrossroadType}>
           CrossroadType ({String(crossroadType)})
         </Button>
       </div>
@@ -475,15 +497,8 @@ function CrossroadPage({ setAside }) {
       <Col lg={4}>
         <CrossroadParamsSidebar names={names} idx={idx} onPrev={prev} onNext={next} onJump={jump}/>
       </Col>
-      
     </Row>
   );
 }
 
 export default CrossroadPage;
-
-/*
-      <Col xs={12} lg={2}>
-        <CrossroadParamsSidebar names={names} idx={idx} onPrev={prev} onNext={next} onJump={jump}/>
-      </Col>
-*/

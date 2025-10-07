@@ -9,7 +9,7 @@ export const STATE_SCHEMA = {
   //communicationRefreshInterval: { type: 'int', default: 50 },
   
   // Crossroad variables
-  crossroadType : { type: 'boolean', default: false },  // 0 - night, everything else - day
+  crossroad_type: { type: 'boolean', default: false },  // false = night, true = day
   btnCrossroadStart: { type: 'boolean', default: false },
   btnCrossroadPause: { type: 'boolean', default: false },
   btnCrossroadStop: { type: 'boolean', default: false },

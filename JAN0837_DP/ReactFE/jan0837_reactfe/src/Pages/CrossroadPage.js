@@ -270,8 +270,8 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       
       <div className="gap-2 mb-3">
         <Button onClick={() => setCrossroadType(!crossroadType)} /*disabled={isFetching}*/>
-              CrossroadType ({String(crossroadType)})
-            </Button>
+          CrossroadType ({String(crossroadType)})
+        </Button>
       </div>
 
       <div>

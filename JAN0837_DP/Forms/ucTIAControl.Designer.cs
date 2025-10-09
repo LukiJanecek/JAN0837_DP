@@ -1,6 +1,6 @@
 ﻿namespace JAN0837_DP.Forms
 {
-    partial class ucGenerateTIAtemplate
+    partial class ucTIAControl
     {
         /// <summary> 
         /// Required designer variable.

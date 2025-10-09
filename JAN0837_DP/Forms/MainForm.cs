@@ -85,7 +85,7 @@ namespace JAN0837_DP
         public FEserver _feServer;
         public FEcommunicationControl _feCommunication;
         public ucLocalhost ucLocalhost;
-        public ucGenerateTIAtemplate ucGenerateTIAtemplate;
+        public ucTIAControl ucGenerateTIAtemplate;
 
         public MainForm()
         {
@@ -133,7 +133,7 @@ namespace JAN0837_DP
             lblStatus.Text = "Generating template to TIA Portal V19.";
 
             mainWindow.Controls.Clear();
-            var visual = new ucGenerateTIAtemplate();
+            var visual = new ucTIAControl();
             visual.Dock = DockStyle.Fill;
             mainWindow.Controls.Add(visual);
         }

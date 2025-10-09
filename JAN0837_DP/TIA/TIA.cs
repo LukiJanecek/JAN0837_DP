@@ -20,9 +20,9 @@ namespace JAN0837_DP.TIA
         public TiaPortal tiaPortal;
         Project projectPlc;
 
-        public ProjectStructrTree[] ProjectTree { get; set; }
+        //public ProjectStructrTree[] ProjectTree { get; set; }
 
-        public ProjectStructrTree[] ProgramBlocks { get; set; }
+        //public ProjectStructrTree[] ProgramBlocks { get; set; }
 
         public string[] plcNames { get; set; }
 
@@ -234,7 +234,7 @@ namespace JAN0837_DP.TIA
         }
 
         // 
-
+        /*
         private bool GenerateCounterPlcProject(Project project)
         {
             if (project != null)
@@ -326,5 +326,6 @@ namespace JAN0837_DP.TIA
                 ListRecursivePlcGroups(pTree.Items, itemGroup.Groups);
             }
         }
+        */
     }
 }

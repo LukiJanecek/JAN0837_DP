@@ -28,14 +28,14 @@ using JAN0837_DP.TIA;
 
 namespace JAN0837_DP.Forms
 {
-    public partial class ucGenerateTIAtemplate : UserControl
+    public partial class ucTIAControl : UserControl
     {
         TiaPortal tiaPortal;
         Project projectPlc;
 
         string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
 
-        public ucGenerateTIAtemplate()
+        public ucTIAControl()
         {
             InitializeComponent();
         }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // 
+//using TiaOpennessHelper;
 using Siemens.Engineering;
 using Siemens.Engineering.HW;
 using Siemens.Engineering.HW.Features;
@@ -30,6 +31,7 @@ namespace JAN0837_DP.Forms
     public partial class ucGenerateTIAtemplate : UserControl
     {
         TiaPortal tiaPortal;
+        Project projectPlc;
 
         string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
 

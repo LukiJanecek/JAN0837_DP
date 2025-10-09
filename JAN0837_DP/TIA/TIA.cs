@@ -1,21 +1,31 @@
 ﻿using JAN0837_DP.Data;
-using Siemens.Engineering.HW.Features;
-using Siemens.Engineering.HW;
-using Siemens.Engineering.SW.Blocks;
-using Siemens.Engineering.SW;
+using MQTTnet.Internal;
 using Siemens.Engineering;
+using Siemens.Engineering.HW;
+using Siemens.Engineering.HW.Features;
+using Siemens.Engineering.SW;
+using Siemens.Engineering.SW.Blocks;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace JAN0837_DP.TIA
 {
     public class tia
     {
         public TiaPortal tiaPortal;
+        Project projectPlc;
+
+        public ProjectStructrTree[] ProjectTree { get; set; }
+
+        public ProjectStructrTree[] ProgramBlocks { get; set; }
+
+        public string[] plcNames { get; set; }
+
         public void GenerateTemplate(string name, string label)
         {
             if (name != "" || name != null)
@@ -221,6 +231,100 @@ namespace JAN0837_DP.TIA
             await p.WaitForExitAsync();
 
             return (p.ExitCode, so, se);
+        }
+
+        // 
+
+        private bool GenerateCounterPlcProject(Project project)
+        {
+            if (project != null)
+            {
+                var devices = OpennessHelper.GetAllPlcSoftwares(projectPlc).Concat(OpennessHelper.GetAllPlcSoftwaresInGroups(projectPlc));
+                foreach (var plcSoftware in devices)
+                {
+                    plcNames.Append(plcSoftware.Name);
+                }
+                if (!plcNames.Length.Equals(0))
+                {
+                    plcNames = null;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void GenerateTreeViewPlc(string cbText)
+        {
+            Dictionary<string, ProjectStructrTree> projectTree = new Dictionary<string, ProjectStructrTree>();
+            var devices = OpennessHelper.GetAllPlcSoftwares(projectPlc).Concat(OpennessHelper.GetAllPlcSoftwaresInGroups(projectPlc));
+            foreach (var plcSoftware in devices)
+            {
+                if (plcSoftware.Name == cbText)
+                {
+                    #region Program Blocks                                    
+                    foreach (var plcBlock in plcSoftware.BlockGroup.Blocks)
+                    {
+                        ProjectStructrTree pTree = new ProjectStructrTree
+                        {
+                            Name = plcBlock.Name,
+                            Tag = plcBlock,
+                        };
+                        projectTree.Add(pTree.Name, pTree);
+                    }
+                    ProjectStructrTree plcTree = new ProjectStructrTree();
+                    ListRecursivePlcGroups(plcTree.Items, plcSoftware.BlockGroup.Groups);
+                    foreach (var item in plcTree.Items)
+                    {
+                        int index = plcTree.Items.IndexOf(item);
+                        string actItem = item.Name.ToString();
+
+                        // Check if projectTree cointains the same key as plcTree
+                        if (!projectTree.ContainsKey(actItem))
+                        {
+                            projectTree.Add(plcTree.Items[index].Name, plcTree.Items[index]);
+                        }
+                        else
+                        {
+                            // Do nothing
+                        }
+                    }
+                    #endregion
+
+                    List<ProjectStructrTree> ret = new List<ProjectStructrTree>();
+                    foreach (ProjectStructrTree t in projectTree.Values)
+                    {
+                        ret.Add(t);
+                    }
+                    ProgramBlocks = ret.ToArray();
+                }
+            }
+
+        }
+
+        private void ListRecursivePlcGroups(List<ProjectStructrTree> projectTree, IEnumerable<PlcBlockGroup> item)
+        {
+            foreach (var itemGroup in item)
+            {
+                ProjectStructrTree pTree = new ProjectStructrTree
+                {
+                    Name = itemGroup.Name,
+                    Tag = itemGroup,
+                };
+                foreach (var itemBlock in itemGroup.Blocks)
+                {
+                    ProjectStructrTree pTree1 = new ProjectStructrTree
+                    {
+                        Name = itemBlock.Name,
+                        Tag = itemBlock,
+                    };
+                    pTree.Items.Add(pTree1);
+                }
+                projectTree.Add(pTree);
+                ListRecursivePlcGroups(pTree.Items, itemGroup.Groups);
+            }
         }
     }
 }

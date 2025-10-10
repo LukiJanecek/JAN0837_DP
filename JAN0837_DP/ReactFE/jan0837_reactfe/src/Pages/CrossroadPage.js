@@ -283,12 +283,6 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
       </div>
       */}
-      <div>
-        {status || '—'}
-        <div>
-          raw: crossroadType={String(data?.crossroadType)} &nbsp;|&nbsp; crossroad_type={String(data?.crossroad_type)}
-        </div>
-      </div>
       
       <div className="gap-2 mb-3">
         <Button onClick={setCrossroadType}>
@@ -428,6 +422,18 @@ function CrossroadPage({ setAside }) {
     }, [setAside]);
   */}
 
+  const isNight = toBool(data?.crossroadType);
+  const background = isNight
+    ? '/images/crossroad_night_blank.png'
+    : '/images/crossroad_day_blank.png';
+
+  useEffect(() => {
+    ['/images/crossroad_day_blank.png', '/images/crossroad_night_blank.png'].forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const CARW = {
     green: data?.trafficLight1_green ?? false,
     yellow: data?.trafficLight1_yellow ?? false,
@@ -472,7 +478,7 @@ function CrossroadPage({ setAside }) {
         
         <div className="mt-3">
           {/*<Picture name={names[idx]} ext={ext} folder={folder} />*/}
-          <CrossroadCanvas background = {"/images/crossroad_night_blank.png"} lights = {lights}/>
+          <CrossroadCanvas background = {background} lights = {lights}/> 
         </div>
         
         {/*}

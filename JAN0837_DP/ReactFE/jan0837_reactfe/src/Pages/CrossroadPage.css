@@ -103,3 +103,24 @@
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   align-items: stretch;
 }
+
+.ped-btn {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  cursor: pointer;
+  z-index: 5;
+}
+
+.ped-btn--north { 
+  left: 48%; 
+  top: 0.01%; 
+  rotate: 180deg;
+}
+
+.ped-btn--south { 
+  left: 65.5%; 
+  top: 95%; 
+}

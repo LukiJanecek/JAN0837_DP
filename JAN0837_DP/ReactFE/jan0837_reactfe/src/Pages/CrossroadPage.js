@@ -144,7 +144,7 @@ function PedestrianLight({ state, dir = 0, x, y, alt }) {
   );
 }
 
-function CrossroadCanvas({ background, lights }) {
+function CrossroadCanvas({ background, lights, pedControls }) {
   const style = { backgroundImage: `url(${background})` };
   return (
     <div className="crossroad" style={style}>
@@ -174,6 +174,26 @@ function CrossroadCanvas({ background, lights }) {
           />
         )
       )}
+
+      <>
+        <button
+          type="button"
+          className="ped-btn ped-btn--north btn btn-sm btn-light"
+          onClick={pedControls.onNorth}
+          aria-label="Toggle pedestrian North"
+        >
+          N {pedControls.btnPedN ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--south btn btn-sm btn-light"
+          onClick={pedControls.onSouth}
+          aria-label="Toggle pedestrian South"
+        >
+          S {pedControls.btnPedS ? '🟢' : '⚪'}
+        </button>
+      </>
     </div>
   );
 }
@@ -472,13 +492,19 @@ function CrossroadPage({ setAside }) {
     { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
   ];
 
+  const btnPed1 = toBool(data?.btnCrosswalk1);
+  const btnPed2 = toBool(data?.btnCrosswalk2);
+
+  const togglePedN = () => saveData({ btnCrosswalk1: !btnPed1 });
+  const togglePedS = () => saveData({ btnCrosswalk2: !btnPed2 });
+
   return (
     <Row className="crossroadpage">
       <Col xs={12} lg={8}>
         
         <div className="mt-3">
           {/*<Picture name={names[idx]} ext={ext} folder={folder} />*/}
-          <CrossroadCanvas background = {background} lights = {lights}/> 
+          <CrossroadCanvas background = {background} lights = {lights} pedControls = {{ btnPedN: btnPed1, btnPedS: btnPed2, onNorth: togglePedN, onSouth: togglePedS }} /> 
         </div>
         
         {/*}

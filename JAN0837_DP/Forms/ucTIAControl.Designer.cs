@@ -36,7 +36,9 @@
             btnStartTIA = new Button();
             lblParam2 = new Label();
             txtBoxParam2 = new TextBox();
-            btnPreSet = new Button();
+            comboBoxTIAprojects = new ComboBox();
+            btnOpenProject = new Button();
+            btnAddDB = new Button();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -44,9 +46,9 @@
             // 
             statusStripGenerateTIAtemplate.ImageScalingSize = new Size(20, 20);
             statusStripGenerateTIAtemplate.Items.AddRange(new ToolStripItem[] { lblStatus1 });
-            statusStripGenerateTIAtemplate.Location = new Point(0, 258);
+            statusStripGenerateTIAtemplate.Location = new Point(0, 405);
             statusStripGenerateTIAtemplate.Name = "statusStripGenerateTIAtemplate";
-            statusStripGenerateTIAtemplate.Size = new Size(424, 26);
+            statusStripGenerateTIAtemplate.Size = new Size(372, 26);
             statusStripGenerateTIAtemplate.TabIndex = 3;
             // 
             // lblStatus1
@@ -61,7 +63,7 @@
             btnGenerateTemplate.Name = "btnGenerateTemplate";
             btnGenerateTemplate.Size = new Size(94, 63);
             btnGenerateTemplate.TabIndex = 4;
-            btnGenerateTemplate.Text = "Generate template";
+            btnGenerateTemplate.Text = "Create new project";
             btnGenerateTemplate.UseVisualStyleBackColor = true;
             btnGenerateTemplate.Click += btnGenerateTemplate_Click;
             // 
@@ -107,21 +109,42 @@
             txtBoxParam2.Size = new Size(170, 27);
             txtBoxParam2.TabIndex = 8;
             // 
-            // btnPreSet
+            // comboBoxTIAprojects
             // 
-            btnPreSet.Location = new Point(241, 161);
-            btnPreSet.Name = "btnPreSet";
-            btnPreSet.Size = new Size(94, 29);
-            btnPreSet.TabIndex = 10;
-            btnPreSet.Text = "Use PreSet";
-            btnPreSet.UseVisualStyleBackColor = true;
-            btnPreSet.Click += btnPreSet_Click;
+            comboBoxTIAprojects.FormattingEnabled = true;
+            comboBoxTIAprojects.Location = new Point(29, 154);
+            comboBoxTIAprojects.Name = "comboBoxTIAprojects";
+            comboBoxTIAprojects.Size = new Size(322, 28);
+            comboBoxTIAprojects.TabIndex = 11;
+            comboBoxTIAprojects.SelectedIndexChanged += comboBoxTIAprojects_SelectedIndexChanged;
             // 
-            // ucGenerateTIAtemplate
+            // btnOpenProject
+            // 
+            btnOpenProject.Location = new Point(29, 242);
+            btnOpenProject.Name = "btnOpenProject";
+            btnOpenProject.Size = new Size(94, 63);
+            btnOpenProject.TabIndex = 12;
+            btnOpenProject.Text = "Open project";
+            btnOpenProject.UseVisualStyleBackColor = true;
+            btnOpenProject.Click += btnOpenProject_Click;
+            // 
+            // btnAddDB
+            // 
+            btnAddDB.Location = new Point(129, 242);
+            btnAddDB.Name = "btnAddDB";
+            btnAddDB.Size = new Size(94, 63);
+            btnAddDB.TabIndex = 13;
+            btnAddDB.Text = "Add DB to this project";
+            btnAddDB.UseVisualStyleBackColor = true;
+            btnAddDB.Click += btnAddDB_Click;
+            // 
+            // ucTIAControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(btnPreSet);
+            Controls.Add(btnAddDB);
+            Controls.Add(btnOpenProject);
+            Controls.Add(comboBoxTIAprojects);
             Controls.Add(lblParam2);
             Controls.Add(txtBoxParam2);
             Controls.Add(btnStartTIA);
@@ -129,8 +152,8 @@
             Controls.Add(txtBoxParam1);
             Controls.Add(btnGenerateTemplate);
             Controls.Add(statusStripGenerateTIAtemplate);
-            Name = "ucGenerateTIAtemplate";
-            Size = new Size(424, 284);
+            Name = "ucTIAControl";
+            Size = new Size(372, 431);
             Load += ucGenerateTIAtemplate_Load;
             statusStripGenerateTIAtemplate.ResumeLayout(false);
             statusStripGenerateTIAtemplate.PerformLayout();
@@ -147,6 +170,8 @@
         private Button btnStartTIA;
         private Label lblParam2;
         private TextBox txtBoxParam2;
-        private Button btnPreSet;
+        private ComboBox comboBoxTIAprojects;
+        private Button btnOpenProject;
+        private Button btnAddDB;
     }
 }

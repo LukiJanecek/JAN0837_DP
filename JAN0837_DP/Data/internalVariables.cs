@@ -29,9 +29,9 @@ namespace JAN0837_DP.Data
 
         public static string tiaDLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
         public static string tiaPath { get; set; } = Path.Combine(projectRootPath, "TIA");
-        public static string tiaProjectPath { get; set; } = Path.Combine(tiaPath, "TIAProject");
-        public static string tiaExampleProjectPath { get; set; } = Path.Combine(tiaPath, "Example");
-        public static string tiaSampleProjectPath { get; set; } = Path.Combine(tiaPath, "Sample");
+        public static string tiaProjectPath { get; set; } = Path.Combine(tiaPath, "TIA_Projects");
+        public static string tiaExampleProjectPath { get; set; } = Path.Combine(tiaProjectPath, "Example");
+        public static string tiaSampleProjectPath { get; set; } = Path.Combine(tiaProjectPath, "Sample");
 
         public static string pythonScriptsFolder { get; set; } = Path.Combine(tiaPath, "PythonScripts");
 

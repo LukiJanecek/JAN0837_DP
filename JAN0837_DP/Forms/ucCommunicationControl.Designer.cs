@@ -290,7 +290,6 @@
         private CheckBox checkBoxSlave;
         private TextBox txtBoxPara1;
         private TextBox txtBoxPara2;
-        private RadioButton rBtnSharp7;
         private RadioButton rbtnSharp7;
     }
 }

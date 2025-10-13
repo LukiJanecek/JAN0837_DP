@@ -280,7 +280,7 @@ namespace JAN0837_DP
             }
             catch (Exception ex)
             {
-
+                lblStatus.Text = "Error: " + ex.Message;
             }
         }
 

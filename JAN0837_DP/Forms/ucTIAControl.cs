@@ -34,6 +34,15 @@ namespace JAN0837_DP.Forms
         Project projectPlc;
 
         string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
+        public sealed class ProjectItem
+        {
+            public string Name { get; }
+            public string Path { get; }
+            public ProjectItem(string name, string path) { Name = name; Path = path; }
+            public override string ToString() => Name; // co se bude zobrazovat v ComboBoxu
+        }
+
+        public string _selectedProjectPath;
 
         public ucTIAControl()
         {
@@ -46,6 +55,59 @@ namespace JAN0837_DP.Forms
             lblStatus1.Text = "Set project name and cpu type id.";
             lblParam1.Text = "Project name: ";
             lblParam2.Text = "CPU type ID: ";
+
+            //
+            comboBoxTIAprojects.Items.Clear();
+
+            try
+            {
+                var candidates = new[]
+                {
+                paths.tiaExampleProjectPath, paths.tiaSampleProjectPath
+                };
+
+                // Projdi každou podsložku – v každé očekáváme další složky s .ap* souborem
+                foreach (var baseDir in candidates.Where(Directory.Exists))
+                {
+                    foreach (var projectDir in Directory.EnumerateDirectories(baseDir))
+                    {
+                        // Hledej přímo v této složce .ap* (ap19, ap20, ...). Když nic, zkus o úroveň níž.
+                        var apFilesTop = Directory.EnumerateFiles(projectDir, "*.ap*", SearchOption.TopDirectoryOnly);
+                        var apPath = apFilesTop.FirstOrDefault();
+
+                        if (apPath == null)
+                        {
+                            // některé template projekty mají ještě podadresář se skutečným .ap souborem
+                            var apFilesDeep = Directory.EnumerateFiles(projectDir, "*.ap*", SearchOption.AllDirectories);
+                            apPath = apFilesDeep
+                                .OrderBy(p => p.Count(c => c == System.IO.Path.DirectorySeparatorChar)) // vem nejbližší
+                                .FirstOrDefault();
+                        }
+
+                        if (apPath != null)
+                        {
+                            var display = $"{System.IO.Path.GetFileNameWithoutExtension(apPath)}  ({System.IO.Path.GetFileName(projectDir)})";
+                            comboBoxTIAprojects.Items.Add(new ProjectItem(display, apPath));
+                        }
+                    }
+                }
+
+                if (comboBoxTIAprojects.Items.Count > 0)
+                {
+                    comboBoxTIAprojects.SelectedIndex = 0;
+                    _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
+                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
+                }
+                else
+                {
+                    lblStatus1.Text = "No TIA projects found in Sample/Example.";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error: " + ex.Message;
+            }
         }
 
         private async void btnGenerateTemplate_Click(object sender, EventArgs e)
@@ -76,7 +138,7 @@ namespace JAN0837_DP.Forms
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
 
-            var (code, stdout, stderr) = await tia.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
+            var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
 
             if (code == 0)
             {
@@ -106,9 +168,61 @@ namespace JAN0837_DP.Forms
             }
         }
 
-        private void btnPreSet_Click(object sender, EventArgs e)
+        private void comboBoxTIAprojects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            txtBoxParam2.Text = "";
+            if (comboBoxTIAprojects.SelectedItem is ProjectItem item)
+            {
+                _selectedProjectPath = item.Path;
+                lblStatus1.Text = System.IO.Path.GetFileNameWithoutExtension(item.Path);
+            }
+        }
+
+        private void btnOpenProject_Click(object sender, EventArgs e)
+        {
+            lblStatus1.Text = "Openning TIA project.";
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+                {
+                    lblStatus1.Text = "Please select a TIA project first."; 
+                    throw new InvalidOperationException("Please select a TIA project first.");
+                }
+                    
+                var (tiaPortal, projectPlc) = TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
+                lblStatus1.Text = $"Project open: {Path.GetFileName(_selectedProjectPath)}";
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Open error: " + ex.Message;
+            }
+        }
+
+        private void btnAddDB_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (projectPlc == null)
+                {
+                    if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+                        throw new InvalidOperationException("Open a project first (or select one).");
+                    TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
+                }
+
+                var plc = TIAcontrol.GetPlcSoftware(projectPlc);
+
+                string dbName = "DB_ProcessData";
+
+                TIAcontrol.CreateOrReplaceSimpleDb(plc, dbName, optimized: true);
+
+                projectPlc.Save();
+
+                lblStatus1.Text = $"DB '{dbName}' added.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error: " + ex.Message;
+            }
         }
     }
 }

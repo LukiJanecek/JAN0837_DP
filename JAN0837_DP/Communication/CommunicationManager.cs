@@ -168,7 +168,7 @@ namespace JAN0837_DP.Communication
                         bool read1 = _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
                         bool read2 = _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
 
-                        if (read1 = true)
+                        if (read1 == true)
                         {
                             switch (activeDBnumber)
                             {
@@ -202,7 +202,7 @@ namespace JAN0837_DP.Communication
                             // read failed -> Exception?
                         }
 
-                        if (read2 = true)
+                        if (read2 == true)
                         {
                             switch (activeDBnumber)
                             {
@@ -247,7 +247,7 @@ namespace JAN0837_DP.Communication
                         bool write1 = _sharp7.writeDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
                         bool write2 = _sharp7.writeS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
 
-                        if (write1 = true)
+                        if (write1 == true)
                         {
                             // write was successful
                         }
@@ -256,7 +256,7 @@ namespace JAN0837_DP.Communication
                             // write failed -> Exception?
                         }
 
-                        if (write2 = true)
+                        if (write2 == true)
                         {
                             // write was successful
                         }

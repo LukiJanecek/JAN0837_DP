@@ -5,6 +5,7 @@ using Siemens.Engineering.HW;
 using Siemens.Engineering.HW.Features;
 using Siemens.Engineering.SW;
 using Siemens.Engineering.SW.Blocks;
+using Siemens.Engineering.SW.ExternalSources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace JAN0837_DP.TIA
 {
-    public class tia
+    public class TIAcontrol
     {
-        public TiaPortal tiaPortal;
+        TiaPortal tiaPortal;
         Project projectPlc;
 
         //public ProjectStructrTree[] ProjectTree { get; set; }
@@ -231,6 +232,77 @@ namespace JAN0837_DP.TIA
             await p.WaitForExitAsync();
 
             return (p.ExitCode, so, se);
+        }
+
+        public static (TiaPortal portal, Project project) OpenOrAttachProject(string projectPath, bool withUI = true)
+        {
+            if (string.IsNullOrWhiteSpace(projectPath) || !File.Exists(projectPath))
+            {
+                throw new FileNotFoundException("TIA project file not found.", projectPath);
+            }
+                
+
+            // Zkusit se připojit na běžící procesy
+            foreach (var p in TiaPortal.GetProcesses())
+            {
+                if (p.ProjectPath?.FullName?.Equals(projectPath, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    var attached = p.Attach();
+                    return (attached, attached.Projects[0]);
+                }
+            }
+
+            var mode = withUI ? TiaPortalMode.WithUserInterface : TiaPortalMode.WithoutUserInterface;
+            var tia = new TiaPortal(mode);
+            tia.Projects.Open(new FileInfo(projectPath));
+            return (tia, tia.Projects[0]);
+        }
+
+        public static PlcSoftware GetPlcSoftware(Project project, string deviceName = null)
+        {
+            foreach (var dev in project.Devices)
+            {
+                // CPU item = ten, který má SoftwareContainer
+                var cpu = dev.DeviceItems
+                    .OfType<DeviceItem>()
+                    .FirstOrDefault(di => di.GetService<SoftwareContainer>()?.Software is PlcSoftware);
+
+                if (cpu != null)
+                {
+                    if (string.IsNullOrWhiteSpace(deviceName) || dev.Name.Equals(deviceName, StringComparison.OrdinalIgnoreCase))
+                        return (PlcSoftware)cpu.GetService<SoftwareContainer>().Software;
+                }
+            }
+            throw new InvalidOperationException("PLC software not found in project.");
+        }
+
+        public static void CreateOrReplaceSimpleDb(PlcSoftware plc, string dbName, bool optimized = true)
+        {
+            var attr = optimized ? "{ S7_Optimized_Access := 'TRUE' }" : "{ S7_Optimized_Access := 'FALSE' }";
+
+            string dbScl =
+                $@"DATA_BLOCK {dbName}
+                {attr}
+                VERSION : 0.1
+                  VAR
+                    Speed       : Real := 0.0;
+                    Count       : DInt := 0;
+                    Enabled     : Bool := FALSE;
+                    Timestamp   : Date_And_Time := DT#1970-01-01-00:00:00;
+                  END_VAR
+                BEGIN
+                END_DATA_BLOCK";
+
+            var existing = plc.BlockGroup.Blocks.OfType<PlcBlock>().FirstOrDefault(b => b.Name == dbName);
+            if (existing != null) existing.Delete();
+
+            var tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"DB_{dbName}.scl");
+            System.IO.File.WriteAllText(tmp, dbScl, System.Text.Encoding.UTF8);
+
+            PlcExternalSourceGroup srcGroup = plc.ExternalSourceGroup; 
+            PlcExternalSource src = srcGroup.ExternalSources.CreateFromFile($"DB_{dbName}.scl", tmp);
+            src.GenerateBlocksFromSource();
+            File.Delete(tmp);
         }
 
         // 

@@ -56,6 +56,8 @@ namespace JAN0837_DP.Forms
             lblParam1.Text = "Project name: ";
             lblParam2.Text = "CPU type ID: ";
 
+            txtBoxTIADLL.Text = tiaDLLPath;
+
             //
             comboBoxTIAprojects.Items.Clear();
 
@@ -185,10 +187,10 @@ namespace JAN0837_DP.Forms
             {
                 if (string.IsNullOrWhiteSpace(_selectedProjectPath))
                 {
-                    lblStatus1.Text = "Please select a TIA project first."; 
+                    lblStatus1.Text = "Please select a TIA project first.";
                     throw new InvalidOperationException("Please select a TIA project first.");
                 }
-                    
+
                 var (tiaPortal, projectPlc) = TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
                 lblStatus1.Text = $"Project open: {Path.GetFileName(_selectedProjectPath)}";
             }
@@ -223,6 +225,31 @@ namespace JAN0837_DP.Forms
             {
                 lblStatus1.Text = "Error: " + ex.Message;
             }
+        }
+
+        private void btnCreateProjectPY_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStartTIAPY_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnOpenProjectPY_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAddDBPY_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnChangeTIADLLPath_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

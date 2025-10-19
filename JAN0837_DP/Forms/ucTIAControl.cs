@@ -57,6 +57,7 @@ namespace JAN0837_DP.Forms
             lblParam2.Text = "CPU type ID: ";
 
             txtBoxTIADLL.Text = tiaDLLPath;
+            txtBoxTIADLL.Enabled = false;
 
             //
             comboBoxTIAprojects.Items.Clear();
@@ -249,7 +250,19 @@ namespace JAN0837_DP.Forms
 
         private void btnChangeTIADLLPath_Click(object sender, EventArgs e)
         {
+            paths.tiaDLLPath = txtBoxTIADLL.Text;
+        }
 
+        private void chBoxChangeTiaDLLPath_CheckedChanged(object sender, EventArgs e)
+        {
+            if (txtBoxTIADLL.Enabled == true)
+            {
+                txtBoxTIADLL.Enabled = false;
+            }
+            else
+            {
+                txtBoxTIADLL.Enabled = true;
+            }    
         }
     }
 }

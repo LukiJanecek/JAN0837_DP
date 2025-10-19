@@ -45,6 +45,7 @@
             btnAddDBPY = new Button();
             txtBoxTIADLL = new TextBox();
             btnChangeTIADLLPath = new Button();
+            chBoxChangeTiaDLLPath = new CheckBox();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -186,7 +187,7 @@
             // 
             // txtBoxTIADLL
             // 
-            txtBoxTIADLL.Location = new Point(22, 369);
+            txtBoxTIADLL.Location = new Point(22, 333);
             txtBoxTIADLL.Name = "txtBoxTIADLL";
             txtBoxTIADLL.Size = new Size(329, 27);
             txtBoxTIADLL.TabIndex = 18;
@@ -201,10 +202,22 @@
             btnChangeTIADLLPath.UseVisualStyleBackColor = true;
             btnChangeTIADLLPath.Click += btnChangeTIADLLPath_Click;
             // 
+            // chBoxChangeTiaDLLPath
+            // 
+            chBoxChangeTiaDLLPath.AutoSize = true;
+            chBoxChangeTiaDLLPath.Location = new Point(236, 366);
+            chBoxChangeTiaDLLPath.Name = "chBoxChangeTiaDLLPath";
+            chBoxChangeTiaDLLPath.Size = new Size(115, 24);
+            chBoxChangeTiaDLLPath.TabIndex = 20;
+            chBoxChangeTiaDLLPath.Text = "Change path";
+            chBoxChangeTiaDLLPath.UseVisualStyleBackColor = true;
+            chBoxChangeTiaDLLPath.CheckedChanged += chBoxChangeTiaDLLPath_CheckedChanged;
+            // 
             // ucTIAControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(chBoxChangeTiaDLLPath);
             Controls.Add(btnChangeTIADLLPath);
             Controls.Add(txtBoxTIADLL);
             Controls.Add(btnAddDBPY);
@@ -248,5 +261,6 @@
         private Button btnAddDBPY;
         private TextBox txtBoxTIADLL;
         private Button btnChangeTIADLLPath;
+        private CheckBox chBoxChangeTiaDLLPath;
     }
 }

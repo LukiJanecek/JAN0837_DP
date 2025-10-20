@@ -127,7 +127,7 @@
             // 
             // btnOpenProject
             // 
-            btnOpenProject.Location = new Point(29, 242);
+            btnOpenProject.Location = new Point(29, 188);
             btnOpenProject.Name = "btnOpenProject";
             btnOpenProject.Size = new Size(94, 63);
             btnOpenProject.TabIndex = 12;
@@ -137,7 +137,7 @@
             // 
             // btnAddDB
             // 
-            btnAddDB.Location = new Point(129, 242);
+            btnAddDB.Location = new Point(129, 188);
             btnAddDB.Name = "btnAddDB";
             btnAddDB.Size = new Size(94, 63);
             btnAddDB.TabIndex = 13;
@@ -147,7 +147,7 @@
             // 
             // btnCreateProjectPY
             // 
-            btnCreateProjectPY.Location = new Point(357, 16);
+            btnCreateProjectPY.Location = new Point(464, 50);
             btnCreateProjectPY.Name = "btnCreateProjectPY";
             btnCreateProjectPY.Size = new Size(94, 63);
             btnCreateProjectPY.TabIndex = 14;
@@ -157,7 +157,7 @@
             // 
             // btnStartTIAPY
             // 
-            btnStartTIAPY.Location = new Point(357, 85);
+            btnStartTIAPY.Location = new Point(464, 119);
             btnStartTIAPY.Name = "btnStartTIAPY";
             btnStartTIAPY.Size = new Size(94, 63);
             btnStartTIAPY.TabIndex = 15;
@@ -167,7 +167,7 @@
             // 
             // btnOpenProjectPY
             // 
-            btnOpenProjectPY.Location = new Point(357, 154);
+            btnOpenProjectPY.Location = new Point(464, 188);
             btnOpenProjectPY.Name = "btnOpenProjectPY";
             btnOpenProjectPY.Size = new Size(94, 63);
             btnOpenProjectPY.TabIndex = 16;
@@ -177,7 +177,7 @@
             // 
             // btnAddDBPY
             // 
-            btnAddDBPY.Location = new Point(357, 223);
+            btnAddDBPY.Location = new Point(464, 259);
             btnAddDBPY.Name = "btnAddDBPY";
             btnAddDBPY.Size = new Size(94, 63);
             btnAddDBPY.TabIndex = 17;
@@ -187,14 +187,14 @@
             // 
             // txtBoxTIADLL
             // 
-            txtBoxTIADLL.Location = new Point(22, 333);
+            txtBoxTIADLL.Location = new Point(29, 259);
             txtBoxTIADLL.Name = "txtBoxTIADLL";
             txtBoxTIADLL.Size = new Size(329, 27);
             txtBoxTIADLL.TabIndex = 18;
             // 
             // btnChangeTIADLLPath
             // 
-            btnChangeTIADLLPath.Location = new Point(357, 333);
+            btnChangeTIADLLPath.Location = new Point(364, 259);
             btnChangeTIADLLPath.Name = "btnChangeTIADLLPath";
             btnChangeTIADLLPath.Size = new Size(94, 63);
             btnChangeTIADLLPath.TabIndex = 19;
@@ -205,7 +205,7 @@
             // chBoxChangeTiaDLLPath
             // 
             chBoxChangeTiaDLLPath.AutoSize = true;
-            chBoxChangeTiaDLLPath.Location = new Point(236, 366);
+            chBoxChangeTiaDLLPath.Location = new Point(243, 292);
             chBoxChangeTiaDLLPath.Name = "chBoxChangeTiaDLLPath";
             chBoxChangeTiaDLLPath.Size = new Size(115, 24);
             chBoxChangeTiaDLLPath.TabIndex = 20;

@@ -251,6 +251,8 @@ namespace JAN0837_DP.Forms
         private void btnChangeTIADLLPath_Click(object sender, EventArgs e)
         {
             paths.tiaDLLPath = txtBoxTIADLL.Text;
+            txtBoxTIADLL.Enabled = false;
+            lblStatus1.Text = "Path chnaged successfully.";
         }
 
         private void chBoxChangeTiaDLLPath_CheckedChanged(object sender, EventArgs e)

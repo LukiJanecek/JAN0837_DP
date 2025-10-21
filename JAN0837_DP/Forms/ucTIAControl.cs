@@ -58,6 +58,7 @@ namespace JAN0837_DP.Forms
 
             txtBoxTIADLL.Text = tiaDLLPath;
             txtBoxTIADLL.Enabled = false;
+            btnChangeTIADLLPath.Enabled = false;
 
             //
             comboBoxTIAprojects.Items.Clear();
@@ -250,7 +251,7 @@ namespace JAN0837_DP.Forms
         private void btnChangeTIADLLPath_Click(object sender, EventArgs e)
         {
             paths.tiaDLLPath = txtBoxTIADLL.Text;
-            txtBoxTIADLL.Enabled = false;
+            chBoxChangeTiaDLLPath.Checked = false;
             lblStatus1.Text = "Path chnaged successfully.";
         }
 
@@ -259,10 +260,12 @@ namespace JAN0837_DP.Forms
             if (txtBoxTIADLL.Enabled == true)
             {
                 txtBoxTIADLL.Enabled = false;
+                btnChangeTIADLLPath.Enabled = false;
             }
             else
             {
                 txtBoxTIADLL.Enabled = true;
+                btnChangeTIADLLPath.Enabled = true;
             }    
         }
     }

@@ -11,8 +11,8 @@ namespace JAN0837_DP.Data
 {
     public static class CrossroadData
     {
-        public const int CrossroadDBnumber = 1;
-        public const int CrossroadDBlength = 9999;
+        public const int CrossroadDBnumber = 6;
+        public const int CrossroadDBlength = 2;
         public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
         public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
 

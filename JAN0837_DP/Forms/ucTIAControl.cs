@@ -115,7 +115,6 @@ namespace JAN0837_DP.Forms
 
         private async void btnGenerateTemplate_Click(object sender, EventArgs e)
         {
-            // run python script 
             lblStatus1.Text = "Starting generating template...";
 
             string projectName = txtBoxParam1.Text?.Trim();

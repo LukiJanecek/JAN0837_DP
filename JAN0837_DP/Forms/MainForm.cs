@@ -307,6 +307,18 @@ namespace JAN0837_DP
             }
         }
 
+        public void SetStatus(string message)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => lblStatus.Text = message));
+            }
+            else
+            {
+                lblStatus.Text = message;
+            }
+        }
+
         private void mainWindow_Paint(object sender, PaintEventArgs e)
         {
 

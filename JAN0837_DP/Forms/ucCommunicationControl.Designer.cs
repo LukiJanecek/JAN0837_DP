@@ -82,7 +82,6 @@
             rbtnOPCUA.Name = "rbtnOPCUA";
             rbtnOPCUA.Size = new Size(82, 24);
             rbtnOPCUA.TabIndex = 4;
-            rbtnOPCUA.TabStop = true;
             rbtnOPCUA.Text = "OPC UA";
             rbtnOPCUA.UseVisualStyleBackColor = true;
             rbtnOPCUA.CheckedChanged += rbtnOPCUA_CheckedChanged;
@@ -94,7 +93,6 @@
             rbtnMQTT.Name = "rbtnMQTT";
             rbtnMQTT.Size = new Size(69, 24);
             rbtnMQTT.TabIndex = 5;
-            rbtnMQTT.TabStop = true;
             rbtnMQTT.Text = "MQTT";
             rbtnMQTT.UseVisualStyleBackColor = true;
             rbtnMQTT.CheckedChanged += rbtnMQTT_CheckedChanged;
@@ -106,7 +104,6 @@
             rbtnTCPIP.Name = "rbtnTCPIP";
             rbtnTCPIP.Size = new Size(72, 24);
             rbtnTCPIP.TabIndex = 6;
-            rbtnTCPIP.TabStop = true;
             rbtnTCPIP.Text = "TCP/IP";
             rbtnTCPIP.UseVisualStyleBackColor = true;
             rbtnTCPIP.CheckedChanged += rbtnTCPIP_CheckedChanged;
@@ -118,7 +115,6 @@
             rbtnModbusTCPIP.Name = "rbtnModbusTCPIP";
             rbtnModbusTCPIP.Size = new Size(130, 24);
             rbtnModbusTCPIP.TabIndex = 7;
-            rbtnModbusTCPIP.TabStop = true;
             rbtnModbusTCPIP.Text = "Modbus TCP/IP";
             rbtnModbusTCPIP.UseVisualStyleBackColor = true;
             rbtnModbusTCPIP.CheckedChanged += rbtnModbusTCPIP_CheckedChanged;
@@ -130,7 +126,6 @@
             rbtnRESTAPI.Name = "rbtnRESTAPI";
             rbtnRESTAPI.Size = new Size(89, 24);
             rbtnRESTAPI.TabIndex = 8;
-            rbtnRESTAPI.TabStop = true;
             rbtnRESTAPI.Text = "REST API";
             rbtnRESTAPI.UseVisualStyleBackColor = true;
             rbtnRESTAPI.CheckedChanged += rbtnRESTAPI_CheckedChanged;
@@ -235,7 +230,6 @@
             rbtnSharp7.Name = "rbtnSharp7";
             rbtnSharp7.Size = new Size(76, 24);
             rbtnSharp7.TabIndex = 23;
-            rbtnSharp7.TabStop = true;
             rbtnSharp7.Text = "Sharp7";
             rbtnSharp7.UseVisualStyleBackColor = true;
             rbtnSharp7.CheckedChanged += rbtnSharp7_CheckedChanged;

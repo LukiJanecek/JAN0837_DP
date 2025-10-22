@@ -106,6 +106,36 @@ namespace JAN0837_DP.Forms
 
                 #endregion
             }
+
+            switch(internalVariables.communicationFlag)
+            {
+                case "OPCUA":
+                    rbtnOPCUA.Checked = true;
+                    rbtnOPCUA_CheckedChanged(sender, e);
+                    break;
+                case "MQTT":
+                    rbtnMQTT.Checked = true;
+                    rbtnMQTT_CheckedChanged(sender, e);
+                    break;
+                case "ModbusTCPIP":
+                    rbtnModbusTCPIP.Checked = true;
+                    rbtnModbusTCPIP_CheckedChanged(sender, e);
+                    break;
+                case "TCPIP":
+                    rbtnTCPIP.Checked = true;
+                    rbtnTCPIP_CheckedChanged(sender, e);
+                    break;
+                case "RESTAPI":
+                    rbtnRESTAPI.Checked = true;
+                    rbtnRESTAPI_CheckedChanged(sender, e);
+                    break;
+                case "Sharp7":
+                    rbtnSharp7.Checked = true;
+                    rbtnSharp7_CheckedChanged(sender, e);
+                    break;
+                default:
+                    break;
+            }
         }
 
         // radio buttons 
@@ -502,52 +532,55 @@ namespace JAN0837_DP.Forms
             internalVariables.sharp7Flag = true;
             */
 
-            // UI settings 
-            #region UI settings 
+            if (internalVariables.communicationThreadRunningFlag == false)
+            {
+                // UI settings 
+                #region UI settings 
 
-            // btns 
-            btnStartCommunicationThread.Visible = true;
-            btnStartCommunicationThread.Enabled = true;
+                // btns 
+                btnStartCommunicationThread.Visible = true;
+                btnStartCommunicationThread.Enabled = true;
 
-            btnStopCommunicationThread.Visible = true;
-            btnStopCommunicationThread.Enabled = false;
+                btnStopCommunicationThread.Visible = true;
+                btnStopCommunicationThread.Enabled = false;
 
-            btnPreSet.Visible = true;
-            btnPreSet.Enabled = true;
+                btnPreSet.Visible = true;
+                btnPreSet.Enabled = true;
 
-            lblCommunicationStatus.Visible = true;
+                lblCommunicationStatus.Visible = true;
 
-            // para
-            lblPara1.Visible = true;
-            lblPara1.Enabled = true;
-            lblPara1.Text = "IP address: ";
-            txtBoxPara1.Visible = true;
-            txtBoxPara1.Enabled = true;
-            txtBoxPara1.Text = "Type IP address";
+                // para
+                lblPara1.Visible = true;
+                lblPara1.Enabled = true;
+                lblPara1.Text = "IP address: ";
+                txtBoxPara1.Visible = true;
+                txtBoxPara1.Enabled = true;
+                txtBoxPara1.Text = "Type IP address";
 
-            lblPara2.Visible = false;
-            lblPara2.Enabled = false;
-            lblPara2.Text = "";
-            txtBoxPara2.Visible = false;
-            txtBoxPara2.Enabled = false;
-            txtBoxPara2.Text = "";
+                lblPara2.Visible = false;
+                lblPara2.Enabled = false;
+                lblPara2.Text = "";
+                txtBoxPara2.Visible = false;
+                txtBoxPara2.Enabled = false;
+                txtBoxPara2.Text = "";
 
-            // check box
-            lblCheckBox.Visible = false;
-            lblCheckBox.Enabled = false;
-            lblCheckBox.Text = "";
+                // check box
+                lblCheckBox.Visible = false;
+                lblCheckBox.Enabled = false;
+                lblCheckBox.Text = "";
 
-            checkBoxMaster.Visible = false;
-            checkBoxMaster.Enabled = false;
-            checkBoxMaster.Text = "";
-            checkBoxMaster.Checked = false;
+                checkBoxMaster.Visible = false;
+                checkBoxMaster.Enabled = false;
+                checkBoxMaster.Text = "";
+                checkBoxMaster.Checked = false;
 
-            checkBoxSlave.Visible = false;
-            checkBoxSlave.Enabled = false;
-            checkBoxSlave.Text = "";
-            checkBoxSlave.Checked = false;
+                checkBoxSlave.Visible = false;
+                checkBoxSlave.Enabled = false;
+                checkBoxSlave.Text = "";
+                checkBoxSlave.Checked = false;
 
-            #endregion
+                #endregion
+            }
         }
 
         #endregion
@@ -740,6 +773,18 @@ namespace JAN0837_DP.Forms
             checkBoxMaster.Checked = false;
             internalVariables.checkBoxMaster = false;
             internalVariables.checkBoxSlave = true;
+        }
+
+        public void SetStatus(string message)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => lblStatus.Text = message));
+            }
+            else
+            {
+                lblStatus.Text = message;
+            }
         }
     }
 }

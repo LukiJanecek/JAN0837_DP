@@ -275,6 +275,8 @@ namespace JAN0837_DP.Communication
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in communication: {ex.Message}");
+                ucCommunicationControl.SetStatus($"Error in communication: {ex.Message}");
+                main.SetStatus($"Error in communication: {ex.Message}");
             }
         }
     }

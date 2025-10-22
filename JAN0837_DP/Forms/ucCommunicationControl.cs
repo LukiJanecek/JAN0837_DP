@@ -136,6 +136,32 @@ namespace JAN0837_DP.Forms
                 default:
                     break;
             }
+
+            if (internalVariables.communicationThreadRunningFlag == true)
+            {
+                // UI settings
+                #region UI settings
+                rbtnOPCUA.Enabled = false;
+                rbtnMQTT.Enabled = false;
+                rbtnTCPIP.Enabled = false;
+                rbtnModbusTCPIP.Enabled = false;
+                rbtnRESTAPI.Enabled = false;
+                //rbtnS7.Enabled = false;
+                rbtnSharp7.Enabled = false;
+
+                checkBoxMaster.Enabled = false;
+                checkBoxSlave.Enabled = false;
+
+                txtBoxPara1.Enabled = false;
+                txtBoxPara2.Enabled = false;
+
+                btnPreSet.Enabled = false;
+
+                btnStartCommunicationThread.Enabled = false;
+                btnStopCommunicationThread.Enabled = true;
+
+                #endregion
+            }
         }
 
         // radio buttons 

@@ -28,88 +28,84 @@ namespace JAN0837_DP.Forms
 
         private void CommunicationControl_Load(object sender, EventArgs e)
         {
-            // UI settings 
-            #region UI settings 
+            if (internalVariables.communicationFlag == "")
+            {
+                // UI settings      
+                #region UI settings 
 
-            // rbtn
-            rbtnModbusTCPIP.Enabled = true;
-            rbtnModbusTCPIP.Visible = true;
-            rbtnModbusTCPIP.Checked = false;
+                // rbtn
+                rbtnModbusTCPIP.Enabled = true;
+                rbtnModbusTCPIP.Visible = true;
+                rbtnModbusTCPIP.Checked = false;
 
-            rbtnMQTT.Enabled = true;
-            rbtnMQTT.Visible = true;
-            rbtnMQTT.Checked = false;
+                rbtnMQTT.Enabled = true;
+                rbtnMQTT.Visible = true;
+                rbtnMQTT.Checked = false;
 
-            rbtnTCPIP.Enabled = true;
-            rbtnTCPIP.Visible = true;
-            rbtnTCPIP.Checked = false;
+                rbtnTCPIP.Enabled = true;
+                rbtnTCPIP.Visible = true;
+                rbtnTCPIP.Checked = false;
 
-            rbtnModbusTCPIP.Enabled = true;
-            rbtnModbusTCPIP.Visible = true;
-            rbtnModbusTCPIP.Checked = false;
+                rbtnModbusTCPIP.Enabled = true;
+                rbtnModbusTCPIP.Visible = true;
+                rbtnModbusTCPIP.Checked = false;
 
-            rbtnRESTAPI.Enabled = true;
-            rbtnRESTAPI.Visible = true;
-            rbtnRESTAPI.Checked = false;
+                rbtnRESTAPI.Enabled = true;
+                rbtnRESTAPI.Visible = true;
+                rbtnRESTAPI.Checked = false;
 
-            /*
-            rbtnS7.Enabled = true;
-            rbtnS7.Visible = true;
-            rbtnS7.Checked = false;
-            */
+                rbtnOPCUA.Tag = "OPCUA";
+                rbtnMQTT.Tag = "MQTT";
+                rbtnTCPIP.Tag = "TCPIP";
+                rbtnModbusTCPIP.Tag = "ModbusTCPIP";
+                rbtnRESTAPI.Tag = "RestApi";
 
-            rbtnOPCUA.Tag = "OPCUA";
-            rbtnMQTT.Tag = "MQTT";
-            rbtnTCPIP.Tag = "TCPIP";
-            rbtnModbusTCPIP.Tag = "ModbusTCPIP";
-            rbtnRESTAPI.Tag = "RestApi";
-            //rbtnS7.Tag = "S7";
+                // btns
+                btnStartCommunicationThread.Visible = false;
+                btnStartCommunicationThread.Enabled = false;
 
-            // btns
-            btnStartCommunicationThread.Visible = false;
-            btnStartCommunicationThread.Enabled = false;
+                btnStopCommunicationThread.Visible = false;
+                btnStopCommunicationThread.Enabled = false;
 
-            btnStopCommunicationThread.Visible = false;
-            btnStopCommunicationThread.Enabled = false;
+                btnPreSet.Visible = false;
+                btnPreSet.Enabled = false;
 
-            btnPreSet.Visible = false;
-            btnPreSet.Enabled = false;
+                lblCommunicationStatus.Visible = false;
 
-            lblCommunicationStatus.Visible = false;
+                // para
+                lblPara1.Visible = false;
+                lblPara1.Enabled = false;
+                lblPara1.Text = "Parameter1: ";
+                txtBoxPara1.Visible = false;
+                txtBoxPara1.Enabled = false;
+                txtBoxPara1.Text = "";
 
-            // para
-            lblPara1.Visible = false;
-            lblPara1.Enabled = false;
-            lblPara1.Text = "Parameter1: ";
-            txtBoxPara1.Visible = false;
-            txtBoxPara1.Enabled = false;
-            txtBoxPara1.Text = "";
+                lblPara2.Visible = false;
+                lblPara2.Enabled = false;
+                lblPara2.Text = "Parameter2: ";
+                txtBoxPara2.Visible = false;
+                txtBoxPara2.Enabled = false;
+                txtBoxPara2.Text = "";
 
-            lblPara2.Visible = false;
-            lblPara2.Enabled = false;
-            lblPara2.Text = "Parameter2: ";
-            txtBoxPara2.Visible = false;
-            txtBoxPara2.Enabled = false;
-            txtBoxPara2.Text = "";
+                // check box
+                lblCheckBox.Visible = false;
+                lblCheckBox.Enabled = false;
+                lblCheckBox.Text = "";
 
-            // check box
-            lblCheckBox.Visible = false;
-            lblCheckBox.Enabled = false;
-            lblCheckBox.Text = "";
+                checkBoxMaster.Visible = false;
+                checkBoxMaster.Enabled = false;
+                checkBoxMaster.Text = "";
+                checkBoxMaster.Checked = false;
 
-            checkBoxMaster.Visible = false;
-            checkBoxMaster.Enabled = false;
-            checkBoxMaster.Text = "";
-            checkBoxMaster.Checked = false;
+                checkBoxSlave.Visible = false;
+                checkBoxSlave.Enabled = false;
+                checkBoxSlave.Text = "";
+                checkBoxSlave.Checked = false;
 
-            checkBoxSlave.Visible = false;
-            checkBoxSlave.Enabled = false;
-            checkBoxSlave.Text = "";
-            checkBoxSlave.Checked = false;
+                lblStatus.Text = "Select communication protocol.";
 
-            #endregion
-
-            lblStatus.Text = "Select communication protocol.";
+                #endregion
+            }
         }
 
         // radio buttons 
@@ -118,6 +114,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "OPC UA selected.";
 
+            internalVariables.communicationFlag = "OPCUA";
+            /*
             internalVariables.opcuaFlag = true;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = false;
@@ -125,6 +123,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI settings 
@@ -176,6 +175,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "MQTT selected.";
 
+            internalVariables.communicationFlag = "MQTT";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = true;
             internalVariables.tcpipFlag = false;
@@ -183,6 +184,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI settings 
@@ -236,6 +238,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "TCP/IP selected.";
 
+            internalVariables.communicationFlag = "TCPIP";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = true;
@@ -243,6 +247,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI sttings 
@@ -296,6 +301,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "Modbus TCP/IP selected.";
 
+            internalVariables.communicationFlag = "ModbusTCPIP";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = false;
@@ -303,6 +310,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = true;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI settings 
@@ -357,6 +365,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "REST API selected.";
 
+            internalVariables.communicationFlag = "RESTAPI";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = false;
@@ -364,6 +374,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI settings 
@@ -417,6 +428,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "S7 selected.";
 
+            internalVariables.communicationFlag = "S7";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = false;
@@ -424,6 +437,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = true;
             internalVariables.sharp7Flag = false;
+            */
 
             // UI settings 
             #region UI settings 
@@ -477,6 +491,8 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "Sharp7 selected";
 
+            internalVariables.communicationFlag = "Sharp7";
+            /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
             internalVariables.tcpipFlag = false;
@@ -484,6 +500,7 @@ namespace JAN0837_DP.Forms
             internalVariables.modbustcpipFlag = false;
             internalVariables.s7Flag = false;
             internalVariables.sharp7Flag = true;
+            */
 
             // UI settings 
             #region UI settings 
@@ -549,45 +566,48 @@ namespace JAN0837_DP.Forms
                 internalVariables.communicationThread.IsBackground = true;
                 internalVariables.communicationThread.Start();
 
-                if (internalVariables.opcuaFlag == true)
+                switch (internalVariables.communicationFlag)
                 {
-                    lblCommunicationStatus.Text = "OPC UA communication started.";
-                    lblStatus.Text = "OPC UA communication started.";
-                }
-                else if (internalVariables.mqttFlag == true)
-                {
-                    lblCommunicationStatus.Text = "MQTT communication started.";
-                    lblStatus.Text = "MQTT communication started.";
-                }
-                else if (internalVariables.tcpipFlag == true)
-                {
-                    lblCommunicationStatus.Text = "TCP/IP communication started.";
-                    lblStatus.Text = "TCP/IP communication started.";
-                }
-                else if (internalVariables.modbustcpipFlag == true)
-                {
-                    lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
-                    lblStatus.Text = "MModbus TCP/IPQTT communication started.";
-                }
-                else if (internalVariables.restapiFlag == true)
-                {
-                    lblCommunicationStatus.Text = "REST API communication started.";
-                    lblStatus.Text = "REST API communication started.";
-                }
-                else if (internalVariables.s7Flag == true)
-                {
-                    lblCommunicationStatus.Text = "S7 communication started.";
-                    lblStatus.Text = "S7 communication started.";
-                }
-                else if (internalVariables.sharp7Flag == true)
-                {
-                    lblCommunicationStatus.Text = "Sharp7 communication started.";
-                    lblStatus.Text = "Sharp7 communication started.";
-                }
-                else
-                {
-                    lblCommunicationStatus.Text = "No communication protocol selected.";
-                    lblStatus.Text = "No communication protocol selected.";
+                    case "MQTT":
+                        lblCommunicationStatus.Text = "MQTT communication started.";
+                        lblStatus.Text = "MQTT communication started.";
+
+                        break;
+                    case "OPCUA":
+                        lblCommunicationStatus.Text = "OPC UA communication started.";
+                        lblStatus.Text = "OPC UA communication started.";
+
+                        break;
+                    case "TCPIP":
+                        lblCommunicationStatus.Text = "TCP/IP communication started.";
+                        lblStatus.Text = "TCP/IP communication started.";
+
+                        break;
+                    case "ModbusTCPIP":
+                        lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
+                        lblStatus.Text = "MModbus TCP/IPQTT communication started.";
+
+                        break;
+                    case "RESTAPI":
+                        lblCommunicationStatus.Text = "REST API communication started.";
+                        lblStatus.Text = "REST API communication started.";
+
+                        break;
+                    case "Sharp7":
+                        lblCommunicationStatus.Text = "Sharp7 communication started.";
+                        lblStatus.Text = "Sharp7 communication started.";
+
+                        break;
+                    case "S7":
+                        lblCommunicationStatus.Text = "S7 communication started.";
+                        lblStatus.Text = "S7 communication started.";
+
+                        break;
+                    default:
+                        lblCommunicationStatus.Text = "No communication protocol selected.";
+                        lblStatus.Text = "No communication protocol selected.";
+
+                        break;
                 }
             }
 

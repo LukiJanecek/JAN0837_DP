@@ -63,6 +63,8 @@ namespace JAN0837_DP.Data
         public static string txtBoxParam2 { get; set; } = "";
 
         // Flags 
+        public static string communicationFlag { get; set; } = "";
+        /*
         public static bool opcuaFlag { get; set; } = false;
         public static bool mqttFlag { get; set; } = false;
         public static bool tcpipFlag { get; set; } = false;
@@ -70,6 +72,7 @@ namespace JAN0837_DP.Data
         public static bool modbustcpipFlag { get; set; } = false;
         public static bool s7Flag { get; set; } = false;
         public static bool sharp7Flag {  get; set; } = false;
+        */
     
         // communication
         public static bool connected { get; set; } = false;

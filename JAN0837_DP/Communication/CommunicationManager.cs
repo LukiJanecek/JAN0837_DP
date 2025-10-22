@@ -31,251 +31,235 @@ namespace JAN0837_DP.Communication
             {
                 while (internalVariables.communicationThreadRunningFlag) // communicationRunningFlag
                 {
-                    if (internalVariables.opcuaFlag == true)
+                    switch (internalVariables.communicationFlag)
                     {
-                        //OPCUA();
+                        case "MQTT":
+                            //MQTT();
 
-                        string opcUaServerUrl = internalVariables.txtBoxParam1;
+                            string brokerAddress = internalVariables.txtBoxParam1;
+                            string secondPara = internalVariables.txtBoxParam2;
 
-                        if (internalVariables.checkBoxMaster == true)
-                        {
-
-                        }
-                        else if (internalVariables.checkBoxSlave == true)
-                        {
-
-                        }
-                        else
-                        {
-                            // no checkbox selected 
-                        }
-                    }
-                    else if (internalVariables.mqttFlag == true)
-                    {
-                        //MQTT();
-
-                        string brokerAddress = internalVariables.txtBoxParam1;
-                        string secondPara = internalVariables.txtBoxParam2;
-
-                        if (internalVariables.checkBoxMaster == true)
-                        {
-
-                        }
-                        else if (internalVariables.checkBoxSlave == true)
-                        {
-
-                        }
-                        else
-                        {
-                            // no checkbox selected 
-                        }
-                    }
-                    else if (internalVariables.tcpipFlag == true)
-                    {
-                        //TCPIP();
-
-                        string ipAddress = internalVariables.txtBoxParam1;
-                    }
-                    else if (internalVariables.modbustcpipFlag == true)
-                    {
-                        //ModbusTCPIP();
-
-                        string ipAddress = internalVariables.txtBoxParam1;
-                        string txtPort = internalVariables.txtBoxParam2;
-                        int txpPort;
-
-                        if (!int.TryParse(txtPort, out txpPort))
-                        {
-                            // error port not valid number 
-                            return;
-                        }
-
-                        if (internalVariables.checkBoxMaster == true)
-                        {
-                            ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ipAddress, txpPort);
-
-                            if (modbusClient.ConnectToSlave())
+                            if (internalVariables.checkBoxMaster == true)
                             {
-                                byte slaveId = 1;
-                                ushort startAddress = 0;
 
-                                // Čtení jednoho registru
-                                ushort[] values = modbusClient.ReadHoldingRegisters(slaveId, startAddress, 1);
-                                if (values != null)
-                                    Console.WriteLine($"Přečtená hodnota: {values[0]}");
-
-                                // Zápis do registru
-                                modbusClient.WriteSingleRegister(slaveId, startAddress, 1234);
-
-                                // Odpojení
-                                modbusClient.DisconnectFromSlave();
                             }
-                        }
-                        else if (internalVariables.checkBoxSlave == true)
-                        {
-                            ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ipAddress, txpPort);
-                            modbusServer.Start(); // Spustíme Modbus Slave
-
-                            // Simulace změny hodnoty registru
-                            modbusServer.SetRegisterValue(0, 1234);
-
-                            Console.ReadLine(); // Čekáme, dokud uživatel nestiskne Enter
-                            modbusServer.Stop(); // Ukončení serveru
-                        }
-                        else
-                        {
-                            // no checkbox selected 
-                        }
-                    }
-                    else if (internalVariables.restapiFlag == true)
-                    {
-                        //RESTAPI();
-
-                        string url = internalVariables.txtBoxParam1;
-                    }
-                    else if (internalVariables.s7Flag == true)
-                    {
-                        // S7 -> Sharp7
-                        string ipAddress = internalVariables.txtBoxParam1;
-                        string cpuType = internalVariables.txtBoxParam2;
-                        
-                        if (_s7.plc.IsConnected != true)
-                        {
-                            // connect 
-                            _s7.connectToPLC(cpuType, ipAddress);
-                        }
-
-                        // get data from plc
-
-                        // crossroad
-                        _s7.getBytes(CrossroadData.CrossroadDBnumber, 0, CrossroadData.CrossroadReadBuffer.Length, CrossroadData.CrossroadReadBuffer);
-                    }
-                    else if (internalVariables.sharp7Flag == true)
-                    {
-                        _sharp7 ??= new comSharp7.comSharp7();
-
-                        //
-                        string ipAddress = internalVariables.txtBoxParam1;
-
-                        if (_sharp7.client != null)
-                        {
-                            _sharp7.connectToPLC(ipAddress);
-                        }
-
-                        // choose between these two methods -> please test me
-
-                        // reading from PLC 
-                        int activeDBnumber = CrossroadData.CrossroadDBnumber;
-
-                        int read1 = _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
-                        //bool read2 = _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
-                        int read2 = 0;
-
-                        if (read1 == 0)
-                        {
-                            switch (activeDBnumber)
+                            else if (internalVariables.checkBoxSlave == true)
                             {
-                                case CrossroadData.CrossroadDBnumber:
 
-                                    CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0)); 
-                                    //CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
-                                    //CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
-                                    //CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
-                                    //CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 5));
-                                    //CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 6));
-
-                                    CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
-                                    CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
-                                    CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
-                                    CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
-                                    CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
-                                    CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
-                                    CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
-                                    CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
-                                    CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
-                                    CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
-                                    
-                                    break;
-
-                                default:
-                                    break;
                             }
-                        }
-                        else
-                        {
-                            // read failed -> Exception?
-                        }
-
-                        if (read2 == 0)
-                        {
-                            switch (activeDBnumber)
+                            else
                             {
-                                case CrossroadData.CrossroadDBnumber:
-
-                                    CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
-                                    //CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
-                                    //CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
-                                    //CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
-                                    //CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
-                                    //CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
-
-                                    CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
-                                    CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
-                                    CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
-                                    CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
-                                    CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
-                                    CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
-                                    CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
-                                    CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
-                                    CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
-                                    CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
-
-                                    break;
-
-                                default:
-                                    break;
+                                // no checkbox selected 
                             }
-                        }
-                        else
-                        {
-                            // read failed -> Exception?
-                        }
 
-                        // writting to PLC 
+                            break;
+                        case "OPCUA":
+                            //OPCUA();
 
-                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnCrossroadStart));
-                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnCrossroadPause));
-                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnCrossroadStop));
-                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnCrosswalk1));
-                        Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 5, Convert.ToBoolean(CrossroadData.btnCrosswalk2));
+                            string opcUaServerUrl = internalVariables.txtBoxParam1;
 
-                        int write1 = _sharp7.writeDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
-                        //bool write2 = _sharp7.writeS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
-                        int write2 = 0;
+                            if (internalVariables.checkBoxMaster == true)
+                            {
 
-                        if (write1 == 0)
-                        {
-                            // write was successful
-                        }
-                        else
-                        {
-                            // write failed -> Exception?
-                        }
+                            }
+                            else if (internalVariables.checkBoxSlave == true)
+                            {
 
-                        if (write2 == 0)
-                        {
-                            // write was successful
-                        }
-                        else
-                        {
-                            // write failed -> Exception?
-                        }
+                            }
+                            else
+                            {
+                                // no checkbox selected 
+                            }
 
-                    }
-                    else
-                    {
-                        // Error -> neni zaklikla predvolba 
-                        return;
+                            break;
+                        case "ModbusTCPIP":
+                            //ModbusTCPIP();
+
+                            string ModbusTCPIP_ipAddress = internalVariables.txtBoxParam1;
+                            string txtPort = internalVariables.txtBoxParam2;
+                            int txpPort;
+
+                            if (!int.TryParse(txtPort, out txpPort))
+                            {
+                                // error port not valid number 
+                                return;
+                            }
+
+                            if (internalVariables.checkBoxMaster == true)
+                            {
+                                ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipAddress, txpPort);
+
+                                if (modbusClient.ConnectToSlave())
+                                {
+                                    byte slaveId = 1;
+                                    ushort startAddress = 0;
+
+                                    // Čtení jednoho registru
+                                    ushort[] values = modbusClient.ReadHoldingRegisters(slaveId, startAddress, 1);
+                                    if (values != null)
+                                        Console.WriteLine($"Přečtená hodnota: {values[0]}");
+
+                                    // Zápis do registru
+                                    modbusClient.WriteSingleRegister(slaveId, startAddress, 1234);
+
+                                    // Odpojení
+                                    modbusClient.DisconnectFromSlave();
+                                }
+                            }
+                            else if (internalVariables.checkBoxSlave == true)
+                            {
+                                ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipAddress, txpPort);
+                                modbusServer.Start(); // Spustíme Modbus Slave
+
+                                // Simulace změny hodnoty registru
+                                modbusServer.SetRegisterValue(0, 1234);
+
+                                Console.ReadLine(); // Čekáme, dokud uživatel nestiskne Enter
+                                modbusServer.Stop(); // Ukončení serveru
+                            }
+                            else
+                            {
+                                // no checkbox selected 
+                            }
+
+                            break;
+                        case "TCPIP":
+                            //TCPIP();
+
+                            string ipAddress = internalVariables.txtBoxParam1;
+
+                            break;
+                        case "RESTAPI":
+
+                            //RESTAPI();
+
+                            string url = internalVariables.txtBoxParam1;
+
+                            break;
+                        case "Sharp7":
+                            _sharp7 ??= new comSharp7.comSharp7();
+
+                            //
+                            string Sharp7_ipAddress = internalVariables.txtBoxParam1;
+
+                            if (_sharp7.client != null)
+                            {
+                                _sharp7.connectToPLC(Sharp7_ipAddress);
+                            }
+
+                            // choose between these two methods -> please test me
+
+                            // reading from PLC 
+                            int activeDBnumber = CrossroadData.CrossroadDBnumber;
+
+                            int read1 = _sharp7.readDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                            //bool read2 = _sharp7.readS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                            int read2 = 0;
+
+                            if (read1 == 0)
+                            {
+                                switch (activeDBnumber)
+                                {
+                                    case CrossroadData.CrossroadDBnumber:
+
+                                        CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
+                                        //CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
+                                        //CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
+                                        //CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
+                                        //CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 5));
+                                        //CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 6));
+
+                                        CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
+                                        CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
+                                        CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
+                                        CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
+                                        CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
+                                        CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
+                                        CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
+                                        CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
+                                        CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
+                                        CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
+
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                // read failed -> Exception?
+                            }
+
+                            if (read2 == 0)
+                            {
+                                switch (activeDBnumber)
+                                {
+                                    case CrossroadData.CrossroadDBnumber:
+
+                                        CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
+                                        //CrossroadData.btnCrossroadStart = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
+                                        //CrossroadData.btnCrossroadPause = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 1));
+                                        //CrossroadData.btnCrossroadStop = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 2));
+                                        //CrossroadData.btnCrosswalk1 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 3));
+                                        //CrossroadData.btnCrosswalk2 = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 4));
+
+                                        CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
+                                        CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
+                                        CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
+                                        CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
+                                        CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
+                                        CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
+                                        CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
+                                        CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
+                                        CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
+                                        CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
+
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                // read failed -> Exception?
+                            }
+
+                            // writting to PLC 
+
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnCrossroadStart));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnCrossroadPause));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnCrossroadStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnCrosswalk1));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 5, Convert.ToBoolean(CrossroadData.btnCrosswalk2));
+
+                            int write1 = _sharp7.writeDB(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
+                            //bool write2 = _sharp7.writeS7MultiVar(CrossroadData.CrossroadDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
+                            int write2 = 0;
+
+                            if (write1 == 0)
+                            {
+                                // write was successful
+                            }
+                            else
+                            {
+                                // write failed -> Exception?
+                            }
+
+                            if (write2 == 0)
+                            {
+                                // write was successful
+                            }
+                            else
+                            {
+                                // write failed -> Exception?
+                            }
+
+                            break;
+
+                        default:
+                            break;
                     }
                 }
             }

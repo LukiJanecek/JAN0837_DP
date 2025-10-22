@@ -12,7 +12,7 @@ namespace JAN0837_DP.Communication.comSharp7
     {
         public S7Client client = new S7Client();
 
-        public bool connectToPLC(string ip)
+        public int connectToPLC(string ip)
         {
             //0 -> MPI -> Multi Point Interface -> didnt work  
             //1 -> PPI -> Point to Point interface
@@ -28,29 +28,29 @@ namespace JAN0837_DP.Communication.comSharp7
 
             if (plcConnect == 0)
             {
-                return true;
+                return plcConnect;
             }
             else
             {
-                return false;
+                return plcConnect;
             }
         }
 
-        public bool disconnectFromPLC()
+        public int disconnectFromPLC()
         {
             int plcDisconnect = client.Disconnect();
 
             if (plcDisconnect == 0)
             {
-                return true;
+                return plcDisconnect;
             }
             else
             {
-                return false;
+                return plcDisconnect;
             }
         }
 
-        public bool readS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
+        public int readS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
         {
             S7MultiVar reader = new S7MultiVar(client);
 
@@ -60,15 +60,15 @@ namespace JAN0837_DP.Communication.comSharp7
 
             if (result == 0)
             {
-                return true;
+                return result;
             }
             else
             {
-                return false;
+                return result;
             }
         }
 
-        public bool writeS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
+        public int writeS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
         {
             S7MultiVar writer = new S7MultiVar(client);
 
@@ -78,39 +78,39 @@ namespace JAN0837_DP.Communication.comSharp7
 
             if (result == 0)
             {
-                return true;
+                return result;
             }
             else
             {
-                return false;
+                return result;
             }
         }
 
-        public bool readDB(int DBnumber, byte[] buffer, int startBit = 0)
+        public int readDB(int DBnumber, byte[] buffer, int startBit = 0)
         {
             int result = client.DBRead(DBnumber, startBit, buffer.Length, buffer);
 
             if (result == 0)
             {       
-                return true;
+                return result;
             }
             else
             {
-                return false;
+                return result;
             }
         }
 
-        public bool writeDB(int DBnumber, byte[] buffer, int startBit = 0)
+        public int writeDB(int DBnumber, byte[] buffer, int startBit = 0)
         {
             int result = client.DBWrite(DBnumber, startBit, buffer.Length, buffer);
 
             if (result == 0)
             {
-                return true;
+                return result;
             }
             else
             {
-                return false;
+                return result;
             }
         }
     }

@@ -11,14 +11,7 @@ namespace JAN0837_DP.Communication.comSharp7
 {
     public class comSharp7
     {
-        private readonly ucCommunicationControl _ucCommControl;
-        
         public S7Client client = new S7Client();
-
-        public comSharp7(ucCommunicationControl ucCommControl)
-        {
-            _ucCommControl = ucCommControl;
-        }
 
         public int connectToPLC(string ip)
         {

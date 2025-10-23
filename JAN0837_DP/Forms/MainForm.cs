@@ -87,10 +87,37 @@ namespace JAN0837_DP
         public ucLocalhost ucLocalhost;
         public ucTIAControl ucGenerateTIAtemplate;
 
+        private readonly ucCommunicationControl _ucCommControl;
+        private readonly ucLocalhost _ucLocalhost;
+        private readonly ucTIAControl _ucTIAControl;
+
         public MainForm()
         {
             InitializeComponent();
             this.MinimumSize = new Size(850, 430);
+
+            _ucCommControl = new ucCommunicationControl { Dock = DockStyle.Fill };
+            mainWindow.Controls.Add(_ucCommControl);
+            _ucCommControl.Visible = false;
+
+            _ucLocalhost = new ucLocalhost { Dock = DockStyle.Fill };
+            mainWindow.Controls.Add(_ucLocalhost);
+            _ucLocalhost.Visible = false;
+
+            _ucTIAControl = new ucTIAControl { Dock = DockStyle.Fill};
+            mainWindow.Controls.Add(_ucTIAControl);
+            _ucTIAControl.Visible = false;
+        }
+
+        private void ShowInMain(UserControl uc)
+        {
+            foreach (Control c in mainWindow.Controls) c.Visible = false;
+
+            if (!mainWindow.Controls.Contains(uc))
+                mainWindow.Controls.Add(uc);
+
+            uc.Visible = true;
+            uc.BringToFront();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -132,20 +159,28 @@ namespace JAN0837_DP
         {
             lblStatus.Text = "Generating template to TIA Portal V19.";
 
+            /*
             mainWindow.Controls.Clear();
             var visual = new ucTIAControl();
             visual.Dock = DockStyle.Fill;
             mainWindow.Controls.Add(visual);
+            */
+
+            ShowInMain(_ucTIAControl);
         }
 
         private void btnCommunicationControl_Click(object sender, EventArgs e)
         {
             lblStatus.Text = "Openning communication control.";
 
+            /*
             mainWindow.Controls.Clear();
             var visual = new ucCommunicationControl();
             visual.Dock = DockStyle.Fill;
             mainWindow.Controls.Add(visual);
+            */
+
+            ShowInMain(_ucCommControl);
         }
 
         private void btnLocalHost_Click(object sender, EventArgs e)
@@ -155,6 +190,7 @@ namespace JAN0837_DP
             // starting reading 
             PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
             PeriodicalReading.Start();
+            
             /*
             string parentDirectory = Directory.GetParent(Directory.GetParent(projectRootPath).FullName).FullName;
             string serverFolder = Path.Combine("JAN0837_react", "JAN0837_react.Server");
@@ -165,10 +201,15 @@ namespace JAN0837_DP
             string fullServerFilePath = Path.Combine(parentDirectory, serverFile);
             string fullClientFilePath = Path.Combine(parentDirectory, clientFile);
             */
+
+            /*
             mainWindow.Controls.Clear();
             var visual = new ucLocalhost();
             visual.Dock = DockStyle.Fill;
             mainWindow.Controls.Add(visual);
+            */
+
+            ShowInMain(_ucLocalhost);
 
             // Vizualization
             /*

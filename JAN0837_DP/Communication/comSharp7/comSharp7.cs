@@ -4,13 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JAN0837_DP.Data;
+using JAN0837_DP.Forms;
 using Sharp7;
 
 namespace JAN0837_DP.Communication.comSharp7
 {
     public class comSharp7
     {
+        private readonly ucCommunicationControl _ucCommControl;
+        
         public S7Client client = new S7Client();
+
+        public comSharp7(ucCommunicationControl ucCommControl)
+        {
+            _ucCommControl = ucCommControl;
+        }
 
         public int connectToPLC(string ip)
         {

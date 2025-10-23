@@ -23,8 +23,12 @@ namespace JAN0837_DP.Communication
     {
         public comS7.comS7 _s7;
         public comSharp7.comSharp7 _sharp7;
-        public ucCommunicationControl ucCommunicationControl;
-        public MainForm main;
+        public ucCommunicationControl _ucCommunicationControl;
+
+        public CommunicationManager(ucCommunicationControl ucCommunicationControl)
+        {
+            _ucCommunicationControl = ucCommunicationControl;
+        }
 
         public void Communication()
         {
@@ -138,7 +142,7 @@ namespace JAN0837_DP.Communication
 
                             break;
                         case "Sharp7":
-                            _sharp7 ??= new comSharp7.comSharp7();
+                            _sharp7 ??= new comSharp7.comSharp7(_ucCommunicationControl);
 
                             //
                             string Sharp7_ipAddress = internalVariables.txtBoxParam1;
@@ -190,8 +194,7 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // read failed -> Exception?
-                                ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read1}.");
-                                main.SetStatus($"Error in Sharp7 communication. ReadDB returns {read1}.");
+                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read1}.");
                             }
 
                             if (read2 == 0)
@@ -227,8 +230,7 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // read failed -> Exception?
-                                ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read2}.");
-                                main.SetStatus($"Error in Sharp7 communication. ReadDB returns {read2}.");
+                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read2}.");
                             }
 
                             // writting to PLC 
@@ -250,8 +252,7 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // write failed -> Exception?
-                                ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write1}.");
-                                main.SetStatus($"Error in Sharp7 communication. WriteDB returns {write1}.");
+                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write1}.");
                             }
 
                             if (write2 == 0)
@@ -261,8 +262,7 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // write failed -> Exception?
-                                ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write2}.");
-                                main.SetStatus($"Error in Sharp7 communication. WriteDB returns {write2}.");
+                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write2}.");
                             }
 
                             break;
@@ -274,9 +274,8 @@ namespace JAN0837_DP.Communication
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in communication: {ex.Message}");
-                ucCommunicationControl.SetStatus($"Error in communication: {ex.Message}");
-                main.SetStatus($"Error in communication: {ex.Message}");
+                Console.WriteLine($"Exception: Error in communication: {ex.Message}");
+                //_ucCommunicationControl.SetStatus($"Exception: Error in communication: {ex.Message}");
             }
         }
     }

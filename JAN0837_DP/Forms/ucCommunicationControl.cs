@@ -620,7 +620,7 @@ namespace JAN0837_DP.Forms
             if (internalVariables.communicationThread == null || !internalVariables.communicationThread.IsAlive)
             {
                 internalVariables.communicationThreadRunningFlag = true;
-                var communicationManager = new CommunicationManager();
+                var communicationManager = new CommunicationManager(this);
                 internalVariables.communicationThread = new Thread(communicationManager.Communication);
                 internalVariables.communicationThread.IsBackground = true;
                 internalVariables.communicationThread.Start();

@@ -12,30 +12,30 @@ namespace JAN0837_DP.Data
     public static class CrossroadData
     {
         public const int CrossroadDBnumber = 6;
-        public const int CrossroadDBlength = 3;
+        public const int CrossroadDBlength = 4;
         public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
         public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
 
-        public static string crossroadType { get; set; } = ""; // bool
+        public static string crossroadType { get; set; } = "false"; // bool
         //public static string crossroadDay { get; set; } = "";
         //public static string crossroadNight { get; set; } = "";
-        public static string btnCrossroadStart { get; set; } = ""; // bool
-        public static string btnCrossroadPause { get; set; } = ""; // bool
-        public static string btnCrossroadStop { get; set; } = ""; // bool
+        public static string btnCrossroadStart { get; set; } = "false"; // bool
+        public static string btnCrossroadPause { get; set; } = "false"; // bool
+        public static string btnCrossroadStop { get; set; } = "false"; // bool
 
-        public static string btnCrosswalk1 { get; set; } = ""; // bool
-        public static string btnCrosswalk2 { get; set; } = ""; // bool
+        public static string btnCrosswalk1 { get; set; } = "false"; // bool
+        public static string btnCrosswalk2 { get; set; } = "false"; // bool
 
-        public static string trafficLight1_green { get; set; } = ""; // bool
-        public static string trafficLight1_yellow { get; set; } = ""; // bool
-        public static string trafficLight1_red { get; set; } = ""; // bool
-        public static string trafficLight2_green { get; set; } = ""; // bool
-        public static string trafficLight2_yellow { get;set; } = ""; // bool
-        public static string trafficLight2_red { get;set; } = ""; // bool
-        public static string pedestrian1_green { get; set; } = ""; // bool
-        public static string pedestrian1_red { get; set; } = ""; // bool
-        public static string pedestrian2_green { get; set; } = ""; // bool
-        public static string pedestrian2_red { get; set; } = ""; // bool
+        public static string trafficLight1_green { get; set; } = "false"; // bool
+        public static string trafficLight1_yellow { get; set; } = "false"; // bool
+        public static string trafficLight1_red { get; set; } = "false"; // bool
+        public static string trafficLight2_green { get; set; } = "false"; // bool
+        public static string trafficLight2_yellow { get;set; } = "false"; // bool
+        public static string trafficLight2_red { get;set; } = "false"; // bool
+        public static string pedestrian1_green { get; set; } = "false"; // bool
+        public static string pedestrian1_red { get; set; } = "false"; // bool
+        public static string pedestrian2_green { get; set; } = "false"; // bool
+        public static string pedestrian2_red { get; set; } = "false"; // bool
 
         // thread safety 
         private static readonly object _lock = new();
@@ -124,22 +124,22 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                crossroadType = "";
-                btnCrossroadStart = "";
-                btnCrossroadPause = "";
-                btnCrossroadStop = "";
-                btnCrosswalk1 = "";
-                btnCrosswalk2 = "";
-                trafficLight1_green = "";
-                trafficLight1_yellow = "";
-                trafficLight1_red = "";
-                trafficLight2_green = "";
-                trafficLight2_yellow = "";
-                trafficLight2_red = "";
-                pedestrian1_green = "";
-                pedestrian1_red = "";
-                pedestrian2_green = "";
-                pedestrian2_red = "";
+                crossroadType = "false";
+                btnCrossroadStart = "false";
+                btnCrossroadPause = "false";
+                btnCrossroadStop = "false";
+                btnCrosswalk1 = "false";
+                btnCrosswalk2 = "false";
+                trafficLight1_green = "false";
+                trafficLight1_yellow = "false";
+                trafficLight1_red = "false";
+                trafficLight2_green = "false";
+                trafficLight2_yellow = "false";
+                trafficLight2_red = "false";
+                pedestrian1_green = "false";
+                pedestrian1_red = "false";
+                pedestrian2_green = "false";
+                pedestrian2_red = "false";
                 Array.Clear(CrossroadReadBuffer, 0, CrossroadReadBuffer.Length);
                 Array.Clear(CrossroadWriteBuffer, 0, CrossroadWriteBuffer.Length);
             }

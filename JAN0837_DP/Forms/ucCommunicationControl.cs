@@ -107,7 +107,7 @@ namespace JAN0837_DP.Forms
                 #endregion
             }
 
-            switch(internalVariables.communicationFlag)
+            switch (internalVariables.communicationFlag)
             {
                 case "OPCUA":
                     rbtnOPCUA.Checked = true;
@@ -811,6 +811,31 @@ namespace JAN0837_DP.Forms
             {
                 lblStatus.Text = message;
             }
+        }
+
+        private void txtBoxPara1_TextChanged(object sender, EventArgs e)
+        {
+            switch (internalVariables.communicationFlag)
+            {
+                case "MQTT":
+                    break;
+                case "OPCUA":
+                    break;
+                case "ModbusTCPIP":
+                    break;
+                case "TCPIP":
+                    break;
+                case "RESTAPI":
+                    break;
+                case "Sharp7":
+                    internalVariables.txtBoxParam1 = txtBoxPara1.Text;
+                    break;
+            }
+        }
+
+        private void txtBoxPara2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

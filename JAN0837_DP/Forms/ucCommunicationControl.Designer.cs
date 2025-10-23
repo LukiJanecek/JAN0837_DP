@@ -215,6 +215,7 @@
             txtBoxPara1.Name = "txtBoxPara1";
             txtBoxPara1.Size = new Size(163, 27);
             txtBoxPara1.TabIndex = 21;
+            txtBoxPara1.TextChanged += txtBoxPara1_TextChanged;
             // 
             // txtBoxPara2
             // 
@@ -222,6 +223,7 @@
             txtBoxPara2.Name = "txtBoxPara2";
             txtBoxPara2.Size = new Size(163, 27);
             txtBoxPara2.TabIndex = 22;
+            txtBoxPara2.TextChanged += txtBoxPara2_TextChanged;
             // 
             // rbtnSharp7
             // 

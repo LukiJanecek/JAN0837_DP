@@ -27,28 +27,14 @@ namespace JAN0837_DP.Communication.comSharp7
 
             int plcConnect = client.ConnectTo(ip, rack, slot);
 
-            if (plcConnect == 0)
-            {
-                return plcConnect;
-            }
-            else
-            {
-                return plcConnect;
-            }
+            return plcConnect;
         }
 
         public int disconnectFromPLC()
         {
             int plcDisconnect = client.Disconnect();
 
-            if (plcDisconnect == 0)
-            {
-                return plcDisconnect;
-            }
-            else
-            {
-                return plcDisconnect;
-            }
+            return plcDisconnect;
         }
 
         public int readS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
@@ -59,14 +45,7 @@ namespace JAN0837_DP.Communication.comSharp7
 
             int result = reader.Read();
 
-            if (result == 0)
-            {
-                return result;
-            }
-            else
-            {
-                return result;
-            }
+            return result;
         }
 
         public int writeS7MultiVar(int DBnumber, byte[] buffer, int startBit = 0)
@@ -77,42 +56,21 @@ namespace JAN0837_DP.Communication.comSharp7
 
             int result = writer.Write();
 
-            if (result == 0)
-            {
-                return result;
-            }
-            else
-            {
-                return result;
-            }
+            return result;
         }
 
         public int readDB(int DBnumber, byte[] buffer, int startBit = 0)
         {
             int result = client.DBRead(DBnumber, startBit, buffer.Length, buffer);
 
-            if (result == 0)
-            {       
-                return result;
-            }
-            else
-            {
-                return result;
-            }
+            return result;
         }
 
         public int writeDB(int DBnumber, byte[] buffer, int startBit = 0)
         {
             int result = client.DBWrite(DBnumber, startBit, buffer.Length, buffer);
 
-            if (result == 0)
-            {
-                return result;
-            }
-            else
-            {
-                return result;
-            }
+            return result;
         }
     }
 }

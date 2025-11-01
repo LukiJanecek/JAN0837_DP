@@ -462,22 +462,22 @@ namespace JAN0837_DP.ReactFE
                 toggle = testdata.toggle,
 
                 // CrossroadData
-                crossroadType = crossroaddata.crossroadType,
+                //crossroadType = crossroaddata.crossroadType,
                 btnCrossroadStart = crossroaddata.btnCrossroadStart,
                 btnCrossroadPause = crossroaddata.btnCrossroadPause,
                 btnCrossroadStop = crossroaddata.btnCrossroadStop,
                 btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                btnCrosswalk2 = crossroaddata.btnCrosswalk2,
-                trafficLight1_green = crossroaddata.trafficLight1_green,
-                trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
-                trafficLight1_red = crossroaddata.trafficLight1_red,
-                trafficLight2_green = crossroaddata.trafficLight2_green,
-                trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
-                trafficLight2_red = crossroaddata.trafficLight2_red,
-                pedestrian1_green = crossroaddata.pedestrian1_green,
-                pedestrian1_red = crossroaddata.pedestrian1_red,
-                pedestrian2_green = crossroaddata.pedestrian2_green,
-                pedestrian2_red = crossroaddata.pedestrian2_red
+                btnCrosswalk2 = crossroaddata.btnCrosswalk2//,
+                //trafficLight1_green = crossroaddata.trafficLight1_green,
+                //trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
+                //trafficLight1_red = crossroaddata.trafficLight1_red,
+                //trafficLight2_green = crossroaddata.trafficLight2_green,
+                //trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
+                //trafficLight2_red = crossroaddata.trafficLight2_red,
+                //pedestrian1_green = crossroaddata.pedestrian1_green,
+                //pedestrian1_red = crossroaddata.pedestrian1_red,
+                //pedestrian2_green = crossroaddata.pedestrian2_green,
+                //pedestrian2_red = crossroaddata.pedestrian2_red
             };
         }
 

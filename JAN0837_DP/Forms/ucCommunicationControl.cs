@@ -837,5 +837,34 @@ namespace JAN0837_DP.Forms
         {
 
         }
+
+        private void btnActualCrossroaddata_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.Clear();
+
+            var properties = typeof(CrossroadData).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+            foreach (var prop in properties)
+            {
+                try
+                {
+                    var name = prop.Name;
+                    var value = prop.GetValue(null); // null = protože static
+                    listBox1.Items.Add($"{name}: {value}");
+                }
+                catch (Exception ex)
+                {
+                    listBox1.Items.Add($"{prop.Name}: <error reading> ({ex.Message})");
+                }
+            }
+
+            var fields = typeof(CrossroadData).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            foreach (var field in fields)
+            {
+                var name = field.Name;
+                var value = field.GetValue(null);
+                listBox1.Items.Add($"{name}: {value}");
+            }
+        }
     }
 }

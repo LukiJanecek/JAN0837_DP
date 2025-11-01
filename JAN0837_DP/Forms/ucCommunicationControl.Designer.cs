@@ -47,6 +47,8 @@
             txtBoxPara1 = new TextBox();
             txtBoxPara2 = new TextBox();
             rbtnSharp7 = new RadioButton();
+            listBox1 = new ListBox();
+            btnActualCrossroaddata = new Button();
             statusStripCommunicationControl.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,7 +65,7 @@
             // 
             statusStripCommunicationControl.ImageScalingSize = new Size(20, 20);
             statusStripCommunicationControl.Items.AddRange(new ToolStripItem[] { lblStatus });
-            statusStripCommunicationControl.Location = new Point(0, 234);
+            statusStripCommunicationControl.Location = new Point(0, 496);
             statusStripCommunicationControl.Name = "statusStripCommunicationControl";
             statusStripCommunicationControl.Size = new Size(732, 26);
             statusStripCommunicationControl.TabIndex = 3;
@@ -236,10 +238,31 @@
             rbtnSharp7.UseVisualStyleBackColor = true;
             rbtnSharp7.CheckedChanged += rbtnSharp7_CheckedChanged;
             // 
+            // listBox1
+            // 
+            listBox1.FormattingEnabled = true;
+            listBox1.Location = new Point(158, 186);
+            listBox1.Name = "listBox1";
+            listBox1.ScrollAlwaysVisible = true;
+            listBox1.Size = new Size(571, 244);
+            listBox1.TabIndex = 24;
+            // 
+            // btnActualCrossroaddata
+            // 
+            btnActualCrossroaddata.Location = new Point(158, 148);
+            btnActualCrossroaddata.Name = "btnActualCrossroaddata";
+            btnActualCrossroaddata.Size = new Size(140, 29);
+            btnActualCrossroaddata.TabIndex = 25;
+            btnActualCrossroaddata.Text = "Aktualizovat výpis";
+            btnActualCrossroaddata.UseVisualStyleBackColor = true;
+            btnActualCrossroaddata.Click += btnActualCrossroaddata_Click;
+            // 
             // ucCommunicationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(btnActualCrossroaddata);
+            Controls.Add(listBox1);
             Controls.Add(rbtnSharp7);
             Controls.Add(txtBoxPara2);
             Controls.Add(txtBoxPara1);
@@ -259,7 +282,7 @@
             Controls.Add(statusStripCommunicationControl);
             Controls.Add(lblPara1);
             Name = "ucCommunicationControl";
-            Size = new Size(732, 260);
+            Size = new Size(732, 522);
             Load += CommunicationControl_Load;
             statusStripCommunicationControl.ResumeLayout(false);
             statusStripCommunicationControl.PerformLayout();
@@ -287,5 +310,7 @@
         private TextBox txtBoxPara1;
         private TextBox txtBoxPara2;
         private RadioButton rbtnSharp7;
+        private ListBox listBox1;
+        private Button btnActualCrossroaddata;
     }
 }

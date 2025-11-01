@@ -91,12 +91,12 @@ namespace JAN0837_DP.Data
             {
                 crossroadType = s.crossroadType;
 
-                btnCrossroadStart = s.btnCrossroadStart;
-                btnCrossroadPause = s.btnCrossroadPause;
-                btnCrossroadStop = s.btnCrossroadStop;
+                //btnCrossroadStart = s.btnCrossroadStart;
+                //btnCrossroadPause = s.btnCrossroadPause;
+                //btnCrossroadStop = s.btnCrossroadStop;
 
-                btnCrosswalk1 = s.btnCrosswalk1;
-                btnCrosswalk2 = s.btnCrosswalk2;
+                //btnCrosswalk1 = s.btnCrosswalk1;
+                //btnCrosswalk2 = s.btnCrosswalk2;
 
                 trafficLight1_green = s.trafficLight1_green;
                 trafficLight1_yellow = s.trafficLight1_yellow;
@@ -120,6 +120,7 @@ namespace JAN0837_DP.Data
         }
 
         // optional 
+        /*
         public static void Reset()
         {
             lock (_lock)
@@ -144,5 +145,6 @@ namespace JAN0837_DP.Data
                 Array.Clear(CrossroadWriteBuffer, 0, CrossroadWriteBuffer.Length);
             }
         }
+        */
     }
 }

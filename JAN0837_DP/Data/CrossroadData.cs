@@ -19,7 +19,7 @@ namespace JAN0837_DP.Data
         public static string crossroadType { get; set; } = "false"; // bool
         //public static string crossroadDay { get; set; } = "";
         //public static string crossroadNight { get; set; } = "";
-        public static string btnCrossroadStart { get; set; } = "false"; // bool
+        public static string btnCrossroadStart { get; set; } = "true"; // bool
         public static string btnCrossroadPause { get; set; } = "false"; // bool
         public static string btnCrossroadStop { get; set; } = "false"; // bool
 

@@ -1,26 +1,30 @@
-﻿using Org.BouncyCastle.Asn1.Cmp;
+﻿using JAN0837_DP;
+using JAN0837_DP.Communication;
+using JAN0837_DP.Communication.comS7;
+using JAN0837_DP.Communication.comSharp7;
+using JAN0837_DP.Data;
+using Opc.Ua;
+using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-
-using JAN0837_DP;
-using JAN0837_DP.Data;
-using JAN0837_DP.Communication;
 using static Sharp7.S7Consts;
-using Opc.Ua;
-using System.Diagnostics.Metrics;
 
 namespace JAN0837_DP.Forms
 {
     public partial class ucCommunicationControl : UserControl
     {
+        public comS7 _s7;
+        public comSharp7 _sharp7;
+
         public ucCommunicationControl()
         {
             InitializeComponent();
@@ -701,14 +705,37 @@ namespace JAN0837_DP.Forms
             lblCommunicationStatus.Text = "Stoppping communication.";
             lblStatus.Text = "Stopping communication.";
 
-            // stoping communication thread
-            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
+            switch (internalVariables.communicationFlag)
             {
-                internalVariables.communicationThreadRunningFlag = false;
-                internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
+                case "MQTT":
+                    break;
+                case "OPCUA":
+                    break;
+                case "ModbusTCPIP":
+                    break;
+                case "TCPIP":
+                    break;
+                case "RESTAPI":
+                    break;
+                case "Sharp7":
+                    _sharp7 ??= new comSharp7();
 
-                lblCommunicationStatus.Text = "Communication stopped.";
-                lblStatus.Text = "Communication stopped.";
+                    string Sharp7_ipAddress = internalVariables.txtBoxParam1;
+
+                    if (_sharp7.client.Connected == true)
+                    {
+                        int plcConnect = _sharp7.disconnectFromPLC();
+
+                        if (plcConnect == 0)
+                        {
+                            lblStatus.Text = ($"PLC connected successfully.");
+                        }
+                        else
+                        {
+                            lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
+                        }
+                    }
+                        break;
             }
 
             // UI 
@@ -734,7 +761,15 @@ namespace JAN0837_DP.Forms
 
             #endregion
 
-            // tady by měli být ještě odpojení .disconnect() pro dané komunikační protokoly
+            // stoping communication thread
+            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
+            {
+                internalVariables.communicationThreadRunningFlag = false;
+                internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
+
+                lblCommunicationStatus.Text = $"Communication stopped. Communication thread isAlive: {internalVariables.communicationThread.IsAlive}";
+                lblStatus.Text = "Communication stopped.";
+            }
         }
 
         private void btnPreSet_Click(object sender, EventArgs e)

@@ -16,6 +16,7 @@ using JAN0837_DP.Data;
 using Siemens.Engineering.HW;
 using System.Security.Cryptography.X509Certificates;
 using JAN0837_DP.Forms;
+using Newtonsoft.Json;
 
 namespace JAN0837_DP.Communication
 {
@@ -30,7 +31,7 @@ namespace JAN0837_DP.Communication
             _ucCommunicationControl = ucCommunicationControl;
         }
 
-        public void Communication()
+        public async void Communication()
         {
             try
             {
@@ -135,16 +136,39 @@ namespace JAN0837_DP.Communication
 
                             break;
                         case "RESTAPI":
-
-                            //RESTAPI();
-
                             string url = internalVariables.txtBoxParam1;
+
+                            HttpClient client = new HttpClient();
+                            client.BaseAddress = new Uri(url);
+
+                            comRESTAPI.comRESTAPI restAPIClient = new comRESTAPI.comRESTAPI();
+
+                            bool status = await restAPIClient.apiGet(client);
+                            
+                            if (status == true)
+                            {
+                                _ucCommunicationControl.SetStatus($"REST API GET request successful.");
+                            }
+                            else
+                            {
+                                _ucCommunicationControl.SetStatus($"REST API GET request failed.");
+                            }
+
+                            string message = await restAPIClient.apiPost(client);
+
+                            if (!string.IsNullOrEmpty(message))
+                            {
+                                _ucCommunicationControl.SetStatus($"REST API POST request successful. Response: {message}");
+                            }
+                            else
+                            {
+                                _ucCommunicationControl.SetStatus($"REST API POST request failed. Response: {message}");
+                            }
 
                             break;
                         case "Sharp7":
                             _sharp7 ??= new comSharp7.comSharp7();
 
-                            //
                             string Sharp7_ipAddress = internalVariables.txtBoxParam1;
 
                             if (_sharp7.client.Connected == false)

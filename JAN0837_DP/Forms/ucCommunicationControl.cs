@@ -764,11 +764,11 @@ namespace JAN0837_DP.Forms
             // stoping communication thread
             if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
             {
-                internalVariables.communicationThreadRunningFlag = false;
-                internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
-
                 lblCommunicationStatus.Text = $"Communication stopped. Communication thread isAlive: {internalVariables.communicationThread.IsAlive}";
                 lblStatus.Text = "Communication stopped.";
+
+                internalVariables.communicationThreadRunningFlag = false;
+                internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
             }
         }
 
@@ -801,7 +801,7 @@ namespace JAN0837_DP.Forms
             else if (rbtnRESTAPI.Checked == true)
             {
                 // URL 
-                txtBoxPara1.Text = "";
+                txtBoxPara1.Text = "http://192.168.0.1/api/crossroad";
             }
             /*
             else if (rbtnS7.Checked == true)

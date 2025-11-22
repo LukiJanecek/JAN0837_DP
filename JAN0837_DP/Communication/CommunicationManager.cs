@@ -24,6 +24,8 @@ namespace JAN0837_DP.Communication
     {
         public comS7.comS7 _s7;
         public comSharp7.comSharp7 _sharp7;
+        public comTCPIP.comTCPIP _tcpip;
+
         public ucCommunicationControl _ucCommunicationControl;
 
         public CommunicationManager(ucCommunicationControl ucCommunicationControl)
@@ -133,6 +135,13 @@ namespace JAN0837_DP.Communication
                             //TCPIP();
 
                             string ipAddress = internalVariables.txtBoxParam1;
+
+                            // read data
+                            string incoming_data = _tcpip.ReadData();
+
+                            // write data
+                            string outcoming_data = "";
+                            bool write = _tcpip.WriteData(outcoming_data);
 
                             break;
                         case "RESTAPI":

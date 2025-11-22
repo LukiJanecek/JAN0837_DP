@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Diagnostics.Tracing;
 
 namespace JAN0837_DP.Communication.comTCPIP
 {
@@ -46,15 +47,32 @@ namespace JAN0837_DP.Communication.comTCPIP
 
         public string ReadData()
         {
-            byte[] buffer = new byte[1024];
-            int bytesRead = socket.Receive(buffer);
-            return Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            try
+            {
+                byte[] buffer = new byte[1024];
+                int bytesRead = socket.Receive(buffer);
+                return Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            }
+            catch (Exception ex)
+            {
+                // print message
+                return null;
+            }
         }
 
-        public void WriteData(string data)
+        public bool WriteData(string data)
         {
-            byte[] buffer = Encoding.ASCII.GetBytes(data);
-            socket.Send(buffer);
+            try
+            {
+                byte[] buffer = Encoding.ASCII.GetBytes(data);
+                socket.Send(buffer);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // print message 
+                return false;
+            }
         }
     }
 }

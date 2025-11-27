@@ -14,6 +14,33 @@ namespace JAN0837_DP.Communication.comTCPIP
         public Socket socket;
         private IPEndPoint endPoint;
 
+        [Flags]
+        public enum ButtonFlags : byte
+        {
+            None = 0,
+            BtnCrossroadStart = 1 << 0,
+            BtnCrossroadPause = 1 << 1,
+            BtnCrossroadStop = 1 << 2,
+            BtnCrosswalk1 = 1 << 3,
+            BtnCrosswalk2 = 1 << 4
+        }
+
+        [Flags]
+        public enum LightFlags : byte
+        {
+            None = 0,
+            Light1_Green = 1 << 0,
+            Light1_Yellow = 1 << 1,
+            Light1_Red = 1 << 2,
+            Light2_Green = 1 << 3,
+            Light2_Yellow = 1 << 4,
+            Light2_Red = 1 << 5,
+            Pedestrian1_Green = 1 << 6,
+            Pedestrian1_Red = 1 << 7,
+            Pedestrian2_Green = 2 << 0,
+            Pedestrian2_Red = 2 << 1
+        }
+
         public comTCPIP(string ipAddress, int port) 
         {
             endPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
@@ -90,7 +117,46 @@ namespace JAN0837_DP.Communication.comTCPIP
             }
         }
 
+        public bool ReceiveExact(byte[] buffer)
+        {
+            try
+            {
+                int read = 0;
+                while (read < buffer.Length)
+                {
+                    int r = socket.Receive(buffer, read, buffer.Length - read, SocketFlags.None);
+                    if (r == 0)
+                    {
+                        return false;
+                    }
+                    read += r;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Receive failed: {ex.Message}");
+                return false;
+            }
+        }
 
+        public bool SendBytes(byte[] data)
+        {
+            try
+            {
+                int sent = 0;
+                while (sent < data.Length)
+                {
+                    sent += socket.Send(data, sent, data.Length - sent, SocketFlags.None);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Send failed: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
 

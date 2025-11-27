@@ -67,7 +67,7 @@
             statusStripCommunicationControl.Items.AddRange(new ToolStripItem[] { lblStatus });
             statusStripCommunicationControl.Location = new Point(0, 496);
             statusStripCommunicationControl.Name = "statusStripCommunicationControl";
-            statusStripCommunicationControl.Size = new Size(732, 26);
+            statusStripCommunicationControl.Size = new Size(1023, 26);
             statusStripCommunicationControl.TabIndex = 3;
             statusStripCommunicationControl.Text = "statusStrip1";
             // 
@@ -215,7 +215,7 @@
             // 
             txtBoxPara1.Location = new Point(323, 26);
             txtBoxPara1.Name = "txtBoxPara1";
-            txtBoxPara1.Size = new Size(163, 27);
+            txtBoxPara1.Size = new Size(217, 27);
             txtBoxPara1.TabIndex = 21;
             txtBoxPara1.TextChanged += txtBoxPara1_TextChanged;
             // 
@@ -223,7 +223,7 @@
             // 
             txtBoxPara2.Location = new Point(323, 79);
             txtBoxPara2.Name = "txtBoxPara2";
-            txtBoxPara2.Size = new Size(163, 27);
+            txtBoxPara2.Size = new Size(217, 27);
             txtBoxPara2.TabIndex = 22;
             txtBoxPara2.TextChanged += txtBoxPara2_TextChanged;
             // 
@@ -244,7 +244,7 @@
             listBox1.Location = new Point(158, 186);
             listBox1.Name = "listBox1";
             listBox1.ScrollAlwaysVisible = true;
-            listBox1.Size = new Size(571, 244);
+            listBox1.Size = new Size(282, 224);
             listBox1.TabIndex = 24;
             // 
             // btnActualCrossroaddata
@@ -282,7 +282,7 @@
             Controls.Add(statusStripCommunicationControl);
             Controls.Add(lblPara1);
             Name = "ucCommunicationControl";
-            Size = new Size(732, 522);
+            Size = new Size(1023, 522);
             Load += CommunicationControl_Load;
             statusStripCommunicationControl.ResumeLayout(false);
             statusStripCommunicationControl.PerformLayout();

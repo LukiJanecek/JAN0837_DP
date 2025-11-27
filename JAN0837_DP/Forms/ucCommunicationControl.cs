@@ -425,7 +425,7 @@ namespace JAN0837_DP.Forms
 
         private void rbtnRESTAPI_CheckedChanged(object sender, EventArgs e)
         {
-            lblStatus.Text = "REST API selected.";
+            lblStatus.Text = "REST API selected. Server is already running on " + internalVariables.communicationDataURL + ".";
 
             internalVariables.communicationFlag = "RESTAPI";
             /*
@@ -442,28 +442,29 @@ namespace JAN0837_DP.Forms
             #region UI settings 
 
             // btns 
-            btnStartCommunicationThread.Visible = true;
-            btnStartCommunicationThread.Enabled = true;
+            btnStartCommunicationThread.Visible = false;
+            btnStartCommunicationThread.Enabled = false;
 
-            btnStopCommunicationThread.Visible = true;
+            btnStopCommunicationThread.Visible = false;
             btnStopCommunicationThread.Enabled = false;
 
-            btnPreSet.Visible = true;
-            btnPreSet.Enabled = true;
+            btnPreSet.Visible = false;
+            btnPreSet.Enabled = false;
 
-            lblCommunicationStatus.Visible = true;
+            lblCommunicationStatus.Visible = false;
+            lblCommunicationStatus.Text = "";
 
             // para
             lblPara1.Visible = true;
-            lblPara1.Enabled = true;
+            lblPara1.Enabled = false;
             lblPara1.Text = "URL: ";
             txtBoxPara1.Visible = true;
-            txtBoxPara1.Enabled = true;
-            txtBoxPara1.Text = "Type URL";
+            txtBoxPara1.Enabled = false;
+            txtBoxPara1.Text = internalVariables.communicationDataURL;
 
-            lblPara2.Visible = false;
+            lblPara2.Visible = true;
             lblPara2.Enabled = false;
-            lblPara2.Text = "";
+            lblPara2.Text = "Server is already running.";
             txtBoxPara2.Visible = false;
             txtBoxPara2.Enabled = false;
             txtBoxPara2.Text = "";

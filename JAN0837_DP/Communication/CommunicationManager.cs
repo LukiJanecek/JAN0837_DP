@@ -7,7 +7,9 @@ using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
 using JAN0837_DP.Data;
 using JAN0837_DP.Forms;
+using Microsoft.AspNetCore.Connections.Features;
 using Newtonsoft.Json;
+using Opc.Ua;
 using Org.BouncyCastle.Asn1.Cmp;
 using Siemens.Engineering.HW;
 using System;
@@ -17,6 +19,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
+using static JAN0837_DP.Communication.comTCPIP.comTCPIP;
 
 namespace JAN0837_DP.Communication
 {
@@ -146,24 +149,110 @@ namespace JAN0837_DP.Communication
                                 _ucCommunicationControl.SetStatus($"TCPIP connection to {ipAddress} failed.");
                                 return; // break;
                             }
-                            
+
+                            byte buttons = 0;
+
+                            if (CrossroadData.btnCrossroadStart == "true")
+                            {
+                                buttons |= (byte)comTCPIP.comTCPIP.ButtonFlags.BtnCrossroadStart;
+                            }
+                                
+                            if (CrossroadData.btnCrossroadPause == "true")
+                            {
+                                buttons |= (byte)comTCPIP.comTCPIP.ButtonFlags.BtnCrossroadPause;
+                            }
+                                
+                            if (CrossroadData.btnCrossroadStop == "true")
+                            {
+                                buttons |= (byte)comTCPIP.comTCPIP.ButtonFlags.BtnCrossroadStop;
+                            }
+                                
+                            if (CrossroadData.btnCrosswalk1 == "true")
+                            {
+                                buttons |= (byte)comTCPIP.comTCPIP.ButtonFlags.BtnCrosswalk1;
+                            }
+                                
+                            if (CrossroadData.btnCrosswalk2 == "true")
+                            {
+                                buttons |= (byte)comTCPIP.comTCPIP.ButtonFlags.BtnCrosswalk2;
+                            }
+
+                            byte[] outTelegram = new byte[] { buttons };
+
                             if (internalVariables.checkBoxMaster == true)
                             {
-                                // read data
-                                string incoming_data = _tcpip.ReadData();
-
                                 // write data
-                                string outcoming_data = "";
-                                bool write = _tcpip.WriteData(outcoming_data);
+                                bool send = _tcpip.SendBytes(outTelegram);
+
+                                if (send == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP data sent successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data sending.");
+                                    break; //return;
+                                }
+
+                                // read data
+                                byte[] inTelegram = new byte[1];
+                                bool read = _tcpip.ReceiveExact(inTelegram);
+
+                                if (read == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP data read successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data reading.");
+                                    break; //return;
+                                }
+
+                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlags.Light1_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlags.Light1_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlags.Light1_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Red) != 0) ? "true" : "false"; 
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
-                                // write data
-                                string outcoming_data = "";
-                                bool write = _tcpip.WriteData(outcoming_data);
+                               // read data
+                                byte[] inTelegram = new byte[1];
+                                bool read = _tcpip.ReceiveExact(inTelegram);
 
-                                // read data
-                                string incoming_data = _tcpip.ReadData();
+                                if (read == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP data read successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data reading.");
+                                    break; //return;
+                                }
+
+                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlags.Light1_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlags.Light1_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlags.Light1_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)LightFlags.Light2_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)LightFlags.Light2_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)LightFlags.Light2_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian2_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian2_Red) != 0) ? "true" : "false";
+
+                                // write data
+                                bool send = _tcpip.SendBytes(outTelegram);
+
+                                if (send == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP data sent successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data sending.");
+                                    break; //return;
+                                }
                             }
                             else
                             {

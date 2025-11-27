@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-
-using JAN0837_DP.Communication.comModbusTCPIP;
+﻿using JAN0837_DP.Communication.comModbusTCPIP;
+using JAN0837_DP.Communication.comMQTT;
+using JAN0837_DP.Communication.comOPCUA;
+using JAN0837_DP.Communication.comRESTAPI;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
-using JAN0837_DP.Communication.comRESTAPI;
-using JAN0837_DP.Communication.comOPCUA;
-using JAN0837_DP.Communication.comMQTT;
 using JAN0837_DP.Data;
-using Siemens.Engineering.HW;
-using System.Security.Cryptography.X509Certificates;
 using JAN0837_DP.Forms;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Cmp;
+using Siemens.Engineering.HW;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace JAN0837_DP.Communication
 {
@@ -132,16 +132,59 @@ namespace JAN0837_DP.Communication
 
                             break;
                         case "TCPIP":
-                            //TCPIP();
-
                             string ipAddress = internalVariables.txtBoxParam1;
 
-                            // read data
-                            string incoming_data = _tcpip.ReadData();
+                            // connect 
+                            bool connect = _tcpip.Connect();
 
-                            // write data
-                            string outcoming_data = "";
-                            bool write = _tcpip.WriteData(outcoming_data);
+                            if (connect == true)
+                            {
+                                _ucCommunicationControl.SetStatus($"TCPIP connected to {ipAddress}.");
+                            }
+                            else
+                            {
+                                _ucCommunicationControl.SetStatus($"TCPIP connection to {ipAddress} failed.");
+                                return; // break;
+                            }
+                            
+                            if (internalVariables.checkBoxMaster == true)
+                            {
+                                // read data
+                                string incoming_data = _tcpip.ReadData();
+
+                                // write data
+                                string outcoming_data = "";
+                                bool write = _tcpip.WriteData(outcoming_data);
+                            }
+                            else if (internalVariables.checkBoxSlave == true)
+                            {
+                                // write data
+                                string outcoming_data = "";
+                                bool write = _tcpip.WriteData(outcoming_data);
+
+                                // read data
+                                string incoming_data = _tcpip.ReadData();
+                            }
+                            else
+                            {
+                                // choose what is this device
+                                _ucCommunicationControl.SetStatus($"Please, choose what is your device.");
+                            }
+
+                            // disconnect
+                            if (connect == true)
+                            {
+                                bool disconnected = _tcpip.Disconnect();
+
+                                if (disconnected == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP disconnected successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP disconnection.");
+                                }
+                            }
 
                             break;
                         case "RESTAPI":
@@ -191,6 +234,7 @@ namespace JAN0837_DP.Communication
                                 else
                                 {
                                     _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
+                                    return; // break;
                                 }
                             }
 

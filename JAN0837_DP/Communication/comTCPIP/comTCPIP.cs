@@ -11,7 +11,7 @@ namespace JAN0837_DP.Communication.comTCPIP
 {
     public class comTCPIP
     {
-        private Socket socket;
+        public Socket socket;
         private IPEndPoint endPoint;
 
         public comTCPIP(string ipAddress, int port) 
@@ -35,13 +35,27 @@ namespace JAN0837_DP.Communication.comTCPIP
             }
         }
 
-        public void Disconnect()
+        public bool Disconnect()
         {
-            if (socket.Connected)
+            try
             {
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
-                Console.WriteLine("Disconnected from PLC.");
+                if (socket.Connected)
+                {
+                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Close();
+                    Console.WriteLine("Disconnected from PLC.");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Socket is not connected.");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Disconnection failed: {ex.Message}");
+                return false;
             }
         }
 
@@ -51,7 +65,8 @@ namespace JAN0837_DP.Communication.comTCPIP
             {
                 byte[] buffer = new byte[1024];
                 int bytesRead = socket.Receive(buffer);
-                return Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                return data;
             }
             catch (Exception ex)
             {
@@ -74,6 +89,8 @@ namespace JAN0837_DP.Communication.comTCPIP
                 return false;
             }
         }
+
+
     }
 }
 

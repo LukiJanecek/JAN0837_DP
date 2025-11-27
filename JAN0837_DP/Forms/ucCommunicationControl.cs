@@ -2,6 +2,7 @@
 using JAN0837_DP.Communication;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
+using JAN0837_DP.Communication.comTCPIP;
 using JAN0837_DP.Data;
 using Opc.Ua;
 using Org.BouncyCastle.Asn1.Cmp;
@@ -24,6 +25,7 @@ namespace JAN0837_DP.Forms
     {
         public comS7 _s7;
         public comSharp7 _sharp7;
+        public comTCPIP _tcpip;
 
         public ucCommunicationControl()
         {
@@ -278,11 +280,11 @@ namespace JAN0837_DP.Forms
 
             // check box
             lblCheckBox.Visible = true;
-            lblCheckBox.Enabled = true;
+            lblCheckBox.Enabled = false;
             lblCheckBox.Text = "What is this device?";
 
             checkBoxMaster.Visible = true;
-            checkBoxMaster.Enabled = true;
+            checkBoxMaster.Enabled = false;
             checkBoxMaster.Text = "Server/Broker";
             checkBoxMaster.Checked = true; // PC is always Broker, PLC cannot be broker
 
@@ -310,7 +312,7 @@ namespace JAN0837_DP.Forms
             */
 
             // UI settings 
-            #region UI sttings 
+            #region UI settings 
 
             // btns
             btnStartCommunicationThread.Visible = true;
@@ -340,18 +342,18 @@ namespace JAN0837_DP.Forms
             txtBoxPara2.Text = "";
 
             // check box
-            lblCheckBox.Visible = false;
+            lblCheckBox.Visible = true;
             lblCheckBox.Enabled = false;
-            lblCheckBox.Text = "";
+            lblCheckBox.Text = "What is this device?";
 
-            checkBoxMaster.Visible = false;
-            checkBoxMaster.Enabled = false;
-            checkBoxMaster.Text = "";
+            checkBoxMaster.Visible = true;
+            checkBoxMaster.Enabled = true;
+            checkBoxMaster.Text = "Server";
             checkBoxMaster.Checked = false;
 
-            checkBoxSlave.Visible = false;
-            checkBoxSlave.Enabled = false;
-            checkBoxSlave.Text = "";
+            checkBoxSlave.Visible = true;
+            checkBoxSlave.Enabled = true;
+            checkBoxSlave.Text = "Klient";
             checkBoxSlave.Checked = false;
 
             #endregion
@@ -714,6 +716,25 @@ namespace JAN0837_DP.Forms
                 case "ModbusTCPIP":
                     break;
                 case "TCPIP":
+
+                    if (_tcpip.socket == null)
+                    {
+                        lblStatus.Text = "TCP/IP socket is null, cannot disconnect.";
+                        break; // return;
+                    }
+                    else
+                    {
+                        bool disconnect = _tcpip.Disconnect();
+                        if (disconnect == true)
+                        {
+                            lblStatus.Text = "TCP/IP disconnected successfully.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = "Error in TCP/IP disconnection.";
+                        }
+                    }
+
                     break;
                 case "RESTAPI":
                     break;
@@ -735,7 +756,8 @@ namespace JAN0837_DP.Forms
                             lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
                         }
                     }
-                        break;
+                    
+                    break;
             }
 
             // UI 
@@ -825,6 +847,7 @@ namespace JAN0837_DP.Forms
         private void checkBoxMaster_CheckedChanged(object sender, EventArgs e)
         {
             checkBoxSlave.Checked = false;
+            //checkBoxMaster.Checked = true;
             internalVariables.checkBoxMaster = true;
             internalVariables.checkBoxSlave = false;
         }
@@ -832,6 +855,7 @@ namespace JAN0837_DP.Forms
         private void checkBoxSlave_CheckedChanged(object sender, EventArgs e)
         {
             checkBoxMaster.Checked = false;
+            //checkBoxSlave.Checked = true;
             internalVariables.checkBoxMaster = false;
             internalVariables.checkBoxSlave = true;
         }
@@ -850,6 +874,8 @@ namespace JAN0837_DP.Forms
 
         private void txtBoxPara1_TextChanged(object sender, EventArgs e)
         {
+            internalVariables.txtBoxParam1 = txtBoxPara1.Text;
+            /*
             switch (internalVariables.communicationFlag)
             {
                 case "MQTT":
@@ -866,11 +892,12 @@ namespace JAN0837_DP.Forms
                     internalVariables.txtBoxParam1 = txtBoxPara1.Text;
                     break;
             }
+            */
         }
 
         private void txtBoxPara2_TextChanged(object sender, EventArgs e)
         {
-
+            internalVariables.txtBoxParam2 = txtBoxPara1.Text;
         }
 
         private void btnActualCrossroaddata_Click(object sender, EventArgs e)

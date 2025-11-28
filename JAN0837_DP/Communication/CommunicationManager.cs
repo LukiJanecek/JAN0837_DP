@@ -135,21 +135,7 @@ namespace JAN0837_DP.Communication
 
                             break;
                         case "TCPIP":
-                            string ipAddress = internalVariables.txtBoxParam1;
-
-                            // connect 
-                            bool connect = _tcpip.Connect();
-
-                            if (connect == true)
-                            {
-                                _ucCommunicationControl.SetStatus($"TCPIP connected to {ipAddress}.");
-                            }
-                            else
-                            {
-                                _ucCommunicationControl.SetStatus($"TCPIP connection to {ipAddress} failed.");
-                                return; // break;
-                            }
-
+                            
                             byte buttons = 0;
 
                             if (CrossroadData.btnCrossroadStart == "true")
@@ -260,23 +246,9 @@ namespace JAN0837_DP.Communication
                                 _ucCommunicationControl.SetStatus($"Please, choose what is your device.");
                             }
 
-                            // disconnect
-                            if (connect == true)
-                            {
-                                bool disconnected = _tcpip.Disconnect();
-
-                                if (disconnected == true)
-                                {
-                                    _ucCommunicationControl.SetStatus("TCP/IP disconnected successfully.");
-                                }
-                                else
-                                {
-                                    _ucCommunicationControl.SetStatus("Error in TCP/IP disconnection.");
-                                }
-                            }
-
                             break;
                         case "RESTAPI":
+                            /*
                             string url = internalVariables.txtBoxParam1;
 
                             HttpClient client = new HttpClient();
@@ -305,28 +277,10 @@ namespace JAN0837_DP.Communication
                             {
                                 _ucCommunicationControl.SetStatus($"REST API POST request failed. Response: {message}");
                             }
+                            */
 
                             break;
                         case "Sharp7":
-                            _sharp7 ??= new comSharp7.comSharp7();
-
-                            string Sharp7_ipAddress = internalVariables.txtBoxParam1;
-
-                            if (_sharp7.client.Connected == false)
-                            {
-                                int plcConnect = _sharp7.connectToPLC(Sharp7_ipAddress);
-
-                                if (plcConnect == 0)
-                                {
-                                    _ucCommunicationControl.SetStatus($"PLC connected successfully.");
-                                }
-                                else
-                                {
-                                    _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
-                                    return; // break;
-                                }
-                            }
-
                             // choose between these two methods -> please test me
                             // reading from PLC 
                             int activeDBnumber = CrossroadData.CrossroadDBnumber;

@@ -626,12 +626,6 @@ namespace JAN0837_DP.Forms
             // starting communication thread
             if (internalVariables.communicationThread == null || !internalVariables.communicationThread.IsAlive)
             {
-                internalVariables.communicationThreadRunningFlag = true;
-                var communicationManager = new CommunicationManager(this);
-                internalVariables.communicationThread = new Thread(communicationManager.Communication);
-                internalVariables.communicationThread.IsBackground = true;
-                internalVariables.communicationThread.Start();
-
                 switch (internalVariables.communicationFlag)
                 {
                     case "MQTT":
@@ -648,6 +642,21 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "TCP/IP communication started.";
                         lblStatus.Text = "TCP/IP communication started.";
 
+                        string ipAddress = internalVariables.txtBoxParam1;
+
+                        // connect 
+                        bool connect = _tcpip.Connect();
+
+                        if (connect == true)
+                        {
+                            lblStatus.Text = $"TCPIP connected to {ipAddress}.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = $"TCPIP connection to {ipAddress} failed.";
+                            return; // break;
+                        }
+
                         break;
                     case "ModbusTCPIP":
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
@@ -663,12 +672,33 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "Sharp7 communication started.";
                         lblStatus.Text = "Sharp7 communication started.";
 
+                        string Sharp7_ipAddress = internalVariables.txtBoxParam1;
+
+                        if (_sharp7.client.Connected == false)
+                        {
+                            int plcConnect = _sharp7.connectToPLC(Sharp7_ipAddress);
+
+                            if (plcConnect == 0)
+                            {
+                                lblStatus.Text = $"PLC connected successfully.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.";
+                                return; // break;
+                            }
+                        }
+                        else
+                        {
+                            lblStatus.Text = "Sharp7 client is already connected.";
+                        }
+
                         break;
-                    case "S7":
+                    /*case "S7":
                         lblCommunicationStatus.Text = "S7 communication started.";
                         lblStatus.Text = "S7 communication started.";
 
-                        break;
+                        break;*/
                     default:
                         lblCommunicationStatus.Text = "No communication protocol selected.";
                         lblStatus.Text = "No communication protocol selected.";
@@ -676,6 +706,12 @@ namespace JAN0837_DP.Forms
                         break;
                 }
             }
+
+            internalVariables.communicationThreadRunningFlag = true;
+            var communicationManager = new CommunicationManager(this);
+            internalVariables.communicationThread = new Thread(communicationManager.Communication);
+            internalVariables.communicationThread.IsBackground = true;
+            internalVariables.communicationThread.Start();
 
             // UI 
             #region UI
@@ -699,8 +735,6 @@ namespace JAN0837_DP.Forms
             btnStopCommunicationThread.Enabled = true;
 
             #endregion
-
-            // tady by měli být ještě připojení .connect() pro dané komunikační protokoly
         }
 
         private void btnStopCommunicationThread_Click(object sender, EventArgs e)
@@ -740,8 +774,6 @@ namespace JAN0837_DP.Forms
                 case "RESTAPI":
                     break;
                 case "Sharp7":
-                    _sharp7 ??= new comSharp7();
-
                     string Sharp7_ipAddress = internalVariables.txtBoxParam1;
 
                     if (_sharp7.client.Connected == true)
@@ -757,8 +789,12 @@ namespace JAN0837_DP.Forms
                             lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
                         }
                     }
-                    
-                    break;
+                    else
+                    {
+                        lblStatus.Text = "Sharp7 client is not connected, cannot disconnect.";
+                    }
+
+                        break;
             }
 
             // UI 

@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.3" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3405.78" />
     <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
+    <PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NModbus4" Version="2.1.0" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.5.376.244" />

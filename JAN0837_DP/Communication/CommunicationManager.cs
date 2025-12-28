@@ -28,6 +28,8 @@ namespace JAN0837_DP.Communication
         public comS7.comS7 _s7;
         public comSharp7.comSharp7 _sharp7;
         public comTCPIP.comTCPIP _tcpip;
+        public comModbusTCPIP.ModbusTCPIPimMaster _modbusMaster;
+        public comModbusTCPIP.ModbusTCPIPimSlave _modbusSlave;
 
         public ucCommunicationControl _ucCommunicationControl;
 
@@ -36,7 +38,7 @@ namespace JAN0837_DP.Communication
             _ucCommunicationControl = ucCommunicationControl;
         }
 
-        public async void Communication()
+        public void Communication() // async 
         {
             try
             {
@@ -45,8 +47,6 @@ namespace JAN0837_DP.Communication
                     switch (internalVariables.communicationFlag)
                     {
                         case "MQTT":
-                            //MQTT();
-
                             string brokerAddress = internalVariables.txtBoxParam1;
                             string secondPara = internalVariables.txtBoxParam2;
 
@@ -61,12 +61,11 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // no checkbox selected 
+                                _ucCommunicationControl.SetStatus($"Please, choose what is your device.");
                             }
 
                             break;
                         case "OPCUA":
-                            //OPCUA();
-
                             string opcUaServerUrl = internalVariables.txtBoxParam1;
 
                             if (internalVariables.checkBoxMaster == true)
@@ -80,57 +79,113 @@ namespace JAN0837_DP.Communication
                             else
                             {
                                 // no checkbox selected 
+                                _ucCommunicationControl.SetStatus($"Please, choose what is your device.");
                             }
 
                             break;
                         case "ModbusTCPIP":
-                            //ModbusTCPIP();
-
-                            string ModbusTCPIP_ipAddress = internalVariables.txtBoxParam1;
-                            string txtPort = internalVariables.txtBoxParam2;
-                            int txpPort;
-
-                            if (!int.TryParse(txtPort, out txpPort))
+                            string ip = internalVariables.txtBoxParam1;
+                            
+                            if (!int.TryParse(internalVariables.txtBoxParam2, out int port))
                             {
-                                // error port not valid number 
-                                return;
+                                _ucCommunicationControl.SetStatus("Error: Modbus TCP/IP port is not a valid number.");
+                                break; // return;
                             }
 
                             if (internalVariables.checkBoxMaster == true)
                             {
-                                ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipAddress, txpPort);
+                                //ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipAddress, txpPort);
+                                byte slaveId = 1;
+                                /*
+                                ushort startAddress = 0;
 
-                                if (modbusClient.ConnectToSlave())
+                                // Čtení jednoho registru
+                                ushort[] values = _modbusMaster.ReadHoldingRegisters(slaveId, startAddress, 1);
+                                if (values != null && values.Length > 0)
                                 {
-                                    byte slaveId = 1;
-                                    ushort startAddress = 0;
+                                    Console.WriteLine($"Přečtená hodnota: {values[0]}");
+                                }    
 
-                                    // Čtení jednoho registru
-                                    ushort[] values = modbusClient.ReadHoldingRegisters(slaveId, startAddress, 1);
-                                    if (values != null)
-                                        Console.WriteLine($"Přečtená hodnota: {values[0]}");
+                                // Zápis do registru
+                                _modbusMaster.WriteSingleRegister(slaveId, startAddress, 1234);
+                                */
 
-                                    // Zápis do registru
-                                    modbusClient.WriteSingleRegister(slaveId, startAddress, 1234);
+                                // writting multiple registers
+                                bool[] cmd = new bool[6];
 
-                                    // Odpojení
-                                    modbusClient.DisconnectFromSlave();
-                                }
+                                cmd[0] = _modbusMaster.StrToBool(CrossroadData.crossroadType);
+                                cmd[1] = _modbusMaster.StrToBool(CrossroadData.btnCrossroadStart);
+                                cmd[2] = _modbusMaster.StrToBool(CrossroadData.btnCrossroadPause);
+                                cmd[3] = _modbusMaster.StrToBool(CrossroadData.btnCrossroadStop);
+                                cmd[4] = _modbusMaster.StrToBool(CrossroadData.btnCrosswalk1);
+                                cmd[5] = _modbusMaster.StrToBool(CrossroadData.btnCrosswalk2);
+
+                                // startAddress = 0, count = 6
+                                _modbusMaster.WriteMultipleCoils(slaveId, 0, cmd);
+
+                                // reading multiple registers
+                                // startAddress = 10, count = 10
+                                bool[] st = _modbusMaster.ReadCoils(slaveId, 10, 10);
+
+                                if (st == null || st.Length < 10) return;
+
+                                CrossroadData.trafficLight1_green = _modbusMaster.BoolToStr(st[0]);
+                                CrossroadData.trafficLight1_yellow = _modbusMaster.BoolToStr(st[1]);
+                                CrossroadData.trafficLight1_red = _modbusMaster.BoolToStr(st[2]);
+
+                                CrossroadData.trafficLight2_green = _modbusMaster.BoolToStr(st[3]);
+                                CrossroadData.trafficLight2_yellow = _modbusMaster.BoolToStr(st[4]);
+                                CrossroadData.trafficLight2_red = _modbusMaster.BoolToStr(st[5]);
+
+                                CrossroadData.pedestrian1_green = _modbusMaster.BoolToStr(st[6]);
+                                CrossroadData.pedestrian1_red = _modbusMaster.BoolToStr(st[7]);
+                                CrossroadData.pedestrian2_green = _modbusMaster.BoolToStr(st[8]);
+                                CrossroadData.pedestrian2_red = _modbusMaster.BoolToStr(st[9]);
+
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
-                                ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipAddress, txpPort);
-                                modbusServer.Start(); // Spustíme Modbus Slave
-
+                                //ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipAddress, txpPort);
+                                
                                 // Simulace změny hodnoty registru
-                                modbusServer.SetRegisterValue(0, 1234);
+                                //_modbusSlave.SetRegisterValue(0, 1234);
 
-                                Console.ReadLine(); // Čekáme, dokud uživatel nestiskne Enter
-                                modbusServer.Stop(); // Ukončení serveru
+                                // write
+                                bool[] cmd = new bool[]
+                                {
+                                    _modbusSlave.StrToBool(CrossroadData.crossroadType),
+                                    _modbusSlave.StrToBool(CrossroadData.btnCrossroadStart),
+                                    _modbusSlave.StrToBool(CrossroadData.btnCrossroadPause),
+                                    _modbusSlave.StrToBool(CrossroadData.btnCrossroadStop),
+                                    _modbusSlave.StrToBool(CrossroadData.btnCrosswalk1),
+                                    _modbusSlave.StrToBool(CrossroadData.btnCrosswalk2)
+                                };
+
+                                _modbusSlave.SetCoils(0, cmd);
+
+                                // read 
+                                bool[] st = _modbusSlave.GetCoils(10, 10); // 10..19
+
+                                if (st == null || st.Length < 10) return;
+
+                                CrossroadData.trafficLight1_green = _modbusSlave.BoolToStr(st[0]); // 10
+                                CrossroadData.trafficLight1_yellow = _modbusSlave.BoolToStr(st[1]); // 11
+                                CrossroadData.trafficLight1_red = _modbusSlave.BoolToStr(st[2]); // 12
+
+                                CrossroadData.trafficLight2_green = _modbusSlave.BoolToStr(st[3]); // 13
+                                CrossroadData.trafficLight2_yellow = _modbusSlave.BoolToStr(st[4]); // 14
+                                CrossroadData.trafficLight2_red = _modbusSlave.BoolToStr(st[5]); // 15
+
+                                CrossroadData.pedestrian1_green = _modbusSlave.BoolToStr(st[6]); // 16
+                                CrossroadData.pedestrian1_red = _modbusSlave.BoolToStr(st[7]); // 17
+                                CrossroadData.pedestrian2_green = _modbusSlave.BoolToStr(st[8]); // 18
+                                CrossroadData.pedestrian2_red = _modbusSlave.BoolToStr(st[9]); // 19
+
                             }
                             else
                             {
                                 // no checkbox selected 
+                                _ucCommunicationControl.SetStatus($"Please, choose what is your device.");
                             }
 
                             break;
@@ -181,7 +236,7 @@ namespace JAN0837_DP.Communication
                                 }
 
                                 // read data
-                                byte[] inTelegram = new byte[1];
+                                byte[] inTelegram = new byte[2];
                                 bool read = _tcpip.ReceiveExact(inTelegram);
 
                                 if (read == true)
@@ -194,39 +249,19 @@ namespace JAN0837_DP.Communication
                                     break; //return;
                                 }
 
-                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlags.Light1_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlags.Light1_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlags.Light1_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Red) != 0) ? "true" : "false"; 
+                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlagsByte0.Pedestrian1_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlagsByte0.Pedestrian1_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_green = ((inTelegram[1] & (byte)LightFlagsByte1.Pedestrian2_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_red = ((inTelegram[1] & (byte)LightFlagsByte1.Pedestrian2_Red) != 0) ? "true" : "false";
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
-                               // read data
-                                byte[] inTelegram = new byte[1];
-                                bool read = _tcpip.ReceiveExact(inTelegram);
-
-                                if (read == true)
-                                {
-                                    _ucCommunicationControl.SetStatus("TCP/IP data read successfully.");
-                                }
-                                else
-                                {
-                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data reading.");
-                                    break; //return;
-                                }
-
-                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlags.Light1_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlags.Light1_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlags.Light1_Red) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)LightFlags.Light2_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)LightFlags.Light2_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)LightFlags.Light2_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian1_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_green = ((inTelegram[0] & (byte)LightFlags.Pedestrian2_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_red = ((inTelegram[0] & (byte)LightFlags.Pedestrian2_Red) != 0) ? "true" : "false";
-
                                 // write data
                                 bool send = _tcpip.SendBytes(outTelegram);
 
@@ -239,6 +274,31 @@ namespace JAN0837_DP.Communication
                                     _ucCommunicationControl.SetStatus("Error in TCP/IP data sending.");
                                     break; //return;
                                 }
+
+                                // read data
+                                byte[] inTelegram = new byte[2];
+                                bool read = _tcpip.ReceiveExact(inTelegram);
+
+                                if (read == true)
+                                {
+                                    _ucCommunicationControl.SetStatus("TCP/IP data read successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus("Error in TCP/IP data reading.");
+                                    break; //return;
+                                }
+
+                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)LightFlagsByte0.Light1_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)LightFlagsByte0.Light2_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)LightFlagsByte0.Pedestrian1_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)LightFlagsByte0.Pedestrian1_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_green = ((inTelegram[1] & (byte)LightFlagsByte1.Pedestrian2_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrian2_red = ((inTelegram[1] & (byte)LightFlagsByte1.Pedestrian2_Red) != 0) ? "true" : "false";
                             }
                             else
                             {

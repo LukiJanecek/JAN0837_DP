@@ -1,5 +1,6 @@
 ﻿using JAN0837_DP;
 using JAN0837_DP.Communication;
+using JAN0837_DP.Communication.comModbusTCPIP;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
@@ -26,6 +27,11 @@ namespace JAN0837_DP.Forms
         public comS7 _s7;
         public comSharp7 _sharp7;
         public comTCPIP _tcpip;
+        public ModbusTCPIPimMaster _modbusMaster;
+        public ModbusTCPIPimSlave _modbusSlave;
+
+        public string ModbusTCPIP_ipaddress;
+        public int ModbusTCPIP_port;
 
         public ucCommunicationControl()
         {
@@ -662,6 +668,47 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
                         lblStatus.Text = "MModbus TCP/IPQTT communication started.";
 
+                        ModbusTCPIP_ipaddress = internalVariables.txtBoxParam1;
+
+                        if (!int.TryParse(internalVariables.txtBoxParam2, out ModbusTCPIP_port))
+                        {
+                            // error port not valid number 
+                            lblStatus.Text = $"Error: Modbus TCP/IP port is not a valid number.";
+                            return;
+                        }
+
+                        if (internalVariables.checkBoxMaster == true)
+                        {
+                            //ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipAddress, txpPort);
+
+                            _modbusMaster.ipAddress = ModbusTCPIP_ipaddress;
+                            _modbusMaster.port = ModbusTCPIP_port;
+
+                            bool connectToSlave = _modbusMaster.ConnectToSlave();
+
+                            if (connectToSlave == true)
+                            {
+                                lblStatus.Text = $"Modbus TCP/IP connected to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"Modbus TCP/IP connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.";
+                                return; // break;
+                            }
+                        }
+                        else if (internalVariables.checkBoxSlave == true)
+                        {
+                            //ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipAddress, txpPort);
+                            _modbusSlave.Start();
+                            lblStatus.Text = $"Modbus TCP/IP Slave mode started.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
+                            return; // break;
+                        }
+
+
                         break;
                     case "RESTAPI":
                         lblCommunicationStatus.Text = "REST API communication started.";
@@ -749,9 +796,42 @@ namespace JAN0837_DP.Forms
                 case "OPCUA":
                     break;
                 case "ModbusTCPIP":
+                    if (internalVariables.checkBoxMaster == true)
+                    {
+                        //ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                        bool connectedModbusSlave = _modbusMaster.DisconnectFromSlave();
+
+                        if (connectedModbusSlave == true)
+                        {
+                            lblStatus.Text = $"Modbus TCP/IP disconnected successfully.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = $"Error in Modbus TCP/IP disconnection.";
+                        }
+                    }
+                    else if (internalVariables.checkBoxSlave == true)
+                    {
+                        //ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                        bool connectedModbusServer = _modbusSlave.Stop();
+
+                        if (connectedModbusServer == true)
+                        {
+                            lblStatus.Text = $"Modbus TCP/IP Slave stopped successfully.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = $"Error in Modbus TCP/IP Slave stopping.";
+                        }
+                    }
+                    else
+                    {
+                        lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
+                        return;
+                    }
+
                     break;
                 case "TCPIP":
-
                     if (_tcpip.socket == null)
                     {
                         lblStatus.Text = "TCP/IP socket is null, cannot disconnect.";
@@ -772,6 +852,7 @@ namespace JAN0837_DP.Forms
 
                     break;
                 case "RESTAPI":
+                    // 
                     break;
                 case "Sharp7":
                     string Sharp7_ipAddress = internalVariables.txtBoxParam1;

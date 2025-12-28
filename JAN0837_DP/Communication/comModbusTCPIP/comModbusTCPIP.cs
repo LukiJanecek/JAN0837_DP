@@ -13,10 +13,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 {
     public class ModbusTCPIPimMaster
     {
-        private string ipAddress;
-        private int port;
-        private TcpClient tcpClient;
-        private ModbusIpMaster master;
+        public string ipAddress;
+        public int port;
+        public TcpClient tcpClient;
+        public ModbusIpMaster master;
 
         // Konstruktor
         public ModbusTCPIPimMaster(string ipAddress, int port)
@@ -25,30 +25,50 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             this.port = port;
         }
 
+        public bool StrToBool(string s)
+            => string.Equals(s, "true", StringComparison.OrdinalIgnoreCase);
+
+        public string BoolToStr(bool b)
+            => b ? "true" : "false";
+
         public bool ConnectToSlave()
         {
             try
             {
                 tcpClient = new TcpClient(ipAddress, port);
                 master = ModbusIpMaster.CreateIp(tcpClient);
-                Console.WriteLine("✅ Připojeno k Modbus serveru.");
+                Console.WriteLine("Connected to Modbus server.");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba připojení: {ex.Message}");
+                Console.WriteLine($"Error with connection to Modbus server: {ex.Message}.");
                 return false;
             }
         }
 
-        public void DisconnectFromSlave()
+        public bool DisconnectFromSlave()
         {
-            if (tcpClient != null)
+            try
             {
-                tcpClient.Close();
-                tcpClient = null;
-                master = null;
-                Console.WriteLine("🔌 Odpojeno od Modbus serveru.");
+                if (tcpClient != null)
+                {
+                    tcpClient.Close();
+                    tcpClient = null;
+                    master = null;
+                    Console.WriteLine("Disconnected from Slave.");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Modbus client was not connected.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error with disconnection from Slave: {ex.Message}.");
+                return false;
             }
         }
 
@@ -56,12 +76,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected.");
                 return master.ReadHoldingRegisters(slaveId, startAddress, numRegisters);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba čtení: {ex.Message}");
+                Console.WriteLine($"Reading error: {ex.Message}");
                 return null;
             }
         }
@@ -70,12 +90,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected!");
                 return master.ReadInputRegisters(slaveId, startAddress, numRegisters);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba čtení: {ex.Message}");
+                Console.WriteLine($"Reading error: {ex.Message}");
                 return null;
             }
         }
@@ -84,12 +104,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected!");
                 return master.ReadCoils(slaveId, startAddress, numCoils);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba čtení: {ex.Message}");
+                Console.WriteLine($"Reading error: {ex.Message}");
                 return null;
             }
         }
@@ -98,13 +118,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected!");
                 master.WriteSingleRegister(slaveId, address, value);
-                Console.WriteLine($"✅ Zapsána hodnota {value} na adresu {address}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba zápisu: {ex.Message}");
+                Console.WriteLine($"Writting error: {ex.Message}");
             }
         }
 
@@ -112,13 +131,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected!");
                 master.WriteMultipleRegisters(slaveId, startAddress, values);
-                Console.WriteLine($"✅ Zapsáno {values.Length} registrů od adresy {startAddress}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba zápisu: {ex.Message}");
+                Console.WriteLine($"Writting error: {ex.Message}");
             }
         }
 
@@ -126,22 +144,33 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus není připojen!");
+                if (master == null) throw new Exception("Modbus is not connected!");
                 master.WriteSingleCoil(slaveId, address, value);
-                Console.WriteLine($"✅ Zapsán Coil {value} na adresu {address}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba zápisu: {ex.Message}");
+                Console.WriteLine($"Writting error: {ex.Message}");
             }
         }
 
+        public void WriteMultipleCoils(byte slaveId, ushort startAddress, bool[] values)
+        {
+            try
+            {
+                if (master == null) throw new Exception("Modbus is not connected!");
+                master.WriteMultipleCoils(slaveId, startAddress, values);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Writting error: {ex.Message}");
+            }
+        }
     }
 
     public class ModbusTCPIPimSlave
     {
-        private TcpListener tcpListener;
-        private ModbusSlave slave;
+        public TcpListener tcpListener;
+        public ModbusSlave slave;
         private ushort[] holdingRegisters = new ushort[10]; // Registr pro uchování dat
 
         // Konstruktor 
@@ -150,7 +179,14 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             IPAddress address = IPAddress.Parse(ipAddress);
             tcpListener = new TcpListener(address, port);
         }
-        public void Start()
+
+        public bool StrToBool(string s)
+            => string.Equals(s, "true", StringComparison.OrdinalIgnoreCase);
+
+        public string BoolToStr(bool b)
+            => b ? "true" : "false";
+
+        public bool Start()
         {
             try
             {
@@ -158,22 +194,38 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 slave = ModbusTcpSlave.CreateTcp(1, tcpListener); // Slave ID = 1
                 slave.DataStore = Modbus.Data.DataStoreFactory.CreateDefaultDataStore();
 
-                Console.WriteLine("✅ Modbus TCP Slave spuštěn.");
+                Console.WriteLine("Modbus TCP/IP Slave running/started.");
                 slave.Listen(); // Spustí poslouchání požadavků od Masteru
+                return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Chyba při spuštění serveru: {ex.Message}");
+                Console.WriteLine($"Starting server error: {ex.Message}");
+                return false;
             }
         }
 
-        public void Stop()
+        public bool Stop()
         {
-            if (slave != null)
+            try
             {
-                slave.Dispose();
-                tcpListener.Stop();
-                Console.WriteLine("🔌 Modbus TCP Slave zastaven.");
+                if (slave != null)
+                {
+                    slave.Dispose();
+                    tcpListener.Stop();
+                    Console.WriteLine("Modbus TCP/IP Slave stopped.");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Modbus TCP/IP Slave was not running.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Stopping server error: {ex.Message}");
+                return false;
             }
         }
 
@@ -182,11 +234,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             if (address < holdingRegisters.Length)
             {
                 holdingRegisters[address] = value;
-                Console.WriteLine($"✅ Nastaven registr [{address}] = {value}");
             }
             else
             {
-                Console.WriteLine($"❌ Neplatná adresa registru: {address}");
+                Console.WriteLine($"Wrong registr address: {address}");
             }
         }
 
@@ -198,9 +249,52 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             }
             else
             {
-                Console.WriteLine($"❌ Neplatná adresa registru: {address}");
+                Console.WriteLine($"Wrong registr address: {address}");
                 return 0;
             }
+        }
+
+        public void SetCoil(ushort address, bool value)
+        {
+            if (slave?.DataStore?.CoilDiscretes == null) return;
+
+            ushort idx = (ushort)(address + 1); // 1-based
+            if (idx < slave.DataStore.CoilDiscretes.Count)
+                slave.DataStore.CoilDiscretes[idx] = value;
+            else
+                Console.WriteLine($"Wrong coil address: {address}");
+        }
+
+        public void SetCoils(ushort startAddress, bool[] values)
+        {
+            if (slave?.DataStore?.CoilDiscretes == null || values == null) return;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                ushort idx = (ushort)(startAddress + i + 1);
+                if (idx < slave.DataStore.CoilDiscretes.Count)
+                    slave.DataStore.CoilDiscretes[idx] = values[i];
+                else
+                    Console.WriteLine($"Wrong coil address: {(startAddress + i)}");
+            }
+        }
+
+        public bool[] GetCoils(ushort startAddress, ushort count)
+        {
+            if (slave?.DataStore?.CoilDiscretes == null) return null;
+
+            bool[] result = new bool[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                ushort idx = (ushort)(startAddress + i + 1);
+                if (idx < slave.DataStore.CoilDiscretes.Count)
+                    result[i] = slave.DataStore.CoilDiscretes[idx];
+                else
+                    Console.WriteLine($"Wrong coil address: {(startAddress + i)}");
+            }
+
+            return result;
         }
     }
 }

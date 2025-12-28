@@ -638,6 +638,23 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "MQTT communication started.";
                         lblStatus.Text = "MQTT communication started.";
 
+                        if (internalVariables.checkBoxMaster == true)
+                        {
+                            // start broker (server)
+
+                            // create client and connect to broker
+                        }
+                        else if (internalVariables.checkBoxSlave == true)
+                        {
+                            // create client and connect to broker
+                        }
+                        else
+                        {
+                            // no checkbox selected 
+                            lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
+                            return; // break;
+                        }
+
                         break;
                     case "OPCUA":
                         lblCommunicationStatus.Text = "OPC UA communication started.";
@@ -704,6 +721,7 @@ namespace JAN0837_DP.Forms
                         }
                         else
                         {
+                            // no checkbox selected
                             lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
                             return; // break;
                         }
@@ -792,6 +810,27 @@ namespace JAN0837_DP.Forms
             switch (internalVariables.communicationFlag)
             {
                 case "MQTT":
+                    if (internalVariables.checkBoxMaster == true)
+                    {
+                        // disconnect client
+
+                        // stop broker (server)
+
+                    }
+                    else if (internalVariables.checkBoxSlave == true)
+                    {
+                        // disconnect client
+                    }
+                    else
+                    {
+                        // no checkbox selected 
+                        lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
+                        return; // break;
+                    }
+
+                    lblCommunicationStatus.Text = "MQTT communication stopped.";
+                    lblStatus.Text = "MQTT communication stopped.";
+
                     break;
                 case "OPCUA":
                     break;

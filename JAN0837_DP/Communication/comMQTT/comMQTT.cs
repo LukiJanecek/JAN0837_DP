@@ -1,12 +1,17 @@
-﻿using MQTTnet;
+﻿using JAN0837_DP.Data;
+using JAN0837_DP.Forms;
+using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace JAN0837_DP.Communication.comMQTT
 {
@@ -15,15 +20,22 @@ namespace JAN0837_DP.Communication.comMQTT
         public MqttServer mqttServer;
         public bool mqttserverRunning { get; set; }
 
-        public async Task StartAsync(int port = 1883)
+        public async Task StartAsync(string ipAddress, int port)
         {
             if (mqttserverRunning) return;
-            
-            var factory = new MqttServerFactory();
-            mqttServer = factory.CreateMqttServer(new MqttServerOptionsBuilder()
+
+            var optionsBuilder = new MqttServerOptionsBuilder()
                 .WithDefaultEndpoint()
-                .WithDefaultEndpointPort(port)
-                .Build());
+                .WithDefaultEndpointPort(port);
+
+            if (!string.IsNullOrWhiteSpace(ipAddress))
+            {
+                optionsBuilder.WithDefaultEndpointBoundIPAddress(
+                    IPAddress.Parse(ipAddress));
+            }
+
+            var factory = new MqttServerFactory();
+            mqttServer = factory.CreateMqttServer(optionsBuilder.Build());
 
             mqttServer.ClientConnectedAsync += e =>
             {
@@ -40,7 +52,7 @@ namespace JAN0837_DP.Communication.comMQTT
             await mqttServer.StartAsync();
             mqttserverRunning = true;
 
-            Console.WriteLine($"Broker running on port {port}");
+            Console.WriteLine($"Broker running on port {ipAddress}:{port}");
         }
 
         public async Task StopAsync()
@@ -61,6 +73,12 @@ namespace JAN0837_DP.Communication.comMQTT
         public CancellationTokenSource cts;
 
         public bool clientConnected { get; set; }
+        public event Action<string, byte[], string>? OnMessage;
+        public string[] SubscribeTopics { get; set; } = new[]
+        {
+            "JAN0837/plc/status",
+            "JAN0837/Crossroad/Output"
+        };
 
         public MQTTClient()
         {
@@ -70,11 +88,11 @@ namespace JAN0837_DP.Communication.comMQTT
             mqttClient.ApplicationMessageReceivedAsync += e =>
             {
                 var topic = e.ApplicationMessage.Topic;
-
-                var bytes = e.ApplicationMessage.Payload.ToArray();   // ReadOnlySequence<byte> -> byte[]
+                var bytes = e.ApplicationMessage.Payload.ToArray();   
                 var payload = bytes.Length == 0 ? "" : Encoding.UTF8.GetString(bytes);
 
-                Console.WriteLine($"RX {topic}: {payload}");
+                OnMessage?.Invoke(topic, bytes, payload);
+
                 return Task.CompletedTask;
             };
 
@@ -82,9 +100,7 @@ namespace JAN0837_DP.Communication.comMQTT
             {
                 Console.WriteLine("Connected");
 
-                // Tady si dej topics podle scénáře
-                await SubscribeAsync("plc/line1/telemetry");
-                await SubscribeAsync("plc/line1/status");
+                await SubscribeTopicsAsync();
 
                 // publish online status (retained)
                 await PublishAsync("pc/status", "online", retain: true);
@@ -97,9 +113,9 @@ namespace JAN0837_DP.Communication.comMQTT
             };
         }
 
-        public async Task StartAsync(string host, int port = 1883, string clientId = "PC_01")
+        public Task StartAsync(string host, int port, string clientId)
         {
-            if (clientConnected) return;
+            if (clientConnected) return Task.CompletedTask;
 
             cts = new CancellationTokenSource();
 
@@ -108,36 +124,14 @@ namespace JAN0837_DP.Communication.comMQTT
                 .WithTcpServer(host, port)
                 .WithCleanSession(false)
                 .WithKeepAlivePeriod(TimeSpan.FromSeconds(10))
-
-                // Last Will & Testament (MQTTnet 5.x způsob)
                 .WithWillTopic("pc/status")
                 .WithWillPayload(Encoding.UTF8.GetBytes("offline"))
                 .WithWillQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
                 .WithWillRetain(true)
-
                 .Build();
-
-            mqttClient.ConnectedAsync += async e =>
-            {
-                Console.WriteLine("Connected");
-
-                // odebírání povelů (PLC->PC nebo PC->PLC dle scénáře)
-                await mqttClient.SubscribeAsync("plc/line1/telemetry", MqttQualityOfServiceLevel.AtLeastOnce);
-                await mqttClient.SubscribeAsync("plc/line1/status", MqttQualityOfServiceLevel.AtLeastOnce);
-
-                // publish online status (retained)
-                await PublishAsync("pc/status", "online", retain: true);
-            };
-
-            mqttClient.DisconnectedAsync += e =>
-            {
-                Console.WriteLine($"Disconnected: {e.Reason}");
-                return Task.CompletedTask;
-            };
 
             clientConnected = true;
 
-            // Reconnect loop
             _ = Task.Run(async () =>
             {
                 while (!cts!.IsCancellationRequested)
@@ -147,14 +141,13 @@ namespace JAN0837_DP.Communication.comMQTT
                         if (!mqttClient.IsConnected)
                             await mqttClient.ConnectAsync(options!, cts.Token);
                     }
-                    catch
-                    {
-                        // ticho a zkusit znovu
-                    }
+                    catch { }
 
                     await Task.Delay(1000, cts.Token);
                 }
             }, cts.Token);
+
+            return Task.CompletedTask;
         }
 
         public async Task StopAsync()
@@ -170,6 +163,17 @@ namespace JAN0837_DP.Communication.comMQTT
             }
 
             clientConnected = false;
+        }
+
+        public async Task SubscribeTopicsAsync()
+        {
+            if (!mqttClient.IsConnected) return;
+
+            foreach (var t in SubscribeTopics)
+            {
+                await mqttClient.SubscribeAsync(t, MqttQualityOfServiceLevel.AtLeastOnce);
+                Console.WriteLine($"Subscribed to {t}");
+            }
         }
 
         public Task PublishAsync(string topic, string payload, bool retain = false)
@@ -199,6 +203,40 @@ namespace JAN0837_DP.Communication.comMQTT
             );
 
             Console.WriteLine($"Subscribed to {topic}");
+        }
+
+        public static class CrossroadOutputMapper
+        {
+            private class OutputDto
+            {
+                public int lightsMask { get; set; }
+                public int crossroadType { get; set; }
+            }
+
+            public static void ApplyOutputJsonToCrossroadData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+
+                    CrossroadData.crossroadType = dto.crossroadType.ToString();
+                    CrossroadData.trafficLight1_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLight1_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLight1_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLight2_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLight2_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLight2_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrian1_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrian1_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrian2_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrian2_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Output JSON parse failed: {ex.Message}");
+                }
+            }
         }
     }
 }

@@ -4,7 +4,9 @@ using JAN0837_DP.Communication.comModbusTCPIP;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
+using JAN0837_DP.Communication.comMQTT;
 using JAN0837_DP.Data;
+using MQTTnet.Server;
 using Opc.Ua;
 using Org.BouncyCastle.Asn1.Cmp;
 using System;
@@ -29,6 +31,8 @@ namespace JAN0837_DP.Forms
         public comTCPIP _tcpip;
         public ModbusTCPIPimMaster _modbusMaster;
         public ModbusTCPIPimSlave _modbusSlave;
+        public MQTTBroker _mqttBroker;
+        public MQTTClient _mqttClient;  
 
         public string ModbusTCPIP_ipaddress;
         public int ModbusTCPIP_port;
@@ -624,7 +628,7 @@ namespace JAN0837_DP.Forms
 
         #endregion
 
-        private void btnStartCommunicationThread_Click(object sender, EventArgs e)
+        private async void btnStartCommunicationThread_Click(object sender, EventArgs e)
         {
             lblCommunicationStatus.Text = "Starting communication.";
             lblStatus.Text = "Starting communication.";
@@ -638,15 +642,63 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "MQTT communication started.";
                         lblStatus.Text = "MQTT communication started.";
 
+                        string broker_ipAddress = internalVariables.txtBoxParam1;
+                        if (!int.TryParse(internalVariables.txtBoxParam2, out int broker_port))
+                        {
+                            lblStatus.Text = $"Port is not a valid number.";
+                            return; // break;
+                        }
+
+                        if (_mqttClient == null)
+                        {
+                            _mqttClient = new JAN0837_DP.Communication.comMQTT.MQTTClient();
+
+                            _mqttClient.OnMessage += (topic, bytes, text) =>
+                            {
+                                if (topic == "JAN0837/Crossroad/Output")
+                                {
+                                    // zpracování outputu z PLC -> CrossroadData
+                                    MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(text);
+
+                                    // UI update:
+                                    /*
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        lblStatus.Text = $"RX Output: {text}";
+                                    }));
+                                    */
+                                }
+                                else if (topic == "JAN0837/plc/status")
+                                {
+                                    /*
+                                    BeginInvoke(new Action(() =>
+                                    {
+                                        lblStatus.Text = $"PLC status: {text}";
+                                    }));
+                                    */
+                                }
+                            };
+
+                            // set topics to subscribe from start
+                            _mqttClient.SubscribeTopics = new[]
+                            {
+                                "JAN0837/plc/status",
+                                "JAN0837/Crossroad/Output"
+                            };
+                        }
+
                         if (internalVariables.checkBoxMaster == true)
                         {
                             // start broker (server)
+                            await _mqttBroker.StartAsync(broker_ipAddress, broker_port);
 
                             // create client and connect to broker
+                            await _mqttClient.StartAsync(broker_ipAddress, broker_port, "Client1");
                         }
                         else if (internalVariables.checkBoxSlave == true)
                         {
                             // create client and connect to broker
+                            await _mqttClient.StartAsync(broker_ipAddress, broker_port, "Client1");
                         }
                         else
                         {
@@ -683,7 +735,7 @@ namespace JAN0837_DP.Forms
                         break;
                     case "ModbusTCPIP":
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
-                        lblStatus.Text = "MModbus TCP/IPQTT communication started.";
+                        lblStatus.Text = "Modbus TCP/IPQTT communication started.";
 
                         ModbusTCPIP_ipaddress = internalVariables.txtBoxParam1;
 
@@ -802,7 +854,7 @@ namespace JAN0837_DP.Forms
             #endregion
         }
 
-        private void btnStopCommunicationThread_Click(object sender, EventArgs e)
+        private async void btnStopCommunicationThread_Click(object sender, EventArgs e)
         {
             lblCommunicationStatus.Text = "Stoppping communication.";
             lblStatus.Text = "Stopping communication.";
@@ -813,13 +865,15 @@ namespace JAN0837_DP.Forms
                     if (internalVariables.checkBoxMaster == true)
                     {
                         // disconnect client
+                        await _mqttClient.StopAsync();
 
                         // stop broker (server)
-
+                        await _mqttBroker.StopAsync();
                     }
                     else if (internalVariables.checkBoxSlave == true)
                     {
                         // disconnect client
+                        await _mqttClient.StopAsync();
                     }
                     else
                     {
@@ -960,10 +1014,10 @@ namespace JAN0837_DP.Forms
             }
             else if (rbtnMQTT.Checked == true)
             {
-                // Broker 
-                txtBoxPara1.Text = "";
-                // Topic 
-                txtBoxPara2.Text = "";
+                // broker IP address 
+                txtBoxPara1.Text = "127.0.0.1";
+                // broker port
+                txtBoxPara2.Text = "1883";
             }
             else if (rbtnTCPIP.Checked == true)
             {

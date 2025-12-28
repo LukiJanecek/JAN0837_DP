@@ -30,6 +30,8 @@ namespace JAN0837_DP.Communication
         public comTCPIP.comTCPIP _tcpip;
         public comModbusTCPIP.ModbusTCPIPimMaster _modbusMaster;
         public comModbusTCPIP.ModbusTCPIPimSlave _modbusSlave;
+        public MQTTBroker _mqttBroker;
+        public MQTTClient _mqttClient;
 
         public ucCommunicationControl _ucCommunicationControl;
 
@@ -38,7 +40,7 @@ namespace JAN0837_DP.Communication
             _ucCommunicationControl = ucCommunicationControl;
         }
 
-        public void Communication() // async 
+        public async void Communication() 
         {
             try
             {
@@ -47,16 +49,64 @@ namespace JAN0837_DP.Communication
                     switch (internalVariables.communicationFlag)
                     {
                         case "MQTT":
-                            string brokerAddress = internalVariables.txtBoxParam1;
-                            string secondPara = internalVariables.txtBoxParam2;
+                            string broker_ipAddress = internalVariables.txtBoxParam1;
+                            if (!int.TryParse(internalVariables.txtBoxParam2, out int broker_port))
+                            {
+                                _ucCommunicationControl.SetStatus($"Port is not a valid number.");
+                                return; // break;
+                            }
 
                             if (internalVariables.checkBoxMaster == true)
                             {
+                                // publish
+                                if (_mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                    break;
 
+                                var obj = new
+                                {
+                                    start = CrossroadData.btnCrossroadStart == "true",
+                                    pause = CrossroadData.btnCrossroadPause == "true",
+                                    stop = CrossroadData.btnCrossroadStop == "true",
+                                    cw1 = CrossroadData.btnCrosswalk1 == "true",
+                                    cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                };
+
+                                string json = System.Text.Json.JsonSerializer.Serialize(obj);
+
+                                var msg = new MQTTnet.MqttApplicationMessageBuilder()
+                                    .WithTopic("JAN0837/Crossroad/Input")
+                                    .WithPayload(json)
+                                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                    .WithRetainFlag(true)
+                                    .Build();
+
+                                await _mqttClient.mqttClient.PublishAsync(msg);
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
+                                // publish 
+                                if (_mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                    break;
 
+                                var obj = new
+                                {
+                                    start = CrossroadData.btnCrossroadStart == "true",
+                                    pause = CrossroadData.btnCrossroadPause == "true",
+                                    stop = CrossroadData.btnCrossroadStop == "true",
+                                    cw1 = CrossroadData.btnCrosswalk1 == "true",
+                                    cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                };
+
+                                string json = System.Text.Json.JsonSerializer.Serialize(obj);
+
+                                var msg = new MQTTnet.MqttApplicationMessageBuilder()
+                                    .WithTopic("JAN0837/Crossroad/Input")
+                                    .WithPayload(json)
+                                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                    .WithRetainFlag(true)
+                                    .Build();
+
+                                await _mqttClient.mqttClient.PublishAsync(msg);
                             }
                             else
                             {

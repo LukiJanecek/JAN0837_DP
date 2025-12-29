@@ -276,31 +276,31 @@ namespace JAN0837_DP.Forms
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Broker: ";
+            lblPara1.Text = "Broker IP address: ";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type broker address";
 
             lblPara2.Visible = true;
             lblPara2.Enabled = true;
-            lblPara2.Text = "Topic: ";
+            lblPara2.Text = "Broker Port: ";
             txtBoxPara2.Visible = true;
             txtBoxPara2.Enabled = true;
             txtBoxPara2.Text = "Type topic address";
 
             // check box
             lblCheckBox.Visible = true;
-            lblCheckBox.Enabled = false;
-            lblCheckBox.Text = "What is this device?";
+            lblCheckBox.Enabled = true;
+            lblCheckBox.Text = "Host MQTT broker (server)?";
 
             checkBoxMaster.Visible = true;
-            checkBoxMaster.Enabled = false;
-            checkBoxMaster.Text = "Server/Broker";
-            checkBoxMaster.Checked = true; // PC is always Broker, PLC cannot be broker
+            checkBoxMaster.Enabled = true;
+            checkBoxMaster.Text = "Yes";
+            checkBoxMaster.Checked = true; 
 
             checkBoxSlave.Visible = true;
-            checkBoxSlave.Enabled = false;
-            checkBoxSlave.Text = "Subscriber";
+            checkBoxSlave.Enabled = true;
+            checkBoxSlave.Text = "No";
             checkBoxSlave.Checked = false;
 
             #endregion

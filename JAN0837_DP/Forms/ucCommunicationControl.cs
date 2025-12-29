@@ -826,9 +826,13 @@ namespace JAN0837_DP.Forms
 
             internalVariables.communicationThreadRunningFlag = true;
             var communicationManager = new CommunicationManager(this);
+            /*
             internalVariables.communicationThread = new Thread(communicationManager.Communication);
             internalVariables.communicationThread.IsBackground = true;
             internalVariables.communicationThread.Start();
+            */
+            internalVariables.communicationCancellationTokenSource = new CancellationTokenSource();
+            internalVariables.communicationTask = Task.Run(() => communicationManager.Communication(internalVariables.communicationCancellationTokenSource.Token));
 
             // UI 
             #region UI
@@ -994,14 +998,41 @@ namespace JAN0837_DP.Forms
 
             #endregion
 
-            // stoping communication thread
-            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive)
+            // stopping communication thread
+            if (internalVariables.communicationThread != null && internalVariables.communicationThread.IsAlive || internalVariables.communicationTask != null && !internalVariables.communicationTask.IsCompleted)
             {
-                lblCommunicationStatus.Text = $"Communication stopped. Communication thread isAlive: {internalVariables.communicationThread.IsAlive}";
-                lblStatus.Text = "Communication stopped.";
+                lblCommunicationStatus.Text = "Stopping communication...";
+                lblStatus.Text = "Stopping communication...";
 
+                //lblCommunicationStatus.Text = $"Communication stopped. Communication thread isAlive: {internalVariables.communicationThread.IsAlive}";
+                //lblStatus.Text = "Communication stopped.";
+                
                 internalVariables.communicationThreadRunningFlag = false;
-                internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
+                
+                //internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
+                
+                internalVariables.communicationCancellationTokenSource.Cancel();
+
+                try
+                {
+                    await internalVariables.communicationTask; // wait for clean exit
+                }
+                catch (OperationCanceledException)
+                {
+                    // expected when token cancels
+                }
+                catch (Exception ex)
+                {
+                    lblStatus.Text = $"Communication stop error: {ex.Message}";
+                }
+
+                lblCommunicationStatus.Text = "Communication stopped.";
+                lblStatus.Text = "Communication stopped.";
+            }
+            else
+            {
+                lblCommunicationStatus.Text = "Communication is not running.";
+                lblStatus.Text = "Communication is not running.";
             }
         }
 

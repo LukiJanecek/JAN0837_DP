@@ -40,11 +40,11 @@ namespace JAN0837_DP.Communication
             _ucCommunicationControl = ucCommunicationControl;
         }
 
-        public async void Communication() 
+        public async void Communication(CancellationToken token) 
         {
             try
             {
-                while (internalVariables.communicationThreadRunningFlag) // communicationRunningFlag
+                while (internalVariables.communicationThreadRunningFlag && !token.IsCancellationRequested) // communicationRunningFlag
                 {
                     switch (internalVariables.communicationFlag)
                     {
@@ -530,6 +530,8 @@ namespace JAN0837_DP.Communication
                         default:
                             break;
                     }
+
+                    await Task.Delay(50, token);
                 }
             }
             catch (Exception ex)

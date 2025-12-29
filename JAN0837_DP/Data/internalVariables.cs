@@ -42,7 +42,9 @@ namespace JAN0837_DP.Data
     {
         // threads
         public static Thread communicationThread { get; set; }
+        public static Task communicationTask { get; set; }
         public static Thread visualizationThread { get; set; }
+        public static CancellationTokenSource communicationCancellationTokenSource { get; set; }
         public static bool communicationThreadRunningFlag { get; set; } = false;
         public static bool visualizationThreadRunningFlag { get; set; } = false;
 

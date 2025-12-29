@@ -633,8 +633,18 @@ namespace JAN0837_DP.Forms
             lblCommunicationStatus.Text = "Starting communication.";
             lblStatus.Text = "Starting communication.";
 
-            // starting communication thread
-            if (internalVariables.communicationThread == null || !internalVariables.communicationThread.IsAlive)
+            bool isRunning = internalVariables.communicationTask != null && !internalVariables.communicationTask.IsCompleted;
+
+            if (isRunning)
+            {
+                lblStatus.Text = "Communication is already running.";
+                return;
+            }
+
+            internalVariables.communicationCancellationTokenSource?.Dispose();
+            internalVariables.communicationCancellationTokenSource = new CancellationTokenSource();
+
+            try
             {
                 switch (internalVariables.communicationFlag)
                 {
@@ -643,10 +653,10 @@ namespace JAN0837_DP.Forms
                         lblStatus.Text = "MQTT communication started.";
 
                         string broker_ipAddress = internalVariables.txtBoxParam1;
-                        if (!int.TryParse(internalVariables.txtBoxParam2, out int broker_port))
+                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int broker_port))
                         {
-                            lblStatus.Text = $"Port is not a valid number.";
-                            return; // break;
+                            lblStatus.Text = "Port is not a valid number.";
+                            return; // break
                         }
 
                         if (_mqttClient == null)
@@ -689,6 +699,8 @@ namespace JAN0837_DP.Forms
 
                         if (internalVariables.checkBoxMaster == true)
                         {
+                            _mqttBroker = new JAN0837_DP.Communication.comMQTT.MQTTBroker();
+
                             // start broker (server)
                             await _mqttBroker.StartAsync(broker_ipAddress, broker_port);
 
@@ -778,7 +790,6 @@ namespace JAN0837_DP.Forms
                             return; // break;
                         }
 
-
                         break;
                     case "RESTAPI":
                         lblCommunicationStatus.Text = "REST API communication started.";
@@ -822,40 +833,46 @@ namespace JAN0837_DP.Forms
 
                         break;
                 }
+
+                internalVariables.communicationThreadRunningFlag = true;
+                var communicationManager = new CommunicationManager(this);
+
+                var token = internalVariables.communicationCancellationTokenSource.Token;
+                internalVariables.communicationTask = Task.Run(() => communicationManager.Communication(token), token);
+
+                // UI 
+                #region UI
+                rbtnOPCUA.Enabled = false;
+                rbtnMQTT.Enabled = false;
+                rbtnTCPIP.Enabled = false;
+                rbtnModbusTCPIP.Enabled = false;
+                rbtnRESTAPI.Enabled = false;
+                //rbtnS7.Enabled = false;
+                rbtnSharp7.Enabled = false;
+
+                checkBoxMaster.Enabled = false;
+                checkBoxSlave.Enabled = false;
+
+                txtBoxPara1.Enabled = false;
+                txtBoxPara2.Enabled = false;
+
+                btnPreSet.Enabled = false;
+
+                btnStartCommunicationThread.Enabled = false;
+                btnStopCommunicationThread.Enabled = true;
+
+                #endregion
             }
-
-            internalVariables.communicationThreadRunningFlag = true;
-            var communicationManager = new CommunicationManager(this);
-            /*
-            internalVariables.communicationThread = new Thread(communicationManager.Communication);
-            internalVariables.communicationThread.IsBackground = true;
-            internalVariables.communicationThread.Start();
-            */
-            internalVariables.communicationCancellationTokenSource = new CancellationTokenSource();
-            internalVariables.communicationTask = Task.Run(() => communicationManager.Communication(internalVariables.communicationCancellationTokenSource.Token));
-
-            // UI 
-            #region UI
-            rbtnOPCUA.Enabled = false;
-            rbtnMQTT.Enabled = false;
-            rbtnTCPIP.Enabled = false;
-            rbtnModbusTCPIP.Enabled = false;
-            rbtnRESTAPI.Enabled = false;
-            //rbtnS7.Enabled = false;
-            rbtnSharp7.Enabled = false;
-
-            checkBoxMaster.Enabled = false;
-            checkBoxSlave.Enabled = false;
-
-            txtBoxPara1.Enabled = false;
-            txtBoxPara2.Enabled = false;
-
-            btnPreSet.Enabled = false;
-
-            btnStartCommunicationThread.Enabled = false;
-            btnStopCommunicationThread.Enabled = true;
-
-            #endregion
+            catch (OperationCanceledException)
+            {
+                lblStatus.Text = "Communication start canceled.";
+                return;
+            }
+            catch (Exception ex)
+            {
+                lblStatus.Text = $"Start failed: {ex.Message}";
+                return;
+            }
         }
 
         private async void btnStopCommunicationThread_Click(object sender, EventArgs e)
@@ -1081,7 +1098,7 @@ namespace JAN0837_DP.Forms
             }
             else
             {
-                // Error -> preset is not checked 
+                // no rbtn checked
                 return;
             }
         }
@@ -1117,29 +1134,11 @@ namespace JAN0837_DP.Forms
         private void txtBoxPara1_TextChanged(object sender, EventArgs e)
         {
             internalVariables.txtBoxParam1 = txtBoxPara1.Text;
-            /*
-            switch (internalVariables.communicationFlag)
-            {
-                case "MQTT":
-                    break;
-                case "OPCUA":
-                    break;
-                case "ModbusTCPIP":
-                    break;
-                case "TCPIP":
-                    break;
-                case "RESTAPI":
-                    break;
-                case "Sharp7":
-                    internalVariables.txtBoxParam1 = txtBoxPara1.Text;
-                    break;
-            }
-            */
         }
 
         private void txtBoxPara2_TextChanged(object sender, EventArgs e)
         {
-            internalVariables.txtBoxParam2 = txtBoxPara1.Text;
+            internalVariables.txtBoxParam2 = txtBoxPara2.Text;
         }
 
         private void btnActualCrossroaddata_Click(object sender, EventArgs e)

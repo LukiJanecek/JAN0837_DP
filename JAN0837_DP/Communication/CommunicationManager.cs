@@ -40,7 +40,7 @@ namespace JAN0837_DP.Communication
             _ucCommunicationControl = ucCommunicationControl;
         }
 
-        public async void Communication(CancellationToken token) 
+        public async Task Communication(CancellationToken token) 
         {
             try
             {
@@ -49,18 +49,22 @@ namespace JAN0837_DP.Communication
                     switch (internalVariables.communicationFlag)
                     {
                         case "MQTT":
+                            
                             string broker_ipAddress = internalVariables.txtBoxParam1;
-                            if (!int.TryParse(internalVariables.txtBoxParam2, out int broker_port))
+                            if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int broker_port))
                             {
-                                _ucCommunicationControl.SetStatus($"Port is not a valid number.");
-                                return; // break;
+                                _ucCommunicationControl.SetStatus("Port is not a valid number.");
+                                return; // break
                             }
 
                             if (internalVariables.checkBoxMaster == true)
                             {
                                 // publish
-                                if (_mqttClient == null || !_mqttClient.mqttClient.IsConnected)
-                                    break;
+                                if (_mqttClient == null || _mqttClient.mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue; // NE break
+                                }
 
                                 var obj = new
                                 {
@@ -80,13 +84,28 @@ namespace JAN0837_DP.Communication
                                     .WithRetainFlag(true)
                                     .Build();
 
-                                await _mqttClient.mqttClient.PublishAsync(msg);
+                                try
+                                {
+                                    await _mqttClient.mqttClient.PublishAsync(msg, token);
+                                }
+                                catch (OperationCanceledException) 
+                                { 
+                                    throw; 
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"Exception error: {ex}");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
-                                // publish 
-                                if (_mqttClient == null || !_mqttClient.mqttClient.IsConnected)
-                                    break;
+                                if (_mqttClient == null || _mqttClient.mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue; // NE break
+                                }
 
                                 var obj = new
                                 {

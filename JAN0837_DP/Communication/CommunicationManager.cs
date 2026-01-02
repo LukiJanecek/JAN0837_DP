@@ -30,8 +30,8 @@ namespace JAN0837_DP.Communication
         public comTCPIP.comTCPIP _tcpip;
         public comModbusTCPIP.ModbusTCPIPimMaster _modbusMaster;
         public comModbusTCPIP.ModbusTCPIPimSlave _modbusSlave;
-        public MQTTBroker _mqttBroker;
-        public MQTTClient _mqttClient;
+        //public MQTTBroker _mqttBroker;
+        //public MQTTClient _mqttClient;
 
         public ucCommunicationControl _ucCommunicationControl;
 
@@ -49,7 +49,9 @@ namespace JAN0837_DP.Communication
                     switch (internalVariables.communicationFlag)
                     {
                         case "MQTT":
-                            
+
+                            var client = _ucCommunicationControl._mqttClient;
+
                             string broker_ipAddress = internalVariables.txtBoxParam1;
                             if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int broker_port))
                             {
@@ -57,10 +59,11 @@ namespace JAN0837_DP.Communication
                                 return; // break
                             }
 
+                            // code for master and slave is the same, it could change via new functions in future
                             if (internalVariables.checkBoxMaster == true)
                             {
                                 // publish
-                                if (_mqttClient == null || _mqttClient.mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
                                 {
                                     await Task.Delay(200, token);
                                     continue; // NE break
@@ -86,7 +89,7 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    await _mqttClient.mqttClient.PublishAsync(msg, token);
+                                    await client.mqttClient.PublishAsync(msg, token);
                                 }
                                 catch (OperationCanceledException) 
                                 { 
@@ -101,7 +104,7 @@ namespace JAN0837_DP.Communication
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
-                                if (_mqttClient == null || _mqttClient.mqttClient == null || !_mqttClient.mqttClient.IsConnected)
+                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
                                 {
                                     await Task.Delay(200, token);
                                     continue; // NE break
@@ -125,7 +128,7 @@ namespace JAN0837_DP.Communication
                                     .WithRetainFlag(true)
                                     .Build();
 
-                                await _mqttClient.mqttClient.PublishAsync(msg);
+                                await client.mqttClient.PublishAsync(msg);
                             }
                             else
                             {

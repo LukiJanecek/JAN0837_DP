@@ -130,8 +130,6 @@ namespace JAN0837_DP.Communication.comMQTT
                 .WithWillRetain(true)
                 .Build();
 
-            clientConnected = true;
-
             _ = Task.Run(async () =>
             {
                 while (!cts!.IsCancellationRequested)
@@ -147,6 +145,7 @@ namespace JAN0837_DP.Communication.comMQTT
                 }
             }, cts.Token);
 
+            clientConnected = true;
             return Task.CompletedTask;
         }
 

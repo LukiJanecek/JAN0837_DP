@@ -34,9 +34,6 @@ namespace JAN0837_DP.Forms
         public MQTTBroker _mqttBroker;
         public MQTTClient _mqttClient;  
 
-        public string ModbusTCPIP_ipaddress;
-        public int ModbusTCPIP_port;
-
         public ucCommunicationControl()
         {
             InitializeComponent();
@@ -731,6 +728,16 @@ namespace JAN0837_DP.Forms
 
                         string ipAddress = internalVariables.txtBoxParam1;
 
+                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int tcpPort))
+                        {
+                            tcpPort = 0; // adjust default port if your comTCPIP expects a specific value
+                        }
+
+                        if (_tcpip == null)
+                        {
+                            _tcpip = new comTCPIP(ipAddress, tcpPort);
+                        }
+
                         // connect 
                         bool connect = _tcpip.Connect();
 
@@ -749,9 +756,9 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
                         lblStatus.Text = "Modbus TCP/IPQTT communication started.";
 
-                        ModbusTCPIP_ipaddress = internalVariables.txtBoxParam1;
+                        string ModbusTCPIP_ipaddress = internalVariables.txtBoxParam1;
 
-                        if (!int.TryParse(internalVariables.txtBoxParam2, out ModbusTCPIP_port))
+                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int ModbusTCPIP_port))
                         {
                             // error port not valid number 
                             lblStatus.Text = $"Error: Modbus TCP/IP port is not a valid number.";
@@ -760,7 +767,11 @@ namespace JAN0837_DP.Forms
 
                         if (internalVariables.checkBoxMaster == true)
                         {
-                            //ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipAddress, txpPort);
+                            // Ensure master instance exists
+                            if (_modbusMaster == null)
+                            {
+                                _modbusMaster = new ModbusTCPIPimMaster(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                            }
 
                             _modbusMaster.ipAddress = ModbusTCPIP_ipaddress;
                             _modbusMaster.port = ModbusTCPIP_port;
@@ -779,8 +790,19 @@ namespace JAN0837_DP.Forms
                         }
                         else if (internalVariables.checkBoxSlave == true)
                         {
-                            //ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipAddress, txpPort);
-                            _modbusSlave.Start();
+                            // Ensure slave instance exists
+                            if (_modbusSlave == null)
+                            {
+                                _modbusSlave = new ModbusTCPIPimSlave(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                            }
+
+                            bool started = _modbusSlave.Start();
+                            if (!started)
+                            {
+                                lblStatus.Text = $"Error: Modbus TCP/IP Slave failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                                return;
+                            }
+
                             lblStatus.Text = $"Modbus TCP/IP Slave mode started.";
                         }
                         else
@@ -946,6 +968,12 @@ namespace JAN0837_DP.Forms
 
                     break;
                 case "TCPIP":
+                    if (_tcpip == null)
+                    {
+                        lblStatus.Text = "TCP/IP client was not initialized.";
+                        break; // return;
+                    }
+
                     if (_tcpip.socket == null)
                     {
                         lblStatus.Text = "TCP/IP socket is null, cannot disconnect.";

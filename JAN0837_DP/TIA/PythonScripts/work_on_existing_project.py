@@ -1,3 +1,5 @@
+# this code doesnt work properly
+
 # work_on_existing_project.py — připoj se k TIA, otevři existující projekt, přidej DB
 
 import os, sys, clr

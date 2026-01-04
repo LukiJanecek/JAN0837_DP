@@ -1,3 +1,5 @@
+## this doesnt work -> wrong add clr.AddReference("Siemens.Engineering.HW")
+
 import clr
 import sys
 import os

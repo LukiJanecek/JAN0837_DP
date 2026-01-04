@@ -1,3 +1,5 @@
+# this code doesnt work properly
+
 # probe_tia_v19.py  (pythonnet 3.x, robustní resolver)
 import os, sys, clr
 from pathlib import Path

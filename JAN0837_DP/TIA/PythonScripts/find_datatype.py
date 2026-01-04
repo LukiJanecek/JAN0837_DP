@@ -1,3 +1,5 @@
+# this code works properly
+
 # find_datatype.py  — pythonnet 3.x, TIA V19
 import os, sys, clr
 from pathlib import Path

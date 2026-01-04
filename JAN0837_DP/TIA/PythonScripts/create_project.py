@@ -1,3 +1,5 @@
+## this is cool code but need improvement 
+
 # create_project_full.py — TIA V19 + pythonnet 3.x, vše v jednom
 
 import os, sys, clr

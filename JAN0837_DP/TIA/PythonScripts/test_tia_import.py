@@ -1,3 +1,5 @@
+# this code doesnt work properly
+
 import os, sys
 import clr
 

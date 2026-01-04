@@ -1,3 +1,5 @@
+## this is functional code -> import.py is better
+
 # tia_import.py — připraví Siemens Openness prostředí (V19 + pythonnet 3.x)
 import os, sys, clr
 from pathlib import Path
@@ -36,3 +38,6 @@ _resolver_delegate = ResolveEventHandler(_resolve)
 System.AppDomain.CurrentDomain.add_AssemblyResolve(_resolver_delegate)
 
 clr.AddReference("Siemens.Engineering")  # odteď můžeš importovat Siemens.Engineering
+print("tia_import: Siemens.Engineering reference loaded")
+
+## this is functional code 

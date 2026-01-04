@@ -1,3 +1,5 @@
+# this doesnt work properly
+
 # createTIAtemplate.py  (TIA V19, pythonnet 3.x)
 import os, sys, clr
 from pathlib import Path

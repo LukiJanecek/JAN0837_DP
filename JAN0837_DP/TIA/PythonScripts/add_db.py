@@ -1,5 +1,7 @@
+# this code works properly
+
 # --- helpery (vložit jednou, pod import blok a před použití) ---
-from System import Enum
+
 from System.Reflection import Assembly, ReflectionTypeLoadException
 
 asm = Assembly.Load("Siemens.Engineering")

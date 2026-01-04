@@ -1,3 +1,5 @@
+# this work properly -> is better
+
 # --- TIA V19 + pythonnet 3.x: minimální a funkční import ---
 import os, sys, clr
 from pathlib import Path

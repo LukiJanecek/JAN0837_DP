@@ -53,8 +53,14 @@ namespace JAN0837_DP.Forms
         {
             //var assembly = System.Reflection.Assembly.LoadFrom(tiaDLLPath);
             lblStatus1.Text = "Set project name and cpu type id.";
+            
             lblParam1.Text = "Project name: ";
             lblParam2.Text = "CPU type ID: ";
+            lblParam3.Text = "New project path: ";
+            lblParam4.Text = "PLC name";
+
+            lblDLLpath.Text = "Path to DLL project: ";
+            lblTiaProject.Text = "Select TIA project: ";
 
             txtBoxTIADLL.Text = tiaDLLPath;
             txtBoxTIADLL.Enabled = false;
@@ -247,12 +253,16 @@ namespace JAN0837_DP.Forms
         {
 
         }
+        private void btnImportDLL_Click(object sender, EventArgs e)
+        {
+
+        }
 
         private void btnChangeTIADLLPath_Click(object sender, EventArgs e)
         {
             paths.tiaDLLPath = txtBoxTIADLL.Text;
             chBoxChangeTiaDLLPath.Checked = false;
-            lblStatus1.Text = "Path chnaged successfully.";
+            lblStatus1.Text = "Path changed successfully.";
         }
 
         private void chBoxChangeTiaDLLPath_CheckedChanged(object sender, EventArgs e)
@@ -266,7 +276,29 @@ namespace JAN0837_DP.Forms
             {
                 txtBoxTIADLL.Enabled = true;
                 btnChangeTIADLLPath.Enabled = true;
-            }    
+            }
+        }
+
+        private void txtBoxTIADLL_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void txtBoxParam1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtBoxParam2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnPreset_Click(object sender, EventArgs e)
+        {
+            txtBoxParam1.Text = "MyAwesomeTIAproject";
+            txtBoxParam2.Text = "OrderNumber:6ES7 212-1AE40-0XB0/V4.6";
+            txtBoxParam3.Text = paths.tiaProjectPath;
+            txtBoxParam4.Text = "PLC_1";
         }
     }
 }

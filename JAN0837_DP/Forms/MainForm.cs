@@ -94,7 +94,7 @@ namespace JAN0837_DP
         public MainForm()
         {
             InitializeComponent();
-            this.MinimumSize = new Size(850, 430);
+            this.MinimumSize = new Size(900, 600);
 
             _ucCommControl = new ucCommunicationControl { Dock = DockStyle.Fill };
             mainWindow.Controls.Add(_ucCommControl);
@@ -157,7 +157,7 @@ namespace JAN0837_DP
         #region toolStripMain components
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Generating template to TIA Portal V19.";
+            lblStatus.Text = "Openning TIA Portal control.";
 
             /*
             mainWindow.Controls.Clear();

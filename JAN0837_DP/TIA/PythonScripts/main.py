@@ -10,7 +10,6 @@
 #   cpu_type_id
 #   cpu_version
 #   cpu_name
- 
 
 # open project on path
 # params:
@@ -25,6 +24,12 @@
 #   db_name
 #   variables
 #       name, datatype, value 
+
+# start TIA Portal with ui 
+
+# výběr aktuálních plc do selectboxu
+# připojit mou knihovnu do projektu? 
+# PLC vytvořit datatype a z něj pak čerpat do DB
 
 import tiaopenness_functions as tiafc
 

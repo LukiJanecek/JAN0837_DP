@@ -243,17 +243,23 @@ namespace JAN0837_DP.TIA
                 
 
             // Zkusit se připojit na běžící procesy
-            foreach (var p in TiaPortal.GetProcesses())
+            try
             {
-                if (p.ProjectPath?.FullName?.Equals(projectPath, StringComparison.OrdinalIgnoreCase) == true)
+                foreach(var p in TiaPortal.GetProcesses())
                 {
-                    var attached = p.Attach();
-                    return (attached, attached.Projects[0]);
+                    if (p.ProjectPath?.FullName?.Equals(projectPath, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        var attached = p.Attach();
+                        return (attached, attached.Projects[0]);
+                    }
                 }
+            }   
+            catch (Exception ex)
+            {
+                
             }
 
-            var mode = withUI ? TiaPortalMode.WithUserInterface : TiaPortalMode.WithoutUserInterface;
-            var tia = new TiaPortal(mode);
+            var tia = new TiaPortal(TiaPortalMode.WithUserInterface);
             tia.Projects.Open(new FileInfo(projectPath));
             return (tia, tia.Projects[0]);
         }

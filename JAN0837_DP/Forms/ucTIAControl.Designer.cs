@@ -35,10 +35,10 @@
             lblParam2 = new Label();
             txtBoxParam2 = new TextBox();
             comboBoxTIAprojects = new ComboBox();
-            btnCreateProjectPY = new Button();
-            btnStartTIAPY = new Button();
-            btnOpenProjectPY = new Button();
-            btnAddDBPY = new Button();
+            btnCreateProject = new Button();
+            btnStartTIA = new Button();
+            btnOpenProject = new Button();
+            btnAddDB = new Button();
             txtBoxTIADLL = new TextBox();
             btnChangeTIADLLPath = new Button();
             chBoxChangeTiaDLLPath = new CheckBox();
@@ -50,6 +50,8 @@
             txtBoxParam3 = new TextBox();
             lblParam4 = new Label();
             txtBoxParam4 = new TextBox();
+            rbtnCreateNewProject = new RadioButton();
+            rbtnOpenProject = new RadioButton();
             statusStripGenerateTIAtemplate.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,9 +59,9 @@
             // 
             statusStripGenerateTIAtemplate.ImageScalingSize = new Size(20, 20);
             statusStripGenerateTIAtemplate.Items.AddRange(new ToolStripItem[] { lblStatus1 });
-            statusStripGenerateTIAtemplate.Location = new Point(0, 460);
+            statusStripGenerateTIAtemplate.Location = new Point(0, 566);
             statusStripGenerateTIAtemplate.Name = "statusStripGenerateTIAtemplate";
-            statusStripGenerateTIAtemplate.Size = new Size(773, 26);
+            statusStripGenerateTIAtemplate.Size = new Size(717, 26);
             statusStripGenerateTIAtemplate.TabIndex = 3;
             // 
             // lblStatus1
@@ -70,7 +72,7 @@
             // 
             // txtBoxParam1
             // 
-            txtBoxParam1.Location = new Point(29, 39);
+            txtBoxParam1.Location = new Point(253, 174);
             txtBoxParam1.Name = "txtBoxParam1";
             txtBoxParam1.Size = new Size(325, 27);
             txtBoxParam1.TabIndex = 5;
@@ -79,7 +81,7 @@
             // lblParam1
             // 
             lblParam1.AutoSize = true;
-            lblParam1.Location = new Point(29, 16);
+            lblParam1.Location = new Point(253, 151);
             lblParam1.Name = "lblParam1";
             lblParam1.Size = new Size(87, 20);
             lblParam1.TabIndex = 6;
@@ -88,7 +90,7 @@
             // lblParam2
             // 
             lblParam2.AutoSize = true;
-            lblParam2.Location = new Point(29, 69);
+            lblParam2.Location = new Point(253, 204);
             lblParam2.Name = "lblParam2";
             lblParam2.Size = new Size(87, 20);
             lblParam2.TabIndex = 9;
@@ -96,7 +98,7 @@
             // 
             // txtBoxParam2
             // 
-            txtBoxParam2.Location = new Point(29, 92);
+            txtBoxParam2.Location = new Point(253, 227);
             txtBoxParam2.Name = "txtBoxParam2";
             txtBoxParam2.Size = new Size(325, 27);
             txtBoxParam2.TabIndex = 8;
@@ -105,55 +107,55 @@
             // comboBoxTIAprojects
             // 
             comboBoxTIAprojects.FormattingEnabled = true;
-            comboBoxTIAprojects.Location = new Point(32, 268);
+            comboBoxTIAprojects.Location = new Point(253, 117);
             comboBoxTIAprojects.Name = "comboBoxTIAprojects";
             comboBoxTIAprojects.Size = new Size(322, 28);
             comboBoxTIAprojects.TabIndex = 11;
             comboBoxTIAprojects.SelectedIndexChanged += comboBoxTIAprojects_SelectedIndexChanged;
             // 
-            // btnCreateProjectPY
+            // btnCreateProject
             // 
-            btnCreateProjectPY.Location = new Point(360, 21);
-            btnCreateProjectPY.Name = "btnCreateProjectPY";
-            btnCreateProjectPY.Size = new Size(94, 63);
-            btnCreateProjectPY.TabIndex = 14;
-            btnCreateProjectPY.Text = "Create project";
-            btnCreateProjectPY.UseVisualStyleBackColor = true;
-            btnCreateProjectPY.Click += btnCreateProjectPY_Click;
+            btnCreateProject.Location = new Point(584, 227);
+            btnCreateProject.Name = "btnCreateProject";
+            btnCreateProject.Size = new Size(94, 63);
+            btnCreateProject.TabIndex = 14;
+            btnCreateProject.Text = "Create new project";
+            btnCreateProject.UseVisualStyleBackColor = true;
+            btnCreateProject.Click += btnCreateProject_Click;
             // 
-            // btnStartTIAPY
+            // btnStartTIA
             // 
-            btnStartTIAPY.Location = new Point(460, 21);
-            btnStartTIAPY.Name = "btnStartTIAPY";
-            btnStartTIAPY.Size = new Size(94, 63);
-            btnStartTIAPY.TabIndex = 15;
-            btnStartTIAPY.Text = "Start \r\nTIA Portal";
-            btnStartTIAPY.UseVisualStyleBackColor = true;
-            btnStartTIAPY.Click += btnStartTIAPY_Click;
+            btnStartTIA.Location = new Point(28, 22);
+            btnStartTIA.Name = "btnStartTIA";
+            btnStartTIA.Size = new Size(94, 63);
+            btnStartTIA.TabIndex = 15;
+            btnStartTIA.Text = "Start \r\nTIA Portal";
+            btnStartTIA.UseVisualStyleBackColor = true;
+            btnStartTIA.Click += btnStartTIA_Click;
             // 
-            // btnOpenProjectPY
+            // btnOpenProject
             // 
-            btnOpenProjectPY.Location = new Point(360, 250);
-            btnOpenProjectPY.Name = "btnOpenProjectPY";
-            btnOpenProjectPY.Size = new Size(94, 63);
-            btnOpenProjectPY.TabIndex = 16;
-            btnOpenProjectPY.Text = "Open project";
-            btnOpenProjectPY.UseVisualStyleBackColor = true;
-            btnOpenProjectPY.Click += btnOpenProjectPY_Click;
+            btnOpenProject.Location = new Point(584, 89);
+            btnOpenProject.Name = "btnOpenProject";
+            btnOpenProject.Size = new Size(94, 63);
+            btnOpenProject.TabIndex = 16;
+            btnOpenProject.Text = "Open project";
+            btnOpenProject.UseVisualStyleBackColor = true;
+            btnOpenProject.Click += btnOpenProject_Click;
             // 
-            // btnAddDBPY
+            // btnAddDB
             // 
-            btnAddDBPY.Location = new Point(460, 250);
-            btnAddDBPY.Name = "btnAddDBPY";
-            btnAddDBPY.Size = new Size(94, 63);
-            btnAddDBPY.TabIndex = 17;
-            btnAddDBPY.Text = "Add DB to project";
-            btnAddDBPY.UseVisualStyleBackColor = true;
-            btnAddDBPY.Click += btnAddDBPY_Click;
+            btnAddDB.Location = new Point(584, 158);
+            btnAddDB.Name = "btnAddDB";
+            btnAddDB.Size = new Size(94, 63);
+            btnAddDB.TabIndex = 17;
+            btnAddDB.Text = "Add DB to project";
+            btnAddDB.UseVisualStyleBackColor = true;
+            btnAddDB.Click += btnAddDB_Click;
             // 
             // txtBoxTIADLL
             // 
-            txtBoxTIADLL.Location = new Point(32, 341);
+            txtBoxTIADLL.Location = new Point(28, 455);
             txtBoxTIADLL.Name = "txtBoxTIADLL";
             txtBoxTIADLL.Size = new Size(522, 27);
             txtBoxTIADLL.TabIndex = 18;
@@ -161,7 +163,7 @@
             // 
             // btnChangeTIADLLPath
             // 
-            btnChangeTIADLLPath.Location = new Point(460, 374);
+            btnChangeTIADLLPath.Location = new Point(456, 488);
             btnChangeTIADLLPath.Name = "btnChangeTIADLLPath";
             btnChangeTIADLLPath.Size = new Size(94, 63);
             btnChangeTIADLLPath.TabIndex = 19;
@@ -172,7 +174,7 @@
             // chBoxChangeTiaDLLPath
             // 
             chBoxChangeTiaDLLPath.AutoSize = true;
-            chBoxChangeTiaDLLPath.Location = new Point(339, 374);
+            chBoxChangeTiaDLLPath.Location = new Point(335, 488);
             chBoxChangeTiaDLLPath.Name = "chBoxChangeTiaDLLPath";
             chBoxChangeTiaDLLPath.Size = new Size(115, 24);
             chBoxChangeTiaDLLPath.TabIndex = 20;
@@ -183,7 +185,7 @@
             // lblTiaProject
             // 
             lblTiaProject.AutoSize = true;
-            lblTiaProject.Location = new Point(32, 245);
+            lblTiaProject.Location = new Point(253, 94);
             lblTiaProject.Name = "lblTiaProject";
             lblTiaProject.Size = new Size(91, 20);
             lblTiaProject.TabIndex = 21;
@@ -192,7 +194,7 @@
             // lblDLLpath
             // 
             lblDLLpath.AutoSize = true;
-            lblDLLpath.Location = new Point(32, 318);
+            lblDLLpath.Location = new Point(28, 432);
             lblDLLpath.Name = "lblDLLpath";
             lblDLLpath.Size = new Size(138, 20);
             lblDLLpath.TabIndex = 22;
@@ -200,16 +202,17 @@
             // 
             // btnImportDLL
             // 
-            btnImportDLL.Location = new Point(32, 374);
+            btnImportDLL.Location = new Point(28, 488);
             btnImportDLL.Name = "btnImportDLL";
             btnImportDLL.Size = new Size(94, 63);
             btnImportDLL.TabIndex = 23;
             btnImportDLL.Text = "Import DLL";
             btnImportDLL.UseVisualStyleBackColor = true;
+            btnImportDLL.Click += btnImportDLL_Click;
             // 
             // btnPreset
             // 
-            btnPreset.Location = new Point(360, 90);
+            btnPreset.Location = new Point(584, 296);
             btnPreset.Name = "btnPreset";
             btnPreset.Size = new Size(94, 63);
             btnPreset.TabIndex = 24;
@@ -220,7 +223,7 @@
             // lblParam3
             // 
             lblParam3.AutoSize = true;
-            lblParam3.Location = new Point(29, 122);
+            lblParam3.Location = new Point(253, 257);
             lblParam3.Name = "lblParam3";
             lblParam3.Size = new Size(87, 20);
             lblParam3.TabIndex = 25;
@@ -228,15 +231,16 @@
             // 
             // txtBoxParam3
             // 
-            txtBoxParam3.Location = new Point(29, 145);
+            txtBoxParam3.Location = new Point(253, 280);
             txtBoxParam3.Name = "txtBoxParam3";
             txtBoxParam3.Size = new Size(325, 27);
             txtBoxParam3.TabIndex = 26;
+            txtBoxParam3.TextChanged += txtBoxParam3_TextChanged;
             // 
             // lblParam4
             // 
             lblParam4.AutoSize = true;
-            lblParam4.Location = new Point(29, 175);
+            lblParam4.Location = new Point(253, 310);
             lblParam4.Name = "lblParam4";
             lblParam4.Size = new Size(87, 20);
             lblParam4.TabIndex = 27;
@@ -244,15 +248,42 @@
             // 
             // txtBoxParam4
             // 
-            txtBoxParam4.Location = new Point(29, 197);
+            txtBoxParam4.Location = new Point(253, 332);
             txtBoxParam4.Name = "txtBoxParam4";
             txtBoxParam4.Size = new Size(325, 27);
             txtBoxParam4.TabIndex = 28;
+            txtBoxParam4.TextChanged += txtBoxParam4_TextChanged;
+            // 
+            // rbtnCreateNewProject
+            // 
+            rbtnCreateNewProject.AutoSize = true;
+            rbtnCreateNewProject.Location = new Point(28, 121);
+            rbtnCreateNewProject.Name = "rbtnCreateNewProject";
+            rbtnCreateNewProject.Size = new Size(219, 24);
+            rbtnCreateNewProject.TabIndex = 29;
+            rbtnCreateNewProject.TabStop = true;
+            rbtnCreateNewProject.Text = "Create new template project";
+            rbtnCreateNewProject.UseVisualStyleBackColor = true;
+            rbtnCreateNewProject.CheckedChanged += rbtnCreateNewProject_CheckedChanged;
+            // 
+            // rbtnOpenProject
+            // 
+            rbtnOpenProject.AutoSize = true;
+            rbtnOpenProject.Location = new Point(28, 91);
+            rbtnOpenProject.Name = "rbtnOpenProject";
+            rbtnOpenProject.Size = new Size(171, 24);
+            rbtnOpenProject.TabIndex = 30;
+            rbtnOpenProject.TabStop = true;
+            rbtnOpenProject.Text = "Open created project";
+            rbtnOpenProject.UseVisualStyleBackColor = true;
+            rbtnOpenProject.CheckedChanged += rbtnOpenProject_CheckedChanged;
             // 
             // ucTIAControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(rbtnOpenProject);
+            Controls.Add(rbtnCreateNewProject);
             Controls.Add(txtBoxParam4);
             Controls.Add(lblParam4);
             Controls.Add(txtBoxParam3);
@@ -264,10 +295,10 @@
             Controls.Add(chBoxChangeTiaDLLPath);
             Controls.Add(btnChangeTIADLLPath);
             Controls.Add(txtBoxTIADLL);
-            Controls.Add(btnAddDBPY);
-            Controls.Add(btnOpenProjectPY);
-            Controls.Add(btnStartTIAPY);
-            Controls.Add(btnCreateProjectPY);
+            Controls.Add(btnAddDB);
+            Controls.Add(btnOpenProject);
+            Controls.Add(btnStartTIA);
+            Controls.Add(btnCreateProject);
             Controls.Add(comboBoxTIAprojects);
             Controls.Add(lblParam2);
             Controls.Add(txtBoxParam2);
@@ -275,7 +306,7 @@
             Controls.Add(txtBoxParam1);
             Controls.Add(statusStripGenerateTIAtemplate);
             Name = "ucTIAControl";
-            Size = new Size(773, 486);
+            Size = new Size(717, 592);
             Load += ucGenerateTIAtemplate_Load;
             statusStripGenerateTIAtemplate.ResumeLayout(false);
             statusStripGenerateTIAtemplate.PerformLayout();
@@ -291,10 +322,10 @@
         private Label lblParam2;
         private TextBox txtBoxParam2;
         private ComboBox comboBoxTIAprojects;
-        private Button btnCreateProjectPY;
-        private Button btnStartTIAPY;
-        private Button btnOpenProjectPY;
-        private Button btnAddDBPY;
+        private Button btnCreateProject;
+        private Button btnStartTIA;
+        private Button btnOpenProject;
+        private Button btnAddDB;
         private TextBox txtBoxTIADLL;
         private Button btnChangeTIADLLPath;
         private CheckBox chBoxChangeTiaDLLPath;
@@ -306,5 +337,7 @@
         private TextBox txtBoxParam3;
         private Label lblParam4;
         private TextBox txtBoxParam4;
+        private RadioButton rbtnCreateNewProject;
+        private RadioButton rbtnOpenProject;
     }
 }

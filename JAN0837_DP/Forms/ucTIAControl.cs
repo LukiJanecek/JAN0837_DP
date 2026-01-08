@@ -53,11 +53,11 @@ namespace JAN0837_DP.Forms
         {
             //var assembly = System.Reflection.Assembly.LoadFrom(tiaDLLPath);
             lblStatus1.Text = "Set project name and cpu type id.";
-            
+
             lblParam1.Text = "Project name: ";
             lblParam2.Text = "CPU type ID: ";
             lblParam3.Text = "New project path: ";
-            lblParam4.Text = "PLC name";
+            lblParam4.Text = "PLC name:";
 
             lblDLLpath.Text = "Path to DLL project: ";
             lblTiaProject.Text = "Select TIA project: ";
@@ -79,6 +79,7 @@ namespace JAN0837_DP.Forms
                 // Projdi každou podsložku – v každé očekáváme další složky s .ap* souborem
                 foreach (var baseDir in candidates.Where(Directory.Exists))
                 {
+                    // looking for .ap* file id directory, if not found look one level deeper
                     foreach (var projectDir in Directory.EnumerateDirectories(baseDir))
                     {
                         // Hledej přímo v této složce .ap* (ap19, ap20, ...). Když nic, zkus o úroveň níž.
@@ -87,93 +88,32 @@ namespace JAN0837_DP.Forms
 
                         if (apPath == null)
                         {
-                            // některé template projekty mají ještě podadresář se skutečným .ap souborem
+                            // some template projects has subdirectory with real .ap file 
                             var apFilesDeep = Directory.EnumerateFiles(projectDir, "*.ap*", SearchOption.AllDirectories);
-                            apPath = apFilesDeep
-                                .OrderBy(p => p.Count(c => c == System.IO.Path.DirectorySeparatorChar)) // vem nejbližší
-                                .FirstOrDefault();
+                            apPath = apFilesDeep.OrderBy(p => p.Count(c => c == System.IO.Path.DirectorySeparatorChar)).FirstOrDefault();
                         }
-
-                        if (apPath != null)
+                        else
                         {
                             var display = $"{System.IO.Path.GetFileNameWithoutExtension(apPath)}  ({System.IO.Path.GetFileName(projectDir)})";
                             comboBoxTIAprojects.Items.Add(new ProjectItem(display, apPath));
                         }
                     }
                 }
-
-                if (comboBoxTIAprojects.Items.Count > 0)
-                {
-                    comboBoxTIAprojects.SelectedIndex = 0;
-                    _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
-                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
-                }
-                else
-                {
-                    lblStatus1.Text = "No TIA projects found in Sample/Example.";
-                }
-
             }
             catch (Exception ex)
             {
                 lblStatus1.Text = "Error: " + ex.Message;
             }
-        }
 
-        private async void btnGenerateTemplate_Click(object sender, EventArgs e)
-        {
-            lblStatus1.Text = "Starting generating template...";
-
-            string projectName = txtBoxParam1.Text?.Trim();
-
-            if (string.IsNullOrWhiteSpace(projectName))
+            if (comboBoxTIAprojects.Items.Count > 0)
             {
-                lblStatus1.Text = "Type project name, please.";
-                return;
-            }
-
-            string cputype = txtBoxParam2.Text?.Trim();
-
-            if (string.IsNullOrWhiteSpace(cputype))
-            {
-                lblStatus1.Text = "Type CPU ID, please.";
-                return;
-            }
-
-            var projectDir = Path.Combine(paths.tiaPath, projectName);
-            Directory.CreateDirectory(projectDir);
-
-            string args = $"--dir {projectDir} --name {projectName} --type-id {cputype} --ui";
-
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
-
-            var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
-
-            if (code == 0)
-            {
-                lblStatus1.Text = "Template generated.";
+                comboBoxTIAprojects.SelectedIndex = 0;
+                _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
+                lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
             }
             else
             {
-                lblStatus1.Text = "Template generation failed.";
-            }
-        }
-
-        private void btnStartTIA_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                lblStatus1.Text = "Starting TIA Portal...";
-
-                tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface);
-            }
-            catch (Exception ex)
-            {
-                lblStatus1.Text = "Error" + ex.Message;
-            }
-            finally
-            {
-                lblStatus1.Text = "TIA Portal started.";
+                lblStatus1.Text = "No TIA projects found in Sample/Example.";
             }
         }
 
@@ -188,10 +128,10 @@ namespace JAN0837_DP.Forms
 
         private void btnOpenProject_Click(object sender, EventArgs e)
         {
-            lblStatus1.Text = "Openning TIA project.";
-
             try
             {
+                lblStatus1.Text = "Openning TIA project.";
+
                 if (string.IsNullOrWhiteSpace(_selectedProjectPath))
                 {
                     lblStatus1.Text = "Please select a TIA project first.";
@@ -203,56 +143,36 @@ namespace JAN0837_DP.Forms
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Open error: " + ex.Message;
+                lblStatus1.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void btnCreateProject_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStartTIA_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lblStatus1.Text = "Starting TIA Portal...";
+
+                tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface);
+
+                lblStatus1.Text = "TIA Portal started.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error" + ex.Message;
             }
         }
 
         private void btnAddDB_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (projectPlc == null)
-                {
-                    if (string.IsNullOrWhiteSpace(_selectedProjectPath))
-                        throw new InvalidOperationException("Open a project first (or select one).");
-                    TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
-                }
-
-                var plc = TIAcontrol.GetPlcSoftware(projectPlc);
-
-                string dbName = "DB_ProcessData";
-
-                TIAcontrol.CreateOrReplaceSimpleDb(plc, dbName, optimized: true);
-
-                projectPlc.Save();
-
-                lblStatus1.Text = $"DB '{dbName}' added.";
-            }
-            catch (Exception ex)
-            {
-                lblStatus1.Text = "Error: " + ex.Message;
-            }
-        }
-
-        private void btnCreateProjectPY_Click(object sender, EventArgs e)
-        {
 
         }
 
-        private void btnStartTIAPY_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnOpenProjectPY_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnAddDBPY_Click(object sender, EventArgs e)
-        {
-
-        }
         private void btnImportDLL_Click(object sender, EventArgs e)
         {
 
@@ -293,12 +213,100 @@ namespace JAN0837_DP.Forms
 
         }
 
+        private void txtBoxParam3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtBoxParam4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void btnPreset_Click(object sender, EventArgs e)
         {
             txtBoxParam1.Text = "MyAwesomeTIAproject";
             txtBoxParam2.Text = "OrderNumber:6ES7 212-1AE40-0XB0/V4.6";
             txtBoxParam3.Text = paths.tiaProjectPath;
             txtBoxParam4.Text = "PLC_1";
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private async void generateTemplate(object sender, EventArgs e)
+        {
+            lblStatus1.Text = "Starting generating template...";
+
+            string projectName = txtBoxParam1.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                lblStatus1.Text = "Type project name, please.";
+                return;
+            }
+
+            string cputype = txtBoxParam2.Text?.Trim();
+
+            if (string.IsNullOrWhiteSpace(cputype))
+            {
+                lblStatus1.Text = "Type CPU ID, please.";
+                return;
+            }
+
+            var projectDir = Path.Combine(paths.tiaPath, projectName);
+            Directory.CreateDirectory(projectDir);
+
+            string args = $"--dir {projectDir} --name {projectName} --type-id {cputype} --ui";
+
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
+
+            var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
+
+            if (code == 0)
+            {
+                lblStatus1.Text = "Template generated.";
+            }
+            else
+            {
+                lblStatus1.Text = "Template generation failed.";
+            }
+        }
+
+        private void add_DB(object sender, EventArgs e)
+        {
+            try
+            {
+                if (projectPlc == null)
+                {
+                    if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+                        throw new InvalidOperationException("Open a project first (or select one).");
+                    TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
+                }
+
+                var plc = TIAcontrol.GetPlcSoftware(projectPlc);
+
+                string dbName = "DB_ProcessData";
+
+                TIAcontrol.CreateOrReplaceSimpleDb(plc, dbName, optimized: true);
+
+                projectPlc.Save();
+
+                lblStatus1.Text = $"DB '{dbName}' added.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void rbtnOpenProject_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rbtnCreateNewProject_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

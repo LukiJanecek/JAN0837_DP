@@ -26,7 +26,7 @@ namespace JAN0837_DP.Forms
 {
     public partial class ucCommunicationControl : UserControl
     {
-        public comS7 _s7;
+        //public comS7 _s7;
         public comSharp7 _sharp7;
         public comTCPIP _tcpip;
         public ModbusTCPIPimMaster _modbusMaster;
@@ -350,7 +350,7 @@ namespace JAN0837_DP.Forms
 
             // check box
             lblCheckBox.Visible = true;
-            lblCheckBox.Enabled = false;
+            lblCheckBox.Enabled = true;
             lblCheckBox.Text = "What is this device?";
 
             checkBoxMaster.Visible = true;

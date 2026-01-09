@@ -239,8 +239,7 @@ namespace JAN0837_DP.TIA
             if (string.IsNullOrWhiteSpace(projectPath) || !File.Exists(projectPath))
             {
                 throw new FileNotFoundException("TIA project file not found.", projectPath);
-            }
-                
+            }                
 
             // Zkusit se připojit na běžící procesy
             try

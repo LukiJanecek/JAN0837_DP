@@ -128,11 +128,6 @@ namespace JAN0837_DP.Forms
             txtBoxParam4.Clear();
 
             #endregion
-
-            // comboBox
-            comboBoxTIAprojects.Items.Clear();
-
-            btnFindTIAProjectOnPath_Click(sender, e);
         }
 
         private void FindMyProjectInThisProject()
@@ -202,7 +197,7 @@ namespace JAN0837_DP.Forms
 
                     comboBoxTIAprojects.SelectedIndex = 0;
                     _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
-                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
+                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s). Choose one and open it or add pre-prepared data block in it.";
                 }
                 else
                 {
@@ -219,10 +214,8 @@ namespace JAN0837_DP.Forms
         #region rbtns
         private void rbtnOpenProject_CheckedChanged(object sender, EventArgs e)
         {
-            lblStatus1.Text = "Choose your project.";
-
             // UI settings 
-            #region
+            #region UI settings
 
             //
             comboBoxTIAprojects.Enabled = true;
@@ -270,6 +263,7 @@ namespace JAN0837_DP.Forms
 
             #endregion
 
+            FindMyProjectInThisProject();
         }
 
         private void rbtnCreateNewProject_CheckedChanged(object sender, EventArgs e)
@@ -484,7 +478,17 @@ namespace JAN0837_DP.Forms
 
         private void btnImportDLL_Click(object sender, EventArgs e)
         {
-            // test import on current paths.tiaDLLPath
+            if (string.IsNullOrWhiteSpace(txtBoxTIADLL.Text.Trim()))
+            {
+                lblStatus1.Text = "Type path to TIA DLL project, please.";
+                return;
+            }
+
+            // test import on current path in txtBoxTIADLL
+
+
+            // if import successful, save the path
+            paths.tiaDLLPath = txtBoxTIADLL.Text.Trim();
         }
 
         private void btnPreset_Click(object sender, EventArgs e)

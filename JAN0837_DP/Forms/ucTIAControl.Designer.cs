@@ -196,7 +196,7 @@
             btnImportDLL.Name = "btnImportDLL";
             btnImportDLL.Size = new Size(94, 63);
             btnImportDLL.TabIndex = 23;
-            btnImportDLL.Text = "Import DLL";
+            btnImportDLL.Text = "Try import DLL";
             btnImportDLL.UseVisualStyleBackColor = true;
             btnImportDLL.Click += btnImportDLL_Click;
             // 

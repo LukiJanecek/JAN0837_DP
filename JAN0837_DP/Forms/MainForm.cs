@@ -274,11 +274,14 @@ namespace JAN0837_DP
             lblStatus.Text = "Exitting...";
 
             // communication thread stop
+            
             if (internalVariables.communicationThread != null || internalVariables.communicationThreadRunningFlag == true)
             {
                 internalVariables.communicationThreadRunningFlag = false;
-                internalVariables.communicationThread.Join();
+                //internalVariables.communicationThread.Join();
+                internalVariables.communicationCancellationTokenSource.Cancel();
             }
+            
 
             // vizualization thread stop
             if (internalVariables.visualizationThread != null || internalVariables.visualizationThread.IsAlive || internalVariables.visualizationThreadRunningFlag == true)

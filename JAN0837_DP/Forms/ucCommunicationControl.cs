@@ -1054,7 +1054,7 @@ namespace JAN0837_DP.Forms
                 
                 internalVariables.communicationThreadRunningFlag = false;
                 
-                //internalVariables.communicationThread.Join(); // Počká na ukončení vlákna
+                //internalVariables.communicationThread.Join(); 
                 
                 internalVariables.communicationCancellationTokenSource.Cancel();
 

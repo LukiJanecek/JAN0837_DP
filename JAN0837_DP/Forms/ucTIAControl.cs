@@ -135,8 +135,88 @@ namespace JAN0837_DP.Forms
             btnFindTIAProjectOnPath_Click(sender, e);
         }
 
-        // radio buttons
-        #region
+        private void FindMyProjectInThisProject()
+        {
+            comboBoxTIAprojects.Items.Clear();
+
+            try
+            {
+                // prefer the main TIA_projects root; fallback to Sample/Example if missing
+                var searchRoots = new List<string>();
+                if (!string.IsNullOrWhiteSpace(paths.tiaProjectPath) && Directory.Exists(paths.tiaProjectPath))
+                {
+                    searchRoots.Add(paths.tiaProjectPath);
+                }
+                    
+
+                if (Directory.Exists(paths.tiaSampleProjectPath))
+                {
+                    searchRoots.Add(paths.tiaSampleProjectPath);
+                }
+                    
+
+                if (Directory.Exists(paths.tiaExampleProjectPath))
+                {
+                    searchRoots.Add(paths.tiaExampleProjectPath);
+                }
+                   
+
+                if (searchRoots.Count == 0)
+                {
+                    lblStatus1.Text = "No TIA projects root folder found.";
+                    return;
+                }
+
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var found = new List<ProjectItem>();
+
+                // search all .ap* files under each root (recursive)
+                foreach (var root in searchRoots)
+                {
+                    try
+                    {
+                        var apFiles = Directory.EnumerateFiles(root, "*.ap*", SearchOption.AllDirectories);
+                        foreach (var apPath in apFiles)
+                        {
+                            var full = Path.GetFullPath(apPath);
+                            if (!seen.Add(full)) continue; // avoid duplicates
+
+                            var fileName = Path.GetFileNameWithoutExtension(apPath);
+                            var parentDir = Path.GetFileName(Path.GetDirectoryName(apPath)) ?? "";
+                            var display = string.IsNullOrEmpty(parentDir) ? fileName : $"{fileName}  ({parentDir})";
+
+                            found.Add(new ProjectItem(display, apPath));
+                        }
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // skip roots we can't access
+                        continue;
+                    }
+                }
+
+                if (found.Count > 0)
+                {
+                    foreach (var item in found.OrderBy(p => p.Name))
+                        comboBoxTIAprojects.Items.Add(item);
+
+                    comboBoxTIAprojects.SelectedIndex = 0;
+                    _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
+                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
+                }
+                else
+                {
+                    lblStatus1.Text = "No TIA projects found under the configured folder(s).";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error: " + ex.Message;
+            }
+        }
+
+        // rbtns
+        #region rbtns
         private void rbtnOpenProject_CheckedChanged(object sender, EventArgs e)
         {
             lblStatus1.Text = "Choose your project.";
@@ -420,50 +500,84 @@ namespace JAN0837_DP.Forms
             // correctly it should be looking in parent folder (paths.tiaProjectPath) for Sample and Example projects
             comboBoxTIAprojects.Items.Clear();
 
+            var inputPath = txtBoxParam1.Text?.Trim();
+
+            if (string.IsNullOrEmpty(inputPath))
+            {
+                lblStatus1.Text = "Please enter a folder path in the input first.";
+                return;
+            }
+
             try
             {
-                var candidates = new[]
+                // If user specified a file directly, accept it when it's a .ap* file
+                if (System.IO.File.Exists(inputPath))
                 {
-                paths.tiaExampleProjectPath, paths.tiaSampleProjectPath
-                };
-
-                // find created .ap* projects 
-                foreach (var baseDir in candidates.Where(Directory.Exists))
-                {
-                    // looking for .ap* file id directory, if not found look one level deeper
-                    foreach (var projectDir in Directory.EnumerateDirectories(baseDir))
+                    if (System.IO.Path.GetExtension(inputPath).StartsWith(".ap", StringComparison.OrdinalIgnoreCase))
                     {
-                        var apFilesTop = Directory.EnumerateFiles(projectDir, "*.ap*", SearchOption.TopDirectoryOnly);
-                        var apPath = apFilesTop.FirstOrDefault();
-
-                        if (apPath == null)
-                        {
-                            // some template projects has subdirectory with real .ap file 
-                            var apFilesDeep = Directory.EnumerateFiles(projectDir, "*.ap*", SearchOption.AllDirectories);
-                            apPath = apFilesDeep.OrderBy(p => p.Count(c => c == System.IO.Path.DirectorySeparatorChar)).FirstOrDefault();
-                        }
-                        else
-                        {
-                            var display = $"{System.IO.Path.GetFileNameWithoutExtension(apPath)}  ({System.IO.Path.GetFileName(projectDir)})";
-                            comboBoxTIAprojects.Items.Add(new ProjectItem(display, apPath));
-                        }
+                        var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
+                        comboBoxTIAprojects.Items.Add(new ProjectItem(display, inputPath));
+                        comboBoxTIAprojects.SelectedIndex = 0;
+                        _selectedProjectPath = inputPath;
+                        lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                lblStatus1.Text = "Error: " + ex.Message;
-            }
+                    else
+                    {
+                        lblStatus1.Text = "Specified file is not a .ap* project file.";
+                    }
 
-            if (comboBoxTIAprojects.Items.Count > 0)
-            {
+                    return;
+                }
+
+                // Path must be an existing directory from here
+                if (!System.IO.Directory.Exists(inputPath))
+                {
+                    lblStatus1.Text = "Directory does not exist: " + inputPath;
+                    return;
+                }
+
+                // Search recursively for any .ap* files under the given folder
+                var apFiles = System.IO.Directory.EnumerateFiles(inputPath, "*.ap*", System.IO.SearchOption.AllDirectories);
+
+                var found = new List<ProjectItem>();
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var apPath in apFiles)
+                {
+                    var full = System.IO.Path.GetFullPath(apPath);
+                    if (!seen.Add(full)) continue;
+
+                    var fileName = System.IO.Path.GetFileNameWithoutExtension(apPath);
+                    var parentDir = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(apPath)) ?? "";
+                    var display = string.IsNullOrEmpty(parentDir) ? fileName : $"{fileName}  ({parentDir})";
+
+                    found.Add(new ProjectItem(display, apPath));
+                }
+
+                if (found.Count == 0)
+                {
+                    lblStatus1.Text = "No .ap* project files found under the specified folder.";
+                    return;
+                }
+
+                foreach (var item in found.OrderBy(p => p.Name))
+                    comboBoxTIAprojects.Items.Add(item);
+
                 comboBoxTIAprojects.SelectedIndex = 0;
                 _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
                 lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
             }
-            else
+            catch (UnauthorizedAccessException)
             {
-                lblStatus1.Text = "No TIA projects found in Sample/Example.";
+                lblStatus1.Text = "Access denied when scanning the folder.";
+            }
+            catch (System.IO.PathTooLongException)
+            {
+                lblStatus1.Text = "A path encountered while scanning is too long.";
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Error: " + ex.Message;
             }
         }
 

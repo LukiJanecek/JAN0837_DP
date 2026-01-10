@@ -1,30 +1,29 @@
-﻿using System;
+﻿using JAN0837_DP.Data;
+using JAN0837_DP.TIA;
+using Org.BouncyCastle.Math.EC.Endo;
+using S7.Net;
+// 
+//using TiaOpennessHelper;
+using Siemens.Engineering;
+using Siemens.Engineering.Hmi.Tag;
+using Siemens.Engineering.HW;
+using Siemens.Engineering.HW.Features;
+using Siemens.Engineering.SW;
+using Siemens.Engineering.SW.Blocks;
+using Siemens.Engineering.SW.Blocks.Interface;
+using Siemens.Engineering.SW.Tags;
+using Siemens.Engineering.SW.Types;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// 
-//using TiaOpennessHelper;
-using Siemens.Engineering;
-using Siemens.Engineering.HW;
-using Siemens.Engineering.HW.Features;
-using Siemens.Engineering.SW;
-using Siemens.Engineering.SW.Blocks;
-using Siemens.Engineering.SW.Types;
-using Siemens.Engineering.SW.Tags;
-using Siemens.Engineering.SW.Blocks.Interface;
-using System.ComponentModel.DataAnnotations;
-using Org.BouncyCastle.Math.EC.Endo;
-
-using JAN0837_DP.Data;
-using Siemens.Engineering.Hmi.Tag;
-using System.Diagnostics;
-using JAN0837_DP.TIA;
 
 namespace JAN0837_DP.Forms
 {
@@ -271,7 +270,7 @@ namespace JAN0837_DP.Forms
             lblStatus1.Text = "Type your inputs and create new template project.";
 
             // UI settings 
-            #region
+            #region UI settings 
 
             //
             txtBoxParam1.Enabled = true;
@@ -476,7 +475,7 @@ namespace JAN0837_DP.Forms
 
         }
 
-        private void btnImportDLL_Click(object sender, EventArgs e)
+        private async void btnImportDLL_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtBoxTIADLL.Text.Trim()))
             {
@@ -485,10 +484,61 @@ namespace JAN0837_DP.Forms
             }
 
             // test import on current path in txtBoxTIADLL
+            string[] args = new[] { "--dir", txtBoxTIADLL.Text.Trim() };
 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "testImportTIADLL_v2.py"); // testImportTIADLL.py
 
-            // if import successful, save the path
-            paths.tiaDLLPath = txtBoxTIADLL.Text.Trim();
+            if (!File.Exists(paths.pythonExePath))
+            {
+                MessageBox.Show($"Python executable not found:\n{paths.pythonExePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!File.Exists(pythonScriptPath))
+            {
+                MessageBox.Show($"Python script not found:\n{pythonScriptPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
+
+                // Show full diagnostic info when script fails
+                if (code != 0)
+                {
+                    var msg = new StringBuilder();
+                    msg.AppendLine($"Python exit code: {code}");
+                    if (!string.IsNullOrWhiteSpace(stdout))
+                    {
+                        msg.AppendLine("=== STDOUT ===");
+                        msg.AppendLine(stdout);
+                    }
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        msg.AppendLine("=== STDERR ===");
+                        msg.AppendLine(stderr);
+                    }
+
+                    // show to user and keep details in label too
+                    MessageBox.Show(msg.ToString(), "Python script error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    lblStatus1.Text = "Import failed — see details (MessageBox).";
+                    return;
+                }
+
+                // Success: optionally show stdout
+                if (!string.IsNullOrWhiteSpace(stdout))
+                    lblStatus1.Text = "Import successful: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                else
+                    lblStatus1.Text = "Import successful.";
+
+                paths.tiaDLLPath = txtBoxTIADLL.Text.Trim();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Exception while running Python: {ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                lblStatus1.Text = "Import failed (exception).";
+            }
         }
 
         private void btnPreset_Click(object sender, EventArgs e)

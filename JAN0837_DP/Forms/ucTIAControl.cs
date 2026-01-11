@@ -391,26 +391,81 @@ namespace JAN0837_DP.Forms
             }
         }
 
-        private void btnOpenProject_Click(object sender, EventArgs e)
+        private async void btnOpenProject_Click(object sender, EventArgs e)
         {
             // this doesnt work properly -> python will do this :) 
             try
             {
-                lblStatus1.Text = "Openning TIA project.";
-
                 if (string.IsNullOrWhiteSpace(_selectedProjectPath))
                 {
                     lblStatus1.Text = "Please select a TIA project first.";
                     throw new InvalidOperationException("Please select a TIA project first.");
                 }
 
+                lblStatus1.Text = "Openning TIA project.";
+
                 var (tiaPortal, projectPlc) = TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
-                lblStatus1.Text = $"Project open: {Path.GetFileName(_selectedProjectPath)}";
+
+                lblStatus1.Text = $"Project opened: {Path.GetFileName(_selectedProjectPath)}";
             }
             catch (Exception ex)
             {
                 lblStatus1.Text = "Error: " + ex.Message;
             }
+
+            // py 
+            if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+            {
+                lblStatus1.Text = "Please select a TIA project first.";
+                throw new InvalidOperationException("Please select a TIA project first.");
+            }
+
+            string[] args = new[] { "--dir", _selectedProjectPath };
+
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
+
+            lblStatus1.Text = "Openning TIA project.";
+
+            try
+            {
+                var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
+
+                // Show full diagnostic info when script fails
+                if (code != 0)
+                {
+                    var msg = new StringBuilder();
+                    msg.AppendLine($"Python exit code: {code}");
+                    if (!string.IsNullOrWhiteSpace(stdout))
+                    {
+                        msg.AppendLine("=== STDOUT ===");
+                        msg.AppendLine(stdout);
+                    }
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        msg.AppendLine("=== STDERR ===");
+                        msg.AppendLine(stderr);
+                    }
+
+                    // msg.ToString();
+                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    return;
+                }
+
+                // Success: optionally show stdout
+                if (!string.IsNullOrWhiteSpace(stdout))
+                {
+                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
+                else
+                {
+                    lblStatus1.Text = "Template generated successfuly.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
+            }
+
         }
 
         private async void btnCreateProject_Click(object sender, EventArgs e)
@@ -430,8 +485,6 @@ namespace JAN0837_DP.Forms
                 lblStatus1.Text = "Type CPU ID, please.";
                 return;
             }
-
-            lblStatus1.Text = "Starting generating template...";
 
             string projectPath = txtBoxParam3.Text.Trim();
 
@@ -454,25 +507,109 @@ namespace JAN0837_DP.Forms
                 Directory.CreateDirectory(projectPath);
             }
 
-            string args = $"--dir {projectPath} --name {projectName} --type-id {cputype} --ui";
+            lblStatus1.Text = "Starting generating template...";
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
+            string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} -- plc-name {plcName}--ui";
+            string[] args = new[] { "--dir", projectPath, "--name", projectName, "--type-id", cputype, "--plc-name", plcName, "--ui" };
 
-            var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectPath, "--name", projectName, "--type-id", cputype, "--ui");
+            ////
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
 
-            if (code == 0)
+            try
             {
-                lblStatus1.Text = "Template generated.";
+                var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
+
+                // Show full diagnostic info when script fails
+                if (code != 0)
+                {
+                    var msg = new StringBuilder();
+                    msg.AppendLine($"Python exit code: {code}");
+                    if (!string.IsNullOrWhiteSpace(stdout))
+                    {
+                        msg.AppendLine("=== STDOUT ===");
+                        msg.AppendLine(stdout);
+                    }
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        msg.AppendLine("=== STDERR ===");
+                        msg.AppendLine(stderr);
+                    }
+
+                    // msg.ToString();
+                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    return;
+                }
+
+                // Success: optionally show stdout
+                if (!string.IsNullOrWhiteSpace(stdout))
+                {
+                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
+                else
+                {
+                    lblStatus1.Text = "Template generated successfuly.";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                lblStatus1.Text = "Generating failed.";
+                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
             }
         }
 
-        private void btnAddDB_Click(object sender, EventArgs e)
+        private async void btnAddDB_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+            {
+                lblStatus1.Text = "Please select a TIA project first.";
+                throw new InvalidOperationException("Please select a TIA project first.");
+            }
 
+            ////
+            ///
+
+            string[] args = new[] { "--dir", _selectedProjectPath };
+
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
+
+            try
+            {
+                var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
+
+                // Show full diagnostic info when script fails
+                if (code != 0)
+                {
+                    var msg = new StringBuilder();
+                    msg.AppendLine($"Python exit code: {code}");
+                    if (!string.IsNullOrWhiteSpace(stdout))
+                    {
+                        msg.AppendLine("=== STDOUT ===");
+                        msg.AppendLine(stdout);
+                    }
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        msg.AppendLine("=== STDERR ===");
+                        msg.AppendLine(stderr);
+                    }
+
+                    // msg.ToString();
+                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    return;
+                }
+
+                // Success: optionally show stdout
+                if (!string.IsNullOrWhiteSpace(stdout))
+                {
+                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
+                else
+                {
+                    lblStatus1.Text = "Template generated successfuly.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
+            }
         }
 
         private async void btnImportDLL_Click(object sender, EventArgs e)

@@ -420,7 +420,7 @@ namespace JAN0837_DP.Forms
                 throw new InvalidOperationException("Please select a TIA project first.");
             }
 
-            string[] args = new[] { "--dir", _selectedProjectPath };
+            string[] args = new[] { "--dir", _selectedProjectPath, "--ui" };
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
 
@@ -447,23 +447,23 @@ namespace JAN0837_DP.Forms
                     }
 
                     // msg.ToString();
-                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    lblStatus1.Text = $"Openning project failed, please check your path to Siemens.Engineering.dll.";
                     return;
                 }
 
                 // Success: optionally show stdout
                 if (!string.IsNullOrWhiteSpace(stdout))
                 {
-                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    lblStatus1.Text = "Project opened successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
                 else
                 {
-                    lblStatus1.Text = "Template generated successfuly.";
+                    lblStatus1.Text = "Project opened successfuly.";
                 }
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
+                lblStatus1.Text = "Code exception error, openning project failed: " + ex.Message;
             }
 
         }
@@ -509,7 +509,7 @@ namespace JAN0837_DP.Forms
 
             lblStatus1.Text = "Starting generating template...";
 
-            string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} -- plc-name {plcName}--ui";
+            string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} --plc-name {plcName} --ui";
             string[] args = new[] { "--dir", projectPath, "--name", projectName, "--type-id", cputype, "--plc-name", plcName, "--ui" };
 
             ////
@@ -536,23 +536,23 @@ namespace JAN0837_DP.Forms
                     }
 
                     // msg.ToString();
-                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    lblStatus1.Text = $"Creating new project failed, please check your path to Siemens.Engineering.dll.";
                     return;
                 }
 
                 // Success: optionally show stdout
                 if (!string.IsNullOrWhiteSpace(stdout))
                 {
-                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    lblStatus1.Text = "Project created successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
                 else
                 {
-                    lblStatus1.Text = "Template generated successfuly.";
+                    lblStatus1.Text = "Project created successfuly.";
                 }
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
+                lblStatus1.Text = "Code exception error, creating project failed: " + ex.Message;
             }
         }
 
@@ -565,9 +565,7 @@ namespace JAN0837_DP.Forms
             }
 
             ////
-            ///
-
-            string[] args = new[] { "--dir", _selectedProjectPath };
+            string[] args = new[] { "--dir", _selectedProjectPath , "--ui" };
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
 
@@ -592,23 +590,23 @@ namespace JAN0837_DP.Forms
                     }
 
                     // msg.ToString();
-                    lblStatus1.Text = $"Generating template failed, please check your path to Siemens.Engineering.dll.";
+                    lblStatus1.Text = $"Adding DB to project failed, please check your path to Siemens.Engineering.dll.";
                     return;
                 }
 
                 // Success: optionally show stdout
                 if (!string.IsNullOrWhiteSpace(stdout))
                 {
-                    lblStatus1.Text = "Tempalte generated successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    lblStatus1.Text = "DB added successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
                 else
                 {
-                    lblStatus1.Text = "Template generated successfuly.";
+                    lblStatus1.Text = "DB added successfuly.";
                 }
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error. Generating tempalte failed.";
+                lblStatus1.Text = "Code exception error, adding DB failed: " + ex.Message;
             }
         }
 
@@ -677,7 +675,7 @@ namespace JAN0837_DP.Forms
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error. Import failed.";
+                lblStatus1.Text = "Code exception error, import failed: " + ex.Message;
             }
         }
 
@@ -691,7 +689,6 @@ namespace JAN0837_DP.Forms
 
         private void btnFindTIAProjectOnPath_Click(object sender, EventArgs e)
         {
-            // correctly it should be looking in parent folder (paths.tiaProjectPath) for Sample and Example projects
             comboBoxTIAprojects.Items.Clear();
 
             var inputPath = txtBoxParam1.Text?.Trim();

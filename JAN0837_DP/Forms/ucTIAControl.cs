@@ -63,8 +63,8 @@ namespace JAN0837_DP.Forms
             lblParam3.Text = "";
             lblParam4.Text = "";
 
-            lblDLLpath.Text = "Path to DLL project: ";
-            lblTiaProject.Text = "Select TIA project: ";
+            lblDLLpath.Text = "Path to Siemens.Engineering.dll:";
+            lblTiaProject.Text = "Select TIA Portal project:";
 
             txtBoxTIADLL.Enabled = false;
             txtBoxTIADLL.Text = paths.tiaDLLPath;
@@ -479,15 +479,15 @@ namespace JAN0837_DP.Forms
         {
             if (string.IsNullOrWhiteSpace(txtBoxTIADLL.Text.Trim()))
             {
-                lblStatus1.Text = "Type path to TIA DLL project, please.";
+                lblStatus1.Text = $"Type path to text box under text '{lblDLLpath.Text}', please.";
                 return;
             }
 
             // test import on current path in txtBoxTIADLL
             string[] args = new[] { "--dir", txtBoxTIADLL.Text.Trim() };
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "testImportTIADLL_v2.py"); // testImportTIADLL.py
-
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "importTIADLL.py"); 
+            /*
             if (!File.Exists(paths.pythonExePath))
             {
                 MessageBox.Show($"Python executable not found:\n{paths.pythonExePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -499,6 +499,7 @@ namespace JAN0837_DP.Forms
                 MessageBox.Show($"Python script not found:\n{pythonScriptPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            */
 
             try
             {
@@ -520,24 +521,26 @@ namespace JAN0837_DP.Forms
                         msg.AppendLine(stderr);
                     }
 
-                    // show to user and keep details in label too
-                    MessageBox.Show(msg.ToString(), "Python script error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    lblStatus1.Text = "Import failed — see details (MessageBox).";
+                    // msg.ToString();
+                    lblStatus1.Text = $"Import failed, please check your path to Siemens.Engineering.dll.";
                     return;
                 }
 
                 // Success: optionally show stdout
                 if (!string.IsNullOrWhiteSpace(stdout))
-                    lblStatus1.Text = "Import successful: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                {
+                    lblStatus1.Text = "Import Siemens.Engineering.dll successful: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
                 else
-                    lblStatus1.Text = "Import successful.";
+                {
+                    lblStatus1.Text = "Import Siemens.Engineering.dll successful.";
+                }
 
                 paths.tiaDLLPath = txtBoxTIADLL.Text.Trim();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Exception while running Python: {ex}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                lblStatus1.Text = "Import failed (exception).";
+                lblStatus1.Text = "Code exception error. Import failed.";
             }
         }
 

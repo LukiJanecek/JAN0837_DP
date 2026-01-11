@@ -4,6 +4,31 @@ import platform
 import traceback
 from pathlib import Path
 
+print("Python executable:", sys.executable)
+print("Python version:", sys.version.replace('\\n',' '))
+
+# Ensure pythonnet (clr) available and give actionable error
+try:
+    import clr
+except ModuleNotFoundError as ex:
+    print("ERROR: pythonnet (clr) not found in this interpreter.", file=sys.stderr)
+    print("Install it into the same python used by the app:", file=sys.stderr)
+    print(f'  "{sys.executable}" -m pip install pythonnet', file=sys.stderr)
+    sys.exit(10)
+except Exception:
+    print("ERROR while importing clr:", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(11)
+
+# now try import System (should work if pythonnet is correct)
+try:
+    import System
+    print("System import OK.")
+except Exception:
+    print("ERROR: import System failed after clr import.", file=sys.stderr)
+    traceback.print_exc(file=sys.stderr)
+    sys.exit(12)
+
 def try_import(name):
     try:
         __import__(name)

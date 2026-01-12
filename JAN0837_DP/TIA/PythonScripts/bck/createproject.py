@@ -1,4 +1,4 @@
-## this doeant work properly
+## this doesnt work properly
 
 # create_or_clone_project.py — TIA V19 + pythonnet 3.x
 import os, sys, clr, shutil

@@ -24,6 +24,7 @@
 #   db_name
 #   variables
 #       name, datatype, value 
+# create datatype in PLC and then use it in DB
 
 # start TIA Portal with ui 
 

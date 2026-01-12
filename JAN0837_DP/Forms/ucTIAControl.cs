@@ -420,9 +420,9 @@ namespace JAN0837_DP.Forms
                 throw new InvalidOperationException("Please select a TIA project first.");
             }
 
-            string[] args = new[] { "--dir", _selectedProjectPath, "--ui" };
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath, "--ui" };
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "openPathProject.py"); // 
 
             lblStatus1.Text = "Openning TIA project.";
 
@@ -509,11 +509,11 @@ namespace JAN0837_DP.Forms
 
             lblStatus1.Text = "Starting generating template...";
 
-            string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} --plc-name {plcName} --ui";
-            string[] args = new[] { "--dir", projectPath, "--name", projectName, "--type-id", cputype, "--plc-name", plcName, "--ui" };
+            //string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} --plc-name {plcName} --ui";
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", projectPath, "--project-name", projectName, "--type-id", cputype, "--plc-name", plcName, "--ui" };
 
             ////
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createNewTIAPortalProject.py"); 
 
             try
             {
@@ -565,9 +565,9 @@ namespace JAN0837_DP.Forms
             }
 
             ////
-            string[] args = new[] { "--dir", _selectedProjectPath , "--ui" };
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath , "--ui" };
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, ""); // 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "addDBtoPathProject.py"); 
 
             try
             {

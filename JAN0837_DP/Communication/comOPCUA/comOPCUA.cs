@@ -16,6 +16,16 @@ using Opc.Ua.Security;
 
 namespace JAN0837_DP.Communication.comOPCUA
 {
+    public class opcuaServer
+    {
+
+    }
+
+    public class opcuaKlient
+    {
+
+    }
+
     public class OPCUAimServer
     {
         /*

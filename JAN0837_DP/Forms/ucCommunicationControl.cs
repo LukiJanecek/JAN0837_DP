@@ -211,7 +211,7 @@ namespace JAN0837_DP.Forms
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "URL:";
+            lblPara1.Text = "Server URL:";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type URL";
@@ -721,6 +721,25 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "OPC UA communication started.";
                         lblStatus.Text = "OPC UA communication started.";
 
+                        string ipAdressOPCUA = internalVariables.txtBoxParam1;
+
+                        if (internalVariables.checkBoxMaster == true)
+                        {
+                            // start server 
+
+                            // create client and connect to server???
+                        }
+                        else if (internalVariables.checkBoxSlave == true)
+                        {
+                            // create client and connect to server
+                        }
+                        else
+                        {
+                            // no checkbox selected 
+                            lblStatus.Text = $"Error: Please select Master or Slave mode for OPC UA.";
+                            return; // break;
+                        }
+
                         break;
                     case "TCPIP":
                         lblCommunicationStatus.Text = "TCP/IP communication started.";
@@ -930,6 +949,22 @@ namespace JAN0837_DP.Forms
 
                     break;
                 case "OPCUA":
+                    if (internalVariables.checkBoxMaster == true)
+                    {
+                        // stop server 
+                        // disconnect client???
+                    }
+                    else if (internalVariables.checkBoxSlave == true)
+                    {
+                        // disconnect client
+                    }
+                    else
+                    {
+                        // no checkbox selected 
+                        lblStatus.Text = $"Error: Please select Master or Slave mode for OPC UA.";
+                        return; // break;
+                    }
+
                     break;
                 case "ModbusTCPIP":
                     if (internalVariables.checkBoxMaster == true)
@@ -1086,7 +1121,7 @@ namespace JAN0837_DP.Forms
             if (rbtnOPCUA.Checked == true)
             {
                 // URL 
-                txtBoxPara1.Text = "";
+                txtBoxPara1.Text = "192.168.0.1";
             }
             else if (rbtnMQTT.Checked == true)
             {

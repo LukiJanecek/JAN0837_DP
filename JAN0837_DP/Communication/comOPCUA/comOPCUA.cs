@@ -18,12 +18,80 @@ namespace JAN0837_DP.Communication.comOPCUA
 {
     public class opcuaServer
     {
+        public Opc.Ua.Server.Session serverSession;
+        public bool running = false;
 
+        public bool startOPCUAserver(string serverURL)
+        {
+            return true;
+        }
+
+        public bool stopOPCUAserver()
+        {
+            return true;
+        }
     }
 
     public class opcuaKlient
     {
+        public Opc.Ua.Client.Session clientSession;
+        public SessionReconnectHandler reconnectHandler;
+        public bool connected = false;
 
+        public async Task<bool> connectToOPCUAserver(string serverURL, string user, string pass)
+        {
+            if (connected)
+            {
+                return true;
+            }
+
+            try
+            {
+                ApplicationInstance application = new ApplicationInstance();
+                application.ApplicationType = Opc.Ua.ApplicationType.Client;
+                application.ConfigSectionName = "Client";
+                application.LoadApplicationConfiguration(false).Wait();
+                application.CheckApplicationInstanceCertificate(false, 0).Wait();
+                var configuration = application.ApplicationConfiguration;
+                configuration.CertificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
+                var endpointDescription = CoreClientUtils.SelectEndpoint(configuration, serverURL, true, 15000);
+                var endpointConfiguration = EndpointConfiguration.Create(configuration);
+                var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+                var userIdentity = new UserIdentity(user, pass);
+                clientSession = await Opc.Ua.Client.Session.Create(configuration, endpoint, false, "OPCUA Client", 60000, userIdentity, null);
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+                return false;
+            }
+        }
+
+        public async Task<bool> disconnectFromOPCUAserver()
+        {
+            if (!connected)
+            {
+                return true;
+            }
+            try
+            {
+                await clientSession.CloseAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            
+        }
+
+        private static void CertificateValidator_CertificateValidation(Opc.Ua.CertificateValidator sender, Opc.Ua.CertificateValidationEventArgs e)
+        {
+            e.Accept = true;
+        }
     }
 
     public class OPCUAimServer

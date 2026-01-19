@@ -465,7 +465,6 @@ namespace JAN0837_DP.Forms
             {
                 lblStatus1.Text = "Code exception error, openning project failed: " + ex.Message;
             }
-
         }
 
         private async void btnCreateProject_Click(object sender, EventArgs e)

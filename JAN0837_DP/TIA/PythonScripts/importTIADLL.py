@@ -85,9 +85,9 @@ def main():
 
         # print assemblies found in the directory 
         dlls = sorted(dll_dir.glob("*.dll"))
-        print(f"Found {len(dlls)} .dll files in directory (first 20):")
+        print(f"Found {len(dlls)} .dll files in directory (first 2000):")
 
-        for p in dlls[:20]:
+        for p in dlls[:2000]:
             print("  " + str(p.name))
 
         return 0
@@ -98,7 +98,7 @@ def main():
         try:
             dlls = sorted(dll_dir.glob("*.dll"))
             eprint(f"DLLs in folder ({len(dlls)}):")
-            for p in dlls[:50]:
+            for p in dlls[:2000]:
                 eprint("  " + str(p.name))
         except Exception:
             pass

@@ -5,6 +5,7 @@
 import sys
 import argparse
 from pathlib import Path
+
 import importTIADLL
 
 def main():
@@ -75,16 +76,12 @@ def main():
     project = tia_portal.Projects.Open(FileInfo(str(project_path)))
     
     print(f"[OK] Project opened successfully: {project_path}")
-    print(f"Project name: {project.Name}")
-    
-    # Keep the portal open if UI is enabled
-    if args.ui:
-        print("TIA Portal is now open. Press Enter to close...")
-        input()
-    
+    print(f"Project name: {project.Name}")  
+
     # Close the project and portal
-    project.Close()
-    tia_portal.Dispose()
+    if mode == TiaPortalMode.WithoutUserInterface:
+        project.Close()
+        tia_portal.Dispose()
 
 if __name__ == "__main__":
     main()

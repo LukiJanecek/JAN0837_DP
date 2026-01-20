@@ -373,6 +373,7 @@ db = plc_sw.BlockGroup.Blocks.Create(
     "MyDataBlock",
     enum_val(PlcProgrammingLanguage, "LAD")
 )
+
 if create_var_with_datatype(db.Interface.Static, "myRealVar", "Real"):
     print("[OK] DB variable myRealVar: REAL created.")
 else:

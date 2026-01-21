@@ -9,67 +9,110 @@
 import os 
 import sys
 import argparse
+import tempfile
 from pathlib import Path
 from collections import deque
 
 import importTIADLL
 
-def find_plc_software(dev):
-    # zkus přímo na zařízení
+# Global type cache for find_enum
+_TYPES = None
+
+def _init_types():
+    """Initialize global type cache from Siemens.Engineering assembly"""
+    global _TYPES
+    if _TYPES is not None:
+        return
+    
+    from System.Reflection import Assembly, ReflectionTypeLoadException
+    _TYPES = []
     try:
-        sc = dev.GetService("SoftwareContainer")
-        if sc is not None and getattr(sc, "Software", None) is not None:
-            return dev, sc.Software
-    except Exception:
-        pass
-    # fallback: jakákoli služba vracející SW
-    try:
-        for svc in dev.Services:
-            st = svc.GetType()
-            # pokud má property 'Software' končící na PlcSoftware, použij ji
-            p = st.GetProperty("Software")
-            if p:
-                sw = p.GetValue(svc, None)
-                if sw is not None and sw.GetType().Name.endswith("PlcSoftware"):
-                    return dev, sw
-    except Exception:
-        pass
-    # projdi strom itemů
-    q = deque()
-    try:
-        for it in dev.DeviceItems:
-            q.append(it)
+        # Load main assembly
+        asm = Assembly.Load("Siemens.Engineering")
+        try:
+            _TYPES.extend(list(asm.GetTypes()))
+        except ReflectionTypeLoadException as e:
+            _TYPES.extend([t for t in e.Types if t is not None])
     except Exception:
         pass
 
-    while q:
-        it = q.popleft()
-        # varianta se SoftwareContainer
-        try:
-            sc = it.GetService("SoftwareContainer")
-            if sc is not None and getattr(sc, "Software", None) is not None:
-                return it, sc.Software
-        except Exception:
-            pass
-        # varianta s property Software na jiné službě
-        try:
-            for svc in it.Services:
-                p = svc.GetType().GetProperty("Software")
-                if p:
-                    sw = p.GetValue(svc, None)
-                    if sw is not None and sw.GetType().Name.endswith("PlcSoftware"):
-                        return it, sw
-        except Exception:
-            pass
-        # enqueue children
-        try:
-            for ch in it.DeviceItems:
-                q.append(ch)
-        except Exception:
-            pass
+def find_plc_software(dev):
+    from System.Reflection import Assembly
+    
+    # Try using generic GetService<T>() method
+    try:
+        asm = Assembly.Load("Siemens.Engineering")
+        software_container_type = None
+        for t in asm.GetTypes():
+            if t.Name == "SoftwareContainer":
+                software_container_type = t
+                break
+        
+        if software_container_type:
+            # Try on device first
+            try:
+                get_service_method = dev.GetType().GetMethod("GetService")
+                if get_service_method and get_service_method.IsGenericMethodDefinition:
+                    generic_method = get_service_method.MakeGenericMethod(software_container_type)
+                    result = generic_method.Invoke(dev, None)
+                    if result and hasattr(result, "Software"):
+                        return dev, result.Software
+            except Exception:
+                pass
+            
+            # Try on device items
+            try:
+                for it in dev.DeviceItems:
+                    get_service_method = it.GetType().GetMethod("GetService")
+                    if get_service_method and get_service_method.IsGenericMethodDefinition:
+                        generic_method = get_service_method.MakeGenericMethod(software_container_type)
+                        result = generic_method.Invoke(it, None)
+                        if result and hasattr(result, "Software"):
+                            return it, result.Software
+                    
+                    # Also check nested items
+                    try:
+                        for child in it.DeviceItems:
+                            get_service_method = child.GetType().GetMethod("GetService")
+                            if get_service_method and get_service_method.IsGenericMethodDefinition:
+                                generic_method = get_service_method.MakeGenericMethod(software_container_type)
+                                result = generic_method.Invoke(child, None)
+                                if result and hasattr(result, "Software"):
+                                    return child, result.Software
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+    except Exception:
+        pass
+    
     return None, None
 
+def get_service_generic(item, service_type_name):
+    """Get service using generic method invocation with GetService<T>()"""
+    from System.Reflection import Assembly
+    
+    try:
+        asm = Assembly.Load("Siemens.Engineering")
+        service_type = None
+        for t in asm.GetTypes():
+            if t.Name == service_type_name:
+                service_type = t
+                break
+        
+        if service_type:
+            get_service_method = item.GetType().GetMethod("GetService")
+            if get_service_method and get_service_method.IsGenericMethodDefinition:
+                generic_method = get_service_method.MakeGenericMethod(service_type)
+                result = generic_method.Invoke(item, None)
+                return result
+    except Exception:
+        pass
+    
+    return None
+
 def set_enum_prop(obj, prop_name, value_name):
+    from System import Enum
     if obj is None: return False
     p = obj.GetType().GetProperty(prop_name)
     if p is None or not p.PropertyType.IsEnum: return False
@@ -83,15 +126,36 @@ def set_bool_prop(obj, prop_name, value: bool):
     p.SetValue(obj, value, None); return True
 
 def find_enum(simple_name: str):
+    _init_types()
     for t in _TYPES:
         if t is not None and t.IsEnum and t.Name == simple_name:
             return t
     return None
 
 def enum_val(enum_type, name: str):
+    from System import Enum
     return Enum.Parse(enum_type, name)
 
+def find_cpu_item(root_item):
+    """Find CPU item with SoftwareContainer service in device tree"""
+    from collections import deque
+    queue = deque([root_item])
+    while queue:
+        it = queue.popleft()
+        try:
+            if it.GetService("SoftwareContainer") is not None:
+                return it
+        except:
+            pass
+        try:
+            for ch in it.DeviceItems:
+                queue.append(ch)
+        except:
+            pass
+    return None
+
 def create_var_with_datatype(static_iface, var_name: str, datatype_name: str) -> bool:
+    from System import Enum
     t = static_iface.GetType()
     for m in t.GetMethods():
         if m.Name != "Create": continue
@@ -104,6 +168,138 @@ def create_var_with_datatype(static_iface, var_name: str, datatype_name: str) ->
             static_iface.Create(var_name, v)
             return True
     return False
+
+def _delete_existing_external_source(src_group, name: str):
+    """Delete existing ExternalSource with given name if it exists"""
+    try:
+        for es in list(src_group.ExternalSources):
+            if str(es.Name) == name:
+                es.Delete()
+    except Exception:
+        pass
+
+def create_or_replace_udt(plc, type_name: str, fields: list = None) -> None:
+    """Create/replace PLC data type (UDT) via TYPE/END_TYPE SCL"""
+    from Siemens.Engineering.SW.Blocks import PlcBlock
+    
+    fields = fields or [("button", "Bool", "FALSE"),
+                        ("LED", "Bool", "FALSE")]
+    
+    lines = []
+    for (name, typ, init) in fields:
+        t = str(typ).upper()
+        if init is None or str(init) == "":
+            lines.append(f"  {name:12s} : {t};")
+        else:
+            lines.append(f"  {name:12s} : {t} := {init};")
+    body = "\n".join(lines)
+    
+    type_scl = f"""TYPE {type_name}
+VERSION : 0.1
+STRUCT
+{body}
+END_STRUCT
+END_TYPE
+"""
+    
+    # Delete existing UDT with same name
+    for b in list(plc.BlockGroup.Blocks):
+        if isinstance(b, PlcBlock) and str(b.Name) == type_name:
+            b.Delete()
+            break
+    
+    src_group = plc.ExternalSourceGroup
+    src_name = f"TYPE_{type_name}.scl"
+    
+    # Remove conflicting external source
+    _delete_existing_external_source(src_group, src_name)
+    
+    # Write temp file
+    tmpfile = os.path.join(tempfile.gettempdir(), src_name)
+    with open(tmpfile, "w", encoding="utf-8") as f:
+        f.write(type_scl)
+    
+    try:
+        src = src_group.ExternalSources.CreateFromFile(src_name, tmpfile)
+        src.GenerateBlocksFromSource()
+        # Keep project clean
+        try:
+            src.Delete()
+        except Exception:
+            pass
+    finally:
+        try:
+            os.remove(tmpfile)
+        except OSError:
+            pass
+
+def create_or_replace_simple_db(plc, db_name: str, udt_type: str = None, optimized: bool = True) -> None:
+    """Create/replace simple DB via SCL external source"""
+    from Siemens.Engineering.SW.Blocks import PlcBlock
+    
+    # Delete existing DB with same name
+    for b in list(plc.BlockGroup.Blocks):
+        if isinstance(b, PlcBlock) and str(b.Name) == db_name:
+            b.Delete()
+            break
+    
+    # Build SCL
+    attr = "{ S7_Optimized_Access := 'TRUE' }" if optimized else "{ S7_Optimized_Access := 'FALSE' }"
+    
+    if udt_type:
+        # Use UDT type
+        db_scl = f"""DATA_BLOCK {db_name}
+{attr}
+VERSION : 0.1
+  VAR
+    data : {udt_type};
+  END_VAR
+BEGIN
+END_DATA_BLOCK
+"""
+    else:
+        # Simple variables
+        db_scl = f"""DATA_BLOCK {db_name}
+{attr}
+VERSION : 0.1
+  VAR
+    Speed       : Real := 0.0;
+    Count       : DInt := 0;
+    Enabled     : Bool := FALSE;
+  END_VAR
+BEGIN
+END_DATA_BLOCK
+"""
+    
+    src_group = plc.ExternalSourceGroup
+    
+    # Normalize file name
+    file_stub = db_name
+    if file_stub.upper().startswith("DB_"):
+        file_stub = file_stub[3:]
+    src_name = f"DB_{file_stub}.scl"
+    
+    # Remove conflicting external source
+    _delete_existing_external_source(src_group, src_name)
+    
+    # Write temp file
+    tmpfile = os.path.join(tempfile.gettempdir(), src_name)
+    with open(tmpfile, "w", encoding="utf-8") as f:
+        f.write(db_scl)
+    
+    try:
+        src = src_group.ExternalSources.CreateFromFile(src_name, tmpfile)
+        src.GenerateBlocksFromSource()
+        # Keep project clean
+        try:
+            src.Delete()
+        except Exception:
+            pass
+    finally:
+        try:
+            os.remove(tmpfile)
+        except OSError:
+            pass
 
 def main():
     parser = argparse.ArgumentParser(description="Create new TIA Portal project with data type and DB")
@@ -181,168 +377,118 @@ def main():
     print("Task 3: Creating PLC:", args.plc_name, "with type:", args.type_id)
     print("=" * 60)
     
-    print(f"[DEBUG] Creating device with name: {args.plc_name}")
-    print(f"[DEBUG] Type ID: {args.type_id}")
+    # Check if device already exists
+    device = None
+    for dev in project.Devices:
+        if dev.Name == args.plc_name:
+            device = dev
+            print(f"[OK] Found existing device: {device.Name}")
+            break
     
-    try:
-        device = project.Devices.CreateWithItem(
-            args.type_id, args.plc_name, args.plc_name
-        )
-        print(f"[OK] Device created successfully")
-    except Exception as e:
-        print(f"[ERROR] Failed to create device with name '{args.plc_name}'")
-        print(f"[DEBUG] Error: {e}")
-        print(f"\n[NOTE] Trying alternative: Using 'Device' as name...")
+    # If device doesn't exist, create it
+    if device is None:
+        print(f"[DEBUG] Creating device with name: {args.plc_name}")
+        print(f"[DEBUG] Type ID: {args.type_id}")
+        
         try:
             device = project.Devices.CreateWithItem(
-                args.type_id, "Device", "Device"
+                args.type_id, args.plc_name, args.plc_name
             )
-            print(f"[OK] Device created with default name 'Device'")
-        except Exception as e2:
-            print(f"[ERROR] Failed with default name too: {e2}")
+            print(f"[OK] Device created successfully: {device.Name}")
+        except Exception as e:
+            print(f"[ERROR] Failed to create device: {e}")
             return
     
-    print(f"[DEBUG] Device created: {device.Name}")
-    print(f"[DEBUG] Device type: {device.GetType().FullName}")
-    
-    # Try to access services, but handle if not available
+    # Get root item
+    root_item = None
     try:
-        services = list(device.Services) if hasattr(device, 'Services') else []
-        print(f"[DEBUG] Device services: {[s.GetType().Name for s in services]}")
-    except Exception as e:
-        print(f"[DEBUG] Could not list services: {e}")
+        for item in device.DeviceItems:
+            root_item = item
+            break
+    except:
+        pass
     
-    try:
-        items = list(device.DeviceItems) if hasattr(device, 'DeviceItems') else []
-        print(f"[DEBUG] Device items: {[item.Name for item in items]}")
-    except Exception as e:
-        print(f"[DEBUG] Could not list items: {e}")
+    if root_item:
+        print(f"[OK] Root item obtained: {getattr(root_item, 'Name', '<root>')}")
     
-    # SAVE PROJECT BEFORE ACCESSING PLC SOFTWARE
-    print("\n[NOTE] Saving project to initialize PLC software...")
-    try:
-        project.Save()
-        print("[OK] Project saved.")
-    except Exception as e:
-        print(f"[WARN] Could not save project: {e}")
-
+    # Find the CPU item with SoftwareContainer
+    # Note: We need to search from device, not from root_item!
+    # The device has 2 DeviceItems: Rack_0 and PLC1
+    # PLC1 is the one with SoftwareContainer
+    
     cpu_item, plc_sw = find_plc_software(device)
-    if plc_sw is None:
-        print(f"\n[ERROR] Could not find PLC software using Services approach")
-        print(f"[DEBUG] Exploring full device tree structure:")
-        print(f"  - Device Name: {device.Name}")
-        print(f"  - Device Type: {device.GetType().FullName}")
-        
-        # List all properties and methods to understand the structure
-        try:
-            device_type = device.GetType()
-            print(f"\n[DEBUG] Device properties:")
-            for prop in device_type.GetProperties():
-                try:
-                    value = prop.GetValue(device, None)
-                    print(f"  - {prop.Name}: {value.GetType().Name if value else 'None'}")
-                except:
-                    pass
-        except Exception as e:
-            print(f"  - Could not list properties: {e}")
-        
-        # Deep dive into items
-        try:
-            print(f"\n[DEBUG] Device items and their structure:")
-            for item in device.DeviceItems:
-                print(f"  - Item: {item.Name} ({item.GetType().Name})")
-                item_type = item.GetType()
-                for prop in item_type.GetProperties():
-                    try:
-                        value = prop.GetValue(item, None)
-                        if value and "Software" in prop.Name:
-                            print(f"    - {prop.Name}: {value.GetType().Name}")
-                    except:
-                        pass
-        except Exception as e:
-            print(f"  - Could not explore items: {e}")
-        
-        raise RuntimeError("Could not find PLC software.\n" +
-                        "The device appears to be created, but software access method is unknown.\n" +
-                        "Check the debug output above and the TIA Portal project manually.")
-
-    print(f"[OK] Našel jsem PLC software na: {getattr(cpu_item, 'Name', '<device>')}  ({plc_sw.GetType().FullName})")
-
+    if cpu_item is None or plc_sw is None:
+        print(f"[ERROR] CPU item with SoftwareContainer not found")
+        return
+    
+    print(f"[OK] Found CPU item: {getattr(cpu_item, 'Name', '<cpu>')}")
+    print(f"[OK] PLC Software obtained: {plc_sw.GetType().FullName}")
+    
     # Protection
-    protection = cpu_item.GetService("Protection")
-    if protection:
-        set_enum_prop(protection, "Level", "FullAccess")
-        set_bool_prop(protection, "DownloadWithoutRewire", True)
-        print("[OK] Protection set.")
-    else:
-        print("[WARN] Protection service not available.")
-
-    # StartInfo
-    start_info = cpu_item.GetService("StartInfo")
-    if start_info:
-        set_enum_prop(start_info, "StartMode", "AlwaysRun")
-        print("[OK] Start mode set.")
-    else:
-        print("[WARN] StartInfo service not available.")
-
-    # PLC Software 
-    swc = cpu_item.GetService("SoftwareContainer")
-    if swc is None: raise RuntimeError("SoftwareContainer not found on CPU item.")
-    plc_sw = swc.Software
-
-    PlcBlockType = find_enum("PlcBlockType")
-    PlcProgrammingLanguage = find_enum("PlcProgrammingLanguage")
-    if PlcBlockType is None or PlcProgrammingLanguage is None:
-        raise RuntimeError("Cannot resolve PlcBlockType or PlcProgrammingLanguage.")
-    
-    # Task 4: Create custom data type in PLC
-    print("\n" + "=" * 60)
-    print("Task 4: Creating custom data type in PLC")
-    print("=" * 60)
-    
-    # Create a custom data type with multiple fields
-    user_datatypes = plc_sw.TypeGroup.UserDefinedTypes
-    custom_datatype = user_datatypes.Create("OrderData")
-    
-    # Add members to custom data type
     try:
-        if create_var_with_datatype(custom_datatype.BaseType.Members, "OrderID", "DWord"):
-            print("[OK] Custom DataType field 'OrderID' (DWORD) created.")
-        if create_var_with_datatype(custom_datatype.BaseType.Members, "OrderValue", "Real"):
-            print("[OK] Custom DataType field 'OrderValue' (REAL) created.")
-        if create_var_with_datatype(custom_datatype.BaseType.Members, "CustomerName", "String"):
-            print("[OK] Custom DataType field 'CustomerName' (STRING) created.")
+        prot = get_service_generic(cpu_item, "Protection")
+        if prot:
+            set_enum_prop(prot, "Level", "FullAccess")
+            set_bool_prop(prot, "DownloadWithoutRewire", True)
+            print("[OK] Protection set.")
+        else:
+            print("[WARN] Protection service not available.")
     except Exception as e:
-        print(f"[WARN] Could not add all fields to custom data type: {e}")
+        print(f"[WARN] Could not set protection: {e}")
     
-    print("[OK] Custom DataType 'OrderData' created successfully.")
+    # StartInfo
+    try:
+        start_info = get_service_generic(cpu_item, "StartInfo")
+        if start_info:
+            set_enum_prop(start_info, "StartMode", "AlwaysRun")
+            print("[OK] Start mode set.")
+        else:
+            print("[WARN] StartInfo service not available.")
+    except Exception as e:
+        print(f"[WARN] Could not set start mode: {e}")
     
-    # Task 5: Create DB in PLC with custom data type
+    # Save project before creating blocks (TIA sometimes needs this)
+    print("\n[NOTE] Saving project before creating blocks...")
+    project.Save()
+    print("[OK] Project saved (pre-block creation)")
+    
+    # Task 4: Create Data Type (UDT) and Data Block
     print("\n" + "=" * 60)
-    print("Task 5: Creating DB in PLC with custom data type")
+    print("Task 4: Creating Data Type (UDT) and Data Block")
     print("=" * 60)
-
-    db = plc_sw.BlockGroup.Blocks.Create(
-        enum_val(PlcBlockType, "DataBlock"),
-        "MyDataBlock",
-        enum_val(PlcProgrammingLanguage, "LAD")
-    )
-
-    # Add variable of custom data type to DB
-    if create_var_with_datatype(db.Interface.Static, "myOrder", "OrderData"):
-        print("[OK] DB variable 'myOrder' with custom type 'OrderData' created.")
-    else:
-        print("[WARN] Could not add custom data type variable to DB.")
     
-    # Also add a simple variable for reference
-    if create_var_with_datatype(db.Interface.Static, "myCounter", "Int"):
-        print("[OK] DB variable 'myCounter' (INT) created.")
-    else:
-        print("[WARN] Could not add simple variable to DB.")
+    try:
+        # Create UDT with button input and LED output
+        print("[NOTE] Creating UDT 'MyDataType' with button and LED fields...")
+        create_or_replace_udt(
+            plc_sw, 
+            "MyDataType",
+            fields=[
+                ("button", "Bool", "FALSE"),
+                ("LED", "Bool", "FALSE")
+            ]
+        )
+        print("[OK] UDT 'MyDataType' created successfully")
+        
+        # Create DB using the UDT
+        print("[NOTE] Creating Data Block 'DB_ProcessData' using UDT...")
+        create_or_replace_simple_db(
+            plc_sw,
+            "DB_ProcessData",
+            udt_type="MyDataType",
+            optimized=True
+        )
+        print("[OK] Data Block 'DB_ProcessData' created successfully")
+        
+    except Exception as e:
+        print(f"[ERROR] Failed to create UDT or DB: {e}")
+        import traceback
+        traceback.print_exc()
+        return
     
-    # Task 6: save project 
+    # Task 5: Save project
     print("\n" + "=" * 60)
-    print("Task 4: Saving project")
+    print("Task 5: Saving project")
     print("=" * 60)
 
     project.Save()
@@ -355,5 +501,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 
 

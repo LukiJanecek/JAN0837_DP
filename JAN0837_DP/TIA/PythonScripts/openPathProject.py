@@ -1,11 +1,20 @@
 #!/usr/bin/env python3
-# to project on path add Data type and from data type create DB
-# terminal test: python openPathProject.py --dll-dir "C:\Program Files\Siemens\Automation\Portal V19\PublicAPI\V19" --project-dir "C:\Users\lukas\VSB-TUO\JAN0837 - Bakalářská práce - General\DP\JAN0837_DP\JAN0837_DP\TIA\TIA_projects\Sample\JAN0837_sample" --ui
+# Open an existing TIA Portal project.
+#
+# EXAMPLES (use forward slashes - easier in PowerShell):
+#
+# With UI:
+# python openPathProject.py --dll-dir "C:/Program Files/Siemens/Automation/Portal V19/PublicAPI/V19" --project-dir "C:/Users/lukas/VSB-TUO/JAN0837 - Bakalářská práce - General/DP/JAN0837_DP/JAN0837_DP/TIA/TIA_projects/Sample/JAN0837_sample" --ui
+#
+# Without UI (background mode):
+# python openPathProject.py --dll-dir "C:/Program Files/Siemens/Automation/Portal V19/PublicAPI/V19" --project-dir "C:/Users/lukas/VSB-TUO/JAN0837 - Bakalářská práce - General/DP/JAN0837_DP/JAN0837_DP/TIA/TIA_projects/Sample/JAN0837_sample"
 
 import sys
 import argparse
 from pathlib import Path
 
+import tia_parameters as params
+import tia_functions as fc
 import importTIADLL
 
 def main():
@@ -22,7 +31,7 @@ def main():
     print("Task 1: Importing TIA DLL from", args.dll_dir)
     print("=" * 60)
     sys.argv = ["importTIADLL.py", "--dir", args.dll_dir]
-    importTIADLL.main()
+    fc.import_tia_dll(args.dll_dir)
 
     # Now import System modules after DLL is loaded
     from System.IO import FileInfo
@@ -36,38 +45,14 @@ def main():
     
     # Determine which mode to use
     mode = TiaPortalMode.WithUserInterface if args.ui else TiaPortalMode.WithoutUserInterface
+    tia_portal = TiaPortal(mode)
     
-    # Open the TIA Portal
-    tia_portal = TiaPortal(mode)    
-    
-    # Handle project path - TIA projects can be specified as:
-    # 1. Path to folder: C:\...\JAN0837_sample
-    # 2. Path to file: C:\...\JAN0837_sample\JAN0837_sample.ap19
-    project_path = Path(args.project_dir)
-    
-    # If it's a folder, look for the .ap19 file inside it
-    if project_path.is_dir():
-        # Get the folder name and look for <folder_name>.ap19 inside
-        folder_name = project_path.name
-        ap19_file = project_path / f"{folder_name}.ap19"
-        if ap19_file.exists():
-            project_path = ap19_file
-        else:
-            # Try to find any .ap19 file inside
-            ap19_files = list(project_path.glob("*.ap19"))
-            if ap19_files:
-                project_path = ap19_files[0]
-    
-    # Check if project file exists
-    if not project_path.exists():
-        print(f"[ERROR] Project file not found: {project_path}")
-        # Debug: show what's in the folder
-        parent = project_path.parent if project_path.is_file() else project_path
-        print(f"[DEBUG] Contents of {parent}:")
-        if parent.exists():
-            for item in parent.iterdir():
-                print(f"  - {item.name}")
-        return
+    # Resolve project file
+    try:
+        project_path = fc.locate_project_file(args.project_dir)
+    except FileNotFoundError as e:
+        print(f"[ERROR] {e}")
+        return 2
     
     # Debug: show what we're opening
     print(f"[DEBUG] Opening project file: {project_path}")
@@ -83,5 +68,8 @@ def main():
         project.Close()
         tia_portal.Dispose()
 
+    return 0
+
 if __name__ == "__main__":
-    main()
+    rc = main()
+    sys.exit(rc if isinstance(rc, int) else 1)

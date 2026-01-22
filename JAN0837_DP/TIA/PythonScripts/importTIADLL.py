@@ -5,6 +5,9 @@
 import sys, os, argparse, traceback
 from pathlib import Path
 
+import tia_parameters as params
+import tia_functions as fc
+
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 

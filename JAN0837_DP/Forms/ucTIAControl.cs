@@ -430,7 +430,6 @@ namespace JAN0837_DP.Forms
             {
                 var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
 
-                // Show full diagnostic info when script fails
                 if (code != 0)
                 {
                     var msg = new StringBuilder();
@@ -518,7 +517,6 @@ namespace JAN0837_DP.Forms
             {
                 var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
 
-                // Show full diagnostic info when script fails
                 if (code != 0)
                 {
                     var msg = new StringBuilder();
@@ -563,8 +561,7 @@ namespace JAN0837_DP.Forms
                 throw new InvalidOperationException("Please select a TIA project first.");
             }
 
-            ////
-            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath , "--ui" };
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath };
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "addDBtoPathProject.py"); 
 
@@ -572,7 +569,6 @@ namespace JAN0837_DP.Forms
             {
                 var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
 
-                // Show full diagnostic info when script fails
                 if (code != 0)
                 {
                     var msg = new StringBuilder();
@@ -639,7 +635,6 @@ namespace JAN0837_DP.Forms
             {
                 var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
 
-                // Show full diagnostic info when script fails
                 if (code != 0)
                 {
                     var msg = new StringBuilder();

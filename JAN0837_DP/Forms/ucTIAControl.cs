@@ -504,13 +504,13 @@ namespace JAN0837_DP.Forms
                 Directory.CreateDirectory(projectPath);
             }
 
-            lblStatus1.Text = "Starting generating template...";
-
             //string arg = $"--dir {projectPath} --name {projectName} --type-id {cputype} --plc-name {plcName} --ui";
             string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", projectPath, "--project-name", projectName, "--type-id", cputype, "--plc-name", plcName, "--ui" };
 
             ////
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createNewTIAPortalProject.py"); 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createNewTIAPortalProject.py");
+
+            lblStatus1.Text = "Starting generating template...";
 
             try
             {
@@ -562,7 +562,9 @@ namespace JAN0837_DP.Forms
 
             string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath };
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "addDBtoPathProject.py"); 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "addDBtoPathProject.py");
+
+            lblStatus1.Text = "Adding DB to project.";
 
             try
             {
@@ -766,73 +768,5 @@ namespace JAN0837_DP.Forms
         }
 
         #endregion
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private async void generateTemplate(object sender, EventArgs e)
-        {
-            lblStatus1.Text = "Starting generating template...";
-
-            string projectName = txtBoxParam1.Text?.Trim();
-
-            if (string.IsNullOrWhiteSpace(projectName))
-            {
-                lblStatus1.Text = "Type project name, please.";
-                return;
-            }
-
-            string cputype = txtBoxParam2.Text?.Trim();
-
-            if (string.IsNullOrWhiteSpace(cputype))
-            {
-                lblStatus1.Text = "Type CPU ID, please.";
-                return;
-            }
-
-            var projectDir = Path.Combine(paths.tiaPath, projectName);
-            Directory.CreateDirectory(projectDir);
-
-            string args = $"--dir {projectDir} --name {projectName} --type-id {cputype} --ui";
-
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "createTIAtemplate.py");
-
-            var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, "--dir", projectDir, "--name", projectName, "--type-id", cputype, "--ui");
-
-            if (code == 0)
-            {
-                lblStatus1.Text = "Template generated.";
-            }
-            else
-            {
-                lblStatus1.Text = "Template generation failed.";
-            }
-        }
-
-        private void add_DB(object sender, EventArgs e)
-        {
-            try
-            {
-                if (projectPlc == null)
-                {
-                    if (string.IsNullOrWhiteSpace(_selectedProjectPath))
-                        throw new InvalidOperationException("Open a project first (or select one).");
-                    TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
-                }
-
-                var plc = TIAcontrol.GetPlcSoftware(projectPlc);
-
-                string dbName = "DB_ProcessData";
-
-                TIAcontrol.CreateOrReplaceSimpleDb(plc, dbName, optimized: true);
-
-                projectPlc.Save();
-
-                lblStatus1.Text = $"DB '{dbName}' added.";
-            }
-            catch (Exception ex)
-            {
-                lblStatus1.Text = "Error: " + ex.Message;
-            }
-        }
     }
 }

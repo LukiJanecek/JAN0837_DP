@@ -39,7 +39,7 @@ Example: `opc.tcp://127.0.0.1:4840`
 
 ### **Namespace**
 ```
-http://jan0837.opcua.server/crossroad
+http://jan0837.opcua.server/data
 ```
 
 ### **Node Structure**
@@ -71,13 +71,13 @@ Objects/
 | Variable | Type | Access | Description |
 |----------|------|--------|-------------|
 | **Input Commands** (from clients) |
-| CrossroadType | Boolean | R/W | Crossroad operation type |
 | BtnCrossroadStart | Boolean | R/W | Start command |
 | BtnCrossroadPause | Boolean | R/W | Pause command |
 | BtnCrossroadStop | Boolean | R/W | Stop command |
 | BtnCrosswalk1 | Boolean | R/W | Crosswalk 1 button |
 | BtnCrosswalk2 | Boolean | R/W | Crosswalk 2 button |
 | **Output Status** (to clients) |
+| CrossroadType | Boolean | R/W | Crossroad operation type |
 | TrafficLight1_Green | Boolean | R/W | Traffic light 1 green state |
 | TrafficLight1_Yellow | Boolean | R/W | Traffic light 1 yellow state |
 | TrafficLight1_Red | Boolean | R/W | Traffic light 1 red state |

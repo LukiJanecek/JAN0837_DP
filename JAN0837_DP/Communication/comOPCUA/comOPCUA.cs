@@ -31,14 +31,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
 
             try
-            {
-                // Fix IP address binding
-                // Use "localhost" for local testing, or "0.0.0.0" to bind to all interfaces
-                if (ipAddress == "127.0.0.1")
-                {
-                    ipAddress = "localhost";
-                }
-                
+            {               
                 string serverUrl = $"opc.tcp://{ipAddress}:{port}";
 
                 // Create application configuration
@@ -326,71 +319,6 @@ namespace JAN0837_DP.Communication.comOPCUA
             e.Accept = true;
         }
 
-        public void EnqueueWrite(string nodeId, object value)
-        {
-            _writeQueue.Enqueue((nodeId, value));
-        }
-
-        public static void WriteValue(Opc.Ua.Client.Session session, string nodeIdString, object value)
-        {
-            var nodeId = NodeId.Parse(nodeIdString);
-
-            var wv = new WriteValue
-            {
-                NodeId = nodeId,
-                AttributeId = Attributes.Value,
-                Value = new DataValue(new Variant(value))
-            };
-
-            var valuesToWrite = new WriteValueCollection { wv };
-            session.Write(null, valuesToWrite, out StatusCodeCollection results, out _);
-
-            if (results.Count != 1 || StatusCode.IsBad(results[0]))
-                throw new Exception($"Write failed: {results.FirstOrDefault()}");
-        }
-
-        public Opc.Ua.Client.Subscription CreateSubscription(Opc.Ua.Client.Session session, int publishingIntervalMs)
-        {
-            var sub = new Opc.Ua.Client.Subscription(session.DefaultSubscription)
-            {
-                PublishingInterval = publishingIntervalMs
-            };
-
-            // PŘÍKLAD 1 tagu – ty si přidej další
-            /*
-            AddMonitoredItem(sub, "ns=3;s=\"DB1\".\"MotorRunning\"", 250, dv =>
-            {
-                // tady updatuješ CrossroadData, UI state, cokoliv
-                // CrossroadData.motorRunning = dv.Value?.ToString();
-            });
-            */
-
-            session.AddSubscription(sub);
-            sub.Create();
-
-            return sub;
-        }
-
-        public static void AddMonitoredItem(Opc.Ua.Client.Subscription sub, string nodeIdString, int samplingIntervalMs, Action<DataValue> onChange)
-        {
-            var item = new Opc.Ua.Client.MonitoredItem(sub.DefaultItem)
-            {
-                StartNodeId = NodeId.Parse(nodeIdString),
-                AttributeId = Attributes.Value,
-                SamplingInterval = samplingIntervalMs,
-                QueueSize = 1,
-                DiscardOldest = true
-            };
-
-            item.Notification += (monitoredItem, e) =>
-            {
-                foreach (var v in monitoredItem.DequeueValues())
-                    onChange(v);
-            };
-
-            sub.AddItem(item);
-        }
-
         public void WriteOPCUAValue(opcuaKlient client, string nodeId, object value)
         {
             try
@@ -439,24 +367,7 @@ namespace JAN0837_DP.Communication.comOPCUA
         }
     }
 
-    public class OPCUAimServer
-    {
-        // NOTE: Server implementation placeholder
-        // For full implementation, install OPCFoundation.NetStandard.Opc.Ua.Server package
-        // See Documentation_OPCUA_Server_Implementation.md
-    }
-
-    public class OPCUAimKlient
-    {
-        // NOTE: Client implementation placeholder  
-        // Use opcuaKlient class for actual implementation
-    }
-
-    // ===== OPC UA Server Implementation =====
-
-    /// <summary>
-    /// Custom OPC UA Server for CrossroadData
-    /// </summary>
+    // Custom OPC UA Server 
     internal class CrossroadOpcUaServer : StandardServer
     {
         private CrossroadNodeManager _nodeManager;
@@ -492,22 +403,18 @@ namespace JAN0837_DP.Communication.comOPCUA
             return properties;
         }
 
-        // Update variable value
         public void UpdateVariable(string variableName, bool value)
         {
             _nodeManager?.UpdateVariable(variableName, value);
         }
 
-        // Read variable value
         public bool ReadVariable(string variableName)
         {
             return _nodeManager?.ReadVariable(variableName) ?? false;
         }
     }
 
-    /// <summary>
-    /// Node Manager for CrossroadData variables
-    /// </summary>
+    // Node Manager for variables
     internal class CrossroadNodeManager : CustomNodeManager2
     {
         private readonly Dictionary<string, BaseDataVariableState> _variables = new Dictionary<string, BaseDataVariableState>();
@@ -634,11 +541,9 @@ namespace JAN0837_DP.Communication.comOPCUA
         }
     }
 
-    /// <summary>
-    /// Namespace definitions
-    /// </summary>
+    // Namespace definitions
     internal static class Namespaces
     {
-        public const string CrossroadNamespace = "http://jan0837.opcua.server/crossroad";
+        public const string CrossroadNamespace = "http://jan0837.opcua.server/data";
     }
 }

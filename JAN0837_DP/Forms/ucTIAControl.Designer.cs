@@ -72,16 +72,16 @@
             // 
             // txtBoxParam1
             // 
-            txtBoxParam1.Location = new Point(253, 243);
+            txtBoxParam1.Location = new Point(28, 228);
             txtBoxParam1.Name = "txtBoxParam1";
-            txtBoxParam1.Size = new Size(325, 27);
+            txtBoxParam1.Size = new Size(450, 27);
             txtBoxParam1.TabIndex = 5;
             txtBoxParam1.TextChanged += txtBoxParam1_TextChanged;
             // 
             // lblParam1
             // 
             lblParam1.AutoSize = true;
-            lblParam1.Location = new Point(253, 220);
+            lblParam1.Location = new Point(28, 205);
             lblParam1.Name = "lblParam1";
             lblParam1.Size = new Size(87, 20);
             lblParam1.TabIndex = 6;
@@ -90,7 +90,7 @@
             // lblParam2
             // 
             lblParam2.AutoSize = true;
-            lblParam2.Location = new Point(253, 273);
+            lblParam2.Location = new Point(28, 258);
             lblParam2.Name = "lblParam2";
             lblParam2.Size = new Size(87, 20);
             lblParam2.TabIndex = 9;
@@ -98,24 +98,24 @@
             // 
             // txtBoxParam2
             // 
-            txtBoxParam2.Location = new Point(253, 296);
+            txtBoxParam2.Location = new Point(28, 281);
             txtBoxParam2.Name = "txtBoxParam2";
-            txtBoxParam2.Size = new Size(325, 27);
+            txtBoxParam2.Size = new Size(450, 27);
             txtBoxParam2.TabIndex = 8;
             txtBoxParam2.TextChanged += txtBoxParam2_TextChanged;
             // 
             // comboBoxTIAprojects
             // 
             comboBoxTIAprojects.FormattingEnabled = true;
-            comboBoxTIAprojects.Location = new Point(253, 186);
+            comboBoxTIAprojects.Location = new Point(28, 171);
             comboBoxTIAprojects.Name = "comboBoxTIAprojects";
-            comboBoxTIAprojects.Size = new Size(322, 28);
+            comboBoxTIAprojects.Size = new Size(450, 28);
             comboBoxTIAprojects.TabIndex = 11;
             comboBoxTIAprojects.SelectedIndexChanged += comboBoxTIAprojects_SelectedIndexChanged;
             // 
             // btnCreateProject
             // 
-            btnCreateProject.Location = new Point(584, 296);
+            btnCreateProject.Location = new Point(484, 286);
             btnCreateProject.Name = "btnCreateProject";
             btnCreateProject.Size = new Size(94, 63);
             btnCreateProject.TabIndex = 14;
@@ -135,7 +135,7 @@
             // 
             // btnOpenProject
             // 
-            btnOpenProject.Location = new Point(584, 158);
+            btnOpenProject.Location = new Point(484, 148);
             btnOpenProject.Name = "btnOpenProject";
             btnOpenProject.Size = new Size(94, 63);
             btnOpenProject.TabIndex = 16;
@@ -145,7 +145,7 @@
             // 
             // btnAddDB
             // 
-            btnAddDB.Location = new Point(684, 158);
+            btnAddDB.Location = new Point(584, 148);
             btnAddDB.Name = "btnAddDB";
             btnAddDB.Size = new Size(94, 63);
             btnAddDB.TabIndex = 17;
@@ -175,7 +175,7 @@
             // lblTiaProject
             // 
             lblTiaProject.AutoSize = true;
-            lblTiaProject.Location = new Point(253, 163);
+            lblTiaProject.Location = new Point(28, 148);
             lblTiaProject.Name = "lblTiaProject";
             lblTiaProject.Size = new Size(153, 20);
             lblTiaProject.TabIndex = 21;
@@ -202,7 +202,7 @@
             // 
             // btnPreset
             // 
-            btnPreset.Location = new Point(584, 365);
+            btnPreset.Location = new Point(484, 355);
             btnPreset.Name = "btnPreset";
             btnPreset.Size = new Size(94, 63);
             btnPreset.TabIndex = 24;
@@ -213,7 +213,7 @@
             // lblParam3
             // 
             lblParam3.AutoSize = true;
-            lblParam3.Location = new Point(253, 326);
+            lblParam3.Location = new Point(28, 311);
             lblParam3.Name = "lblParam3";
             lblParam3.Size = new Size(87, 20);
             lblParam3.TabIndex = 25;
@@ -221,16 +221,16 @@
             // 
             // txtBoxParam3
             // 
-            txtBoxParam3.Location = new Point(253, 349);
+            txtBoxParam3.Location = new Point(28, 334);
             txtBoxParam3.Name = "txtBoxParam3";
-            txtBoxParam3.Size = new Size(325, 27);
+            txtBoxParam3.Size = new Size(450, 27);
             txtBoxParam3.TabIndex = 26;
             txtBoxParam3.TextChanged += txtBoxParam3_TextChanged;
             // 
             // lblParam4
             // 
             lblParam4.AutoSize = true;
-            lblParam4.Location = new Point(253, 379);
+            lblParam4.Location = new Point(28, 364);
             lblParam4.Name = "lblParam4";
             lblParam4.Size = new Size(87, 20);
             lblParam4.TabIndex = 27;
@@ -238,16 +238,16 @@
             // 
             // txtBoxParam4
             // 
-            txtBoxParam4.Location = new Point(253, 401);
+            txtBoxParam4.Location = new Point(28, 386);
             txtBoxParam4.Name = "txtBoxParam4";
-            txtBoxParam4.Size = new Size(325, 27);
+            txtBoxParam4.Size = new Size(450, 27);
             txtBoxParam4.TabIndex = 28;
             txtBoxParam4.TextChanged += txtBoxParam4_TextChanged;
             // 
             // rbtnCreateNewProject
             // 
             rbtnCreateNewProject.AutoSize = true;
-            rbtnCreateNewProject.Location = new Point(28, 190);
+            rbtnCreateNewProject.Location = new Point(28, 121);
             rbtnCreateNewProject.Name = "rbtnCreateNewProject";
             rbtnCreateNewProject.Size = new Size(219, 24);
             rbtnCreateNewProject.TabIndex = 29;
@@ -259,7 +259,7 @@
             // rbtnOpenProject
             // 
             rbtnOpenProject.AutoSize = true;
-            rbtnOpenProject.Location = new Point(28, 160);
+            rbtnOpenProject.Location = new Point(28, 91);
             rbtnOpenProject.Name = "rbtnOpenProject";
             rbtnOpenProject.Size = new Size(171, 24);
             rbtnOpenProject.TabIndex = 30;
@@ -270,7 +270,7 @@
             // 
             // btnFindTIAProjectOnPath
             // 
-            btnFindTIAProjectOnPath.Location = new Point(584, 225);
+            btnFindTIAProjectOnPath.Location = new Point(484, 215);
             btnFindTIAProjectOnPath.Name = "btnFindTIAProjectOnPath";
             btnFindTIAProjectOnPath.Size = new Size(94, 63);
             btnFindTIAProjectOnPath.TabIndex = 31;

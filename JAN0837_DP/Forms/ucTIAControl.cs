@@ -1,6 +1,5 @@
 ﻿using JAN0837_DP.Data;
 using JAN0837_DP.TIA;
-using Org.BouncyCastle.Math.EC.Endo;
 using S7.Net;
 // 
 //using TiaOpennessHelper;

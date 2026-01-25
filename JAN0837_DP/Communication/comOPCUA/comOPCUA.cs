@@ -1,42 +1,227 @@
-﻿using System;
+﻿// OPCUA
+using Opc;
+using Opc.Ua;
+using Opc.Ua.Buffers;
+using Opc.Ua.Client;
+using Opc.Ua.Configuration;
+using Opc.Ua.Export;
+using Opc.Ua.Security;
+using Opc.Ua.Server;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-// OPCUA
-using Opc;
-using Opc.Ua;
-using Opc.Ua.Server;
-using Opc.Ua.Client;
-using Opc.Ua.Configuration;
-using Opc.Ua.Buffers;
-using Opc.Ua.Export;
-using Opc.Ua.Security;
 
 namespace JAN0837_DP.Communication.comOPCUA
 {
     public class opcuaServer
     {
-        public Opc.Ua.Server.Session serverSession;
+        private ApplicationInstance _application;
+        private CrossroadOpcUaServer _server;
         public bool running = false;
-
-        public bool startOPCUAserver(string serverURL)
+        
+        public async Task<bool> startOPCUAserver(string ipAddress, int port)
         {
-            return true;
+            if (running)
+            {
+                return true;
+            }
+
+            try
+            {
+                // Fix IP address binding
+                // Use "localhost" for local testing, or "0.0.0.0" to bind to all interfaces
+                if (ipAddress == "127.0.0.1")
+                {
+                    ipAddress = "localhost";
+                }
+                
+                string serverUrl = $"opc.tcp://{ipAddress}:{port}";
+
+                // Create application configuration
+                var config = new Opc.Ua.ApplicationConfiguration()
+                {
+                    ApplicationName = "JAN0837_DP_OPC_UA_Server",
+                    ApplicationType = Opc.Ua.ApplicationType.Server,
+                    ApplicationUri = $"urn:{System.Net.Dns.GetHostName()}:JAN0837_DP:OPCUAServer",
+                    ProductUri = "http://jan0837/opcuaserver",
+                    
+                    SecurityConfiguration = new Opc.Ua.SecurityConfiguration
+                    {
+                        ApplicationCertificate = new Opc.Ua.CertificateIdentifier
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "own")
+                        },
+                        TrustedPeerCertificates = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "trusted")
+                        },
+                        TrustedIssuerCertificates = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "issuer")
+                        },
+                        RejectedCertificateStore = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "rejected")
+                        },
+                        AutoAcceptUntrustedCertificates = true,
+                        RejectSHA1SignedCertificates = false,
+                        MinimumCertificateKeySize = 1024,
+                        AddAppCertToTrustedStore = true
+                    },
+                    
+                    ServerConfiguration = new Opc.Ua.ServerConfiguration
+                    {
+                        BaseAddresses = new Opc.Ua.StringCollection { serverUrl },
+                        MinRequestThreadCount = 5,
+                        MaxRequestThreadCount = 100,
+                        MaxQueuedRequestCount = 200,
+                        
+                        // Add alternative URLs for flexibility
+                        AlternateBaseAddresses = new Opc.Ua.StringCollection()
+                    },
+                    
+                    TransportQuotas = new Opc.Ua.TransportQuotas 
+                    { 
+                        OperationTimeout = 600000,
+                        MaxStringLength = 1048576,
+                        MaxByteStringLength = 1048576,
+                        MaxArrayLength = 65535,
+                        MaxMessageSize = 4194304,
+                        MaxBufferSize = 65535,
+                        ChannelLifetime = 300000,
+                        SecurityTokenLifetime = 3600000
+                    },
+                    
+                    TraceConfiguration = new Opc.Ua.TraceConfiguration
+                    {
+                        OutputFilePath = Path.Combine(Path.GetTempPath(), "JAN0837_Server.log"),
+                        TraceMasks = 1
+                    }
+                };
+
+                // Validate configuration
+                await config.Validate(Opc.Ua.ApplicationType.Server);
+
+                // Create application instance
+                _application = new ApplicationInstance
+                {
+                    ApplicationConfiguration = config,
+                    ApplicationType = Opc.Ua.ApplicationType.Server
+                };
+
+                // Ensure certificate directories exist
+                var pkiRoot = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki");
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "own"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "trusted"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "issuer"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "rejected"));
+
+                // Load or create certificate
+                var certIdentifier = config.SecurityConfiguration.ApplicationCertificate;
+                var certificate = await certIdentifier.Find(true);
+                
+                if (certificate == null)
+                {
+                    Console.WriteLine("Creating new self-signed application certificate...");
+                    
+                    // Create certificate
+                    certificate = CertificateFactory.CreateCertificate(
+                        config.ApplicationUri,
+                        config.ApplicationName,
+                        "CN=" + config.ApplicationName,
+                        null
+                    ).CreateForRSA();
+                    
+                    // Set it in the configuration
+                    config.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
+                    
+                    Console.WriteLine($"Certificate created with thumbprint: {certificate.Thumbprint}");
+                }
+                else
+                {
+                    Console.WriteLine($"Using existing certificate with thumbprint: {certificate.Thumbprint}");
+                }
+
+                // Create and start server
+                _server = new CrossroadOpcUaServer();
+                await _application.Start(_server);
+
+                running = true;
+                Console.WriteLine($"OPC UA Server started successfully on {serverUrl}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error starting OPC UA server: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                running = false;
+                return false;
+            }
         }
 
-        public bool stopOPCUAserver()
+        public async Task<bool> stopOPCUAserver()
         {
-            return true;
+            if (!running)
+            {
+                return true;
+            }
+
+            try
+            {
+                if (_server != null)
+                {
+                    _server.Stop();
+                }
+
+                running = false;
+                Console.WriteLine("OPC UA Server stopped successfully");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error stopping OPC UA server: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Update variable value in the server
+        public void UpdateVariable(string variableName, bool value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateVariable(variableName, value);
+            }
+        }
+
+        // Read variable value from the server (for inputs from clients)
+        public bool ReadVariable(string variableName)
+        {
+            if (_server != null && running)
+            {
+                return _server.ReadVariable(variableName);
+            }
+            return false;
         }
     }
 
     public class opcuaKlient
     {
         public Opc.Ua.Client.Session clientSession;
-        public SessionReconnectHandler reconnectHandler;
+        public Opc.Ua.Client.SessionReconnectHandler reconnectHandler;
         public bool connected = false;
+        public bool running = false;    
+        public CancellationTokenSource _cts;
+        public ConcurrentQueue<(string nodeId, object value)> _writeQueue = new();
+        public Opc.Ua.Client.Subscription subscription;
+        public event KeepAliveEventHandler KeepAlive;
 
         public async Task<bool> connectToOPCUAserver(string serverURL, string user, string pass)
         {
@@ -50,21 +235,26 @@ namespace JAN0837_DP.Communication.comOPCUA
                 ApplicationInstance application = new ApplicationInstance();
                 application.ApplicationType = Opc.Ua.ApplicationType.Client;
                 application.ConfigSectionName = "Client";
-                application.LoadApplicationConfiguration(false).Wait();
-                application.CheckApplicationInstanceCertificate(false, 0).Wait();
+                await application.LoadApplicationConfiguration(false);
+                // Certificate will be auto-created if needed
                 var configuration = application.ApplicationConfiguration;
                 configuration.CertificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
                 var endpointDescription = CoreClientUtils.SelectEndpoint(configuration, serverURL, true, 15000);
                 var endpointConfiguration = EndpointConfiguration.Create(configuration);
                 var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
-                var userIdentity = new UserIdentity(user, pass);
-                clientSession = await Opc.Ua.Client.Session.Create(configuration, endpoint, false, "OPCUA Client", 60000, userIdentity, null);
                 
+                // Create user identity (anonymous if no credentials provided)
+                IUserIdentity userIdentity = new UserIdentity(new AnonymousIdentityToken());
+                
+                clientSession = await Opc.Ua.Client.Session.Create(configuration, endpoint, false, "OPCUA Client", 60000, userIdentity, null);
+                connected = clientSession.Connected;
+                clientSession.KeepAlive += ClientSession_KeepAlive;
                 return true;
             }
             catch (Exception ex)
             {
-                
+                connected = false;
+                clientSession = null;
                 return false;
             }
         }
@@ -75,9 +265,25 @@ namespace JAN0837_DP.Communication.comOPCUA
             {
                 return true;
             }
+
             try
             {
-                await clientSession.CloseAsync();
+                if (reconnectHandler != null)
+                {
+                    reconnectHandler.Dispose();
+                    reconnectHandler = null;
+                }
+
+                if (clientSession != null)
+                {
+                    clientSession.KeepAlive -= ClientSession_KeepAlive;
+
+                    if (clientSession.Connected)
+                        await clientSession.CloseAsync();
+
+                    clientSession.Dispose();
+                    clientSession = null;
+                }
 
                 return true;
             }
@@ -85,131 +291,354 @@ namespace JAN0837_DP.Communication.comOPCUA
             {
                 return false;
             }
-            
+        }
+
+        private void ClientSession_KeepAlive(Opc.Ua.Client.ISession session, KeepAliveEventArgs e)
+        {
+            // session hlásí problém
+            if (ServiceResult.IsBad(e.Status))
+            {
+                // reconnect už běží
+                if (reconnectHandler != null)
+                {
+                    return;
+                }
+
+                reconnectHandler = new SessionReconnectHandler();
+                reconnectHandler.BeginReconnect((Opc.Ua.Client.Session)session, 5000, ClientSession_ReconnectComplete);
+            }
+        }
+
+        private void ClientSession_ReconnectComplete(object? sender, EventArgs e)
+        {
+            if (reconnectHandler == null) return;
+
+            // převezmi novou session
+            clientSession = (Opc.Ua.Client.Session)reconnectHandler.Session;
+            reconnectHandler.Dispose();
+            reconnectHandler = null;
+
+            connected = clientSession?.Connected == true;
         }
 
         private static void CertificateValidator_CertificateValidation(Opc.Ua.CertificateValidator sender, Opc.Ua.CertificateValidationEventArgs e)
         {
             e.Accept = true;
         }
+
+        public void EnqueueWrite(string nodeId, object value)
+        {
+            _writeQueue.Enqueue((nodeId, value));
+        }
+
+        public static void WriteValue(Opc.Ua.Client.Session session, string nodeIdString, object value)
+        {
+            var nodeId = NodeId.Parse(nodeIdString);
+
+            var wv = new WriteValue
+            {
+                NodeId = nodeId,
+                AttributeId = Attributes.Value,
+                Value = new DataValue(new Variant(value))
+            };
+
+            var valuesToWrite = new WriteValueCollection { wv };
+            session.Write(null, valuesToWrite, out StatusCodeCollection results, out _);
+
+            if (results.Count != 1 || StatusCode.IsBad(results[0]))
+                throw new Exception($"Write failed: {results.FirstOrDefault()}");
+        }
+
+        public Opc.Ua.Client.Subscription CreateSubscription(Opc.Ua.Client.Session session, int publishingIntervalMs)
+        {
+            var sub = new Opc.Ua.Client.Subscription(session.DefaultSubscription)
+            {
+                PublishingInterval = publishingIntervalMs
+            };
+
+            // PŘÍKLAD 1 tagu – ty si přidej další
+            /*
+            AddMonitoredItem(sub, "ns=3;s=\"DB1\".\"MotorRunning\"", 250, dv =>
+            {
+                // tady updatuješ CrossroadData, UI state, cokoliv
+                // CrossroadData.motorRunning = dv.Value?.ToString();
+            });
+            */
+
+            session.AddSubscription(sub);
+            sub.Create();
+
+            return sub;
+        }
+
+        public static void AddMonitoredItem(Opc.Ua.Client.Subscription sub, string nodeIdString, int samplingIntervalMs, Action<DataValue> onChange)
+        {
+            var item = new Opc.Ua.Client.MonitoredItem(sub.DefaultItem)
+            {
+                StartNodeId = NodeId.Parse(nodeIdString),
+                AttributeId = Attributes.Value,
+                SamplingInterval = samplingIntervalMs,
+                QueueSize = 1,
+                DiscardOldest = true
+            };
+
+            item.Notification += (monitoredItem, e) =>
+            {
+                foreach (var v in monitoredItem.DequeueValues())
+                    onChange(v);
+            };
+
+            sub.AddItem(item);
+        }
+
+        public void WriteOPCUAValue(opcuaKlient client, string nodeId, object value)
+        {
+            try
+            {
+                var nodeIdParsed = NodeId.Parse(nodeId);
+                var wv = new WriteValue
+                {
+                    NodeId = nodeIdParsed,
+                    AttributeId = Attributes.Value,
+                    Value = new DataValue(new Variant(value))
+                };
+
+                var valuesToWrite = new WriteValueCollection { wv };
+                client.clientSession.Write(null, valuesToWrite, out StatusCodeCollection results, out _);
+
+                if (results.Count != 1 || StatusCode.IsBad(results[0]))
+                {
+                    throw new Exception($"Write failed for {nodeId}: {results.FirstOrDefault()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing to {nodeId}: {ex.Message}");
+            }
+        }
+
+        public bool ReadOPCUABool(opcuaKlient client, string nodeId)
+        {
+            try
+            {
+                var nodeIdParsed = NodeId.Parse(nodeId);
+                DataValue value = client.clientSession.ReadValue(nodeIdParsed);
+
+                if (value != null && value.Value != null)
+                {
+                    return Convert.ToBoolean(value.Value);
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading from {nodeId}: {ex.Message}");
+                return false;
+            }
+        }
     }
 
     public class OPCUAimServer
     {
-        /*
-    
-        private StandardServer server;
-        private ApplicationInstance application;
-        private NodeManager nodeManager;
-        private BaseDataVariableState myVariable;
-
-        public void Start()
-        {
-            var config = new ApplicationConfiguration()
-            {
-                ApplicationName = "MyOpcUaServer",
-                ApplicationType = ApplicationType.Server,
-                SecurityConfiguration = new SecurityConfiguration
-                {
-                    AutoAcceptUntrustedCertificates = true
-                },
-                ServerConfiguration = new ServerConfiguration
-                {
-                    BaseAddresses = new string[] { "opc.tcp://localhost:4840" }
-                },
-                TransportQuotas = new TransportQuotas { OperationTimeout = 15000 }
-            };
-
-            application = new ApplicationInstance
-            {
-                ApplicationConfiguration = config,
-                ApplicationType = ApplicationType.Server
-            };
-
-            application.CheckApplicationInstanceCertificate(false, 0).Wait();
-            server = new StandardServer();
-            application.Start(server).Wait();
-
-            nodeManager = new NodeManager(server, "http://my.opcua.namespace");
-            server.NodeManager = new INodeManager[] { nodeManager };
-
-            // Vytvoření proměnné MyVariable v Namespace 2
-            myVariable = nodeManager.CreateVariable("ns=2;s=MyVariable", "MyVariable", BuiltInType.Int32);
-            myVariable.Value = 0;
-        }
-
-        public void UpdateVariableValue(int newValue)
-        {
-            myVariable.Value = newValue;
-            myVariable.Timestamp = DateTime.UtcNow;
-        }
-    }
-
-    public class NodeManager
-    {
-        public NodeManager(IServerInternal server, string namespaceUri)
-        : base(server, new string[] { namespaceUri }) { }
-
-        public BaseDataVariableState CreateVariable(string nodeId, string displayName, BuiltInType type)
-        {
-            var variable = new BaseDataVariableState(null)
-            {
-                NodeId = new NodeId(nodeId),
-                BrowseName = new QualifiedName(displayName),
-                DisplayName = displayName,
-                DataType = (uint)type,
-                ValueRank = ValueRanks.Scalar,
-                AccessLevel = AccessLevels.CurrentReadOrWrite,
-                UserAccessLevel = AccessLevels.CurrentReadOrWrite
-            };
-
-            AddPredefinedNode(SystemContext, variable);
-            return variable;
-        }
-    }
-
-    */
+        // NOTE: Server implementation placeholder
+        // For full implementation, install OPCFoundation.NetStandard.Opc.Ua.Server package
+        // See Documentation_OPCUA_Server_Implementation.md
     }
 
     public class OPCUAimKlient
     {
-        /*
-        static Session ConnectToOpcUaServer(string serverUrl)
+        // NOTE: Client implementation placeholder  
+        // Use opcuaKlient class for actual implementation
+    }
+
+    // ===== OPC UA Server Implementation =====
+
+    /// <summary>
+    /// Custom OPC UA Server for CrossroadData
+    /// </summary>
+    internal class CrossroadOpcUaServer : StandardServer
+    {
+        private CrossroadNodeManager _nodeManager;
+
+        protected override MasterNodeManager CreateMasterNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration)
         {
-            var config = new ApplicationConfiguration()
+            Console.WriteLine("Creating master node manager...");
+
+            var nodeManagers = new List<INodeManager>();
+            
+            // Note: CoreNodeManager requires dynamicNamespaceIndex parameter
+            // We skip it and only use our custom node manager
+
+            // Create our custom node manager
+            _nodeManager = new CrossroadNodeManager(server, configuration);
+            nodeManagers.Add(_nodeManager);
+
+            return new MasterNodeManager(server, configuration, null, nodeManagers.ToArray());
+        }
+
+        protected override ServerProperties LoadServerProperties()
+        {
+            var properties = new ServerProperties
             {
-                ApplicationName = "OpcUaSubscriber",
-                ApplicationType = ApplicationType.Client,
-                SecurityConfiguration = new SecurityConfiguration
-                {
-                    AutoAcceptUntrustedCertificates = true
-                },
-                TransportQuotas = new TransportQuotas { OperationTimeout = 15000 },
-                ClientConfiguration = new ClientConfiguration { DefaultSessionTimeout = 60000 }
+                ManufacturerName = "JAN0837",
+                ProductName = "JAN0837 DP OPC UA Server",
+                ProductUri = "http://jan0837/opcuaserver",
+                SoftwareVersion = Utils.GetAssemblySoftwareVersion(),
+                BuildNumber = Utils.GetAssemblyBuildNumber(),
+                BuildDate = Utils.GetAssemblyTimestamp()
             };
 
-            config.Validate(ApplicationType.Client).Wait();
-            var endpointDescription = CoreClientUtils.SelectEndpoint(serverUrl, false);
-            var endpointConfiguration = EndpointConfiguration.Create(config);
-            var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
-
-            return Session.Create(config, endpoint, false, "OPC UA Subscriber", 60000, null, null).Result;
+            return properties;
         }
 
-        static void ReadTagValue(Session session, string tagNodeId)
+        // Update variable value
+        public void UpdateVariable(string variableName, bool value)
         {
-            try
+            _nodeManager?.UpdateVariable(variableName, value);
+        }
+
+        // Read variable value
+        public bool ReadVariable(string variableName)
+        {
+            return _nodeManager?.ReadVariable(variableName) ?? false;
+        }
+    }
+
+    /// <summary>
+    /// Node Manager for CrossroadData variables
+    /// </summary>
+    internal class CrossroadNodeManager : CustomNodeManager2
+    {
+        private readonly Dictionary<string, BaseDataVariableState> _variables = new Dictionary<string, BaseDataVariableState>();
+        private FolderState _crossroadFolder;
+        private ushort _namespaceIndex;
+
+        public CrossroadNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration)
+            : base(server, configuration, Namespaces.CrossroadNamespace)
+        {
+            SystemContext.NodeIdFactory = this;
+        }
+
+        public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
+        {
+            lock (Lock)
             {
-                var nodeId = new NodeId(tagNodeId);
-                DataValue value = session.ReadValue(nodeId);
-                Console.WriteLine($"📊 [{tagNodeId}] = {value.Value}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"⚠️ Chyba při čtení tagu [{tagNodeId}]: {ex.Message}");
+                LoadPredefinedNodes(SystemContext, externalReferences);
+
+                // Get namespace index
+                _namespaceIndex = Server.NamespaceUris.GetIndexOrAppend(Namespaces.CrossroadNamespace);
+
+                // Create Crossroad folder
+                _crossroadFolder = CreateFolder(null, "Crossroad", "Crossroad");
+                _crossroadFolder.AddReference(ReferenceTypes.Organizes, true, ObjectIds.ObjectsFolder);
+                AddRootNotifier(_crossroadFolder);
+
+                // Create all variables
+                CreateVariable(_crossroadFolder, "CrossroadType", "CrossroadType", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "BtnCrossroadStart", "Start Button", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "BtnCrossroadPause", "Pause Button", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "BtnCrossroadStop", "Stop Button", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "BtnCrosswalk1", "Crosswalk 1 Button", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "BtnCrosswalk2", "Crosswalk 2 Button", DataTypeIds.Boolean, false);
+
+                CreateVariable(_crossroadFolder, "TrafficLight1_Green", "Traffic Light 1 Green", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "TrafficLight1_Yellow", "Traffic Light 1 Yellow", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "TrafficLight1_Red", "Traffic Light 1 Red", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "TrafficLight2_Green", "Traffic Light 2 Green", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "TrafficLight2_Yellow", "Traffic Light 2 Yellow", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "TrafficLight2_Red", "Traffic Light 2 Red", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "Pedestrian1_Green", "Pedestrian 1 Green", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "Pedestrian1_Red", "Pedestrian 1 Red", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "Pedestrian2_Green", "Pedestrian 2 Green", DataTypeIds.Boolean, false);
+                CreateVariable(_crossroadFolder, "Pedestrian2_Red", "Pedestrian 2 Red", DataTypeIds.Boolean, false);
+
+                AddPredefinedNode(SystemContext, _crossroadFolder);
+
+                Console.WriteLine($"Created {_variables.Count} OPC UA variables in namespace index {_namespaceIndex}");
             }
         }
 
-        */
+        private FolderState CreateFolder(NodeState parent, string path, string name)
+        {
+            var folder = new FolderState(parent)
+            {
+                SymbolicName = name,
+                ReferenceTypeId = ReferenceTypes.Organizes,
+                TypeDefinitionId = ObjectTypeIds.FolderType,
+                NodeId = new NodeId(path, _namespaceIndex),
+                BrowseName = new QualifiedName(path, _namespaceIndex),
+                DisplayName = new Opc.Ua.LocalizedText("en", name),
+                WriteMask = AttributeWriteMask.None,
+                UserWriteMask = AttributeWriteMask.None,
+                EventNotifier = EventNotifiers.None
+            };
+
+            parent?.AddChild(folder);
+            return folder;
+        }
+
+        private void CreateVariable(NodeState parent, string path, string name, NodeId dataType, object initialValue)
+        {
+            var variable = new BaseDataVariableState(parent)
+            {
+                SymbolicName = name,
+                ReferenceTypeId = ReferenceTypes.Organizes,
+                TypeDefinitionId = VariableTypeIds.BaseDataVariableType,
+                NodeId = new NodeId(path, _namespaceIndex),
+                BrowseName = new QualifiedName(path, _namespaceIndex),
+                DisplayName = new Opc.Ua.LocalizedText("en", name),
+                WriteMask = AttributeWriteMask.DisplayName | AttributeWriteMask.Description,
+                UserWriteMask = AttributeWriteMask.DisplayName | AttributeWriteMask.Description,
+                DataType = dataType,
+                ValueRank = ValueRanks.Scalar,
+                AccessLevel = AccessLevels.CurrentReadOrWrite,
+                UserAccessLevel = AccessLevels.CurrentReadOrWrite,
+                Historizing = false,
+                Value = initialValue,
+                StatusCode = StatusCodes.Good,
+                Timestamp = DateTime.UtcNow
+            };
+
+            // Allow write access - handle writes in the main loop
+            variable.OnWriteValue = null;  // Using default write handling
+
+            parent?.AddChild(variable);
+            _variables[path] = variable;
+            AddPredefinedNode(SystemContext, variable);
+        }
+
+        public void UpdateVariable(string variableName, bool value)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+            }
+        }
+
+        public bool ReadVariable(string variableName)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    return Convert.ToBoolean(variable.Value);
+                }
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Namespace definitions
+    /// </summary>
+    internal static class Namespaces
+    {
+        public const string CrossroadNamespace = "http://jan0837.opcua.server/crossroad";
     }
 }

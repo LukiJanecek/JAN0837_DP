@@ -10,7 +10,6 @@ using JAN0837_DP.Forms;
 using Microsoft.AspNetCore.Connections.Features;
 using Newtonsoft.Json;
 using Opc.Ua;
-using Org.BouncyCastle.Asn1.Cmp;
 using Siemens.Engineering.HW;
 using System;
 using System.Collections.Generic;
@@ -30,8 +29,11 @@ namespace JAN0837_DP.Communication
         public comTCPIP.comTCPIP _tcpip;
         public comModbusTCPIP.ModbusTCPIPimMaster _modbusMaster;
         public comModbusTCPIP.ModbusTCPIPimSlave _modbusSlave;
-        //public MQTTBroker _mqttBroker;
-        //public MQTTClient _mqttClient;
+        public MQTTBroker _mqttBroker;
+        public MQTTClient _mqttClient;
+        public comOPCUA.opcuaKlient _opcuaClient;      // Client for external PLC server (slave mode)
+        public comOPCUA.opcuaServer _opcuaServer;      // Our server (master mode)
+        public comOPCUA.opcuaKlient _opcuaInternalClient;  // Internal client connecting to our own server (master mode)
 
         public ucCommunicationControl _ucCommunicationControl;
 
@@ -142,11 +144,129 @@ namespace JAN0837_DP.Communication
 
                             if (internalVariables.checkBoxMaster == true)
                             {
+                                // ═══════════════════════════════════════════════════════════
+                                // SERVER MODE (like MQTT Broker)
+                                // ═══════════════════════════════════════════════════════════
+                                // Architecture (correct):
+                                //   - OPC UA Server = Data broker (stores variables)
+                                //   - Internal Client = Syncs CrossroadData ↔ Server
+                                //   - External Clients (PLC/SCADA) = Read/Write to server
+                                //
+                                // Current implementation uses direct server access for simplicity
+                                // TODO: Create internal client for proper separation
+                                // ═══════════════════════════════════════════════════════════
+                                
+                                var opcuaServer = _ucCommunicationControl._opcuaServer;
 
+                                if (opcuaServer == null || !opcuaServer.running)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue;
+                                }
+
+                                try
+                                {
+                                    // Read FROM server (commands written by external clients like PLC)
+                                    CrossroadData.btnCrossroadStart = opcuaServer.ReadVariable("BtnCrossroadStart") ? "true" : "false";
+                                    CrossroadData.btnCrossroadPause = opcuaServer.ReadVariable("BtnCrossroadPause") ? "true" : "false";
+                                    CrossroadData.btnCrossroadStop = opcuaServer.ReadVariable("BtnCrossroadStop") ? "true" : "false";
+                                    CrossroadData.btnCrosswalk1 = opcuaServer.ReadVariable("BtnCrosswalk1") ? "true" : "false";
+                                    CrossroadData.btnCrosswalk2 = opcuaServer.ReadVariable("BtnCrosswalk2") ? "true" : "false";
+
+                                    // Write TO server (so external clients can read current state)
+                                    opcuaServer.UpdateVariable("CrossroadType", CrossroadData.crossroadType == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight1_Green", CrossroadData.trafficLight1_green == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight1_Yellow", CrossroadData.trafficLight1_yellow == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight1_Red", CrossroadData.trafficLight1_red == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight2_Green", CrossroadData.trafficLight2_green == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight2_Yellow", CrossroadData.trafficLight2_yellow == "true");
+                                    opcuaServer.UpdateVariable("TrafficLight2_Red", CrossroadData.trafficLight2_red == "true");
+                                    opcuaServer.UpdateVariable("Pedestrian1_Green", CrossroadData.pedestrian1_green == "true");
+                                    opcuaServer.UpdateVariable("Pedestrian1_Red", CrossroadData.pedestrian1_red == "true");
+                                    opcuaServer.UpdateVariable("Pedestrian2_Green", CrossroadData.pedestrian2_green == "true");
+                                    opcuaServer.UpdateVariable("Pedestrian2_Red", CrossroadData.pedestrian2_red == "true");
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"OPC UA Server error: {ex.Message}");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+                                /*
+                                var opcuaClient = _ucCommunicationControl._opcuaClient;
+
+                                if (opcuaClient == null || !opcuaClient.connected)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue;
+                                }
+
+                                try
+                                {
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadStart", CrossroadData.btnCrossroadStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadPause", CrossroadData.btnCrossroadPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadStop", CrossroadData.btnCrossroadStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrosswalk1", CrossroadData.btnCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrosswalk2", CrossroadData.btnCrosswalk2 == "true");
+
+                                    // Read output values FROM PLC server
+                                    CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.CrossroadType") ? "true" : "false";
+                                    CrossroadData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Green") ? "true" : "false";
+                                    CrossroadData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Yellow") ? "true" : "false";
+                                    CrossroadData.trafficLight1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Red") ? "true" : "false";
+                                    CrossroadData.trafficLight2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Green") ? "true" : "false";
+                                    CrossroadData.trafficLight2_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Yellow") ? "true" : "false";
+                                    CrossroadData.trafficLight2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Red") ? "true" : "false";
+                                    CrossroadData.pedestrian1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian1_Green") ? "true" : "false";
+                                    CrossroadData.pedestrian1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian1_Red") ? "true" : "false";
+                                    CrossroadData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian2_Green") ? "true" : "false";
+                                    CrossroadData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian2_Red") ? "true" : "false";
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"OPC UA Client mode error: {ex.Message}");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+                                */
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
+                                var opcuaClient = _ucCommunicationControl._opcuaClient;
 
+                                if (opcuaClient == null || !opcuaClient.connected)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue;
+                                }
+
+                                try
+                                {                                  
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadStart", CrossroadData.btnCrossroadStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadPause", CrossroadData.btnCrossroadPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrossroadStop", CrossroadData.btnCrossroadStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrosswalk1", CrossroadData.btnCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=DB1.BtnCrosswalk2", CrossroadData.btnCrosswalk2 == "true");
+
+                                    // Read output values FROM PLC server
+                                    CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.CrossroadType") ? "true" : "false";
+                                    CrossroadData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Green") ? "true" : "false";
+                                    CrossroadData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Yellow") ? "true" : "false";
+                                    CrossroadData.trafficLight1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight1_Red") ? "true" : "false";
+                                    CrossroadData.trafficLight2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Green") ? "true" : "false";
+                                    CrossroadData.trafficLight2_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Yellow") ? "true" : "false";
+                                    CrossroadData.trafficLight2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.TrafficLight2_Red") ? "true" : "false";
+                                    CrossroadData.pedestrian1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian1_Green") ? "true" : "false";
+                                    CrossroadData.pedestrian1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian1_Red") ? "true" : "false";
+                                    CrossroadData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian2_Green") ? "true" : "false";
+                                    CrossroadData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=2;s=DB1.Pedestrian2_Red") ? "true" : "false";
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"OPC UA Client mode error: {ex.Message}");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
                             }
                             else
                             {

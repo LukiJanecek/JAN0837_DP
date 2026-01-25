@@ -11,25 +11,26 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.3.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.9" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.2" />
     <PackageReference Include="Microsoft.Owin" Version="4.2.3" />
     <PackageReference Include="Microsoft.Owin.Cors" Version="4.2.3" />
     <PackageReference Include="Microsoft.Owin.FileSystems" Version="4.2.3" />
     <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.2.3" />
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.3" />
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.3" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3405.78" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
     <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
     <PackageReference Include="MQTTnet.Server" Version="5.0.1.1416" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NModbus4" Version="2.1.0" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.5.376.244" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.5.378.65" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.5.378.65" />
     <PackageReference Include="S7netplus" Version="0.20.0" />
     <PackageReference Include="Sharp7" Version="1.1.84" />
-    <PackageReference Include="System.IO.Ports" Version="9.0.8" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,10 +5,10 @@ using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
 using JAN0837_DP.Communication.comMQTT;
+using JAN0837_DP.Communication.comOPCUA;
 using JAN0837_DP.Data;
 using MQTTnet.Server;
 using Opc.Ua;
-using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +32,9 @@ namespace JAN0837_DP.Forms
         public ModbusTCPIPimMaster _modbusMaster;
         public ModbusTCPIPimSlave _modbusSlave;
         public MQTTBroker _mqttBroker;
-        public MQTTClient _mqttClient;  
+        public MQTTClient _mqttClient;
+        public opcuaKlient _opcuaClient;
+        public opcuaServer _opcuaServer;
 
         public ucCommunicationControl()
         {
@@ -211,17 +213,17 @@ namespace JAN0837_DP.Forms
             // para
             lblPara1.Visible = true;
             lblPara1.Enabled = true;
-            lblPara1.Text = "Server URL:";
+            lblPara1.Text = "IP Address:";
             txtBoxPara1.Visible = true;
             txtBoxPara1.Enabled = true;
-            txtBoxPara1.Text = "Type URL";
+            txtBoxPara1.Text = "Type IP address";
 
-            lblPara2.Visible = false;
-            lblPara2.Enabled = false;
-            lblPara2.Text = "";
-            txtBoxPara2.Visible = false;
-            txtBoxPara2.Enabled = false;
-            txtBoxPara2.Text = "";
+            lblPara2.Visible = true;
+            lblPara2.Enabled = true;
+            lblPara2.Text = "Port:";
+            txtBoxPara2.Visible = true;
+            txtBoxPara2.Enabled = true;
+            txtBoxPara2.Text = "Type port";
 
             lblCheckBox.Visible = true;
             lblCheckBox.Enabled = true;
@@ -229,12 +231,12 @@ namespace JAN0837_DP.Forms
 
             checkBoxMaster.Visible = true;
             checkBoxMaster.Enabled = true;
-            checkBoxMaster.Text = "Master";
+            checkBoxMaster.Text = "Server";
             checkBoxMaster.Checked = false;
 
             checkBoxSlave.Visible = true;
             checkBoxSlave.Enabled = true;
-            checkBoxSlave.Text = "Klient";
+            checkBoxSlave.Text = "Client";
             checkBoxSlave.Checked = false;
 
             #endregion
@@ -665,7 +667,7 @@ namespace JAN0837_DP.Forms
                                 if (topic == "JAN0837/Crossroad/Output")
                                 {
                                     // zpracování outputu z PLC -> CrossroadData
-                                    MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(text);
+                                    MQTTClient.CrossroadOutputMapper.   ApplyOutputJsonToCrossroadData(text);
 
                                     // UI update:
                                     /*
@@ -721,22 +723,61 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "OPC UA communication started.";
                         lblStatus.Text = "OPC UA communication started.";
 
-                        string ipAdressOPCUA = internalVariables.txtBoxParam1;
+                        string opcuaIPAddress = internalVariables.txtBoxParam1;
+                        
+                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int opcuaPort))
+                        {
+                            opcuaPort = 4840; // default OPC UA port
+                        }
 
                         if (internalVariables.checkBoxMaster == true)
                         {
-                            // start server 
+                            // This device is an OPC UA server
+                            if (_opcuaServer == null)
+                            {
+                                _opcuaServer = new opcuaServer();
+                            }
 
-                            // create client and connect to server???
+                            // Start OPC UA server
+                            bool started = await _opcuaServer.startOPCUAserver(opcuaIPAddress, opcuaPort);
+
+                            if (started)
+                            {
+                                lblStatus.Text = $"OPC UA server started on opc.tcp://{opcuaIPAddress}:{opcuaPort}";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"OPC UA server failed to start.";
+                                return;
+                            }
                         }
                         else if (internalVariables.checkBoxSlave == true)
                         {
-                            // create client and connect to server
+                            // This device is a client connecting to PLC (server)
+                            string opcuaServerUrl = $"opc.tcp://{opcuaIPAddress}:{opcuaPort}";
+                            
+                            if (_opcuaClient == null)
+                            {
+                                _opcuaClient = new opcuaKlient();
+                            }
+
+                            // Connect to OPC UA server (PLC)
+                            bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "", "");
+
+                            if (connected)
+                            {
+                                lblStatus.Text = $"OPC UA client connected to {opcuaServerUrl}.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"OPC UA connection to {opcuaServerUrl} failed.";
+                                return;
+                            }
                         }
                         else
                         {
                             // no checkbox selected 
-                            lblStatus.Text = $"Error: Please select Master or Slave mode for OPC UA.";
+                            lblStatus.Text = $"Error: Please select Server or Client mode for OPC UA.";
                             return; // break;
                         }
 
@@ -951,19 +992,54 @@ namespace JAN0837_DP.Forms
                 case "OPCUA":
                     if (internalVariables.checkBoxMaster == true)
                     {
-                        // stop server 
-                        // disconnect client???
+                        // stop server
+                        if (_opcuaServer != null && _opcuaServer.running)
+                        {
+                            bool stopped = await _opcuaServer.stopOPCUAserver();
+                            if (stopped)
+                            {
+                                lblStatus.Text = "OPC UA server stopped successfully.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = "Error stopping OPC UA server.";
+                            }
+                        }
+                        else
+                        {
+                            lblStatus.Text = "OPC UA server was not running.";
+                        }
                     }
                     else if (internalVariables.checkBoxSlave == true)
                     {
                         // disconnect client
+                        if (_opcuaClient != null && _opcuaClient.connected)
+                        {
+                            bool disconnected = await _opcuaClient.disconnectFromOPCUAserver();
+                            if (disconnected)
+                            {
+                                lblStatus.Text = "OPC UA client disconnected successfully.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = "Error disconnecting OPC UA client.";
+                            }
+                        }
+                        else
+                        {
+                            lblStatus.Text = "OPC UA client was not connected.";
+                        }
                     }
                     else
                     {
                         // no checkbox selected 
-                        lblStatus.Text = $"Error: Please select Master or Slave mode for OPC UA.";
+                        lblStatus.Text = $"Error: Please select Server or Client mode for OPC UA.";
                         return; // break;
                     }
+
+                    lblCommunicationStatus.Text = "OPC UA communication stopped.";
+                    lblStatus.Text = "OPC UA communication stopped.";
+
 
                     break;
                 case "ModbusTCPIP":
@@ -1120,8 +1196,9 @@ namespace JAN0837_DP.Forms
         {
             if (rbtnOPCUA.Checked == true)
             {
-                // URL 
-                txtBoxPara1.Text = "192.168.0.1";
+                // OPC UA IP and Port
+                txtBoxPara1.Text = "127.0.0.1";
+                txtBoxPara2.Text = "4840";
             }
             else if (rbtnMQTT.Checked == true)
             {

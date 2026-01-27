@@ -28,16 +28,38 @@ namespace JAN0837_DP.Forms
 {
     public partial class ucTIAControl : UserControl
     {
-        TiaPortal tiaPortal;
-        Project projectPlc;
-
+        private TiaPortal tiaPortal;
+        private Project projectPlc;
+        
         //string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
         public sealed class ProjectItem
         {
             public string Name { get; }
             public string Path { get; }
-            public ProjectItem(string name, string path) { Name = name; Path = path; }
-            public override string ToString() => Name; // co se bude zobrazovat v ComboBoxu
+            public int? Version { get; }
+            
+            public ProjectItem(string name, string path)
+            {
+                Name = name;
+                Path = path;
+                Version = TIAcontrol.GetProjectVersion(path);
+            }
+            
+            public override string ToString()
+            {
+                // Show version in display: "ProjectName (V19)"
+                if (Version.HasValue)
+                    return $"{Name} (V{Version.Value})";
+                return Name;
+            }
+            
+            public bool IsVersionMatch(int? dllVersion)
+            {
+                if (!Version.HasValue || !dllVersion.HasValue)
+                    return true; // Unknown versions, allow
+                    
+                return Version.Value == dllVersion.Value;
+            }
         }
 
         public string _selectedProjectPath;
@@ -67,6 +89,10 @@ namespace JAN0837_DP.Forms
 
             txtBoxTIADLL.Enabled = false;
             txtBoxTIADLL.Text = paths.tiaDLLPath;
+
+            // Detect initial TIA version
+            TIAcontrol.tiaPortalVersion = TIAcontrol.DetectTIAVersion(paths.tiaDLLPath);
+            
             btnImportDLL.Enabled = false;
             btnImportDLL.Visible = true;
 
@@ -190,12 +216,34 @@ namespace JAN0837_DP.Forms
 
                 if (found.Count > 0)
                 {
-                    foreach (var item in found.OrderBy(p => p.Name))
+                    // Sort: matching version first, then by name
+                    var sorted = TIAcontrol.tiaPortalVersion.HasValue
+                        ? found.OrderByDescending(p => p.IsVersionMatch(TIAcontrol.tiaPortalVersion))
+                              .ThenBy(p => p.Name)
+                        : found.OrderBy(p => p.Name);
+
+                    foreach (var item in sorted)
                         comboBoxTIAprojects.Items.Add(item);
 
                     comboBoxTIAprojects.SelectedIndex = 0;
                     _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
-                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s). Choose one and open it or add pre-prepared data block in it.";
+                    
+                    
+                    // Build status message
+                    var statusMsg = $"Found {comboBoxTIAprojects.Items.Count} project(s). ";
+                    if (TIAcontrol.tiaPortalVersion.HasValue)
+                    {
+                        var matchingCount = found.Count(p => p.IsVersionMatch(TIAcontrol.tiaPortalVersion));
+                        var mismatchCount = found.Count - matchingCount;
+                        
+                        statusMsg += $"({matchingCount} matching V{TIAcontrol.tiaPortalVersion.Value}";
+                        if (mismatchCount > 0)
+                            statusMsg += $", {mismatchCount} different versions - may not open)";
+                        else
+                            statusMsg += ")";
+                    }
+                    
+                    lblStatus1.Text = statusMsg;
                 }
                 else
                 {
@@ -392,38 +440,41 @@ namespace JAN0837_DP.Forms
 
         private async void btnOpenProject_Click(object sender, EventArgs e)
         {
-            // this doesnt work properly -> python will do this :) 
-            try
-            {
-                if (string.IsNullOrWhiteSpace(_selectedProjectPath))
-                {
-                    lblStatus1.Text = "Please select a TIA project first.";
-                    throw new InvalidOperationException("Please select a TIA project first.");
-                }
-
-                lblStatus1.Text = "Openning TIA project.";
-
-                var (tiaPortal, projectPlc) = TIAcontrol.OpenOrAttachProject(_selectedProjectPath, withUI: true);
-
-                lblStatus1.Text = $"Project opened: {Path.GetFileName(_selectedProjectPath)}";
-            }
-            catch (Exception ex)
-            {
-                lblStatus1.Text = "Error: " + ex.Message;
-            }
-
-            // py 
             if (string.IsNullOrWhiteSpace(_selectedProjectPath))
             {
                 lblStatus1.Text = "Please select a TIA project first.";
-                throw new InvalidOperationException("Please select a TIA project first.");
+                return;
             }
 
+            // Check version compatibility
+            var selectedItem = comboBoxTIAprojects.SelectedItem as ProjectItem;
+            if (selectedItem != null && !selectedItem.IsVersionMatch(TIAcontrol.tiaPortalVersion))
+            {
+                var projectVer = selectedItem.Version?.ToString() ?? "unknown";
+                var dllVer = TIAcontrol.tiaPortalVersion?.ToString() ?? "unknown";
+                
+                var result = MessageBox.Show(
+                    $"⚠️ Version Mismatch Warning!\n\n" +
+                    $"Project Version: V{projectVer}\n" +
+                    $"DLL Version: V{dllVer}\n\n" +
+                    $"Opening a project with a different TIA Portal version may fail or cause issues.\n\n" +
+                    $"Do you want to continue anyway?",
+                    "Version Mismatch",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
+
+                if (result != DialogResult.Yes)
+                {
+                    lblStatus1.Text = "Operation cancelled by user.";
+                    return;
+                }
+            }
+
+            lblStatus1.Text = "Opening TIA project...";
+
             string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath, "--ui" };
-
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "openPathProject.py"); // 
-
-            lblStatus1.Text = "Openning TIA project.";
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "openPathProject.py");
 
             try
             {
@@ -444,24 +495,27 @@ namespace JAN0837_DP.Forms
                         msg.AppendLine(stderr);
                     }
 
-                    // msg.ToString();
-                    lblStatus1.Text = $"Openning project failed, please check your path to Siemens.Engineering.dll.";
+                    lblStatus1.Text = $"Opening project failed. Check DLL path and project version.";
+                    
+                    // Show detailed error
+                    MessageBox.Show(msg.ToString(), "Error Opening Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Success: optionally show stdout
+                // Success
                 if (!string.IsNullOrWhiteSpace(stdout))
                 {
-                    lblStatus1.Text = "Project opened successfuly: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    lblStatus1.Text = "Project opened successfully: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
                 }
                 else
                 {
-                    lblStatus1.Text = "Project opened successfuly.";
+                    lblStatus1.Text = "Project opened successfully.";
                 }
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error, openning project failed: " + ex.Message;
+                lblStatus1.Text = "Exception error: " + ex.Message;
+                MessageBox.Show($"Error: {ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -614,23 +668,24 @@ namespace JAN0837_DP.Forms
                 return;
             }
 
+            // Detect version from the path BEFORE importing
+            string newDllPath = txtBoxTIADLL.Text.Trim();
+            int? detectedVersion = TIAcontrol.DetectTIAVersion(newDllPath);
+            
+            // Show what we're trying to import
+            if (detectedVersion.HasValue)
+            {
+                lblStatus1.Text = $"Importing TIA Portal V{detectedVersion.Value} DLL...";
+            }
+            else
+            {
+                lblStatus1.Text = "Importing DLL (version unknown from path)...";
+            }
+
             // test import on current path in txtBoxTIADLL
-            string[] args = new[] { "--dir", txtBoxTIADLL.Text.Trim() };
+            string[] args = new[] { "--dir", newDllPath };
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "importTIADLL.py"); 
-            /*
-            if (!File.Exists(paths.pythonExePath))
-            {
-                MessageBox.Show($"Python executable not found:\n{paths.pythonExePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (!File.Exists(pythonScriptPath))
-            {
-                MessageBox.Show($"Python script not found:\n{pythonScriptPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            */
 
             try
             {
@@ -651,26 +706,50 @@ namespace JAN0837_DP.Forms
                         msg.AppendLine(stderr);
                     }
 
-                    // msg.ToString();
-                    lblStatus1.Text = $"Import failed, please check your path to Siemens.Engineering.dll.";
+                    // Show what version we tried to import (even though it failed)
+                    if (detectedVersion.HasValue)
+                    {
+                        lblStatus1.Text = $"❌ Import of TIA Portal V{detectedVersion.Value} failed. Check DLL path.";
+                    }
+                    else
+                    {
+                        lblStatus1.Text = $"❌ Import failed. Check path to Siemens.Engineering.dll.";
+                    }
+                    
+                    // Show error details
+                    MessageBox.Show(msg.ToString(), "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Success: optionally show stdout
-                if (!string.IsNullOrWhiteSpace(stdout))
+                // Success! Update the path and version
+                paths.tiaDLLPath = newDllPath;
+                TIAcontrol.tiaPortalVersion = detectedVersion;
+                
+                // Show success message with detected version
+                if (detectedVersion.HasValue)
                 {
-                    lblStatus1.Text = "Import Siemens.Engineering.dll successful: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                    lblStatus1.Text = $"✅ Successfully imported TIA Portal V{detectedVersion.Value}";
                 }
                 else
                 {
-                    lblStatus1.Text = "Import Siemens.Engineering.dll successful.";
+                    lblStatus1.Text = "✅ Import successful (version not detected from path)";
                 }
-
-                paths.tiaDLLPath = txtBoxTIADLL.Text.Trim();
+                
+                // Refresh project list with new version
+                FindMyProjectInThisProject();
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Code exception error, import failed: " + ex.Message;
+                if (detectedVersion.HasValue)
+                {
+                    lblStatus1.Text = $"Exception importing V{detectedVersion.Value}: {ex.Message}";
+                }
+                else
+                {
+                    lblStatus1.Text = $"Exception during import: {ex.Message}";
+                }
+                
+                MessageBox.Show($"Error: {ex.Message}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

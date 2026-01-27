@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -81,7 +83,40 @@ namespace JAN0837_DP.Data
         public static bool communicationStatus { get; set; } = false;
 
         // generateTIAtemplate
-
-
+        
+        /// <summary>
+        /// Get the local IPv4 address of this machine (network IP, not loopback)
+        /// </summary>
+        /// <returns>Local IP address or "localhost" if not found</returns>
+        public static string GetLocalIPAddress()
+        {
+            try
+            {
+                // Get host name
+                string hostName = Dns.GetHostName();
+                
+                // Get IP addresses for this host
+                IPHostEntry host = Dns.GetHostEntry(hostName);
+                
+                // Find the first IPv4 address that is not loopback
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    // Check if it's IPv4 (not IPv6) and not loopback (127.0.0.1)
+                    if (ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip))
+                    {
+                        return ip.ToString();
+                    }
+                }
+                
+                // If no network IP found, return localhost
+                return "localhost";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting local IP: {ex.Message}");
+                // Fallback to localhost
+                return "localhost";
+            }
+        }
     }
 }

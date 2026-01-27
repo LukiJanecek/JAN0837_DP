@@ -18,7 +18,6 @@ def import_tia_dll(dll_dir: str) -> int:
 	except Exception:
 		return 1
 
-
 def open_tia_portal(use_ui: bool):
 	"""Open TIA Portal in UI or background mode. Returns (portal, mode)."""
 	from Siemens.Engineering import TiaPortal, TiaPortalMode
@@ -35,11 +34,10 @@ def open_tia_portal(use_ui: bool):
 		except Exception:
 			raise
 
-
 def locate_project_file(path_like: str) -> Path:
 	"""Resolve a project path (folder or .apXX file) to the actual .ap file path.
 
-	If a directory is provided, tries <dir>/<dir_name>.ap19 then first *.ap19.
+	If a directory is provided, tries <dir>/<dir_name>.ap* then first *.ap* (any version).
 	Raises FileNotFoundError if none found.
 	"""
 	p = Path(path_like)
@@ -50,15 +48,17 @@ def locate_project_file(path_like: str) -> Path:
 		raise FileNotFoundError(f"Project path does not exist: {p}")
 
 	folder_name = p.name
-	candidate = p / f"{folder_name}.ap19"
-	if candidate.exists():
-		return candidate
+	# Try to find project file matching folder name with any .ap* extension
+	ap_candidates = list(p.glob(f"{folder_name}.ap*"))
+	if ap_candidates:
+		return ap_candidates[0]
 
-	ap_files = list(p.glob("*.ap19"))
+	# Fall back to any .ap* file in the directory
+	ap_files = list(p.glob("*.ap*"))
 	if ap_files:
 		return ap_files[0]
 
-	raise FileNotFoundError(f"No .ap19 file found in directory: {p}")
+	raise FileNotFoundError(f"No .ap* file found in directory: {p}")
 
 
 def open_project(portal, project_file: Path):

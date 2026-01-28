@@ -53,18 +53,23 @@ namespace JAN0837_DP.Forms
                 webView21.DefaultBackgroundColor = Color.WhiteSmoke;
             }
 
-            _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-            _feCommunication.communicationStart();
-
-            await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
-            await _feCommunication.EnsureReactDevServerAsync();        // port 3000
-
-            webView21.CoreWebView2.Navigate(internalVariables.feURL);
-            //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
-
-
-            if (internalVariables.feServerStarted == true)
+            if (internalVariables.communicationServerStarted == false)
             {
+                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
+                _feCommunication.communicationStart();
+            }
+
+            if (internalVariables.feServerStarted == false)
+            {
+                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
+                await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
+                await _feCommunication.EnsureReactDevServerAsync();        // port 3000
+
+                webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
+            }
+            else 
+            { 
                 webView21.CoreWebView2.Navigate(internalVariables.feURL);
             }
         }

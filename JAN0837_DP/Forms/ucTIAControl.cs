@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace JAN0837_DP.Forms
 {
@@ -227,8 +228,22 @@ namespace JAN0837_DP.Forms
 
                     comboBoxTIAprojects.SelectedIndex = 0;
                     _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
-                    
-                    
+
+                    int maxWidth = comboBoxTIAprojects.Width;
+
+                    using (Graphics g = comboBoxTIAprojects.CreateGraphics())
+                    {
+                        foreach (var item in comboBoxTIAprojects.Items)
+                        {
+                            int itemWidth = (int)g.MeasureString(item.ToString(), comboBoxTIAprojects.Font).Width;
+                            if (itemWidth > maxWidth)
+                                maxWidth = itemWidth;
+                        }
+                    }
+
+                    // Add some padding for comfort
+                    comboBoxTIAprojects.DropDownWidth = maxWidth + 20;
+
                     // Build status message
                     var statusMsg = $"Found {comboBoxTIAprojects.Items.Count} project(s). ";
                     if (TIAcontrol.tiaPortalVersion.HasValue)

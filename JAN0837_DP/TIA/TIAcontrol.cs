@@ -18,7 +18,40 @@ namespace JAN0837_DP.TIA
 {
     public class TIAcontrol
     {
+        //string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
+
         public static int? tiaPortalVersion { get; set; } = null;
+        public static string _selectedProjectPath { get; set; } = "";
+
+        public sealed class ProjectItem
+        {
+            public string Name { get; }
+            public string Path { get; }
+            public int? Version { get; }
+
+            public ProjectItem(string name, string path)
+            {
+                Name = name;
+                Path = path;
+                Version = TIAcontrol.GetProjectVersion(path);
+            }
+
+            public override string ToString()
+            {
+                // Show version in display: "ProjectName (V19)"
+                if (Version.HasValue)
+                    return $"{Name} (V{Version.Value})";
+                return Name;
+            }
+
+            public bool IsVersionMatch(int? dllVersion)
+            {
+                if (!Version.HasValue || !dllVersion.HasValue)
+                    return true; // Unknown versions, allow
+
+                return Version.Value == dllVersion.Value;
+            }
+        }
 
         public static async Task<(int code, string stdout, string stderr)> runPY(string pythonexe, string scriptPath, params string[] args)
         {

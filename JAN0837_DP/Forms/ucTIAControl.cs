@@ -29,42 +29,7 @@ namespace JAN0837_DP.Forms
 {
     public partial class ucTIAControl : UserControl
     {
-        private TiaPortal tiaPortal;
-        private Project projectPlc;
-        
-        //string tiaDLLPath = "C:\\Program Files\\Siemens\\Automation\\Portal V19\\PublicAPI\\V19"; // Siemens.Engineering.dll
-        public sealed class ProjectItem
-        {
-            public string Name { get; }
-            public string Path { get; }
-            public int? Version { get; }
-            
-            public ProjectItem(string name, string path)
-            {
-                Name = name;
-                Path = path;
-                Version = TIAcontrol.GetProjectVersion(path);
-            }
-            
-            public override string ToString()
-            {
-                // Show version in display: "ProjectName (V19)"
-                if (Version.HasValue)
-                    return $"{Name} (V{Version.Value})";
-                return Name;
-            }
-            
-            public bool IsVersionMatch(int? dllVersion)
-            {
-                if (!Version.HasValue || !dllVersion.HasValue)
-                    return true; // Unknown versions, allow
-                    
-                return Version.Value == dllVersion.Value;
-            }
-        }
-
-        public string _selectedProjectPath;
-
+        public TiaPortal tiaPortal;
         public ucTIAControl()
         {
             InitializeComponent();
@@ -188,7 +153,7 @@ namespace JAN0837_DP.Forms
                 }
 
                 var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                var found = new List<ProjectItem>();
+                var found = new List<TIAcontrol.ProjectItem>();
 
                 // search all .ap* files under each root (recursive)
                 foreach (var root in searchRoots)
@@ -205,7 +170,7 @@ namespace JAN0837_DP.Forms
                             var parentDir = Path.GetFileName(Path.GetDirectoryName(apPath)) ?? "";
                             var display = string.IsNullOrEmpty(parentDir) ? fileName : $"{fileName}  ({parentDir})";
 
-                            found.Add(new ProjectItem(display, apPath));
+                            found.Add(new TIAcontrol.ProjectItem(display, apPath));
                         }
                     }
                     catch (UnauthorizedAccessException)
@@ -227,7 +192,7 @@ namespace JAN0837_DP.Forms
                         comboBoxTIAprojects.Items.Add(item);
 
                     comboBoxTIAprojects.SelectedIndex = 0;
-                    _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
+                    TIAcontrol._selectedProjectPath = (comboBoxTIAprojects.SelectedItem as TIAcontrol.ProjectItem).Path;
 
                     int maxWidth = comboBoxTIAprojects.Width;
 
@@ -413,9 +378,9 @@ namespace JAN0837_DP.Forms
 
         private void comboBoxTIAprojects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxTIAprojects.SelectedItem is ProjectItem item)
+            if (comboBoxTIAprojects.SelectedItem is TIAcontrol.ProjectItem item)
             {
-                _selectedProjectPath = item.Path;
+                TIAcontrol._selectedProjectPath = item.Path;
                 lblStatus1.Text = System.IO.Path.GetFileNameWithoutExtension(item.Path);
             }
         }
@@ -443,7 +408,7 @@ namespace JAN0837_DP.Forms
             {
                 lblStatus1.Text = "Starting TIA Portal...";
 
-                tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface);
+                //tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface); // python will do this 
 
                 lblStatus1.Text = "TIA Portal started.";
             }
@@ -455,14 +420,14 @@ namespace JAN0837_DP.Forms
 
         private async void btnOpenProject_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+            if (string.IsNullOrWhiteSpace(TIAcontrol._selectedProjectPath))
             {
                 lblStatus1.Text = "Please select a TIA project first.";
                 return;
             }
 
             // Check version compatibility
-            var selectedItem = comboBoxTIAprojects.SelectedItem as ProjectItem;
+            var selectedItem = comboBoxTIAprojects.SelectedItem as TIAcontrol.ProjectItem;
             if (selectedItem != null && !selectedItem.IsVersionMatch(TIAcontrol.tiaPortalVersion))
             {
                 var projectVer = selectedItem.Version?.ToString() ?? "unknown";
@@ -488,7 +453,7 @@ namespace JAN0837_DP.Forms
 
             lblStatus1.Text = "Opening TIA project...";
 
-            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath, "--ui" };
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", TIAcontrol._selectedProjectPath, "--ui" };
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "openPathProject.py");
 
             try
@@ -623,13 +588,13 @@ namespace JAN0837_DP.Forms
 
         private async void btnAddDB_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_selectedProjectPath))
+            if (string.IsNullOrWhiteSpace(TIAcontrol._selectedProjectPath))
             {
                 lblStatus1.Text = "Please select a TIA project first.";
                 throw new InvalidOperationException("Please select a TIA project first.");
             }
 
-            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", _selectedProjectPath };
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--project-dir", TIAcontrol._selectedProjectPath };
 
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "addDBtoPathProject.py");
 
@@ -743,11 +708,11 @@ namespace JAN0837_DP.Forms
                 // Show success message with detected version
                 if (detectedVersion.HasValue)
                 {
-                    lblStatus1.Text = $"✅ Successfully imported TIA Portal V{detectedVersion.Value}";
+                    lblStatus1.Text = $"Successfully imported TIA Portal V{detectedVersion.Value}";
                 }
                 else
                 {
-                    lblStatus1.Text = "✅ Import successful (version not detected from path)";
+                    lblStatus1.Text = "Import successful (version not detected from path)";
                 }
                 
                 // Refresh project list with new version
@@ -796,9 +761,9 @@ namespace JAN0837_DP.Forms
                     if (System.IO.Path.GetExtension(inputPath).StartsWith(".ap", StringComparison.OrdinalIgnoreCase))
                     {
                         var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
-                        comboBoxTIAprojects.Items.Add(new ProjectItem(display, inputPath));
+                        comboBoxTIAprojects.Items.Add(new TIAcontrol.ProjectItem(display, inputPath));
                         comboBoxTIAprojects.SelectedIndex = 0;
-                        _selectedProjectPath = inputPath;
+                        TIAcontrol._selectedProjectPath = inputPath;
                         lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
                     }
                     else
@@ -819,7 +784,7 @@ namespace JAN0837_DP.Forms
                 // Search recursively for any .ap* files under the given folder
                 var apFiles = System.IO.Directory.EnumerateFiles(inputPath, "*.ap*", System.IO.SearchOption.AllDirectories);
 
-                var found = new List<ProjectItem>();
+                var found = new List<TIAcontrol.ProjectItem>();
                 var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (var apPath in apFiles)
@@ -831,7 +796,7 @@ namespace JAN0837_DP.Forms
                     var parentDir = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(apPath)) ?? "";
                     var display = string.IsNullOrEmpty(parentDir) ? fileName : $"{fileName}  ({parentDir})";
 
-                    found.Add(new ProjectItem(display, apPath));
+                    found.Add(new TIAcontrol.ProjectItem(display, apPath));
                 }
 
                 if (found.Count == 0)
@@ -844,7 +809,7 @@ namespace JAN0837_DP.Forms
                     comboBoxTIAprojects.Items.Add(item);
 
                 comboBoxTIAprojects.SelectedIndex = 0;
-                _selectedProjectPath = (comboBoxTIAprojects.SelectedItem as ProjectItem).Path;
+                TIAcontrol._selectedProjectPath = (comboBoxTIAprojects.SelectedItem as TIAcontrol.ProjectItem).Path;
                 lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project(s).";
             }
             catch (UnauthorizedAccessException)

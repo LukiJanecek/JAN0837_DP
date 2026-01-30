@@ -402,19 +402,55 @@ namespace JAN0837_DP.Forms
         // btns
         #region btns
 
-        private void btnStartTIA_Click(object sender, EventArgs e)
+        private async void btnStartTIA_Click(object sender, EventArgs e)
         {
+            lblStatus1.Text = "Starting TIA Portal...";
+
+            //tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface); // python will do this 
+                
+            string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--ui" };
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "startTIAPortal.py");
+
             try
             {
-                lblStatus1.Text = "Starting TIA Portal...";
+                var (code, stdout, stderr) = await TIAcontrol.runPY(paths.pythonExePath, pythonScriptPath, args);
 
-                //tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface); // python will do this 
+                if (code != 0)
+                {
+                    var msg = new StringBuilder();
+                    msg.AppendLine($"Python exit code: {code}");
+                    if (!string.IsNullOrWhiteSpace(stdout))
+                    {
+                        msg.AppendLine("=== STDOUT ===");
+                        msg.AppendLine(stdout);
+                    }
+                    if (!string.IsNullOrWhiteSpace(stderr))
+                    {
+                        msg.AppendLine("=== STDERR ===");
+                        msg.AppendLine(stderr);
+                    }
 
-                lblStatus1.Text = "TIA Portal started.";
+                    lblStatus1.Text = $"Starting TIA Portal failed. Check DLL path and project version.";
+
+                    // Show detailed error
+                    MessageBox.Show(msg.ToString(), "Error starting TIA Portal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Success
+                if (!string.IsNullOrWhiteSpace(stdout))
+                {
+                    lblStatus1.Text = "TIA Portal started successfully: " + stdout.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                }
+                else
+                {
+                    lblStatus1.Text = "TIA Portal started successfully.";
+                }
             }
             catch (Exception ex)
             {
-                lblStatus1.Text = "Error" + ex.Message;
+                lblStatus1.Text = "Exception error: " + ex.Message;
+                MessageBox.Show($"Error: {ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -434,7 +470,7 @@ namespace JAN0837_DP.Forms
                 var dllVer = TIAcontrol.tiaPortalVersion?.ToString() ?? "unknown";
                 
                 var result = MessageBox.Show(
-                    $"⚠️ Version Mismatch Warning!\n\n" +
+                    $"Version Mismatch Warning!\n\n" +
                     $"Project Version: V{projectVer}\n" +
                     $"DLL Version: V{dllVer}\n\n" +
                     $"Opening a project with a different TIA Portal version may fail or cause issues.\n\n" +

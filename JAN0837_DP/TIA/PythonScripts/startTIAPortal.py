@@ -40,6 +40,11 @@ def main():
 
     print("[OK] TIA Portal started in", "UI mode" if mode == TiaPortalMode.WithUserInterface else "background mode")
 
+    # Close if in background mode
+    fc.close_if_headless(None, tia_portal, mode)
+    if mode == TiaPortalMode.WithUserInterface:
+        print("[NOTE] Project remains open in TIA Portal UI.")
+
     return 0
 
 if __name__ == "__main__":

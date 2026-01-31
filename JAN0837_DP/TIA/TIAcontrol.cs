@@ -33,7 +33,7 @@ namespace JAN0837_DP.TIA
             {
                 Name = name;
                 Path = path;
-                Version = TIAcontrol.GetProjectVersion(path);
+                Version = GetProjectVersion(path);
             }
 
             public override string ToString()
@@ -50,6 +50,24 @@ namespace JAN0837_DP.TIA
                     return true; // Unknown versions, allow
 
                 return Version.Value == dllVersion.Value;
+            }
+        }
+
+        public sealed class CPUTypeItem
+        {
+            public string TypeId { get; }
+            public string Description { get; }
+
+            public CPUTypeItem(string typeId, string description)
+            {
+                TypeId = typeId;
+                Description = description;
+            }
+
+            public override string ToString()
+            {
+                // Show user-friendly display
+                return $"{TypeId} ({Description})";
             }
         }
 

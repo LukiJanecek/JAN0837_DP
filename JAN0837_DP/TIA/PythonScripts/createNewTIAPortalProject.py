@@ -240,10 +240,10 @@ def main():
     project.Save()
     print("[SUCCESS] Project saved.")
 
-    # Close the project and portal
-    if mode == TiaPortalMode.WithoutUserInterface:
-        project.Close()
-        tia_portal.Dispose()
+    # Close if in background mode
+    fc.close_if_headless(None, tia_portal, mode)
+    if mode == TiaPortalMode.WithUserInterface:
+        print("[NOTE] Project remains open in TIA Portal UI.")
 
     return 0
 

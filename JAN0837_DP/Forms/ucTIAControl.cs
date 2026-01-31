@@ -44,21 +44,24 @@ namespace JAN0837_DP.Forms
 
             lblStatus1.Text = "";
 
-            // params labels
+            chBoxChangeTiaDLLPath.Enabled = true;
+            chBoxChangeTiaDLLPath.Visible = true;
+            chBoxChangeTiaDLLPath.Text = "Change DLL";
+
+            // lbls
             lblParam1.Text = "";
             lblParam2.Text = "";
             lblParam3.Text = "";
-            lblParam4.Text = "";
 
             lblDLLpath.Text = "Path to Siemens.Engineering.dll:";
             lblTiaProject.Text = "Select TIA Portal project:";
 
             txtBoxTIADLL.Enabled = false;
-            txtBoxTIADLL.Text = paths.tiaDLLPath;
+            txtBoxTIADLL.Text = paths.defaultTIADLLPath;
 
             // Detect initial TIA version
-            TIAcontrol.tiaPortalVersion = TIAcontrol.DetectTIAVersion(paths.tiaDLLPath);
-            
+            TIAcontrol.tiaPortalVersion = TIAcontrol.DetectTIAVersion(paths.defaultTIADLLPath);
+
             btnImportDLL.Enabled = false;
             btnImportDLL.Visible = true;
 
@@ -78,6 +81,9 @@ namespace JAN0837_DP.Forms
             btnStartTIA.Enabled = true;
             btnStartTIA.Visible = true;
 
+            btnUsePresetDLLPath.Enabled = true;
+            btnUsePresetDLLPath.Visible = true;
+
             btnPreset.Enabled = false;
             btnPreset.Visible = false;
 
@@ -93,15 +99,17 @@ namespace JAN0837_DP.Forms
             btnFindTIAProjectOnPath.Enabled = false;
             btnFindTIAProjectOnPath.Visible = false;
 
+            btnChangeDLLPath.Enabled = true;
+            btnChangeDLLPath.Visible = true;
+
+            btnChangeProjectPath.Enabled = false;
+            btnChangeProjectPath.Visible = false;
+
             // lbls
             lblTiaProject.Visible = false;
             lblParam1.Visible = false;
             lblParam2.Visible = false;
-            lblParam2.Visible = false;
             lblParam3.Visible = false;
-            lblParam3.Visible = false;
-            lblParam4.Visible = false;
-            lblParam4.Visible = false;
 
             // txtBoxes
             txtBoxParam1.Enabled = false;
@@ -113,9 +121,6 @@ namespace JAN0837_DP.Forms
             txtBoxParam3.Enabled = false;
             txtBoxParam3.Visible = false;
             txtBoxParam3.Clear();
-            txtBoxParam4.Enabled = false;
-            txtBoxParam4.Visible = false;
-            txtBoxParam4.Clear();
 
             #endregion
         }
@@ -132,19 +137,16 @@ namespace JAN0837_DP.Forms
                 {
                     searchRoots.Add(paths.tiaProjectPath);
                 }
-                    
 
                 if (Directory.Exists(paths.tiaSampleProjectPath))
                 {
                     searchRoots.Add(paths.tiaSampleProjectPath);
                 }
-                    
 
                 if (Directory.Exists(paths.tiaExampleProjectPath))
                 {
                     searchRoots.Add(paths.tiaExampleProjectPath);
                 }
-                   
 
                 if (searchRoots.Count == 0)
                 {
@@ -215,14 +217,14 @@ namespace JAN0837_DP.Forms
                     {
                         var matchingCount = found.Count(p => p.IsVersionMatch(TIAcontrol.tiaPortalVersion));
                         var mismatchCount = found.Count - matchingCount;
-                        
+
                         statusMsg += $"({matchingCount} matching V{TIAcontrol.tiaPortalVersion.Value}";
                         if (mismatchCount > 0)
                             statusMsg += $", {mismatchCount} different versions - may not open)";
                         else
                             statusMsg += ")";
                     }
-                    
+
                     lblStatus1.Text = statusMsg;
                 }
                 else
@@ -240,12 +242,42 @@ namespace JAN0837_DP.Forms
         #region rbtns
         private void rbtnOpenProject_CheckedChanged(object sender, EventArgs e)
         {
+            lblStatus1.Text = "Choose your project.";
+
             // UI settings 
             #region UI settings
 
-            //
+            // txtBoxes
+            txtBoxParam1.Enabled = true;
+            txtBoxParam1.Visible = true;
+            txtBoxParam1.Text = paths.tiaProjectPath;
+
+            txtBoxParam2.Enabled = false;
+            txtBoxParam2.Visible = false;
+
+            txtBoxParam3.Enabled = false;
+            txtBoxParam3.Visible = false;
+
+            // lbls
+            lblParam1.Visible = true;
+            lblParam2.Visible = false;
+            lblParam3.Visible = false;
+
+            lblParam1.Text = "Type your project path: ";
+
+            // cbbox
             comboBoxTIAprojects.Enabled = true;
             comboBoxTIAprojects.Visible = true;
+
+            lblTiaProject.Visible = true;
+            lblTiaProject.Text = "TIA Portal projects from folder:";
+
+            // btns
+            btnPreset.Enabled = false;
+            btnPreset.Visible = false;
+
+            btnCreateProject.Enabled = false;
+            btnCreateProject.Visible = false;
 
             btnOpenProject.Enabled = true;
             btnOpenProject.Visible = true;
@@ -256,36 +288,8 @@ namespace JAN0837_DP.Forms
             btnFindTIAProjectOnPath.Enabled = true;
             btnFindTIAProjectOnPath.Visible = true;
 
-            txtBoxParam1.Enabled = true;
-            txtBoxParam1.Visible = true;
-            txtBoxParam1.Text = paths.tiaProjectPath;
-
-            lblTiaProject.Visible = true;
-
-            lblParam1.Visible = true;
-            lblParam1.Text = "Type your project path: ";
-
-            //
-
-            txtBoxParam2.Enabled = false;
-            txtBoxParam2.Visible = false;
-
-            txtBoxParam3.Enabled = false;
-            txtBoxParam3.Visible = false;
-
-            txtBoxParam4.Enabled = false;
-            txtBoxParam4.Visible = false;
-
-            btnPreset.Enabled = false;
-            btnPreset.Visible = false;
-
-            btnCreateProject.Enabled = false;
-            btnCreateProject.Visible = false;
-
-            //lblParam1.Visible = false;
-            lblParam2.Visible = false;
-            lblParam3.Visible = false;
-            lblParam4.Visible = false;
+            btnChangeProjectPath.Enabled = true;
+            btnChangeProjectPath.Visible = true;
 
             #endregion
 
@@ -299,7 +303,7 @@ namespace JAN0837_DP.Forms
             // UI settings 
             #region UI settings 
 
-            //
+            // txtBoxes
             txtBoxParam1.Enabled = true;
             txtBoxParam1.Visible = true;
             txtBoxParam1.Text = "";
@@ -310,28 +314,31 @@ namespace JAN0837_DP.Forms
             txtBoxParam3.Enabled = true;
             txtBoxParam3.Visible = true;
 
-            txtBoxParam4.Enabled = true;
-            txtBoxParam4.Visible = true;
+            txtBoxParam3.Enabled = true;
+            txtBoxParam3.Visible = true;
 
+            // lbls
+            lblParam1.Visible = true;
+            lblParam2.Visible = true;
+            lblParam3.Visible = true;
+
+            lblParam1.Text = "New project path:";
+            lblParam2.Text = "Project name:";
+            lblParam3.Text = "PLC name:";
+
+            // cbBox
+            comboBoxTIAprojects.Enabled = true;
+            comboBoxTIAprojects.Visible = true;
+
+            lblTiaProject.Visible = true;
+            lblTiaProject.Text = "CPU type ID:";
+
+            // btns 
             btnPreset.Enabled = true;
             btnPreset.Visible = true;
 
             btnCreateProject.Enabled = true;
             btnCreateProject.Visible = true;
-
-            lblParam1.Visible = true;
-            lblParam2.Visible = true;
-            lblParam3.Visible = true;
-            lblParam4.Visible = true;
-
-            lblParam1.Text = "Project name: ";
-            lblParam2.Text = "CPU type ID: ";
-            lblParam3.Text = "New project path: ";
-            lblParam4.Text = "PLC name:";
-
-            //
-            comboBoxTIAprojects.Enabled = false;
-            comboBoxTIAprojects.Visible = false;
 
             btnOpenProject.Enabled = false;
             btnOpenProject.Visible = false;
@@ -342,9 +349,12 @@ namespace JAN0837_DP.Forms
             btnFindTIAProjectOnPath.Enabled = false;
             btnFindTIAProjectOnPath.Visible = false;
 
-            lblTiaProject.Visible = false;
+            btnChangeProjectPath.Enabled = true;
+            btnChangeProjectPath.Visible = true;
 
             #endregion
+
+            PopulateCPUTypeIDs();
         }
         #endregion
 
@@ -354,6 +364,7 @@ namespace JAN0837_DP.Forms
         {
             paths.tiaDLLPath = txtBoxTIADLL.Text;
         }
+
         private void txtBoxParam1_TextChanged(object sender, EventArgs e)
         {
 
@@ -365,11 +376,6 @@ namespace JAN0837_DP.Forms
         }
 
         private void txtBoxParam3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBoxParam4_TextChanged(object sender, EventArgs e)
         {
 
         }
@@ -407,7 +413,7 @@ namespace JAN0837_DP.Forms
             lblStatus1.Text = "Starting TIA Portal...";
 
             //tiaPortal = new TiaPortal(TiaPortalMode.WithUserInterface); // python will do this 
-                
+
             string[] args = new[] { "--dll-dir", paths.tiaDLLPath, "--ui" };
             string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "startTIAPortal.py");
 
@@ -468,7 +474,7 @@ namespace JAN0837_DP.Forms
             {
                 var projectVer = selectedItem.Version?.ToString() ?? "unknown";
                 var dllVer = TIAcontrol.tiaPortalVersion?.ToString() ?? "unknown";
-                
+
                 var result = MessageBox.Show(
                     $"Version Mismatch Warning!\n\n" +
                     $"Project Version: V{projectVer}\n" +
@@ -512,7 +518,7 @@ namespace JAN0837_DP.Forms
                     }
 
                     lblStatus1.Text = $"Opening project failed. Check DLL path and project version.";
-                    
+
                     // Show detailed error
                     MessageBox.Show(msg.ToString(), "Error Opening Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -537,23 +543,20 @@ namespace JAN0837_DP.Forms
 
         private async void btnCreateProject_Click(object sender, EventArgs e)
         {
-            string projectName = txtBoxParam1.Text.Trim();
+            string cputype;
 
-            if (string.IsNullOrWhiteSpace(projectName))
+            // Extract only the TypeId without the description
+            if (comboBoxTIAprojects.SelectedItem is TIAcontrol.CPUTypeItem cpuItem)
             {
-                lblStatus1.Text = "Type project name, please.";
+                cputype = cpuItem.TypeId;
+            }
+            else
+            {
+                lblStatus1.Text = "Please select a CPU type, please.";
                 return;
             }
 
-            string cputype = txtBoxParam2.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(cputype))
-            {
-                lblStatus1.Text = "Type CPU ID, please.";
-                return;
-            }
-
-            string projectPath = txtBoxParam3.Text.Trim();
+            string projectPath = txtBoxParam1.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(projectPath))
             {
@@ -561,7 +564,15 @@ namespace JAN0837_DP.Forms
                 return;
             }
 
-            string plcName = txtBoxParam4.Text.Trim();
+            string projectName = txtBoxParam3.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                lblStatus1.Text = "Type project name, please.";
+                return;
+            }
+
+            string plcName = txtBoxParam3.Text.Trim();
             if (string.IsNullOrWhiteSpace(plcName))
             {
                 lblStatus1.Text = "Type PLC name, please.";
@@ -687,7 +698,7 @@ namespace JAN0837_DP.Forms
             // Detect version from the path BEFORE importing
             string newDllPath = txtBoxTIADLL.Text.Trim();
             int? detectedVersion = TIAcontrol.DetectTIAVersion(newDllPath);
-            
+
             // Show what we're trying to import
             if (detectedVersion.HasValue)
             {
@@ -701,7 +712,7 @@ namespace JAN0837_DP.Forms
             // test import on current path in txtBoxTIADLL
             string[] args = new[] { "--dir", newDllPath };
 
-            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "importTIADLL.py"); 
+            string pythonScriptPath = Path.Combine(paths.pythonScriptsFolder, "importTIADLL.py");
 
             try
             {
@@ -725,13 +736,13 @@ namespace JAN0837_DP.Forms
                     // Show what version we tried to import (even though it failed)
                     if (detectedVersion.HasValue)
                     {
-                        lblStatus1.Text = $"❌ Import of TIA Portal V{detectedVersion.Value} failed. Check DLL path.";
+                        lblStatus1.Text = $"Import of TIA Portal V{detectedVersion.Value} failed. Check DLL path.";
                     }
                     else
                     {
-                        lblStatus1.Text = $"❌ Import failed. Check path to Siemens.Engineering.dll.";
+                        lblStatus1.Text = $"Import failed. Check path to Siemens.Engineering.dll.";
                     }
-                    
+
                     // Show error details
                     MessageBox.Show(msg.ToString(), "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -740,7 +751,7 @@ namespace JAN0837_DP.Forms
                 // Success! Update the path and version
                 paths.tiaDLLPath = newDllPath;
                 TIAcontrol.tiaPortalVersion = detectedVersion;
-                
+
                 // Show success message with detected version
                 if (detectedVersion.HasValue)
                 {
@@ -750,9 +761,12 @@ namespace JAN0837_DP.Forms
                 {
                     lblStatus1.Text = "Import successful (version not detected from path)";
                 }
-                
+
                 // Refresh project list with new version
-                FindMyProjectInThisProject();
+                if (rbtnOpenProject.Checked == true)
+                {
+                    FindMyProjectInThisProject();
+                }
             }
             catch (Exception ex)
             {
@@ -764,17 +778,16 @@ namespace JAN0837_DP.Forms
                 {
                     lblStatus1.Text = $"Exception during import: {ex.Message}";
                 }
-                
+
                 MessageBox.Show($"Error: {ex.Message}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnPreset_Click(object sender, EventArgs e)
         {
-            txtBoxParam1.Text = "MyAwesomeTIAproject";
-            txtBoxParam2.Text = "OrderNumber:6ES7 212-1AE40-0XB0/V4.6";
-            txtBoxParam3.Text = paths.tiaProjectPath;
-            txtBoxParam4.Text = "PLC_1";
+            txtBoxParam1.Text = paths.tiaProjectPath;
+            txtBoxParam2.Text = "MyAwesomeTIAPortalproject";
+            txtBoxParam3.Text = "PLC_1";
         }
 
         private void btnFindTIAProjectOnPath_Click(object sender, EventArgs e)
@@ -791,25 +804,6 @@ namespace JAN0837_DP.Forms
 
             try
             {
-                // If user specified a file directly, accept it when it's a .ap* file
-                if (System.IO.File.Exists(inputPath))
-                {
-                    if (System.IO.Path.GetExtension(inputPath).StartsWith(".ap", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
-                        comboBoxTIAprojects.Items.Add(new TIAcontrol.ProjectItem(display, inputPath));
-                        comboBoxTIAprojects.SelectedIndex = 0;
-                        TIAcontrol._selectedProjectPath = inputPath;
-                        lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
-                    }
-                    else
-                    {
-                        lblStatus1.Text = "Specified file is not a .ap* project file.";
-                    }
-
-                    return;
-                }
-
                 // Path must be an existing directory from here
                 if (!System.IO.Directory.Exists(inputPath))
                 {
@@ -817,6 +811,17 @@ namespace JAN0837_DP.Forms
                     return;
                 }
 
+                // If user specified a file directly, accept it when it's a .ap* file
+                if (System.IO.Path.GetExtension(inputPath).StartsWith(".ap", StringComparison.OrdinalIgnoreCase))
+                {
+                    var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
+                    comboBoxTIAprojects.Items.Add(new TIAcontrol.ProjectItem(display, inputPath));
+                    comboBoxTIAprojects.SelectedIndex = 0;
+                    TIAcontrol._selectedProjectPath = inputPath;
+                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
+                    return;
+                }
+                
                 // Search recursively for any .ap* files under the given folder
                 var apFiles = System.IO.Directory.EnumerateFiles(inputPath, "*.ap*", System.IO.SearchOption.AllDirectories);
 
@@ -863,5 +868,79 @@ namespace JAN0837_DP.Forms
         }
 
         #endregion
+
+        private void btnChangeDLLPath_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Choose your folder with Siemens.Engineering.dll.";
+                dialog.UseDescriptionForTitle = true;
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    txtBoxTIADLL.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void btnUsePresetDLLPath_Click(object sender, EventArgs e)
+        {
+            txtBoxTIADLL.Text = paths.defaultTIADLLPath;
+        }
+
+        private void btnChangeProjectPath_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Choose your folder with TIA Portal project .ap*.";
+                dialog.UseDescriptionForTitle = true;
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    txtBoxParam1.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void PopulateCPUTypeIDs()
+        {
+            comboBoxTIAprojects.Items.Clear();
+
+            // Add default CPU type IDs with descriptions
+            var cpuTypes = new List<TIAcontrol.CPUTypeItem>
+            {
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 212-1AE40-0XB0/V4.6", "S7-1200 CPU 1212C DC/DC/DC"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 214-1AG40-0XB0/V4.6", "S7-1200 CPU 1214C DC/DC/DC"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 215-1AG40-0XB0/V4.6", "S7-1200 CPU 1215C DC/DC/DC"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 217-1AG40-0XB0/V4.6", "S7-1200 CPU 1217C DC/DC/DC"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 511-1AK02-0AB0/V2.0", "S7-1500 CPU 1511-1 PN"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 513-1AL02-0AB0/V2.0", "S7-1500 CPU 1513-1 PN"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 515-2AM02-0AB0/V2.0", "S7-1500 CPU 1515-2 PN"),
+                new TIAcontrol.CPUTypeItem("OrderNumber:6ES7 517-3AP00-0AB0/V2.0", "S7-1500 CPU 1517-3 PN/DP"),
+            };
+
+            foreach (var cpuType in cpuTypes)
+            {
+                comboBoxTIAprojects.Items.Add(cpuType);
+            }
+
+            comboBoxTIAprojects.SelectedIndex = 0;
+
+            int maxWidth = comboBoxTIAprojects.Width;
+
+            using (Graphics g = comboBoxTIAprojects.CreateGraphics())
+            {
+                foreach (var item in comboBoxTIAprojects.Items)
+                {
+                    int itemWidth = (int)g.MeasureString(item.ToString(), comboBoxTIAprojects.Font).Width;
+                    if (itemWidth > maxWidth)
+                        maxWidth = itemWidth;
+                }
+            }
+            // Add some padding for comfort
+            comboBoxTIAprojects.DropDownWidth = maxWidth + 20;
+
+            lblStatus1.Text = "Select CPU type in new project.";
+        }
     }
 }

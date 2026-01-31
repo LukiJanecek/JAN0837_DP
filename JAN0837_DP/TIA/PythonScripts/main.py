@@ -32,13 +32,9 @@
 # připojit mou knihovnu do projektu? 
 # PLC vytvořit datatype a z něj pak čerpat do DB
 
-import tiaopenness_functions as tiafc
 
 if __name__ == "__main__":
     try:
-        # import Siemens.Engineering
-        print("Importing Siemens.Engineering...")
-
         # Do this
         print("Doing stuff...")
     except Exception as e:

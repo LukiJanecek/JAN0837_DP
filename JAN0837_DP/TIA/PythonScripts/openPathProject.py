@@ -63,10 +63,10 @@ def main():
     print(f"[OK] Project opened successfully: {project_path}")
     print(f"Project name: {project.Name}")  
 
-    # Close the project and portal
-    if mode == TiaPortalMode.WithoutUserInterface:
-        project.Close()
-        tia_portal.Dispose()
+    # Close if in background mode
+    fc.close_if_headless(None, tia_portal, mode)
+    if mode == TiaPortalMode.WithUserInterface:
+        print("[NOTE] Project remains open in TIA Portal UI.")
 
     return 0
 

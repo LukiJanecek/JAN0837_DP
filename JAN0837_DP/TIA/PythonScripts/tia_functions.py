@@ -367,14 +367,16 @@ def close_if_headless(project, portal, mode):
 	try:
 		from Siemens.Engineering import TiaPortalMode
 		if mode == TiaPortalMode.WithoutUserInterface:
-			try:
-				project.Close()
-			except Exception:
-				pass
-			try:
-				portal.Dispose()
-			except Exception:
-				pass
+			if project is not None:
+				try:
+					project.Close()
+				except Exception:
+					pass
+			if portal is not None:
+				try:
+					portal.Dispose()
+				except Exception:
+					pass
 	except Exception:
 		pass
 

@@ -71,15 +71,8 @@ namespace JAN0837_DP
     public partial class MainForm : Form
     {
         // Queues 
-        public ConcurrentQueue<int> dataQueueIN = new ConcurrentQueue<int>();
-        public ConcurrentQueue<int> dataQueueOUT = new ConcurrentQueue<int>();
-
-        //Paths
-        public static string projectRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\"));
-        public static string dataDirectoryPath = Path.Combine(projectRootPath, "Data");
-
-        public static string solutionRootPath = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\..\..\"));
-        public static string clientProjectDirectory = Path.Combine(solutionRootPath, "JAN0837_react/JAN0837_react.Client");
+        //public ConcurrentQueue<int> dataQueueIN = new ConcurrentQueue<int>();
+        //public ConcurrentQueue<int> dataQueueOUT = new ConcurrentQueue<int>();
 
         public FEserver _feServer;
         public FEcommunicationControl _feCommunication;
@@ -93,7 +86,7 @@ namespace JAN0837_DP
         public MainForm()
         {
             InitializeComponent();
-            this.MinimumSize = new Size(900, 600);
+            this.MinimumSize = new Size(900, 700);
 
             _ucCommControl = new ucCommunicationControl { Dock = DockStyle.Fill };
             mainWindow.Controls.Add(_ucCommControl);

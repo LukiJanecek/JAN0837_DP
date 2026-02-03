@@ -165,6 +165,11 @@ namespace JAN0837_DP.Forms
                         var apFiles = Directory.EnumerateFiles(root, "*.ap*", SearchOption.AllDirectories);
                         foreach (var apPath in apFiles)
                         {
+                            // Filter: only accept .apXX where XX is a number (e.g., .ap19, .ap17)
+                            var extension = Path.GetExtension(apPath);
+                            if (!System.Text.RegularExpressions.Regex.IsMatch(extension, @"^\.ap\d+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                                continue;
+
                             var full = Path.GetFullPath(apPath);
                             if (!seen.Add(full)) continue; // avoid duplicates
 
@@ -804,21 +809,30 @@ namespace JAN0837_DP.Forms
 
             try
             {
+                // If user specified a file directly, accept it when it's a valid .apXX file
+                if (System.IO.File.Exists(inputPath))
+                {
+                    var extension = System.IO.Path.GetExtension(inputPath);
+                    if (System.Text.RegularExpressions.Regex.IsMatch(extension, @"^\.ap\d+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                    {
+                        var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
+                        comboBoxTIAprojects.Items.Add(new TIAcontrol.ProjectItem(display, inputPath));
+                        comboBoxTIAprojects.SelectedIndex = 0;
+                        TIAcontrol._selectedProjectPath = inputPath;
+                        lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
+                    }
+                    else
+                    {
+                        lblStatus1.Text = "Specified file is not a valid TIA Portal project file (.apXX format).";
+                    }
+
+                    return;
+                }
+
                 // Path must be an existing directory from here
                 if (!System.IO.Directory.Exists(inputPath))
                 {
                     lblStatus1.Text = "Directory does not exist: " + inputPath;
-                    return;
-                }
-
-                // If user specified a file directly, accept it when it's a .ap* file
-                if (System.IO.Path.GetExtension(inputPath).StartsWith(".ap", StringComparison.OrdinalIgnoreCase))
-                {
-                    var display = System.IO.Path.GetFileNameWithoutExtension(inputPath);
-                    comboBoxTIAprojects.Items.Add(new TIAcontrol.ProjectItem(display, inputPath));
-                    comboBoxTIAprojects.SelectedIndex = 0;
-                    TIAcontrol._selectedProjectPath = inputPath;
-                    lblStatus1.Text = $"Found {comboBoxTIAprojects.Items.Count} project file.";
                     return;
                 }
                 
@@ -830,6 +844,11 @@ namespace JAN0837_DP.Forms
 
                 foreach (var apPath in apFiles)
                 {
+                    // Filter: only accept .apXX where XX is a number (e.g., .ap19, .ap17)
+                    var extension = System.IO.Path.GetExtension(apPath);
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(extension, @"^\.ap\d+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                        continue;
+
                     var full = System.IO.Path.GetFullPath(apPath);
                     if (!seen.Add(full)) continue;
 
@@ -842,7 +861,7 @@ namespace JAN0837_DP.Forms
 
                 if (found.Count == 0)
                 {
-                    lblStatus1.Text = "No .ap* project files found under the specified folder.";
+                    lblStatus1.Text = "No TIA Portal project files (.apXX format) found under the specified folder.";
                     return;
                 }
 

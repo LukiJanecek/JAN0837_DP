@@ -14,6 +14,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace JAN0837_DP.Communication.comOPCUA
 {
@@ -22,7 +24,7 @@ namespace JAN0837_DP.Communication.comOPCUA
         private ApplicationInstance _application;
         private CrossroadOpcUaServer _server;
         public bool running = false;
-        
+                
         public async Task<bool> startOPCUAserver(string ipAddress, int port)
         {
             if (running)
@@ -218,7 +220,7 @@ namespace JAN0837_DP.Communication.comOPCUA
 
         public async Task<bool> connectToOPCUAserver(string serverURL, string user, string pass)
         {
-            if (connected)
+            if (clientSession?.Connected == true)
             {
                 return true;
             }
@@ -359,7 +361,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 );
 
                 connected = clientSession.Connected;
-                clientSession.KeepAliveInterval = 5000;
+                //clientSession.KeepAliveInterval = 5000;
                 clientSession.KeepAlive += ClientSession_KeepAlive;
 
                 Console.WriteLine($"SUCCESS! Connected to: {serverURL}");
@@ -435,6 +437,7 @@ namespace JAN0837_DP.Communication.comOPCUA
 
         private void ClientSession_ReconnectComplete(object? sender, EventArgs e)
         {
+            /*
             if (reconnectHandler == null) return;
 
             // převezmi novou session
@@ -443,6 +446,22 @@ namespace JAN0837_DP.Communication.comOPCUA
             reconnectHandler = null;
 
             connected = clientSession?.Connected == true;
+            */
+            if (reconnectHandler?.Session is Opc.Ua.Client.Session newSession)
+            {
+                clientSession = newSession;
+                connected = clientSession.Connected;
+            }
+
+            reconnectHandler?.Dispose();
+            reconnectHandler = null;
+        }
+
+        private static void CertificateValidator_CertificateValidation(
+        CertificateValidator sender,
+        CertificateValidationEventArgs e)
+        {
+            e.Accept = true; // DEV ONLY
         }
 
         public void WriteOPCUAValue(opcuaKlient client, string nodeId, object value)
@@ -573,6 +592,130 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
 
             return true;
+        }
+
+        ///
+        public async Task<bool> connectToOPCUAserver_v2(string serverURL, string user, string pass)
+        {
+            if (clientSession?.Connected == true)
+            {
+                connected = true;
+                return true;
+            }
+
+            try
+            {
+                var application = new ApplicationInstance
+                {
+                    ApplicationType = Opc.Ua.ApplicationType.Client,
+                    ConfigSectionName = "Client"
+                };
+
+                await application.LoadApplicationConfiguration(false);
+
+                var config = application.ApplicationConfiguration;
+                await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
+                config.CertificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
+
+                // === ENDPOINT SELECTION ===
+                EndpointDescription selectedEndpoint;
+
+                // connectToOPCUAserver_v2: replace endpoint discovery + session create
+                using var discoveryClient = DiscoveryClient.Create(new Uri(serverURL));
+                var endpoints = await discoveryClient.GetEndpointsAsync(null, CancellationToken.None);
+
+                selectedEndpoint = endpoints
+                    .Where(e =>
+                        e.SecurityMode != MessageSecurityMode.None &&
+                        e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName))
+                    .OrderByDescending(e => e.SecurityLevel)
+                    .FirstOrDefault()
+                    ?? throw new Exception("No secure endpoint with UserName token found.");
+
+                var endpoint = new ConfiguredEndpoint(
+                    null,
+                    selectedEndpoint,
+                    EndpointConfiguration.Create(config)
+                );
+
+                IUserIdentity identity =
+                    string.IsNullOrWhiteSpace(user)
+                        ? new UserIdentity(new AnonymousIdentityToken())
+                        : new UserIdentity(new UserNameIdentityToken
+                        {
+                            UserName = user,
+                            Password = System.Text.Encoding.UTF8.GetBytes(pass ?? string.Empty)
+                        });
+
+                clientSession = await Opc.Ua.Client.Session.Create(
+                    config,
+                    endpoint,
+                    false,
+                    "OPCUA Client",
+                    60000,
+                    identity,
+                    null);
+
+                clientSession.KeepAlive += ClientSession_KeepAlive;
+
+                connected = clientSession.Connected;
+                return connected;
+            }
+            catch (Exception ex)
+            {
+                connected = false;
+                clientSession = null;
+                throw new Exception("OPCUA connect failed", ex);
+            }
+        }
+
+        public bool ReadBool(string nodeId)
+        {
+            if (clientSession == null) throw new Exception("Not connected");
+
+            var dv = clientSession.ReadValue(NodeId.Parse(nodeId));
+            return Convert.ToBoolean(dv.Value);
+        }
+
+        public void WriteValue(string nodeId, object value)
+        {
+            if (clientSession == null) throw new Exception("Not connected");
+
+            var nid = NodeId.Parse(nodeId);
+            var current = clientSession.ReadValue(nid);
+
+            object typedValue = ChangeType(current, value);
+
+            var wv = new WriteValue
+            {
+                NodeId = nid,
+                AttributeId = Attributes.Value,
+                Value = new DataValue(new Variant(typedValue))
+            };
+
+            clientSession.Write(
+                null,
+                new WriteValueCollection { wv },
+                out var results,
+                out _);
+
+            if (StatusCode.IsBad(results[0]))
+                throw new Exception($"OPCUA Write failed: {results[0]}");
+        }
+
+        private static object ChangeType(DataValue current, object value)
+        {
+            switch (current.WrappedValue.TypeInfo.BuiltInType)
+            {
+                case BuiltInType.Boolean: return Convert.ToBoolean(value);
+                case BuiltInType.Int16: return Convert.ToInt16(value);
+                case BuiltInType.UInt16: return Convert.ToUInt16(value);
+                case BuiltInType.Int32: return Convert.ToInt32(value);
+                case BuiltInType.UInt32: return Convert.ToUInt32(value);
+                case BuiltInType.Float: return Convert.ToSingle(value);
+                case BuiltInType.Double: return Convert.ToDouble(value);
+                default: return value;
+            }
         }
     }
 
@@ -755,4 +898,127 @@ namespace JAN0837_DP.Communication.comOPCUA
     {
         public const string CrossroadNamespace = "http://jan0837.opcua.server/data";
     }
+
+    internal static class OpcUaConfigHelpers
+    {
+        public static Opc.Ua.ApplicationConfiguration LoadConfiguration(string configPath, Opc.Ua.ApplicationType appType)
+        {
+            using var stream = File.OpenRead(configPath);
+            var serializer = new DataContractSerializer(typeof(Opc.Ua.ApplicationConfiguration));
+
+            if (serializer.ReadObject(stream) is not Opc.Ua.ApplicationConfiguration config)
+            {
+                throw new InvalidOperationException($"Invalid OPC UA config: {configPath}");
+            }
+
+            config.ApplicationType = appType;
+            config.Validate(appType);
+            return config;
+        }
+
+        public static async Task EnsureApplicationCertificateAsync(Opc.Ua.ApplicationConfiguration config)
+        {
+            var pkiRoot = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki");
+            Directory.CreateDirectory(Path.Combine(pkiRoot, "own"));
+            Directory.CreateDirectory(Path.Combine(pkiRoot, "trusted"));
+            Directory.CreateDirectory(Path.Combine(pkiRoot, "issuer"));
+            Directory.CreateDirectory(Path.Combine(pkiRoot, "rejected"));
+
+            var certIdentifier = config.SecurityConfiguration.ApplicationCertificate;
+            var certificate = await certIdentifier.Find(true);
+
+            if (certificate == null)
+            {
+                certificate = CertificateFactory.CreateCertificate(
+                    config.ApplicationUri,
+                    config.ApplicationName,
+                    "CN=" + config.ApplicationName,
+                    null
+                ).CreateForRSA();
+
+                config.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
+            }
+        }
+    }
+
+    public static class OpcUaXmlBoot
+    {
+        // Example: Start client session using XML config (Client.Config.xml)
+        public static async Task<Opc.Ua.Client.Session> StartClientFromXmlAsync(
+            string configPath,
+            string serverUrl,
+            string? username = null,
+            string? password = null,
+            bool autoAcceptUntrusted = true)
+        {
+            // Load application configuration from XML file
+            var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Client);
+
+            // Optional: auto-accept untrusted certificates (DEV only)
+            config.CertificateValidator.CertificateValidation += (s, e) =>
+            {
+                if (autoAcceptUntrusted) e.Accept = true;
+            };
+
+            // Ensure application certificate exists
+            await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
+
+            // Select endpoint (secure if available)
+            var ep = CoreClientUtils.SelectEndpoint(config, serverUrl, true);
+            var endpoint = new ConfiguredEndpoint(null, ep, EndpointConfiguration.Create(config));
+
+            // Identity (Anonymous or Username/Password)
+            IUserIdentity identity =
+                string.IsNullOrWhiteSpace(username)
+                    ? new UserIdentity(new AnonymousIdentityToken())
+                    : new UserIdentity(new UserNameIdentityToken
+                    {
+                        UserName = username!,
+                        Password = System.Text.Encoding.UTF8.GetBytes(password ?? string.Empty)
+                    });
+
+            //var endpointCollection = new EndpointDescriptionCollection { ep };
+
+            var session = await Opc.Ua.Client.Session.Create(
+                config,
+                endpoint,
+                false,
+                config.ApplicationName ?? "XmlClient",
+                60000,
+                identity,
+                null
+            );
+
+            return session;
+        }
+
+        // Example: Start server using XML config (Server.Config.xml)
+        public static async Task<(ApplicationInstance App, StandardServer Server)> StartServerFromXmlAsync(
+            string configPath,
+            bool autoAcceptUntrusted = true)
+        {
+            // Load server configuration from XML file
+            var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Server);
+
+            // Optional: auto-accept untrusted certs (DEV only)
+            config.SecurityConfiguration.AutoAcceptUntrustedCertificates = autoAcceptUntrusted;
+
+            // Ensure application certificate exists
+            await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
+
+            // Start server
+            var app = new ApplicationInstance
+            {
+                ApplicationType = Opc.Ua.ApplicationType.Server,
+                ApplicationConfiguration = config
+            };
+
+            var server = new StandardServer();
+            await app.Start(server);
+
+            return (app, server);
+        }
+    }
+
+
 }

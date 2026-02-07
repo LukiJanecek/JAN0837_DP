@@ -225,27 +225,158 @@ namespace JAN0837_DP.Communication.comOPCUA
 
             try
             {
-                ApplicationInstance application = new ApplicationInstance();
-                application.ApplicationType = Opc.Ua.ApplicationType.Client;
-                application.ConfigSectionName = "Client";
-                await application.LoadApplicationConfiguration(false);
-                // Certificate will be auto-created if needed
-                var configuration = application.ApplicationConfiguration;
-                configuration.CertificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
-                var endpointDescription = CoreClientUtils.SelectEndpoint(configuration, serverURL, true, 15000);
-                var endpointConfiguration = EndpointConfiguration.Create(configuration);
-                var endpoint = new ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
-                
-                // Create user identity (anonymous if no credentials provided)
-                IUserIdentity userIdentity = new UserIdentity(new AnonymousIdentityToken());
-                
-                clientSession = await Opc.Ua.Client.Session.Create(configuration, endpoint, false, "OPCUA Client", 60000, userIdentity, null);
+                var config = new Opc.Ua.ApplicationConfiguration()
+                {
+                    ApplicationName = "JAN0837_DP_OPC_UA_Client",
+                    ApplicationType = Opc.Ua.ApplicationType.Client,
+                    ApplicationUri = $"urn:{System.Net.Dns.GetHostName()}:JAN0837_DP:OPCUAClient",
+                    ProductUri = "http://jan0837/opcuaclient",
+
+                    SecurityConfiguration = new Opc.Ua.SecurityConfiguration
+                    {
+                        ApplicationCertificate = new Opc.Ua.CertificateIdentifier
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "own")
+                        },
+                        TrustedPeerCertificates = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "trusted")
+                        },
+                        TrustedIssuerCertificates = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "issuer")
+                        },
+                        RejectedCertificateStore = new Opc.Ua.CertificateTrustList
+                        {
+                            StoreType = "Directory",
+                            StorePath = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki", "rejected")
+                        },
+                        AutoAcceptUntrustedCertificates = true,
+                        RejectSHA1SignedCertificates = false,
+                        MinimumCertificateKeySize = 1024,
+                        AddAppCertToTrustedStore = true
+                    },
+
+                    TransportQuotas = new Opc.Ua.TransportQuotas
+                    {
+                        OperationTimeout = 600000,
+                        MaxStringLength = 1048576,
+                        MaxByteStringLength = 1048576,
+                        MaxArrayLength = 65535,
+                        MaxMessageSize = 4194304,
+                        MaxBufferSize = 65535,
+                        ChannelLifetime = 300000,
+                        SecurityTokenLifetime = 3600000
+                    },
+
+                    ClientConfiguration = new Opc.Ua.ClientConfiguration
+                    {
+                        DefaultSessionTimeout = 60000,
+                        MinSubscriptionLifetime = 10000
+                    },
+
+                    TraceConfiguration = new Opc.Ua.TraceConfiguration
+                    {
+                        OutputFilePath = Path.Combine(Path.GetTempPath(), "JAN0837_Client.log"),
+                        TraceMasks = 515 // More detailed tracing
+                    }
+                };
+
+                // 1. Ensure certificate directories exist FIRST
+                var pkiRoot = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki");
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "own"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "trusted"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "issuer"));
+                Directory.CreateDirectory(Path.Combine(pkiRoot, "rejected"));
+
+                // 2. Validate configuration BEFORE anything else
+                await config.Validate(Opc.Ua.ApplicationType.Client);
+
+                // 3. Accept all certificates
+                config.CertificateValidator.CertificateValidation += (s, e) => { e.Accept = true; };
+
+                // 4. Check/create application certificate
+                var hasAppCertificate = await config.SecurityConfiguration.ApplicationCertificate.Find(true);
+                if (hasAppCertificate == null)
+                {
+                    Console.WriteLine("Creating new self-signed client certificate...");
+                    var certificate = Opc.Ua.CertificateFactory.CreateCertificate(
+                        config.ApplicationUri,
+                        config.ApplicationName,
+                        "CN=" + config.ApplicationName,
+                        null
+                    ).CreateForRSA();
+                    config.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
+                    Console.WriteLine($"Certificate created: {certificate.Thumbprint}");
+                }
+
+                // 5. Select endpoint - use simpler overload with NO security
+                Console.WriteLine($"Discovering endpoints at: {serverURL}");
+                var endpointDescription = await Opc.Ua.Client.CoreClientUtils.SelectEndpointAsync(
+                    config,
+                    serverURL,
+                    false,
+                    15000
+                );
+
+                Console.WriteLine($"Selected endpoint: {endpointDescription.EndpointUrl}");
+                Console.WriteLine($"Security Mode: {endpointDescription.SecurityMode}");
+                Console.WriteLine($"Security Policy: {endpointDescription.SecurityPolicyUri}");
+
+                var endpointConfiguration = Opc.Ua.EndpointConfiguration.Create(config);
+                var endpoint = new Opc.Ua.ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
+
+                // 6. Create user identity
+                Opc.Ua.IUserIdentity userIdentity;
+                if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass))
+                {
+                    userIdentity = new Opc.Ua.UserIdentity(new Opc.Ua.UserNameIdentityToken
+                    {
+                        UserName = user,
+                        Password = System.Text.Encoding.UTF8.GetBytes(pass)
+                    });
+                    Console.WriteLine($"Using username: {user}");
+                }
+                else
+                {
+                    userIdentity = new Opc.Ua.UserIdentity(new Opc.Ua.AnonymousIdentityToken());
+                    Console.WriteLine("Using anonymous authentication");
+                }
+
+                // 7. Create session
+                Console.WriteLine("Creating session...");
+                clientSession = await Opc.Ua.Client.Session.Create(
+                    config,
+                    endpoint,
+                    false,
+                    "OPCUA Client Session",
+                    60000,
+                    userIdentity,
+                    null
+                );
+
                 connected = clientSession.Connected;
+                clientSession.KeepAliveInterval = 5000;
                 clientSession.KeepAlive += ClientSession_KeepAlive;
+
+                Console.WriteLine($"SUCCESS! Connected to: {serverURL}");
+                Console.WriteLine($"Session ID: {clientSession.SessionId}");
                 return true;
+            }
+            catch (Opc.Ua.ServiceResultException ex)
+            {
+                Console.WriteLine($"OPC UA Error: 0x{ex.StatusCode:X8} - {ex.Message}");
+                connected = false;
+                clientSession = null;
+                return false;
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Connection error: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 connected = false;
                 clientSession = null;
                 return false;
@@ -314,15 +445,17 @@ namespace JAN0837_DP.Communication.comOPCUA
             connected = clientSession?.Connected == true;
         }
 
-        private static void CertificateValidator_CertificateValidation(Opc.Ua.CertificateValidator sender, Opc.Ua.CertificateValidationEventArgs e)
-        {
-            e.Accept = true;
-        }
-
         public void WriteOPCUAValue(opcuaKlient client, string nodeId, object value)
         {
             try
             {
+                // Validate session before writing
+                if (!ValidateSession())
+                {
+                    Console.WriteLine($"Session invalid, cannot write to {nodeId}");
+                    return;
+                }
+
                 var nodeIdParsed = NodeId.Parse(nodeId);
                 var wv = new WriteValue
                 {
@@ -339,7 +472,22 @@ namespace JAN0837_DP.Communication.comOPCUA
                     throw new Exception($"Write failed for {nodeId}: {results.FirstOrDefault()}");
                 }
             }
-            catch (Exception ex)
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated)
+                {
+                    Console.WriteLine($"Session error writing to {nodeId}: {ex.Message}. Session needs reconnection.");
+                    connected = false; // Mark as disconnected to trigger reconnection
+                }
+                else
+                {
+                    Console.WriteLine($"OPC UA error writing to {nodeId}: [0x{ex.StatusCode:X}] {ex.Message}");
+                }
+            }
+                        catch (Exception ex)
             {
                 Console.WriteLine($"Error writing to {nodeId}: {ex.Message}");
             }
@@ -349,6 +497,13 @@ namespace JAN0837_DP.Communication.comOPCUA
         {
             try
             {
+                // Validate session before reading
+                if (!ValidateSession())
+                {
+                    Console.WriteLine($"Session invalid, cannot read from {nodeId}");
+                    return false;
+                }
+
                 var nodeIdParsed = NodeId.Parse(nodeId);
                 DataValue value = client.clientSession.ReadValue(nodeIdParsed);
 
@@ -359,11 +514,65 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 return false;
             }
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated)
+                {
+                    Console.WriteLine($"Session error reading from {nodeId}: {ex.Message}. Session needs reconnection.");
+                    connected = false; // Mark as disconnected to trigger reconnection
+                }
+                else
+                {
+                    Console.WriteLine($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X}] {ex.Message}");
+                }
+                return false;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error reading from {nodeId}: {ex.Message}");
                 return false;
             }
+        }
+
+        // Validate and restore session if needed
+        private bool ValidateSession()
+        {
+            if (clientSession == null)
+            {
+                return false;
+            }
+
+            if (!clientSession.Connected)
+            {
+                connected = false;
+                return false;
+            }
+
+            // Check if KeepAlive is stopped and restart it
+            if (clientSession.KeepAliveStopped)
+            {
+                Console.WriteLine("KeepAlive stopped, restarting...");
+                try
+                {
+                    // Restart keep-alive by setting the interval again
+                    clientSession.KeepAlive += ClientSession_KeepAlive;
+                    clientSession.KeepAliveInterval = 5000;
+                    
+                    // The session will automatically start sending keep-alives
+                    Console.WriteLine("KeepAlive restarted successfully");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to restart KeepAlive: {ex.Message}");
+                    connected = false;
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 

@@ -762,8 +762,8 @@ namespace JAN0837_DP.Forms
                             }
 
                             // Connect to OPC UA server (PLC)
+                            //bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "user", "User1234");
                             bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "", "");
-
                             if (connected)
                             {
                                 lblStatus.Text = $"OPC UA client connected to {opcuaServerUrl}.";

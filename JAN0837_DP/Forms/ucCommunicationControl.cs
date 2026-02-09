@@ -763,6 +763,7 @@ namespace JAN0837_DP.Forms
 
                             // Connect to OPC UA server (PLC)
                             //bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "user", "User1234");
+                            //bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "mister", "12345Aa+");
                             bool connected = await _opcuaClient.connectToOPCUAserver(opcuaServerUrl, "", "");
                             if (connected)
                             {

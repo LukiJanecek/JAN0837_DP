@@ -34,7 +34,7 @@ namespace JAN0837_DP.ReactFE
             _feCommunication = control ?? throw new ArgumentNullException(nameof(control));
         }
 
-        public Task serverStart(string url = "http://localhost:5000", string buildFolderPath = "wwwroot")
+        public Task serverStart(string url = "http://192.168.1.250:5000", string buildFolderPath = "wwwroot")
         {
             _webApp = WebApp.Start(url, app =>
             {

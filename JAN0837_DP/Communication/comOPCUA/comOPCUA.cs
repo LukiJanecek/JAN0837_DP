@@ -218,8 +218,20 @@ namespace JAN0837_DP.Communication.comOPCUA
         public Opc.Ua.Client.Subscription subscription;
         public event KeepAliveEventHandler KeepAlive;
 
+        // Store connection parameters for reconnection
+        private string _lastServerUrl = string.Empty;
+        private string _lastUser = string.Empty;
+        private string _lastPass = string.Empty;
+        private readonly SemaphoreSlim _reconnectLock = new(1, 1);
+        private bool _isReconnecting = false;
+
         public async Task<bool> connectToOPCUAserver(string serverURL, string user, string pass)
         {
+            // Store for potential reconnection
+            _lastServerUrl = serverURL;
+            _lastUser = user;
+            _lastPass = pass;
+
             if (clientSession?.Connected == true)
             {
                 return true;
@@ -464,6 +476,68 @@ namespace JAN0837_DP.Communication.comOPCUA
             e.Accept = true; // DEV ONLY
         }
 
+        public async Task<bool> TryReconnectAsync()
+        {
+            if (string.IsNullOrEmpty(_lastServerUrl))
+            {
+                Console.WriteLine("Cannot reconnect: no previous connection parameters stored.");
+                return false;
+            }
+
+            // Prevent concurrent reconnection attempts
+            if (!await _reconnectLock.WaitAsync(0))
+            {
+                Console.WriteLine("Reconnection already in progress...");
+                return false;
+            }
+
+            try
+            {
+                _isReconnecting = true;
+                Console.WriteLine($"Attempting to reconnect to {_lastServerUrl}...");
+
+                // Clean up old session
+                if (clientSession != null)
+                {
+                    try
+                    {
+                        clientSession.KeepAlive -= ClientSession_KeepAlive;
+                        if (clientSession.Connected)
+                            await clientSession.CloseAsync();
+                        clientSession.Dispose();
+                    }
+                    catch { /* Ignore cleanup errors */ }
+                    clientSession = null;
+                }
+
+                connected = false;
+
+                // Attempt reconnection
+                bool success = await connectToOPCUAserver(_lastServerUrl, _lastUser, _lastPass);
+                
+                if (success)
+                {
+                    Console.WriteLine("Reconnection successful!");
+                }
+                else
+                {
+                    Console.WriteLine("Reconnection failed.");
+                }
+
+                return success;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Reconnection error: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                _isReconnecting = false;
+                _reconnectLock.Release();
+            }
+        }
+
         public void WriteOPCUAValue(opcuaKlient client, string nodeId, object value)
         {
             try
@@ -476,6 +550,26 @@ namespace JAN0837_DP.Communication.comOPCUA
                 }
 
                 var nodeIdParsed = NodeId.Parse(nodeId);
+
+                // Optional: Pre-read to check node status (useful for debugging)
+                client.clientSession.Read(
+                    null,
+                    0,
+                    TimestampsToReturn.Neither,
+                    new ReadValueIdCollection {
+                        new ReadValueId { 
+                            NodeId = nodeIdParsed, 
+                            AttributeId = Attributes.Value 
+                        }
+                    },
+                    out DataValueCollection readValues,
+                    out _);
+
+                if (StatusCode.IsBad(readValues[0].StatusCode))
+                {
+                    Console.WriteLine($"Warning: Node {nodeId} read status before write: {readValues[0].StatusCode}");
+                }
+
                 var wv = new WriteValue
                 {
                     NodeId = nodeIdParsed,
@@ -488,25 +582,34 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 if (results.Count != 1 || StatusCode.IsBad(results[0]))
                 {
+                    Console.WriteLine($"Write failed for {nodeId}: 0x{results[0].Code:X8}");
                     throw new Exception($"Write failed for {nodeId}: {results.FirstOrDefault()}");
                 }
             }
             catch (ServiceResultException ex)
             {
-                // Handle session-related errors
+                // Handle session-related errors with reconnection
                 if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
-                    ex.StatusCode == StatusCodes.BadSessionNotActivated)
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed)
                 {
-                    Console.WriteLine($"Session error writing to {nodeId}: {ex.Message}. Session needs reconnection.");
-                    connected = false; // Mark as disconnected to trigger reconnection
+                    Console.WriteLine($"Session error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection (fire-and-forget, loop will retry)
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"OPC UA error writing to {nodeId}: [0x{ex.StatusCode:X}] {ex.Message}");
+                    Console.WriteLine($"OPC UA error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                 }
             }
-                        catch (Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error writing to {nodeId}: {ex.Message}");
             }
@@ -523,7 +626,25 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return false;
                 }
 
+                var id = NodeId.Parse(nodeId);
+
+                client.clientSession.Read(
+                    null,
+                    0,
+                    TimestampsToReturn.Neither,
+                    new ReadValueIdCollection {
+                        new ReadValueId { 
+                            NodeId = id, 
+                            AttributeId = Attributes.Value 
+                        }
+                    },
+                    out DataValueCollection values,
+                    out DiagnosticInfoCollection diag);
+
+                Console.WriteLine($"Read status: {values[0].StatusCode}");
+
                 var nodeIdParsed = NodeId.Parse(nodeId);
+
                 DataValue value = client.clientSession.ReadValue(nodeIdParsed);
 
                 if (value != null && value.Value != null)
@@ -535,17 +656,25 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (ServiceResultException ex)
             {
-                // Handle session-related errors
+                // Handle session-related errors with reconnection
                 if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
-                    ex.StatusCode == StatusCodes.BadSessionNotActivated)
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed)
                 {
-                    Console.WriteLine($"Session error reading from {nodeId}: {ex.Message}. Session needs reconnection.");
-                    connected = false; // Mark as disconnected to trigger reconnection
+                    Console.WriteLine($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X}] {ex.Message}");
+                    Console.WriteLine($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                 }
                 return false;
             }

@@ -247,11 +247,11 @@ namespace JAN0837_DP.Communication
                                 try
                                 {
                                     // Write to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=\"DB_ProcessData\".\"input\".\"btnStart\"", CrossroadData.btnCrossroadStart == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=\"DB_ProcessData\".\"input\".\"btnPause\"", CrossroadData.btnCrossroadPause == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=\"DB_ProcessData\".\"input\".\"btnStop\"", CrossroadData.btnCrossroadStop == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk1\"", CrossroadData.btnCrosswalk1 == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=2;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk2\"", CrossroadData.btnCrosswalk2 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnStart\"", CrossroadData.btnCrossroadStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnPause\"", CrossroadData.btnCrossroadPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnStop\"", CrossroadData.btnCrossroadStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk1\"", CrossroadData.btnCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk2\"", CrossroadData.btnCrosswalk2 == "true");
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)

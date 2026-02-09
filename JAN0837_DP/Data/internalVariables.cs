@@ -52,8 +52,8 @@ namespace JAN0837_DP.Data
         public static bool visualizationThreadRunningFlag { get; set; } = false;
 
         // localhost
-        public static string feURL { get; set; } = "http://localhost:3000";
-        public static string communicationBaseURL { get; set; } = "http://localhost:5000/api";
+        public static string feURL { get; set; } = "http://192.168.1.250:3000";
+        public static string communicationBaseURL { get; set; } = "http://192.168.1.250:5000/api";
         public static string communicationDataURL => communicationBaseURL.TrimEnd('/') + "/data";
         public static bool communicationServerStarted { get; set; } = false;
         public static bool feServerStarted { get; set; } = false;

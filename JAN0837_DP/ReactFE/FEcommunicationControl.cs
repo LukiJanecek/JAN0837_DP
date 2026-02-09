@@ -30,7 +30,7 @@ namespace JAN0837_DP.ReactFE
         {
             var basePrefix = string.IsNullOrWhiteSpace(prefix) ? internalVariables.communicationBaseURL : prefix;
 
-            _prefix = (basePrefix ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
+            _prefix = (basePrefix ?? "http://192.168.1.250:5000/api/").TrimEnd('/') + "/";
 
             // var prefix = (internalVariables.communicationBaseURL ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
         }
@@ -252,7 +252,7 @@ namespace JAN0837_DP.ReactFE
 
         public void AddCors(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            var allowedOrigin = (internalVariables.feURL ?? "http://localhost:3000").TrimEnd('/');
+            var allowedOrigin = (internalVariables.feURL ?? "http://192.168.1.250:3000").TrimEnd('/');
             var origin = (req.Headers["Origin"] ?? "").TrimEnd('/');
 
             if (!string.IsNullOrEmpty(origin) && origin.Equals(allowedOrigin, StringComparison.OrdinalIgnoreCase))

@@ -11,6 +11,7 @@ using System.Threading;
 using Microsoft.AspNet.SignalR;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using JAN0837_DP.Data;
+using JAN0837_DP.Log;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
@@ -429,6 +430,7 @@ namespace JAN0837_DP.ReactFE
             catch (Exception ex)
             {
                 // jednoduchý JSON error (ať to líp debuguješ v Network panelu)
+                Logger.LogException(ex, "FE HandleRequest");
                 var payload = Encoding.UTF8.GetBytes($"{{\"error\":\"{ex.Message}\"}}");
                 resp.StatusCode = 500;
                 resp.ContentType = "application/json";

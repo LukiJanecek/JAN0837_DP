@@ -7,6 +7,7 @@ using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
 using JAN0837_DP.Data;
 using JAN0837_DP.Forms;
+using JAN0837_DP.Log;
 using Microsoft.AspNetCore.Connections.Features;
 using Newtonsoft.Json;
 using Opc.Ua;
@@ -693,7 +694,7 @@ namespace JAN0837_DP.Communication
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception: Error in communication: {ex.Message}");
+                Logger.LogException(ex, "CommunicationManager");
                 //_ucCommunicationControl.SetStatus($"Exception: Error in communication: {ex.Message}");
             }
         }

@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization;
+using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Communication.comOPCUA
 {
@@ -155,8 +155,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error starting OPC UA server: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                Logger.LogException(ex, "OPC UA Server Start");
                 running = false;
                 return false;
             }
@@ -182,7 +181,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error stopping OPC UA server: {ex.Message}");
+                Logger.LogException(ex, "OPC UA Server Stop");
                 return false;
             }
         }
@@ -327,25 +326,66 @@ namespace JAN0837_DP.Communication.comOPCUA
                     Console.WriteLine($"Certificate created: {certificate.Thumbprint}");
                 }
 
-                // 5. Select endpoint - use simpler overload with NO security
+                // 5. Select endpoint based on authentication type
                 Console.WriteLine($"Discovering endpoints at: {serverURL}");
-                var endpointDescription = await Opc.Ua.Client.CoreClientUtils.SelectEndpointAsync(
-                    config,
-                    serverURL,
-                    false,
-                    15000
-                );
+                
+                bool useCredentials = !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass);
+                EndpointDescription endpointDescription;
+
+                if (useCredentials)
+                {
+                    // When using username/password, we need a secure endpoint
+                    // First, discover all endpoints and find one that supports UserName token
+                    Console.WriteLine("Credentials provided - searching for secure endpoint with UserName support...");
+                    
+                    using var discoveryClient = DiscoveryClient.Create(new Uri(serverURL));
+                    var endpoints = await discoveryClient.GetEndpointsAsync(null, CancellationToken.None);
+                    
+                    // Find endpoint with security that supports UserName authentication
+                    endpointDescription = endpoints
+                        .Where(e => 
+                            e.SecurityMode != MessageSecurityMode.None &&
+                            e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName))
+                        .OrderByDescending(e => e.SecurityLevel)
+                        .FirstOrDefault();
+                    
+                    if (endpointDescription == null)
+                    {
+                        // Fallback: try any endpoint that supports UserName (even without encryption)
+                        Console.WriteLine("No secure endpoint found, trying any endpoint with UserName support...");
+                        endpointDescription = endpoints
+                            .Where(e => e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName))
+                            .OrderByDescending(e => e.SecurityLevel)
+                            .FirstOrDefault();
+                    }
+                    
+                    if (endpointDescription == null)
+                    {
+                        throw new Exception("No endpoint found that supports UserName authentication. Check server configuration.");
+                    }
+                }
+                else
+                {
+                    // Anonymous - use simple endpoint selection (no security required)
+                    endpointDescription = await Opc.Ua.Client.CoreClientUtils.SelectEndpointAsync(
+                        config,
+                        serverURL,
+                        false,
+                        15000
+                    );
+                }
 
                 Console.WriteLine($"Selected endpoint: {endpointDescription.EndpointUrl}");
                 Console.WriteLine($"Security Mode: {endpointDescription.SecurityMode}");
                 Console.WriteLine($"Security Policy: {endpointDescription.SecurityPolicyUri}");
+                Console.WriteLine($"Supported tokens: {string.Join(", ", endpointDescription.UserIdentityTokens.Select(t => t.TokenType))}");
 
                 var endpointConfiguration = Opc.Ua.EndpointConfiguration.Create(config);
                 var endpoint = new Opc.Ua.ConfiguredEndpoint(null, endpointDescription, endpointConfiguration);
 
                 // 6. Create user identity
                 Opc.Ua.IUserIdentity userIdentity;
-                if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass))
+                if (useCredentials)
                 {
                     userIdentity = new Opc.Ua.UserIdentity(new Opc.Ua.UserNameIdentityToken
                     {
@@ -382,15 +422,14 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (Opc.Ua.ServiceResultException ex)
             {
-                Console.WriteLine($"OPC UA Error: 0x{ex.StatusCode:X8} - {ex.Message}");
+                Logger.LogError($"OPC UA Error: 0x{ex.StatusCode:X8} - {ex.Message}");
                 connected = false;
                 clientSession = null;
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Connection error: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                Logger.LogException(ex, "OPC UA Connection");
                 connected = false;
                 clientSession = null;
                 return false;
@@ -528,7 +567,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Reconnection error: {ex.Message}");
+                Logger.LogException(ex, "OPC UA Reconnection");
                 return false;
             }
             finally
@@ -595,7 +634,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
                     ex.StatusCode == StatusCodes.BadConnectionClosed)
                 {
-                    Console.WriteLine($"Session error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    Logger.LogError($"Session error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                     connected = false;
 
                     // Trigger async reconnection (fire-and-forget, loop will retry)
@@ -606,12 +645,12 @@ namespace JAN0837_DP.Communication.comOPCUA
                 }
                 else
                 {
-                    Console.WriteLine($"OPC UA error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    Logger.LogError($"OPC UA error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error writing to {nodeId}: {ex.Message}");
+                Logger.LogException(ex, $"OPC UA WriteValue {nodeId}");
             }
         }
 
@@ -663,7 +702,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
                     ex.StatusCode == StatusCodes.BadConnectionClosed)
                 {
-                    Console.WriteLine($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                     connected = false;
 
                     // Trigger async reconnection
@@ -674,13 +713,13 @@ namespace JAN0837_DP.Communication.comOPCUA
                 }
                 else
                 {
-                    Console.WriteLine($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    Logger.LogError($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                 }
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error reading from {nodeId}: {ex.Message}");
+                Logger.LogException(ex, $"OPC UA ReadBool {nodeId}");
                 return false;
             }
         }

@@ -7,6 +7,7 @@ using JAN0837_DP.Communication.comTCPIP;
 using JAN0837_DP.Communication.comMQTT;
 using JAN0837_DP.Communication.comOPCUA;
 using JAN0837_DP.Data;
+using JAN0837_DP.Log;
 using MQTTnet.Server;
 using Opc.Ua;
 using System;
@@ -949,11 +950,13 @@ namespace JAN0837_DP.Forms
             catch (OperationCanceledException)
             {
                 lblStatus.Text = "Communication start canceled.";
+                Logger.LogWarning("Communication start canceled by user.");
                 return;
             }
             catch (Exception ex)
             {
                 lblStatus.Text = $"Start failed: {ex.Message}";
+                Logger.LogException(ex, "Communication Start");
                 return;
             }
         }
@@ -1177,10 +1180,12 @@ namespace JAN0837_DP.Forms
                 catch (OperationCanceledException)
                 {
                     // expected when token cancels
+                    Logger.LogInfo("Communication task canceled successfully.");
                 }
                 catch (Exception ex)
                 {
                     lblStatus.Text = $"Communication stop error: {ex.Message}";
+                    Logger.LogException(ex, "Communication Stop");
                 }
 
                 lblCommunicationStatus.Text = "Communication stopped.";

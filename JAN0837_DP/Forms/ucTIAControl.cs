@@ -1,4 +1,5 @@
 ﻿using JAN0837_DP.Data;
+using JAN0837_DP.Log;
 using JAN0837_DP.TIA;
 using S7.Net;
 // 
@@ -542,6 +543,7 @@ namespace JAN0837_DP.Forms
             catch (Exception ex)
             {
                 lblStatus1.Text = "Exception error: " + ex.Message;
+                Logger.LogException(ex, "TIA Open Project");
                 MessageBox.Show($"Error: {ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -635,6 +637,7 @@ namespace JAN0837_DP.Forms
             catch (Exception ex)
             {
                 lblStatus1.Text = "Code exception error, creating project failed: " + ex.Message;
+                Logger.LogException(ex, "TIA Create Project");
             }
         }
 
@@ -689,6 +692,7 @@ namespace JAN0837_DP.Forms
             catch (Exception ex)
             {
                 lblStatus1.Text = "Code exception error, adding DB failed: " + ex.Message;
+                Logger.LogException(ex, "TIA Add DB");
             }
         }
 

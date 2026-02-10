@@ -39,6 +39,10 @@ namespace JAN0837_DP.Data
         public static string pythonScriptsFolder { get; set; } = Path.Combine(tiaPath, "PythonScripts");
 
         public static string pythonExePath = Path.Combine(pythonScriptsFolder, "venv", "Scripts", "python.exe");
+
+        // Log paths
+        public static string logDirectoryPath { get; set; } = Path.Combine(projectRootPath, "Log");
+        public static string logFilePath { get; set; } = Path.Combine(logDirectoryPath, "log.txt");
     }
 
     public static class internalVariables

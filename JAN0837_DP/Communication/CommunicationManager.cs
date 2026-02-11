@@ -247,12 +247,12 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    // Write to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnStart\"", CrossroadData.btnCrossroadStart == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnPause\"", CrossroadData.btnCrossroadPause == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnStop\"", CrossroadData.btnCrossroadStop == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk1\"", CrossroadData.btnCrosswalk1 == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"input\".\"btnCrosswalk2\"", CrossroadData.btnCrosswalk2 == "true");
+                                    // Write to PLC using numeric node IDs from OpcUaNodeIds configuration
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, OpcUaNodeIds.btnStart, CrossroadData.btnCrossroadStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, OpcUaNodeIds.btnPause, CrossroadData.btnCrossroadPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, OpcUaNodeIds.btnStop, CrossroadData.btnCrossroadStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, OpcUaNodeIds.btnCrosswalk1, CrossroadData.btnCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, OpcUaNodeIds.btnCrosswalk2, CrossroadData.btnCrosswalk2 == "true");
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -262,18 +262,18 @@ namespace JAN0837_DP.Communication
                                         continue;
                                     }
 
-                                    // Read output values FROM PLC server
-                                    CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"crossroadType\"") ? "true" : "false";
-                                    CrossroadData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightGreen1\"") ? "true" : "false";
-                                    CrossroadData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightsYellow1\"") ? "true" : "false";
-                                    CrossroadData.trafficLight1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightsRed1\"") ? "true" : "false";
-                                    CrossroadData.trafficLight2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightGreen2\"") ? "true" : "false";
-                                    CrossroadData.trafficLight2_yellow = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightsYellow2\"") ? "true" : "false";
-                                    CrossroadData.trafficLight2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"trafficLightsRed2\"") ? "true" : "false";
-                                    CrossroadData.pedestrian1_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"pedestrianLightGreen1\"") ? "true" : "false";
-                                    CrossroadData.pedestrian1_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"pedestrianLightRed1\"") ? "true" : "false";
-                                    CrossroadData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"pedestrianLightGreen2\"") ? "true" : "false";
-                                    CrossroadData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, "ns=3;s=\"DB_ProcessData\".\"output\".\"pedestrianLightRed2\"") ? "true" : "false";
+                                    // Read output values FROM PLC server using numeric node IDs
+                                    CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.crossroadType) ? "true" : "false";
+                                    CrossroadData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightGreen1) ? "true" : "false";
+                                    CrossroadData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightsYellow1) ? "true" : "false";
+                                    CrossroadData.trafficLight1_red = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightsRed1) ? "true" : "false";
+                                    CrossroadData.trafficLight2_green = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightGreen2) ? "true" : "false";
+                                    CrossroadData.trafficLight2_yellow = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightsYellow2) ? "true" : "false";
+                                    CrossroadData.trafficLight2_red = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.trafficLightsRed2) ? "true" : "false";
+                                    CrossroadData.pedestrian1_green = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.pedestrianLightGreen1) ? "true" : "false";
+                                    CrossroadData.pedestrian1_red = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.pedestrianLightRed1) ? "true" : "false";
+                                    CrossroadData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.pedestrianLightGreen2) ? "true" : "false";
+                                    CrossroadData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, OpcUaNodeIds.pedestrianLightRed2) ? "true" : "false";
 
                                     _ucCommunicationControl.SetStatus("OPC UA Client: Data synchronized");
                                 }

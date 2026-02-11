@@ -367,12 +367,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 else
                 {
                     // Anonymous - use simple endpoint selection (no security required)
-                    endpointDescription = await Opc.Ua.Client.CoreClientUtils.SelectEndpointAsync(
-                        config,
-                        serverURL,
-                        false,
-                        15000
-                    );
+                    endpointDescription = await Opc.Ua.Client.CoreClientUtils.SelectEndpointAsync(config, serverURL, false, 15000);
                 }
 
                 Console.WriteLine($"Selected endpoint: {endpointDescription.EndpointUrl}");
@@ -402,18 +397,10 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 // 7. Create session
                 Console.WriteLine("Creating session...");
-                clientSession = await Opc.Ua.Client.Session.Create(
-                    config,
-                    endpoint,
-                    false,
-                    "OPCUA Client Session",
-                    60000,
-                    userIdentity,
-                    null
-                );
+                clientSession = await Opc.Ua.Client.Session.Create(config, endpoint, false, "OPCUA Client Session", 60000, userIdentity, null);
 
                 connected = clientSession.Connected;
-                //clientSession.KeepAliveInterval = 5000;
+                clientSession.KeepAliveInterval = 5000;
                 clientSession.KeepAlive += ClientSession_KeepAlive;
 
                 Console.WriteLine($"SUCCESS! Connected to: {serverURL}");
@@ -445,27 +432,44 @@ namespace JAN0837_DP.Communication.comOPCUA
 
             try
             {
-                if (reconnectHandler != null)
+                // Dispose reconnect handler first
+                var handler = reconnectHandler;
+                reconnectHandler = null;
+                handler?.Dispose();
+
+                // Capture session reference locally to avoid race condition
+                var session = clientSession;
+                clientSession = null;
+                connected = false;
+
+                if (session != null)
                 {
-                    reconnectHandler.Dispose();
-                    reconnectHandler = null;
+                    try
+                    {
+                        session.KeepAlive -= ClientSession_KeepAlive;
+                    }
+                    catch { /* Ignore if already unsubscribed */ }
+
+                    try
+                    {
+                        if (session.Connected)
+                            await session.CloseAsync();
+                    }
+                    catch { /* Ignore close errors */ }
+
+                    try
+                    {
+                        session.Dispose();
+                    }
+                    catch { /* Ignore dispose errors */ }
                 }
 
-                if (clientSession != null)
-                {
-                    clientSession.KeepAlive -= ClientSession_KeepAlive;
-
-                    if (clientSession.Connected)
-                        await clientSession.CloseAsync();
-
-                    clientSession.Dispose();
-                    clientSession = null;
-                }
-
+                Logger.LogInfo("OPC UA client disconnected successfully.");
                 return true;
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex, "OPC UA Disconnect");
                 return false;
             }
         }
@@ -591,10 +595,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 var nodeIdParsed = NodeId.Parse(nodeId);
 
                 // Optional: Pre-read to check node status (useful for debugging)
-                client.clientSession.Read(
-                    null,
-                    0,
-                    TimestampsToReturn.Neither,
+                client.clientSession.Read(null, 0, TimestampsToReturn.Neither,
                     new ReadValueIdCollection {
                         new ReadValueId { 
                             NodeId = nodeIdParsed, 
@@ -632,7 +633,9 @@ namespace JAN0837_DP.Communication.comOPCUA
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
                     ex.StatusCode == StatusCodes.BadSessionNotActivated ||
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
-                    ex.StatusCode == StatusCodes.BadConnectionClosed)
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
                 {
                     Logger.LogError($"Session error writing to {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                     connected = false;
@@ -661,32 +664,22 @@ namespace JAN0837_DP.Communication.comOPCUA
                 // Validate session before reading
                 if (!ValidateSession())
                 {
-                    Console.WriteLine($"Session invalid, cannot read from {nodeId}");
+                    Logger.LogWarning($"Session invalid, cannot read from {nodeId}");
                     return false;
                 }
 
                 var id = NodeId.Parse(nodeId);
 
-                client.clientSession.Read(
-                    null,
-                    0,
-                    TimestampsToReturn.Neither,
-                    new ReadValueIdCollection {
-                        new ReadValueId { 
-                            NodeId = id, 
-                            AttributeId = Attributes.Value 
-                        }
-                    },
-                    out DataValueCollection values,
-                    out DiagnosticInfoCollection diag);
+                // Read value directly (single read instead of double)
+                DataValue value = client.clientSession.ReadValue(id);
 
-                Console.WriteLine($"Read status: {values[0].StatusCode}");
+                if (StatusCode.IsBad(value.StatusCode))
+                {
+                    Logger.LogWarning($"Read {nodeId} returned bad status: 0x{value.StatusCode.Code:X8}");
+                    return false;
+                }
 
-                var nodeIdParsed = NodeId.Parse(nodeId);
-
-                DataValue value = client.clientSession.ReadValue(nodeIdParsed);
-
-                if (value != null && value.Value != null)
+                if (value.Value != null)
                 {
                     return Convert.ToBoolean(value.Value);
                 }
@@ -700,7 +693,9 @@ namespace JAN0837_DP.Communication.comOPCUA
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
                     ex.StatusCode == StatusCodes.BadSessionNotActivated ||
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
-                    ex.StatusCode == StatusCodes.BadConnectionClosed)
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
                 {
                     Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
                     connected = false;
@@ -806,23 +801,13 @@ namespace JAN0837_DP.Communication.comOPCUA
                     EndpointConfiguration.Create(config)
                 );
 
-                IUserIdentity identity =
-                    string.IsNullOrWhiteSpace(user)
-                        ? new UserIdentity(new AnonymousIdentityToken())
-                        : new UserIdentity(new UserNameIdentityToken
-                        {
-                            UserName = user,
-                            Password = System.Text.Encoding.UTF8.GetBytes(pass ?? string.Empty)
-                        });
+                IUserIdentity identity = string.IsNullOrWhiteSpace(user) ? new UserIdentity(new AnonymousIdentityToken()) : new UserIdentity(new UserNameIdentityToken
+                {
+                    UserName = user,
+                    Password = System.Text.Encoding.UTF8.GetBytes(pass ?? string.Empty)
+                });
 
-                clientSession = await Opc.Ua.Client.Session.Create(
-                    config,
-                    endpoint,
-                    false,
-                    "OPCUA Client",
-                    60000,
-                    identity,
-                    null);
+                clientSession = await Opc.Ua.Client.Session.Create(config, endpoint, false, "OPCUA Client", 60000, identity, null);
 
                 clientSession.KeepAlive += ClientSession_KeepAlive;
 
@@ -861,11 +846,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 Value = new DataValue(new Variant(typedValue))
             };
 
-            clientSession.Write(
-                null,
-                new WriteValueCollection { wv },
-                out var results,
-                out _);
+            clientSession.Write(null, new WriteValueCollection { wv }, out var results, out _);
 
             if (StatusCode.IsBad(results[0]))
                 throw new Exception($"OPCUA Write failed: {results[0]}");

@@ -9,6 +9,40 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JAN0837_DP.Data
 {
+    /// <summary>
+    /// OPC UA Node IDs for Siemens PLC
+    /// Get these values from UAExpert by browsing to each variable and noting the NodeId
+    /// Format: ns=4;i=XX (numeric) - NOT ns=4;s="..." (string)
+    /// </summary>
+    public static class OpcUaNodeIds
+    {
+        // ═══════════════════════════════════════════════════════════
+        // INPUT VARIABLES (written TO PLC)
+        // Find these in UAExpert: DB_ProcessData > input > ...
+        // ═══════════════════════════════════════════════════════════
+        public static string btnStart { get; set; } = "ns=4;i=15";        // Update with your actual node ID
+        public static string btnPause { get; set; } = "ns=4;i=16";        // Update with your actual node ID
+        public static string btnStop { get; set; } = "ns=4;i=17";         // Update with your actual node ID
+        public static string btnCrosswalk1 { get; set; } = "ns=4;i=18";   // Update with your actual node ID
+        public static string btnCrosswalk2 { get; set; } = "ns=4;i=19";   // Update with your actual node ID
+
+        // ═══════════════════════════════════════════════════════════
+        // OUTPUT VARIABLES (read FROM PLC)
+        // Find these in UAExpert: DB_ProcessData > output > ...
+        // ═══════════════════════════════════════════════════════════
+        public static string crossroadType { get; set; } = "ns=4;i=33";          // Update with your actual node ID
+        public static string trafficLightGreen1 { get; set; } = "ns=4;i=34";     // Update with your actual node ID
+        public static string trafficLightsYellow1 { get; set; } = "ns=4;i=35";   // Update with your actual node ID
+        public static string trafficLightsRed1 { get; set; } = "ns=4;i=36";      // Update with your actual node ID
+        public static string trafficLightGreen2 { get; set; } = "ns=4;i=37";     // Update with your actual node ID
+        public static string trafficLightsYellow2 { get; set; } = "ns=4;i=38";   // Update with your actual node ID
+        public static string trafficLightsRed2 { get; set; } = "ns=4;i=39";      // Update with your actual node ID
+        public static string pedestrianLightGreen1 { get; set; } = "ns=4;i=40";  // Update with your actual node ID
+        public static string pedestrianLightRed1 { get; set; } = "ns=4;i=41";    // Update with your actual node ID
+        public static string pedestrianLightGreen2 { get; set; } = "ns=4;i=42";  // Update with your actual node ID
+        public static string pedestrianLightRed2 { get; set; } = "ns=4;i=43";    // Update with your actual node ID
+    }
+
     public static class CrossroadData
     {
         public const int CrossroadDBnumber = 1;

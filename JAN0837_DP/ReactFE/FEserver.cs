@@ -34,8 +34,11 @@ namespace JAN0837_DP.ReactFE
             _feCommunication = control ?? throw new ArgumentNullException(nameof(control));
         }
 
-        public Task serverStart(string url = "http://192.168.1.250:5000", string buildFolderPath = "wwwroot")
+        public Task serverStart(string url = null, string buildFolderPath = "wwwroot")
         {
+            // Use dynamic URL if not specified
+            url ??= $"http://+:{internalVariables.apiPort}";
+            
             _webApp = WebApp.Start(url, app =>
             {
                 // 1) CORS pro SignalR
@@ -87,7 +90,9 @@ namespace JAN0837_DP.ReactFE
                 });
             });
 
-            Console.WriteLine($"FE server běží na {url}, servíruje: {buildFolderPath}");
+            Console.WriteLine($"FE server running on {url}");
+            Console.WriteLine($"Accessible at: http://{internalVariables.LocalIP}:{internalVariables.apiPort}");
+            Console.WriteLine($"Serving: {buildFolderPath}");
             internalVariables.communicationServerStarted = true;
             return Task.CompletedTask;
         }

@@ -19,21 +19,21 @@ namespace JAN0837_DP.ReactFE
 {
     public class FEcommunicationControl
     {
-        private readonly string _prefix;
+        private string _prefix;
         private HttpListener _listener;
         private CancellationTokenSource _cts;
 
         public Process reactDevServerProc;
 
         public static readonly HttpClient http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(1500) };
+        
+        // Separate client for health checks with longer timeout
+        private static readonly HttpClient healthCheckClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 
         public FEcommunicationControl(string prefix)
         {
-            var basePrefix = string.IsNullOrWhiteSpace(prefix) ? internalVariables.communicationBaseURL : prefix;
-
-            _prefix = (basePrefix ?? "http://192.168.1.250:5000/api/").TrimEnd('/') + "/";
-
-            // var prefix = (internalVariables.communicationBaseURL ?? "http://localhost:5000/api/").TrimEnd('/') + "/";
+            // Will be set in communicationStart based on what works
+            _prefix = $"http://localhost:{internalVariables.apiPort}/api/";
         }
 
         public void communicationStart()
@@ -47,18 +47,74 @@ namespace JAN0837_DP.ReactFE
             {
                 return;
             }
-            else
+
+            _listener = new HttpListener();
+            
+            // Try different prefixes in order of preference
+            string[] prefixesToTry = new[]
             {
-                _listener = new HttpListener();
-                _listener.Prefixes.Clear();
-                _listener.Prefixes.Add(_prefix);
-                _listener.Start();
+                $"http://+:{internalVariables.apiPort}/api/",                    // All interfaces (requires admin/urlacl)
+                $"http://*:{internalVariables.apiPort}/api/",                    // Alternative all interfaces
+                $"http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/",  // Specific IP
+                $"http://localhost:{internalVariables.apiPort}/api/"             // Localhost only (always works)
+            };
 
-                _cts = new CancellationTokenSource();
-                Task.Run(() => HandleAsync(_cts.Token));
-
-                internalVariables.communicationServerStarted = true;
+            bool started = false;
+            foreach (var prefix in prefixesToTry)
+            {
+                try
+                {
+                    _listener.Prefixes.Clear();
+                    _listener.Prefixes.Add(prefix);
+                    _listener.Start();
+                    _prefix = prefix;
+                    started = true;
+                    
+                    // Extract the host from the prefix for internal health checks
+                    if (prefix.Contains("localhost"))
+                    {
+                        internalVariables.actualApiHost = "localhost";
+                        Console.WriteLine("WARNING: Server only accessible from this machine!");
+                        Console.WriteLine("Run as Admin or use: netsh http add urlacl url=http://+:5000/ user=Everyone");
+                        Logger.LogWarning("API Server bound to localhost only - not accessible from network");
+                    }
+                    else if (prefix.Contains("+") || prefix.Contains("*"))
+                    {
+                        // Bound to all interfaces - use localhost for internal checks
+                        internalVariables.actualApiHost = "localhost";
+                        Console.WriteLine($"Accessible at: {internalVariables.communicationBaseURL}");
+                    }
+                    else
+                    {
+                        // Bound to specific IP
+                        internalVariables.actualApiHost = internalVariables.LocalIP;
+                        Console.WriteLine($"Accessible at: {internalVariables.communicationBaseURL}");
+                    }
+                    
+                    Console.WriteLine($"API Server started on {prefix}");
+                    //Logger.LogInfo($"API Server started on {prefix}");
+                    break;
+                }
+                catch (HttpListenerException ex)
+                {
+                    Console.WriteLine($"Failed to bind to {prefix}: {ex.Message}");
+                    Logger.LogWarning($"Failed to bind to {prefix}: {ex.Message}");
+                    
+                    // Close and recreate listener for next attempt
+                    try { _listener.Close(); } catch { }
+                    _listener = new HttpListener();
+                }
             }
+
+            if (!started)
+            {
+                throw new Exception("Could not start HTTP listener on any prefix. Check firewall and permissions.");
+            }
+
+            _cts = new CancellationTokenSource();
+            Task.Run(() => HandleAsync(_cts.Token));
+
+            internalVariables.communicationServerStarted = true;
         }
 
         public void communicationStop()
@@ -67,18 +123,37 @@ namespace JAN0837_DP.ReactFE
             {
                 try
                 {
+                    // Cancel the token first to signal the handler to stop
                     _cts?.Cancel();
-                    _listener?.Stop();
+                    
+                    // Small delay to let the handler exit gracefully
+                    Thread.Sleep(100);
+                    
+                    // Now stop and close the listener
+                    if (_listener != null)
+                    {
+                        try
+                        {
+                            if (_listener.IsListening)
+                            {
+                                _listener.Stop();
+                            }
+                            _listener.Close();
+                        }
+                        catch (ObjectDisposedException) { /* Already disposed */ }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "FE communicationStop");
                 }
                 finally
                 {
                     _listener = null;
+                    _cts?.Dispose();
+                    _cts = null;
                     internalVariables.communicationServerStarted = false;
                 }
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -246,23 +321,48 @@ namespace JAN0837_DP.ReactFE
         {
             while (!token.IsCancellationRequested)
             {
-                var ctx = await _listener.GetContextAsync();
-                HandleRequest(ctx);
+                try
+                {
+                    // Check if listener is still valid
+                    if (_listener == null || !_listener.IsListening)
+                    {
+                        break;
+                    }
+                    
+                    var ctx = await _listener.GetContextAsync();
+                    HandleRequest(ctx);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Listener was disposed - exit gracefully
+                    break;
+                }
+                catch (HttpListenerException ex) when (ex.ErrorCode == 995) // ERROR_OPERATION_ABORTED
+                {
+                    // Listener was stopped - exit gracefully
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "FE HandleAsync");
+                    // Continue listening for other requests
+                }
             }
         }
 
         public void AddCors(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            var allowedOrigin = (internalVariables.feURL ?? "http://192.168.1.250:3000").TrimEnd('/');
             var origin = (req.Headers["Origin"] ?? "").TrimEnd('/');
 
-            if (!string.IsNullOrEmpty(origin) && origin.Equals(allowedOrigin, StringComparison.OrdinalIgnoreCase))
+            // Allow any origin for development - echo back the requesting origin
+            if (!string.IsNullOrEmpty(origin))
             {
                 resp.Headers["Access-Control-Allow-Origin"] = origin;
             }
             else
             {
-                resp.Headers["Access-Control-Allow-Origin"] = allowedOrigin;
+                // Fallback to allow the configured FE URL
+                resp.Headers["Access-Control-Allow-Origin"] = internalVariables.feURL;
             }
 
             resp.Headers["Vary"] = "Origin";
@@ -276,7 +376,13 @@ namespace JAN0837_DP.ReactFE
             var req = ctx.Request;
             var resp = ctx.Response;
 
+            // Log incoming request for debugging
+            var clientIP = req.RemoteEndPoint?.Address?.ToString() ?? "unknown";
+            //Logger.LogInfo($"HTTP Request from {clientIP}: {req.HttpMethod} {req.Url?.AbsoluteUri}");
+            Console.WriteLine($"[HTTP] {clientIP} -> {req.HttpMethod} {req.Url?.AbsolutePath}");
+
             AddCors(req, resp);
+
 
             // Preflight for CORS
             if (req.HttpMethod == "OPTIONS")
@@ -500,18 +606,21 @@ namespace JAN0837_DP.ReactFE
 
         public Task<TestData> GetTestDataAsync()
         {
-            return GetDataAsync<TestData>(internalVariables.communicationDataURL);
+            // Use internal URL for same-machine requests
+            return GetDataAsync<TestData>(internalVariables.internalApiDataURL);
         }
 
         public Task<CrossroadData.State> GetCrossroadDataAsync()
         {
-            return GetDataAsync<CrossroadData.State>(internalVariables.communicationDataURL);
+            // Use internal URL for same-machine requests
+            return GetDataAsync<CrossroadData.State>(internalVariables.internalApiDataURL);
         }
 
 
         public async Task<TestData> GetDataAsync()
         {
-            var url = internalVariables.communicationDataURL;
+            // Use internal URL for same-machine requests
+            var url = internalVariables.internalApiDataURL;
             using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             resp.EnsureSuccessStatusCode();
 
@@ -553,11 +662,22 @@ namespace JAN0837_DP.ReactFE
         {
             try
             {
-                using var resp = await http.GetAsync(url);
+                using var resp = await healthCheckClient.GetAsync(url);
                 return resp.IsSuccessStatusCode;
             }
-            catch
+            catch (TaskCanceledException)
             {
+                // Timeout
+                return false;
+            }
+            catch (HttpRequestException)
+            {
+                // Connection failed
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Health check error for {url}: {ex.Message}");
                 return false;
             }
         }
@@ -570,41 +690,143 @@ namespace JAN0837_DP.ReactFE
                 if (await IsAliveAsync(url)) return;
                 await Task.Delay(pollMs);
             }
-            throw new TimeoutException($"Service not reachable: {url}");
+            
+            // Log the timeout
+            var errorMsg = $"Service not reachable after {timeoutMs}ms: {url}";
+            Logger.LogError(errorMsg);
+            throw new TimeoutException(errorMsg);
         }
 
         public async Task EnsureCommunicationServiceAsync()
         {
-            // API health-check: /api/status (nebo /api/data)
-            var apiHealth = internalVariables.communicationDataURL;
+            // API health-check using internal URL (works even if bound to localhost)
+            var apiHealth = internalVariables.internalApiDataURL;
+            
+            Console.WriteLine($"Checking API health at: {apiHealth}");
+            //Logger.LogInfo($"Checking API health at: {apiHealth}");
 
             if (!await IsAliveAsync(apiHealth))
             {
                 await WaitUntilAliveAsync(apiHealth, timeoutMs: 5000);
             }
+            
+            Console.WriteLine("API service is alive!");
+            //Logger.LogInfo("API service is alive!");
         }
 
         public async Task EnsureReactDevServerAsync()
         {
-            if (!await IsAliveAsync(internalVariables.feURL))
+            // Use internal URL for health check (localhost works even if server binds to 0.0.0.0)
+            var internalFeUrl = internalVariables.internalFeURL;
+            
+            Console.WriteLine($"Checking React FE at: {internalFeUrl}");
+            //Logger.LogInfo($"Checking React FE at: {internalFeUrl}");
+            
+            if (await IsAliveAsync(internalFeUrl))
             {
-                if (reactDevServerProc == null || reactDevServerProc.HasExited)
-                {
-                    reactDevServerProc = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "npm",
-                        Arguments = "start",
-                        WorkingDirectory = paths.feReactProjectPath,
-                        UseShellExecute = true, // false
-                        CreateNoWindow = true
-                    });
-                }
-
-                // wait until server run
-                await WaitUntilAliveAsync(internalVariables.feURL, timeoutMs: 60000);
-
+                Console.WriteLine("React FE server is already running!");
+                //Logger.LogInfo("React FE server is already running!");
                 internalVariables.feServerStarted = true;
+                return;
             }
+            
+            // React not running - try to start it
+            if (reactDevServerProc == null || reactDevServerProc.HasExited)
+            {
+                // Verify the React project path exists
+                var reactPath = paths.feReactProjectPath;
+                Console.WriteLine($"React project path: {reactPath}");
+                //Logger.LogInfo($"React project path: {reactPath}");
+                
+                if (!Directory.Exists(reactPath))
+                {
+                    var errorMsg = $"React project directory not found: {reactPath}";
+                    Console.WriteLine($"ERROR: {errorMsg}");
+                    Logger.LogError(errorMsg);
+                    throw new DirectoryNotFoundException(errorMsg);
+                }
+                
+                // Check if package.json exists
+                var packageJson = Path.Combine(reactPath, "package.json");
+                if (!File.Exists(packageJson))
+                {
+                    var errorMsg = $"package.json not found at: {packageJson}";
+                    Console.WriteLine($"ERROR: {errorMsg}");
+                    Logger.LogError(errorMsg);
+                    throw new FileNotFoundException(errorMsg);
+                }
+                
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    // Use quotes around SET values to avoid trailing spaces
+                    Arguments = $"/k set \"HOST=0.0.0.0\" && set \"PORT={internalVariables.fePort}\" && npm start",
+                    WorkingDirectory = reactPath,
+                    UseShellExecute = true,
+                    CreateNoWindow = false  // Show window so you can see React output
+                };
+                
+                Console.WriteLine($"Starting React dev server...");
+                Console.WriteLine($"  Command: {startInfo.Arguments}");
+                Console.WriteLine($"  Working dir: {startInfo.WorkingDirectory}");
+                Console.WriteLine($"  Port: {internalVariables.fePort}");
+                Console.WriteLine("  NOTE: A command window will open. Wait for 'Compiled successfully!'");
+                //Logger.LogInfo($"Starting React dev server on port {internalVariables.fePort}");
+                
+                try
+                {
+                    reactDevServerProc = Process.Start(startInfo);
+                    Console.WriteLine($"React process started with PID: {reactDevServerProc?.Id}");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "Failed to start React dev server");
+                    throw;
+                }
+            }
+
+            // Wait using internal URL (localhost) with progress logging
+            Console.WriteLine($"Waiting for React server to be ready at {internalFeUrl}...");
+            Console.WriteLine("(This can take 30-60 seconds on first run)");
+            var startTime = Environment.TickCount;
+            var timeoutMs = 120000;  // 2 minutes timeout for first compile
+            var pollMs = 2000;
+            
+            while (Environment.TickCount - startTime < timeoutMs)
+            {
+                if (await IsAliveAsync(internalFeUrl))
+                {
+                    internalVariables.feServerStarted = true;
+                    Console.WriteLine($"React FE server is running!");
+                    Console.WriteLine($"External access: {internalVariables.feURL}");
+                    //Logger.LogInfo($"React FE server started - External: {internalVariables.feURL}");
+                    return;
+                }
+                
+                var elapsed = (Environment.TickCount - startTime) / 1000;
+                Console.WriteLine($"  Waiting... ({elapsed}s)");
+                await Task.Delay(pollMs);
+            }
+            
+            // Timeout - log detailed info
+            var errorMessage = $"React server not responding after 120s at {internalFeUrl}";
+            Console.WriteLine($"ERROR: {errorMessage}");
+            Console.WriteLine($"Check the npm window for errors!");
+            Console.WriteLine($"You can also start React manually:");
+            Console.WriteLine($"  cd \"{paths.feReactProjectPath}\"");
+            Console.WriteLine($"  npm start");
+            
+            // Log all details to log file
+            Logger.LogError(errorMessage);
+            Logger.LogError($"React project path: {paths.feReactProjectPath}");
+            Logger.LogError($"Expected URL: {internalFeUrl}");
+            Logger.LogError($"Process PID: {reactDevServerProc?.Id}");
+            Logger.LogError($"Process HasExited: {reactDevServerProc?.HasExited}");
+            //Logger.LogInfo("Hint: Start React manually with: npm start");
+            
+            var err = new TimeoutException(errorMessage);
+            Logger.LogException(err, "EnsureReactDevServerAsync");
+            throw err;
         }
     }
 }

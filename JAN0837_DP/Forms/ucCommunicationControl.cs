@@ -1203,8 +1203,8 @@ namespace JAN0837_DP.Forms
             if (rbtnOPCUA.Checked == true)
             {
                 // OPC UA IP and Port
-                txtBoxPara1.Text = "127.0.0.1";
-                txtBoxPara2.Text = "4840";
+                txtBoxPara1.Text = "192.168.1.251";
+                txtBoxPara2.Text = "4841";
             }
             else if (rbtnMQTT.Checked == true)
             {

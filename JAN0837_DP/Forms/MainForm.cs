@@ -62,6 +62,7 @@ using Newtonsoft.Json.Linq;
 using JAN0837_DP.Forms;
 using JAN0837_DP.Data;
 using JAN0837_DP.Communication;
+using JAN0837_DP.Log;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using JAN0837_DP.ReactFE;
@@ -311,12 +312,12 @@ namespace JAN0837_DP
                 _feServer = new FEserver(_feCommunication);
                 await _feServer.serverStart();
 
-                //PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
-                //PeriodicalReading.Start();
+                SetStatus($"Server started on {internalVariables.LocalIP}:{internalVariables.apiPort}");
             }
             catch (Exception ex)
             {
-                lblStatus.Text = "Error: " + ex.Message;
+                SetStatus("Error: " + ex.Message);
+                Logger.LogException(ex, "Visualization");
             }
         }
 

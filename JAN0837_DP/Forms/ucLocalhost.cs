@@ -24,6 +24,7 @@ using static System.Net.WebRequestMethods;
 using Microsoft.VisualBasic;
 using Microsoft.AspNetCore.Hosting.Server;
 using static JAN0837_DP.Data.TestData;
+using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Forms
 {
@@ -94,7 +95,7 @@ namespace JAN0837_DP.Forms
                 }
                 catch (Exception ex)
                 {
-
+                    Logger.LogException(ex, "Error starting FE or communication service");
                 }
             }
         }

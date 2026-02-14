@@ -47,8 +47,7 @@
             txtBoxPara1 = new TextBox();
             txtBoxPara2 = new TextBox();
             rbtnSharp7 = new RadioButton();
-            listBox1 = new ListBox();
-            btnActualCrossroaddata = new Button();
+            lblEnabledPorts = new Label();
             statusStripCommunicationControl.SuspendLayout();
             SuspendLayout();
             // 
@@ -238,31 +237,20 @@
             rbtnSharp7.UseVisualStyleBackColor = true;
             rbtnSharp7.CheckedChanged += rbtnSharp7_CheckedChanged;
             // 
-            // listBox1
+            // lblEnabledPorts
             // 
-            listBox1.FormattingEnabled = true;
-            listBox1.Location = new Point(158, 186);
-            listBox1.Name = "listBox1";
-            listBox1.ScrollAlwaysVisible = true;
-            listBox1.Size = new Size(282, 224);
-            listBox1.TabIndex = 24;
-            // 
-            // btnActualCrossroaddata
-            // 
-            btnActualCrossroaddata.Location = new Point(158, 148);
-            btnActualCrossroaddata.Name = "btnActualCrossroaddata";
-            btnActualCrossroaddata.Size = new Size(140, 29);
-            btnActualCrossroaddata.TabIndex = 25;
-            btnActualCrossroaddata.Text = "Aktualizovat výpis";
-            btnActualCrossroaddata.UseVisualStyleBackColor = true;
-            btnActualCrossroaddata.Click += btnActualCrossroaddata_Click;
+            lblEnabledPorts.AutoSize = true;
+            lblEnabledPorts.Location = new Point(546, 142);
+            lblEnabledPorts.Name = "lblEnabledPorts";
+            lblEnabledPorts.Size = new Size(50, 20);
+            lblEnabledPorts.TabIndex = 24;
+            lblEnabledPorts.Text = "label1";
             // 
             // ucCommunicationControl
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(btnActualCrossroaddata);
-            Controls.Add(listBox1);
+            Controls.Add(lblEnabledPorts);
             Controls.Add(rbtnSharp7);
             Controls.Add(txtBoxPara2);
             Controls.Add(txtBoxPara1);
@@ -310,7 +298,6 @@
         private TextBox txtBoxPara1;
         private TextBox txtBoxPara2;
         private RadioButton rbtnSharp7;
-        private ListBox listBox1;
-        private Button btnActualCrossroaddata;
+        private Label lblEnabledPorts;
     }
 }

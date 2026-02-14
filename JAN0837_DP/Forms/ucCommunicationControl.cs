@@ -120,6 +120,10 @@ namespace JAN0837_DP.Forms
 
                 lblStatus.Text = "Select communication protocol.";
 
+                lblEnabledPorts.Visible = true;
+                lblEnabledPorts.Enabled = true;
+                lblEnabledPorts.Text = $"Your actual IP: {internalVariables.LocalIP}\n Ports: \n OPCUA: 4840 & 4841 \n MQTT: \n TCP/IP: \n Modbus TCP/IP: \n REST API BE: {internalVariables.apiPort} \n REST API FE: {internalVariables.fePort} \n S7: None \n";
+
                 #endregion
             }
 
@@ -1285,35 +1289,6 @@ namespace JAN0837_DP.Forms
         private void txtBoxPara2_TextChanged(object sender, EventArgs e)
         {
             internalVariables.txtBoxParam2 = txtBoxPara2.Text;
-        }
-
-        private void btnActualCrossroaddata_Click(object sender, EventArgs e)
-        {
-            listBox1.Items.Clear();
-
-            var properties = typeof(CrossroadData).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-
-            foreach (var prop in properties)
-            {
-                try
-                {
-                    var name = prop.Name;
-                    var value = prop.GetValue(null); // null = protože static
-                    listBox1.Items.Add($"{name}: {value}");
-                }
-                catch (Exception ex)
-                {
-                    listBox1.Items.Add($"{prop.Name}: <error reading> ({ex.Message})");
-                }
-            }
-
-            var fields = typeof(CrossroadData).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-            foreach (var field in fields)
-            {
-                var name = field.Name;
-                var value = field.GetValue(null);
-                listBox1.Items.Add($"{name}: {value}");
-            }
         }
     }
 }

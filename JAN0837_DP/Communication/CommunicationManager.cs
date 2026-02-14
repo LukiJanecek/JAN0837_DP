@@ -516,37 +516,7 @@ namespace JAN0837_DP.Communication
 
                             break;
                         case "RESTAPI":
-                            /*
-                            string url = internalVariables.txtBoxParam1;
-
-                            HttpClient client = new HttpClient();
-                            client.BaseAddress = new Uri(url);
-
-                            comRESTAPI.comRESTAPI restAPIClient = new comRESTAPI.comRESTAPI();
-
-                            bool status = await restAPIClient.apiGet(client);
-                            
-                            if (status == true)
-                            {
-                                _ucCommunicationControl.SetStatus($"REST API GET request successful.");
-                            }
-                            else
-                            {
-                                _ucCommunicationControl.SetStatus($"REST API GET request failed.");
-                            }
-
-                            string message = await restAPIClient.apiPost(client);
-
-                            if (!string.IsNullOrEmpty(message))
-                            {
-                                _ucCommunicationControl.SetStatus($"REST API POST request successful. Response: {message}");
-                            }
-                            else
-                            {
-                                _ucCommunicationControl.SetStatus($"REST API POST request failed. Response: {message}");
-                            }
-                            */
-
+                            _ucCommunicationControl.SetStatus($"This communication is already running in the project on http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/");
                             break;
                         case "Sharp7":
                             // choose between these two methods -> please test me

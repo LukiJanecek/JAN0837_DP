@@ -1,7 +1,6 @@
 ﻿using JAN0837_DP.Communication.comModbusTCPIP;
 using JAN0837_DP.Communication.comMQTT;
 using JAN0837_DP.Communication.comOPCUA;
-using JAN0837_DP.Communication.comRESTAPI;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;

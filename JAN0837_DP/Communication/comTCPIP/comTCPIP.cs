@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics.Tracing;
+using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Communication.comTCPIP
 {
@@ -66,6 +67,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Connection failed: {ex.Message}");
+                Logger.LogException(ex, "Failed to connect to PLC");
                 return false;
             }
         }
@@ -90,6 +92,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Disconnection failed: {ex.Message}");
+                Logger.LogException(ex, "Failed to disconnect from PLC");
                 return false;
             }
         }
@@ -106,6 +109,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 // print message
+                Logger.LogException(ex, "Failed to read data from PLC");
                 return null;
             }
         }
@@ -121,6 +125,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 // print message 
+                Logger.LogException(ex, "Failed to write data to PLC");
                 return false;
             }
         }
@@ -144,6 +149,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Receive failed: {ex.Message}");
+                Logger.LogException(ex, "Failed to receive data from PLC");
                 return false;
             }
         }
@@ -162,6 +168,7 @@ namespace JAN0837_DP.Communication.comTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Send failed: {ex.Message}");
+                Logger.LogException(ex, "Failed to send data to PLC");
                 return false;
             }
         }

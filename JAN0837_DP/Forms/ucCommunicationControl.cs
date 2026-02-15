@@ -154,6 +154,7 @@ namespace JAN0837_DP.Forms
                     rbtnSharp7_CheckedChanged(sender, e);
                     break;
                 default:
+                    Logger.LogError($"Unknown communication protocol: {internalVariables.communicationFlag}");
                     break;
             }
 
@@ -918,7 +919,7 @@ namespace JAN0837_DP.Forms
                     default:
                         lblCommunicationStatus.Text = "No communication protocol selected.";
                         lblStatus.Text = "No communication protocol selected.";
-
+                        Logger.LogError($"Start Communication: Unknown communication protocol: {internalVariables.communicationFlag}");
                         break;
                 }
 
@@ -1137,6 +1138,14 @@ namespace JAN0837_DP.Forms
                     }
 
                         break;
+                case "S7":
+                    // 
+                    break;
+                default:
+                    lblCommunicationStatus.Text = "No communication protocol selected.";
+                    lblStatus.Text = "No communication protocol selected.";
+                    Logger.LogError($"Stop Communication: Unknown communication protocol: {internalVariables.communicationFlag}");
+                    break;
             }
 
             // UI 

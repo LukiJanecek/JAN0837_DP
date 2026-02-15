@@ -656,6 +656,7 @@ namespace JAN0837_DP.Communication
                             break;
 
                         default:
+                            Logger.LogError($"Unknown communication type: {internalVariables.communicationFlag}");
                             break;
                     }
 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.IO.Ports;
+using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Communication.comModbusTCPIP
 {
@@ -37,12 +38,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             {
                 tcpClient = new TcpClient(ipAddress, port);
                 master = ModbusIpMaster.CreateIp(tcpClient);
-                Console.WriteLine("Connected to Modbus server.");
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error with connection to Modbus server: {ex.Message}.");
+                Logger.LogException(ex, "Failed to connect to Modbus server");
                 return false;
             }
         }
@@ -56,18 +57,17 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                     tcpClient.Close();
                     tcpClient = null;
                     master = null;
-                    Console.WriteLine("Disconnected from Slave.");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("Modbus client was not connected.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error with disconnection from Slave: {ex.Message}.");
+                Logger.LogException(ex, "Failed to disconnect from Modbus server");
                 return false;
             }
         }
@@ -82,6 +82,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Reading error: {ex.Message}");
+                Logger.LogException(ex, "Failed to read holding registers");
                 return null;
             }
         }
@@ -96,6 +97,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Reading error: {ex.Message}");
+                Logger.LogException(ex, "Failed to read input registers");
                 return null;
             }
         }
@@ -110,6 +112,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Reading error: {ex.Message}");
+                Logger.LogException(ex, "Failed to read coils");
                 return null;
             }
         }
@@ -124,6 +127,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Writting error: {ex.Message}");
+                Logger.LogException(ex, "Failed to write single register");
             }
         }
 
@@ -137,6 +141,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Writting error: {ex.Message}");
+                Logger.LogException(ex, "Failed to write multiple registers");
             }
         }
 
@@ -150,6 +155,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Writting error: {ex.Message}");
+                Logger.LogException(ex, "Failed to write single coil");
             }
         }
 
@@ -163,6 +169,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             catch (Exception ex)
             {
                 Console.WriteLine($"Writting error: {ex.Message}");
+                Logger.LogException(ex, "Failed to write multiple coils");
             }
         }
     }
@@ -194,13 +201,13 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 slave = ModbusTcpSlave.CreateTcp(1, tcpListener); // Slave ID = 1
                 slave.DataStore = Modbus.Data.DataStoreFactory.CreateDefaultDataStore();
 
-                Console.WriteLine("Modbus TCP/IP Slave running/started.");
                 slave.Listen(); // Spustí poslouchání požadavků od Masteru
                 return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Starting server error: {ex.Message}");
+                Logger.LogException(ex, "Failed to start Modbus TCP/IP Slave");
                 return false;
             }
         }
@@ -213,18 +220,17 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 {
                     slave.Dispose();
                     tcpListener.Stop();
-                    Console.WriteLine("Modbus TCP/IP Slave stopped.");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("Modbus TCP/IP Slave was not running.");
                     return false;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Stopping server error: {ex.Message}");
+                Logger.LogException(ex, "Failed to stop Modbus TCP/IP Slave");
                 return false;
             }
         }
@@ -238,6 +244,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             else
             {
                 Console.WriteLine($"Wrong registr address: {address}");
+                Logger.LogError($"Wrong register address: {address}");
             }
         }
 
@@ -250,6 +257,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             else
             {
                 Console.WriteLine($"Wrong registr address: {address}");
+                Logger.LogError($"Wrong register address: {address}");
                 return 0;
             }
         }
@@ -260,9 +268,14 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 
             ushort idx = (ushort)(address + 1); // 1-based
             if (idx < slave.DataStore.CoilDiscretes.Count)
+            {
                 slave.DataStore.CoilDiscretes[idx] = value;
-            else
+            }
+            else 
+            {
                 Console.WriteLine($"Wrong coil address: {address}");
+                Logger.LogError($"Wrong coil address: {address}");
+            }
         }
 
         public void SetCoils(ushort startAddress, bool[] values)
@@ -273,9 +286,14 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             {
                 ushort idx = (ushort)(startAddress + i + 1);
                 if (idx < slave.DataStore.CoilDiscretes.Count)
+                {
                     slave.DataStore.CoilDiscretes[idx] = values[i];
+                }
                 else
+                {
                     Console.WriteLine($"Wrong coil address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong coil address: {(startAddress + i)}");
+                }
             }
         }
 
@@ -289,9 +307,15 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             {
                 ushort idx = (ushort)(startAddress + i + 1);
                 if (idx < slave.DataStore.CoilDiscretes.Count)
+                {
                     result[i] = slave.DataStore.CoilDiscretes[idx];
+                }
+                    
                 else
+                {
                     Console.WriteLine($"Wrong coil address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong coil address: {(startAddress + i)}");
+                }
             }
 
             return result;

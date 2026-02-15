@@ -184,6 +184,7 @@ namespace JAN0837_DP.Forms
                     catch (UnauthorizedAccessException)
                     {
                         // skip roots we can't access
+                        Logger.LogWarning($"Access denied when scanning folder: {root}");
                         continue;
                     }
                 }
@@ -241,6 +242,7 @@ namespace JAN0837_DP.Forms
             catch (Exception ex)
             {
                 lblStatus1.Text = "Error: " + ex.Message;
+                Logger.LogException(ex, "Finding TIA Projects");
             }
         }
 
@@ -462,6 +464,7 @@ namespace JAN0837_DP.Forms
             catch (Exception ex)
             {
                 lblStatus1.Text = "Exception error: " + ex.Message;
+                Logger.LogException(ex, "TIA Start Portal");
                 MessageBox.Show($"Error: {ex.Message}\n\nStack trace:\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -788,6 +791,7 @@ namespace JAN0837_DP.Forms
                     lblStatus1.Text = $"Exception during import: {ex.Message}";
                 }
 
+                Logger.LogException(ex, "Import TIA DLL");
                 MessageBox.Show($"Error: {ex.Message}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -879,14 +883,17 @@ namespace JAN0837_DP.Forms
             catch (UnauthorizedAccessException)
             {
                 lblStatus1.Text = "Access denied when scanning the folder.";
+                Logger.LogWarning($"Access denied when scanning folder: {inputPath}");
             }
             catch (System.IO.PathTooLongException)
             {
                 lblStatus1.Text = "A path encountered while scanning is too long.";
+                Logger.LogException(new System.IO.PathTooLongException($"Path too long when scanning folder: {inputPath}"), "Finding TIA Projects");
             }
             catch (Exception ex)
             {
                 lblStatus1.Text = "Error: " + ex.Message;
+                Logger.LogException(ex, "Finding TIA Projects");
             }
         }
 

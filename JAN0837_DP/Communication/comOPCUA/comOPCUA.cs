@@ -361,6 +361,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                     
                     if (endpointDescription == null)
                     {
+                        Logger.LogError("No endpoint found that supports UserName authentication. Check server configuration.");
                         throw new Exception("No endpoint found that supports UserName authentication. Check server configuration.");
                     }
                 }
@@ -623,6 +624,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 if (results.Count != 1 || StatusCode.IsBad(results[0]))
                 {
                     Console.WriteLine($"Write failed for {nodeId}: 0x{results[0].Code:X8}");
+                    Logger.LogError($"Write failed for {nodeId}: 0x{results[0].Code:X8}");
                     throw new Exception($"Write failed for {nodeId}: {results.FirstOrDefault()}");
                 }
             }
@@ -749,6 +751,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Failed to restart KeepAlive: {ex.Message}");
+                    Logger.LogException(ex, "OPC UA KeepAlive Restart");
                     connected = false;
                     return false;
                 }
@@ -816,6 +819,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
             catch (Exception ex)
             {
+                Logger.LogException(ex, "OPC UA Connect v2");
                 connected = false;
                 clientSession = null;
                 throw new Exception("OPCUA connect failed", ex);
@@ -827,6 +831,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             if (clientSession == null) throw new Exception("Not connected");
 
             var dv = clientSession.ReadValue(NodeId.Parse(nodeId));
+
             return Convert.ToBoolean(dv.Value);
         }
 
@@ -849,7 +854,10 @@ namespace JAN0837_DP.Communication.comOPCUA
             clientSession.Write(null, new WriteValueCollection { wv }, out var results, out _);
 
             if (StatusCode.IsBad(results[0]))
+            {
+                Logger.LogError($"OPCUA Write failed for {nodeId}: 0x{results[0].Code:X8}");
                 throw new Exception($"OPCUA Write failed: {results[0]}");
+            }    
         }
 
         private static object ChangeType(DataValue current, object value)
@@ -922,8 +930,7 @@ namespace JAN0837_DP.Communication.comOPCUA
         private FolderState _crossroadFolder;
         private ushort _namespaceIndex;
 
-        public CrossroadNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration)
-            : base(server, configuration, Namespaces.CrossroadNamespace)
+        public CrossroadNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration) : base(server, configuration, Namespaces.CrossroadNamespace)
         {
             SystemContext.NodeIdFactory = this;
         }
@@ -964,6 +971,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 AddPredefinedNode(SystemContext, _crossroadFolder);
 
                 Console.WriteLine($"Created {_variables.Count} OPC UA variables in namespace index {_namespaceIndex}");
+                Logger.LogInfo($"OPC UA Server address space initialized with {_variables.Count} variables in namespace index {_namespaceIndex}");
             }
         }
 
@@ -1093,17 +1101,12 @@ namespace JAN0837_DP.Communication.comOPCUA
     public static class OpcUaXmlBoot
     {
         // Example: Start client session using XML config (Client.Config.xml)
-        public static async Task<Opc.Ua.Client.Session> StartClientFromXmlAsync(
-            string configPath,
-            string serverUrl,
-            string? username = null,
-            string? password = null,
-            bool autoAcceptUntrusted = true)
+        public static async Task<Opc.Ua.Client.Session> StartClientFromXmlAsync(string configPath, string serverUrl, string? username = null, string? password = null, bool autoAcceptUntrusted = true)
         {
             // Load application configuration from XML file
             var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Client);
 
-            // Optional: auto-accept untrusted certificates (DEV only)
+            // Optional: auto-accept untrusted certificates
             config.CertificateValidator.CertificateValidation += (s, e) =>
             {
                 if (autoAcceptUntrusted) e.Accept = true;
@@ -1117,34 +1120,21 @@ namespace JAN0837_DP.Communication.comOPCUA
             var endpoint = new ConfiguredEndpoint(null, ep, EndpointConfiguration.Create(config));
 
             // Identity (Anonymous or Username/Password)
-            IUserIdentity identity =
-                string.IsNullOrWhiteSpace(username)
-                    ? new UserIdentity(new AnonymousIdentityToken())
-                    : new UserIdentity(new UserNameIdentityToken
-                    {
-                        UserName = username!,
-                        Password = System.Text.Encoding.UTF8.GetBytes(password ?? string.Empty)
-                    });
+            IUserIdentity identity = string.IsNullOrWhiteSpace(username) ? new UserIdentity(new AnonymousIdentityToken()) : new UserIdentity(new UserNameIdentityToken
+            {
+                UserName = username!,
+                Password = System.Text.Encoding.UTF8.GetBytes(password ?? string.Empty)
+            });
 
             //var endpointCollection = new EndpointDescriptionCollection { ep };
 
-            var session = await Opc.Ua.Client.Session.Create(
-                config,
-                endpoint,
-                false,
-                config.ApplicationName ?? "XmlClient",
-                60000,
-                identity,
-                null
-            );
+            var session = await Opc.Ua.Client.Session.Create(config, endpoint, false, config.ApplicationName ?? "XmlClient", 60000, identity, null);
 
             return session;
         }
 
         // Example: Start server using XML config (Server.Config.xml)
-        public static async Task<(ApplicationInstance App, StandardServer Server)> StartServerFromXmlAsync(
-            string configPath,
-            bool autoAcceptUntrusted = true)
+        public static async Task<(ApplicationInstance App, StandardServer Server)> StartServerFromXmlAsync(string configPath, bool autoAcceptUntrusted = true)
         {
             // Load server configuration from XML file
             var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Server);

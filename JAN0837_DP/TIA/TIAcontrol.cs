@@ -1,4 +1,5 @@
 ﻿using JAN0837_DP.Data;
+using JAN0837_DP.Log;
 using MQTTnet.Internal;
 using Siemens.Engineering;
 using Siemens.Engineering.HW;
@@ -120,6 +121,7 @@ namespace JAN0837_DP.TIA
             catch (Exception ex)
             {
                 // could not attach, proceed to open a new instanceq
+                Logger.LogException(ex, "Failed to attach to running TIA Portal instance");
             }
 
             var tia = new TiaPortal(TiaPortalMode.WithUserInterface);
@@ -150,6 +152,7 @@ namespace JAN0837_DP.TIA
             }
             catch
             {
+                Logger.LogError($"Failed to detect TIA version from DLL path: {dllPath}");
                 return null;
             }
         }
@@ -176,6 +179,7 @@ namespace JAN0837_DP.TIA
             }
             catch
             {
+                Logger.LogError($"Failed to get project version from path: {projectPath}");
                 return null;
             }
         }

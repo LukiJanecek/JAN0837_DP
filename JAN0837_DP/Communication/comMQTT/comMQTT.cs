@@ -1,5 +1,6 @@
 ﻿using JAN0837_DP.Data;
 using JAN0837_DP.Forms;
+using JAN0837_DP.Log;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
@@ -139,7 +140,11 @@ namespace JAN0837_DP.Communication.comMQTT
                         if (!mqttClient.IsConnected)
                             await mqttClient.ConnectAsync(options!, cts.Token);
                     }
-                    catch { }
+                    catch 
+                    {
+                        // Connection failed, will retry in next loop
+                        Logger.LogError("Connection failed, retry in next loop.");
+                    }
 
                     await Task.Delay(1000, cts.Token);
                 }
@@ -234,6 +239,7 @@ namespace JAN0837_DP.Communication.comMQTT
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse output JSON");
                 }
             }
         }

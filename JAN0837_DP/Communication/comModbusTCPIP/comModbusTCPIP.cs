@@ -12,7 +12,7 @@ using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Communication.comModbusTCPIP
 {
-    public class ModbusTCPIPimMaster
+    public class ModbusTCPIPimClient
     {
         public string ipAddress;
         public int port;
@@ -20,7 +20,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         public ModbusIpMaster master;
 
         // Konstruktor
-        public ModbusTCPIPimMaster(string ipAddress, int port)
+        public ModbusTCPIPimClient(string ipAddress, int port)
         {
             this.ipAddress = ipAddress;
             this.port = port;
@@ -174,17 +174,18 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         }
     }
 
-    public class ModbusTCPIPimSlave
+    public class ModbusTCPIPimServer
     {
         public TcpListener tcpListener;
         public ModbusSlave slave;
         private ushort[] holdingRegisters = new ushort[10]; // Registr pro uchování dat
 
         // Konstruktor 
-        public ModbusTCPIPimSlave(string ipAddress, int port)
+        public ModbusTCPIPimServer(string ipAddress, int port)
         {
-            IPAddress address = IPAddress.Parse(ipAddress);
-            tcpListener = new TcpListener(address, port);
+            // Bind to IPAddress.Any to listen on all interfaces
+            // The ipAddress parameter is ignored for server mode - servers should listen on all interfaces
+            tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
         public bool StrToBool(string s)
@@ -310,7 +311,6 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 {
                     result[i] = slave.DataStore.CoilDiscretes[idx];
                 }
-                    
                 else
                 {
                     Console.WriteLine($"Wrong coil address: {(startAddress + i)}");

@@ -29,9 +29,10 @@ namespace JAN0837_DP.Forms
     {
         //public comS7 _s7;
         public comSharp7 _sharp7;
-        public comTCPIP _tcpip;
-        public ModbusTCPIPimMaster _modbusMaster;
-        public ModbusTCPIPimSlave _modbusSlave;
+        public comTCPIPClient _tcpipClient;   
+        public comTCPIPServer _tcpipServer;   
+        public ModbusTCPIPimClient _modbusClient;  
+        public ModbusTCPIPimServer _modbusServer;  
         public MQTTBroker _mqttBroker;
         public MQTTClient _mqttClient;
         public opcuaKlient _opcuaClient;
@@ -122,7 +123,7 @@ namespace JAN0837_DP.Forms
 
                 lblEnabledPorts.Visible = true;
                 lblEnabledPorts.Enabled = true;
-                lblEnabledPorts.Text = $"Your actual IP: {internalVariables.LocalIP}\n Ports: \n OPCUA: 4840 & 4841 \n MQTT: \n TCP/IP: \n Modbus TCP/IP: \n REST API BE: {internalVariables.apiPort} \n REST API FE: {internalVariables.fePort} \n S7: None \n";
+                lblEnabledPorts.Text = $"Your actual IP: {internalVariables.LocalIP}\nPorts: \n OPCUA: 4840 and 4841 \n MQTT: 1883\n TCP/IP: 5001\n Modbus TCP/IP: 502\n REST API BE: {internalVariables.apiPort} \n REST API FE: {internalVariables.fePort} \n S7: None \n";
 
                 #endregion
             }
@@ -162,6 +163,8 @@ namespace JAN0837_DP.Forms
             {
                 // UI settings
                 #region UI settings
+
+                // rbtns
                 rbtnOPCUA.Enabled = false;
                 rbtnMQTT.Enabled = false;
                 rbtnTCPIP.Enabled = false;
@@ -204,6 +207,7 @@ namespace JAN0837_DP.Forms
 
             // UI settings 
             #region UI settings 
+
             // btns 
             btnStartCommunicationThread.Visible = true;
             btnStartCommunicationThread.Enabled = true;
@@ -316,15 +320,6 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "TCP/IP selected.";
 
             internalVariables.communicationFlag = "TCPIP";
-            /*
-            internalVariables.opcuaFlag = false;
-            internalVariables.mqttFlag = false;
-            internalVariables.tcpipFlag = true;
-            internalVariables.restapiFlag = false;
-            internalVariables.modbustcpipFlag = false;
-            internalVariables.s7Flag = false;
-            internalVariables.sharp7Flag = false;
-            */
 
             // UI settings 
             #region UI settings 
@@ -349,12 +344,12 @@ namespace JAN0837_DP.Forms
             txtBoxPara1.Enabled = true;
             txtBoxPara1.Text = "Type IP address";
 
-            lblPara2.Visible = false;
-            lblPara2.Enabled = false;
-            lblPara2.Text = "";
-            txtBoxPara2.Visible = false;
-            txtBoxPara2.Enabled = false;
-            txtBoxPara2.Text = "";
+            lblPara2.Visible = true;
+            lblPara2.Enabled = true;
+            lblPara2.Text = "TCP port: ";
+            txtBoxPara2.Visible = true;
+            txtBoxPara2.Enabled = true;
+            txtBoxPara2.Text = "Type TCP port";
 
             // check box
             lblCheckBox.Visible = true;
@@ -733,7 +728,8 @@ namespace JAN0837_DP.Forms
                         
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int opcuaPort))
                         {
-                            opcuaPort = 4840; // default OPC UA port
+                            opcuaPort = 4841; // default OPC UA port
+                            txtBoxPara2.Text = $"{opcuaPort}";
                         }
 
                         if (internalVariables.checkBoxMaster == true)
@@ -754,6 +750,7 @@ namespace JAN0837_DP.Forms
                             else
                             {
                                 lblStatus.Text = $"OPC UA server failed to start.";
+                                Logger.LogError($"OPC UA server failed to start.");
                                 return;
                             }
                         }
@@ -778,6 +775,7 @@ namespace JAN0837_DP.Forms
                             else
                             {
                                 lblStatus.Text = $"OPC UA connection to {opcuaServerUrl} failed.";
+                                Logger.LogError($"OPC UA connection to {opcuaServerUrl} failed.");
                                 return;
                             }
                         }
@@ -793,96 +791,126 @@ namespace JAN0837_DP.Forms
                         lblCommunicationStatus.Text = "TCP/IP communication started.";
                         lblStatus.Text = "TCP/IP communication started.";
 
-                        string ipAddress = internalVariables.txtBoxParam1;
-
-                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int tcpPort))
+                        string tcpipAddress = internalVariables.txtBoxParam1;
+                        
+                        if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int tcpipPort))
                         {
-                            tcpPort = 0; // adjust default port if your comTCPIP expects a specific value
+                            lblStatus.Text = $"Error: TCP/IP port is not a valid number.";
+                            return;
                         }
 
-                        if (_tcpip == null)
+                        if (internalVariables.checkBoxMaster == true)
                         {
-                            _tcpip = new comTCPIP(ipAddress, tcpPort);
+                            // Start a TCP/IP Server
+                            if (_tcpipServer == null)
+                            {
+                                _tcpipServer = new comTCPIPServer(tcpipAddress, tcpipPort);
+                            }
+
+                            bool started = _tcpipServer.Start();
+                            if (!started)
+                            {
+                                lblStatus.Text = $"Error: TCP/IP Server failed to start on {tcpipAddress}:{tcpipPort}.";
+                                Logger.LogError($"TCP/IP Server failed to start on {tcpipAddress}:{tcpipPort}.");
+                                return;
+                            }
+
+                            lblStatus.Text = $"TCP/IP Server started on {tcpipAddress}:{tcpipPort}. Waiting for client connections...";
                         }
-
-                        // connect 
-                        bool connect = _tcpip.Connect();
-
-                        if (connect == true)
+                        else if (internalVariables.checkBoxSlave == true)
                         {
-                            lblStatus.Text = $"TCPIP connected to {ipAddress}.";
+                            // Connect to Master TCP/IP Server
+                            if (_tcpipClient == null)
+                            {
+                                _tcpipClient = new comTCPIPClient(tcpipAddress, tcpipPort);
+                            }
+
+                            bool connect = _tcpipClient.Connect();
+
+                            if (connect == true)
+                            {
+                                lblStatus.Text = $"TCP/IP Client connected to {tcpipAddress}:{tcpipPort}.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"TCP/IP Client connection to {tcpipAddress}:{tcpipPort} failed.";
+                                Logger.LogError($"TCP/IP Client connection to {tcpipAddress}:{tcpipPort} failed.");
+                                return;
+                            }
                         }
                         else
                         {
-                            lblStatus.Text = $"TCPIP connection to {ipAddress} failed.";
-                            return; // break;
+                            lblStatus.Text = $"Error: Please select Master or Slave mode for TCP/IP.";
+                            return;
                         }
 
                         break;
                     case "ModbusTCPIP":
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
-                        lblStatus.Text = "Modbus TCP/IPQTT communication started.";
+                        lblStatus.Text = "Modbus TCP/IP communication started.";
 
                         string ModbusTCPIP_ipaddress = internalVariables.txtBoxParam1;
 
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int ModbusTCPIP_port))
                         {
-                            // error port not valid number 
                             lblStatus.Text = $"Error: Modbus TCP/IP port is not a valid number.";
                             return;
                         }
 
                         if (internalVariables.checkBoxMaster == true)
                         {
-                            // Ensure master instance exists
-                            if (_modbusMaster == null)
+                            // Start a Modbus TCP Server
+                            if (_modbusServer == null)
                             {
-                                _modbusMaster = new ModbusTCPIPimMaster(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                                _modbusServer = new ModbusTCPIPimServer(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
                             }
 
-                            _modbusMaster.ipAddress = ModbusTCPIP_ipaddress;
-                            _modbusMaster.port = ModbusTCPIP_port;
-
-                            bool connectToSlave = _modbusMaster.ConnectToSlave();
-
-                            if (connectToSlave == true)
+                            bool started = _modbusServer.Start();
+                            if (started)
                             {
-                                lblStatus.Text = $"Modbus TCP/IP connected to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                                lblStatus.Text = $"Modbus TCP/IP Server started on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}. Waiting for slave connections...";
                             }
                             else
                             {
-                                lblStatus.Text = $"Modbus TCP/IP connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.";
-                                return; // break;
+                                lblStatus.Text = $"Error: Modbus TCP/IP Server failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                                Logger.LogError($"Error: Modbus TCP/IP Server failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.");
+                                return;
                             }
                         }
                         else if (internalVariables.checkBoxSlave == true)
                         {
-                            // Ensure slave instance exists
-                            if (_modbusSlave == null)
+                            // Connect to Master Modbus TCP Server
+                            if (_modbusClient == null)
                             {
-                                _modbusSlave = new ModbusTCPIPimSlave(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
+                                _modbusClient = new ModbusTCPIPimClient(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
                             }
 
-                            bool started = _modbusSlave.Start();
-                            if (!started)
+                            _modbusClient.ipAddress = ModbusTCPIP_ipaddress;
+                            _modbusClient.port = ModbusTCPIP_port;
+
+                            bool connectToMaster = _modbusClient.ConnectToSlave();
+
+                            if (connectToMaster == true)
                             {
-                                lblStatus.Text = $"Error: Modbus TCP/IP Slave failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                                lblStatus.Text = $"Modbus TCP/IP Client connected to Master at {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
+                            }
+                            else
+                            {
+                                lblStatus.Text = $"Modbus TCP/IP Client connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.";
+                                Logger.LogError($"Modbus TCP/IP Client connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.");
                                 return;
                             }
-
-                            lblStatus.Text = $"Modbus TCP/IP Slave mode started.";
                         }
                         else
                         {
-                            // no checkbox selected
                             lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
-                            return; // break;
+                            return;
                         }
 
                         break;
                     case "RESTAPI":
-                        lblCommunicationStatus.Text = "REST API communication started.";
-                        lblStatus.Text = "REST API communication started.";
+                        lblCommunicationStatus.Text = "REST API communication already running.";
+                        lblStatus.Text = "REST API communication already running.";
 
                         break;
                     case "Sharp7":
@@ -902,6 +930,7 @@ namespace JAN0837_DP.Forms
                             else
                             {
                                 lblStatus.Text = $"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.";
+                                Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
                                 return; // break;
                             }
                         }
@@ -1012,6 +1041,7 @@ namespace JAN0837_DP.Forms
                             else
                             {
                                 lblStatus.Text = "Error stopping OPC UA server.";
+                                Logger.LogError("Error stopping OPC UA server.");
                             }
                         }
                         else
@@ -1032,6 +1062,7 @@ namespace JAN0837_DP.Forms
                             else
                             {
                                 lblStatus.Text = "Error disconnecting OPC UA client.";
+                                Logger.LogError("Error disconnecting OPC UA client.");
                             }
                         }
                         else
@@ -1049,35 +1080,36 @@ namespace JAN0837_DP.Forms
                     lblCommunicationStatus.Text = "OPC UA communication stopped.";
                     lblStatus.Text = "OPC UA communication stopped.";
 
-
                     break;
                 case "ModbusTCPIP":
                     if (internalVariables.checkBoxMaster == true)
                     {
-                        //ModbusTCPIPimMaster modbusClient = new ModbusTCPIPimMaster(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
-                        bool connectedModbusSlave = _modbusMaster.DisconnectFromSlave();
+                        // Stop server
+                        bool stopped = _modbusServer.Stop();
 
-                        if (connectedModbusSlave == true)
+                        if (stopped == true)
                         {
-                            lblStatus.Text = $"Modbus TCP/IP disconnected successfully.";
+                            lblStatus.Text = $"Modbus TCP/IP Server stopped successfully.";
                         }
                         else
                         {
-                            lblStatus.Text = $"Error in Modbus TCP/IP disconnection.";
+                            lblStatus.Text = $"Error in Modbus TCP/IP Server stopping.";
+                            Logger.LogError($"Error in Modbus TCP/IP Server stopping.");
                         }
                     }
                     else if (internalVariables.checkBoxSlave == true)
                     {
-                        //ModbusTCPIPimSlave modbusServer = new ModbusTCPIPimSlave(ModbusTCPIP_ipaddress, ModbusTCPIP_port);
-                        bool connectedModbusServer = _modbusSlave.Stop();
+                        // Disconnect client
+                        bool disconnected = _modbusClient.DisconnectFromSlave();
 
-                        if (connectedModbusServer == true)
+                        if (disconnected == true)
                         {
-                            lblStatus.Text = $"Modbus TCP/IP Slave stopped successfully.";
+                            lblStatus.Text = $"Modbus TCP/IP Client disconnected successfully.";
                         }
                         else
                         {
-                            lblStatus.Text = $"Error in Modbus TCP/IP Slave stopping.";
+                            lblStatus.Text = $"Error in Modbus TCP/IP Client disconnection.";
+                            Logger.LogError($"Error in Modbus TCP/IP Client disconnection.");
                         }
                     }
                     else
@@ -1088,28 +1120,45 @@ namespace JAN0837_DP.Forms
 
                     break;
                 case "TCPIP":
-                    if (_tcpip == null)
+                    if (internalVariables.checkBoxMaster == true)
                     {
-                        lblStatus.Text = "TCP/IP client was not initialized.";
-                        break; // return;
-                    }
+                        // THIS DEVICE IS MASTER: Stop the server
+                        bool stopped = _tcpipServer.Stop();
 
-                    if (_tcpip.socket == null)
-                    {
-                        lblStatus.Text = "TCP/IP socket is null, cannot disconnect.";
-                        break; // return;
-                    }
-                    else
-                    {
-                        bool disconnect = _tcpip.Disconnect();
-                        if (disconnect == true)
+                        if (stopped == true)
                         {
-                            lblStatus.Text = "TCP/IP disconnected successfully.";
+                            lblStatus.Text = "TCP/IP Server stopped successfully.";
                         }
                         else
                         {
-                            lblStatus.Text = "Error in TCP/IP disconnection.";
+                            lblStatus.Text = "Error in TCP/IP Server stopping.";
+                            Logger.LogError("Error in TCP/IP Server stopping.");
                         }
+                    }
+                    else if (internalVariables.checkBoxSlave == true)
+                    {
+                        // THIS DEVICE IS SLAVE: Disconnect the client
+                        if (_tcpipClient == null)
+                        {
+                            lblStatus.Text = "TCP/IP client was not initialized.";
+                            break;
+                        }
+
+                        bool disconnect = _tcpipClient.Disconnect();
+                        if (disconnect == true)
+                        {
+                            lblStatus.Text = "TCP/IP Client disconnected successfully.";
+                        }
+                        else
+                        {
+                            lblStatus.Text = "Error in TCP/IP Client disconnection.";
+                            Logger.LogError("Error in TCP/IP Client disconnection.");
+                        }
+                    }
+                    else
+                    {
+                        lblStatus.Text = $"Error: Please select Master or Slave mode for TCP/IP.";
+                        return;
                     }
 
                     break;
@@ -1130,6 +1179,7 @@ namespace JAN0837_DP.Forms
                         else
                         {
                             lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
+                            Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
                         }
                     }
                     else
@@ -1215,8 +1265,23 @@ namespace JAN0837_DP.Forms
         {
             if (rbtnOPCUA.Checked == true)
             {
-                // OPC UA IP and Port
-                txtBoxPara1.Text = "192.168.1.251";
+                if (internalVariables.checkBoxMaster)
+                {
+                    // OPC UA IP
+                    txtBoxPara1.Text = internalVariables.LocalIP;
+                }
+                else if (internalVariables.checkBoxSlave)
+                {
+                    // OPC UA IP
+                    txtBoxPara1.Text = "192.168.1.251";
+                }
+                else
+                {
+                    // OPC UA IP
+                    txtBoxPara1.Text = "192.168.1.251";
+                }
+                
+                // OPC UA Port
                 txtBoxPara2.Text = "4841";
             }
             else if (rbtnMQTT.Checked == true)
@@ -1228,20 +1293,54 @@ namespace JAN0837_DP.Forms
             }
             else if (rbtnTCPIP.Checked == true)
             {
-                // IP address 
-                txtBoxPara1.Text = "192.168.0.1";
+                // TCP port 
+                txtBoxPara2.Text = "5001";
+
+                if (internalVariables.checkBoxMaster == true)
+                {
+                    // Master = Server
+                    // IP address 
+                    txtBoxPara1.Text = internalVariables.LocalIP;
+                }
+                else if (internalVariables.checkBoxSlave == true)
+                {
+                    // Slave = Client
+                    // IP address 
+                    txtBoxPara1.Text = "192.168.1.251";;
+                }
+                else
+                {
+                    // IP address 
+                    txtBoxPara1.Text = "192.168.1.251";
+                }               
             }
             else if (rbtnModbusTCPIP.Checked == true)
             {
-                // IP address 
-                txtBoxPara1.Text = "";
                 // TCP port
                 txtBoxPara2.Text = "502";
+
+                if (internalVariables.checkBoxMaster == true)
+                {
+                    // Master = Server
+                    // IP address 
+                    txtBoxPara1.Text = internalVariables.LocalIP;
+
+                }
+                else if (internalVariables.checkBoxSlave == true)
+                {
+                    // Slave = Client
+                    // IP address 
+                    txtBoxPara1.Text = "192.168.1.251";
+                }
+                else
+                {
+                    // IP address 
+                    txtBoxPara1.Text = internalVariables.LocalIP;
+                }
             }
             else if (rbtnRESTAPI.Checked == true)
             {
-                // URL 
-                txtBoxPara1.Text = "http://192.168.0.1/api/crossroad";
+                //
             }
             /*
             else if (rbtnS7.Checked == true)
@@ -1253,7 +1352,7 @@ namespace JAN0837_DP.Forms
             else if (rbtnSharp7.Checked == true)
             {
                 // IP address
-                txtBoxPara1.Text = "192.168.0.1";
+                txtBoxPara1.Text = "192.168.1.251";
             }
             else
             {

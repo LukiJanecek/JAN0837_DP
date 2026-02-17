@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
+using JAN0837_DP.Log;
 using Owin;
-using Microsoft.Owin.Cors;
-using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 using Microsoft.Owin.Hosting;
-using Microsoft.Owin.Host.HttpListener;
 using Newtonsoft.Json;
 using JAN0837_DP.Data;
 
@@ -25,8 +18,6 @@ namespace JAN0837_DP.ReactFE
     public class FEserver
     {
         private FEcommunicationControl _feCommunication;
-
-        //private IHost _host;
         private IDisposable _webApp;
 
         public FEserver(FEcommunicationControl control)
@@ -41,19 +32,7 @@ namespace JAN0837_DP.ReactFE
             
             _webApp = WebApp.Start(url, app =>
             {
-                // 1) CORS pro SignalR
-                app.UseCors(CorsOptions.AllowAll);
-
-                // 2) SignalR hub mapping
-                app.Map("/signalr", map =>
-                {
-                    var hubConfig = new HubConfiguration
-                    {
-                        EnableDetailedErrors = true
-                    };
-                    map.RunSignalR(hubConfig);
-                });
-
+                // API middleware for data endpoints
                 app.Use(async (ctx, next) =>
                 {
                     if (ctx.Request.Path.Value.Equals("/api/data", StringComparison.OrdinalIgnoreCase))
@@ -79,20 +58,28 @@ namespace JAN0837_DP.ReactFE
                     await next();
                 });
 
-                // 3) Statické soubory z React build
-                var fileSystem = new PhysicalFileSystem(buildFolderPath);
-                app.UseFileServer(new FileServerOptions
+                // Static files from React build - only if directory exists
+                if (Directory.Exists(buildFolderPath))
                 {
-                    EnableDefaultFiles = true,
-                    FileSystem = fileSystem,
-                    StaticFileOptions = { FileSystem = fileSystem },
-                    DefaultFilesOptions = { DefaultFileNames = new[] { "index.html" } }
-                });
+                    var fileSystem = new PhysicalFileSystem(buildFolderPath);
+                    app.UseFileServer(new FileServerOptions
+                    {
+                        EnableDefaultFiles = true,
+                        FileSystem = fileSystem,
+                        StaticFileOptions = { FileSystem = fileSystem },
+                        DefaultFilesOptions = { DefaultFileNames = new[] { "index.html" } }
+                    });
+                    Console.WriteLine($"Serving static files from: {buildFolderPath}");
+                }
+                else
+                {
+                    Console.WriteLine($"Warning: wwwroot folder not found at {buildFolderPath}. Static files will not be served.");
+                    Logger.LogWarning($"wwwroot folder not found at {buildFolderPath}. Static files will not be served.");
+                }
             });
 
             Console.WriteLine($"FE server running on {url}");
             Console.WriteLine($"Accessible at: http://{internalVariables.LocalIP}:{internalVariables.apiPort}");
-            Console.WriteLine($"Serving: {buildFolderPath}");
             internalVariables.communicationServerStarted = true;
             return Task.CompletedTask;
         }
@@ -101,7 +88,6 @@ namespace JAN0837_DP.ReactFE
         {
             _webApp?.Dispose();
             Console.WriteLine("FE server stopped.");
-            //internalVariables.communicationServerStarted = false;
             internalVariables.feServerStarted = false;
             return Task.CompletedTask;
         }

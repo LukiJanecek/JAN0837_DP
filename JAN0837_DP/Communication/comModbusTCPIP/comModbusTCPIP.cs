@@ -267,7 +267,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             if (slave?.DataStore?.CoilDiscretes == null) return;
 
-            ushort idx = (ushort)(address + 1); // 1-based
+            ushort idx = (ushort)(address ); // 0-based
             if (idx < slave.DataStore.CoilDiscretes.Count)
             {
                 slave.DataStore.CoilDiscretes[idx] = value;
@@ -285,7 +285,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 
             for (int i = 0; i < values.Length; i++)
             {
-                ushort idx = (ushort)(startAddress + i + 1);
+                ushort idx = (ushort)(startAddress + i); // 0-based
                 if (idx < slave.DataStore.CoilDiscretes.Count)
                 {
                     slave.DataStore.CoilDiscretes[idx] = values[i];

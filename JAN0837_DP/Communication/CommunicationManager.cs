@@ -297,13 +297,11 @@ namespace JAN0837_DP.Communication
                             }
 
                             break;
-                        case "ModbusTCPIP":
-                            var _modbusClient = _ucCommunicationControl._modbusClient;
-                            var _modbusServer = _ucCommunicationControl._modbusServer;
-                            byte slaveId = 1;
-
+                        case "ModbusTCPIP":                 
                             if (internalVariables.checkBoxMaster == true)
                             {
+                                var _modbusServer = _ucCommunicationControl._modbusServer;
+
                                 // Master (Server) mode
                                 if (_modbusServer == null || _modbusServer.slave == null)
                                 {
@@ -314,33 +312,34 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    // Read button values that slaves wrote to our coils (coils 0-5)
-                                    bool[] masterButtons = _modbusServer.GetCoils(0, 6);
-                                    if (masterButtons != null && masterButtons.Length >= 6)
+                                    // Write button values to our coils (coils 0-5) so slaves can read them
+                                    bool[] masterButtons = new bool[6]
                                     {
-                                        CrossroadData.crossroadType = _modbusServer.BoolToStr(masterButtons[0]);
-                                        CrossroadData.btnCrossroadStart = _modbusServer.BoolToStr(masterButtons[1]);
-                                        CrossroadData.btnCrossroadPause = _modbusServer.BoolToStr(masterButtons[2]);
-                                        CrossroadData.btnCrossroadStop = _modbusServer.BoolToStr(masterButtons[3]);
-                                        CrossroadData.btnCrosswalk1 = _modbusServer.BoolToStr(masterButtons[4]);
-                                        CrossroadData.btnCrosswalk2 = _modbusServer.BoolToStr(masterButtons[5]);
+                                        _modbusServer.StrToBool(CrossroadData.crossroadType),
+                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadStart),
+                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadPause),
+                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadStop),
+                                        _modbusServer.StrToBool(CrossroadData.btnCrosswalk1),
+                                        _modbusServer.StrToBool(CrossroadData.btnCrosswalk2)
+                                    };
+                                    _modbusServer.SetCoils(1, masterButtons);
+
+                                    // Read light values that slaves wrote to our coils (coils 10-19)
+                                    bool[] masterLights = _modbusServer.GetCoils(10, 10);
+                                    if (masterLights != null && masterLights.Length >= 10)
+                                    {
+                                        CrossroadData.trafficLight1_green = _modbusServer.BoolToStr(masterLights[0]);
+                                        CrossroadData.trafficLight1_yellow = _modbusServer.BoolToStr(masterLights[1]);
+                                        CrossroadData.trafficLight1_red = _modbusServer.BoolToStr(masterLights[2]);
+                                        CrossroadData.trafficLight2_green = _modbusServer.BoolToStr(masterLights[3]);
+                                        CrossroadData.trafficLight2_yellow = _modbusServer.BoolToStr(masterLights[4]);
+                                        CrossroadData.trafficLight2_red = _modbusServer.BoolToStr(masterLights[5]);
+                                        CrossroadData.pedestrian1_green = _modbusServer.BoolToStr(masterLights[6]);
+                                        CrossroadData.pedestrian1_red = _modbusServer.BoolToStr(masterLights[7]);
+                                        CrossroadData.pedestrian2_green = _modbusServer.BoolToStr(masterLights[8]);
+                                        CrossroadData.pedestrian2_red = _modbusServer.BoolToStr(masterLights[9]);
                                     }
 
-                                    // Write light values to our coils (coils 10-19) so slaves can read them
-                                    bool[] masterLights = new bool[10]
-                                    {
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight1_green),
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight1_yellow),
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight1_red),
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight2_green),
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight2_yellow),
-                                        _modbusServer.StrToBool(CrossroadData.trafficLight2_red),
-                                        _modbusServer.StrToBool(CrossroadData.pedestrian1_green),
-                                        _modbusServer.StrToBool(CrossroadData.pedestrian1_red),
-                                        _modbusServer.StrToBool(CrossroadData.pedestrian2_green),
-                                        _modbusServer.StrToBool(CrossroadData.pedestrian2_red)
-                                    };
-                                    _modbusServer.SetCoils(10, masterLights);
                                     _ucCommunicationControl.SetStatus("Modbus Server: Data ready for slaves");
                                 }
                                 catch (Exception ex)
@@ -353,6 +352,8 @@ namespace JAN0837_DP.Communication
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
+                                var _modbusClient = _ucCommunicationControl._modbusClient;
+
                                 // Slave mode: We are CLIENT connecting to Master server
                                 if (_modbusClient == null || _modbusClient.master == null)
                                 {
@@ -364,7 +365,7 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    // write button values to Master (coils 0-5)
+                                    // write button values to Master (coils 0-5) 
                                     bool[] buttonCoils = new bool[6]
                                     {
                                         _modbusClient.StrToBool(CrossroadData.crossroadType),
@@ -374,7 +375,9 @@ namespace JAN0837_DP.Communication
                                         _modbusClient.StrToBool(CrossroadData.btnCrosswalk1),
                                         _modbusClient.StrToBool(CrossroadData.btnCrosswalk2)
                                     };
-                                    _modbusClient.WriteMultipleCoils(slaveId, 0, buttonCoils);
+
+                                    byte slaveId = 1;
+                                    _modbusClient.WriteMultipleCoils(slaveId, 1, buttonCoils);
 
                                     // read light values from Master (coils 10-19)
                                     bool[] lights = _modbusClient.ReadCoils(slaveId, 10, 10);

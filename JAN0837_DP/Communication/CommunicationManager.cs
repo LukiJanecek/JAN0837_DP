@@ -313,9 +313,8 @@ namespace JAN0837_DP.Communication
                                 try
                                 {
                                     // Write button values to our coils (coils 0-5) so slaves can read them
-                                    bool[] masterButtons = new bool[6]
+                                    bool[] masterButtons = new bool[5]
                                     {
-                                        _modbusServer.StrToBool(CrossroadData.crossroadType),
                                         _modbusServer.StrToBool(CrossroadData.btnCrossroadStart),
                                         _modbusServer.StrToBool(CrossroadData.btnCrossroadPause),
                                         _modbusServer.StrToBool(CrossroadData.btnCrossroadStop),
@@ -328,16 +327,17 @@ namespace JAN0837_DP.Communication
                                     bool[] masterLights = _modbusServer.GetCoils(10, 10);
                                     if (masterLights != null && masterLights.Length >= 10)
                                     {
-                                        CrossroadData.trafficLight1_green = _modbusServer.BoolToStr(masterLights[0]);
-                                        CrossroadData.trafficLight1_yellow = _modbusServer.BoolToStr(masterLights[1]);
-                                        CrossroadData.trafficLight1_red = _modbusServer.BoolToStr(masterLights[2]);
-                                        CrossroadData.trafficLight2_green = _modbusServer.BoolToStr(masterLights[3]);
-                                        CrossroadData.trafficLight2_yellow = _modbusServer.BoolToStr(masterLights[4]);
-                                        CrossroadData.trafficLight2_red = _modbusServer.BoolToStr(masterLights[5]);
-                                        CrossroadData.pedestrian1_green = _modbusServer.BoolToStr(masterLights[6]);
-                                        CrossroadData.pedestrian1_red = _modbusServer.BoolToStr(masterLights[7]);
-                                        CrossroadData.pedestrian2_green = _modbusServer.BoolToStr(masterLights[8]);
-                                        CrossroadData.pedestrian2_red = _modbusServer.BoolToStr(masterLights[9]);
+                                        CrossroadData.crossroadType = _modbusServer.BoolToStr(masterLights[0]);
+                                        CrossroadData.trafficLight1_green = _modbusServer.BoolToStr(masterLights[1]);
+                                        CrossroadData.trafficLight1_yellow = _modbusServer.BoolToStr(masterLights[2]);
+                                        CrossroadData.trafficLight1_red = _modbusServer.BoolToStr(masterLights[3]);
+                                        CrossroadData.trafficLight2_green = _modbusServer.BoolToStr(masterLights[4]);
+                                        CrossroadData.trafficLight2_yellow = _modbusServer.BoolToStr(masterLights[5]);
+                                        CrossroadData.trafficLight2_red = _modbusServer.BoolToStr(masterLights[6]);
+                                        CrossroadData.pedestrian1_green = _modbusServer.BoolToStr(masterLights[7]);
+                                        CrossroadData.pedestrian1_red = _modbusServer.BoolToStr(masterLights[8]);
+                                        CrossroadData.pedestrian2_green = _modbusServer.BoolToStr(masterLights[9]);
+                                        CrossroadData.pedestrian2_red = _modbusServer.BoolToStr(masterLights[10]);
                                     }
 
                                     _ucCommunicationControl.SetStatus("Modbus Server: Data ready for slaves");
@@ -366,9 +366,8 @@ namespace JAN0837_DP.Communication
                                 try
                                 {
                                     // write button values to Master (coils 0-5) 
-                                    bool[] buttonCoils = new bool[6]
+                                    bool[] buttonCoils = new bool[5]
                                     {
-                                        _modbusClient.StrToBool(CrossroadData.crossroadType),
                                         _modbusClient.StrToBool(CrossroadData.btnCrossroadStart),
                                         _modbusClient.StrToBool(CrossroadData.btnCrossroadPause),
                                         _modbusClient.StrToBool(CrossroadData.btnCrossroadStop),
@@ -383,16 +382,17 @@ namespace JAN0837_DP.Communication
                                     bool[] lights = _modbusClient.ReadCoils(slaveId, 10, 10);
                                     if (lights != null && lights.Length >= 10)
                                     {
-                                        CrossroadData.trafficLight1_green = _modbusClient.BoolToStr(lights[0]);
-                                        CrossroadData.trafficLight1_yellow = _modbusClient.BoolToStr(lights[1]);
-                                        CrossroadData.trafficLight1_red = _modbusClient.BoolToStr(lights[2]);
-                                        CrossroadData.trafficLight2_green = _modbusClient.BoolToStr(lights[3]);
-                                        CrossroadData.trafficLight2_yellow = _modbusClient.BoolToStr(lights[4]);
-                                        CrossroadData.trafficLight2_red = _modbusClient.BoolToStr(lights[5]);
-                                        CrossroadData.pedestrian1_green = _modbusClient.BoolToStr(lights[6]);
-                                        CrossroadData.pedestrian1_red = _modbusClient.BoolToStr(lights[7]);
-                                        CrossroadData.pedestrian2_green = _modbusClient.BoolToStr(lights[8]);
-                                        CrossroadData.pedestrian2_red = _modbusClient.BoolToStr(lights[9]);
+                                        CrossroadData.crossroadType = _modbusClient.BoolToStr(lights[0]);
+                                        CrossroadData.trafficLight1_green = _modbusClient.BoolToStr(lights[1]);
+                                        CrossroadData.trafficLight1_yellow = _modbusClient.BoolToStr(lights[2]);
+                                        CrossroadData.trafficLight1_red = _modbusClient.BoolToStr(lights[3]);
+                                        CrossroadData.trafficLight2_green = _modbusClient.BoolToStr(lights[4]);
+                                        CrossroadData.trafficLight2_yellow = _modbusClient.BoolToStr(lights[5]);
+                                        CrossroadData.trafficLight2_red = _modbusClient.BoolToStr(lights[6]);
+                                        CrossroadData.pedestrian1_green = _modbusClient.BoolToStr(lights[7]);
+                                        CrossroadData.pedestrian1_red = _modbusClient.BoolToStr(lights[8]);
+                                        CrossroadData.pedestrian2_green = _modbusClient.BoolToStr(lights[9]);
+                                        CrossroadData.pedestrian2_red = _modbusClient.BoolToStr(lights[10]);
                                         _ucCommunicationControl.SetStatus("Modbus Client: Data synchronized");
                                     }
                                     else

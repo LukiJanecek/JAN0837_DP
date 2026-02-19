@@ -76,7 +76,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected.");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to read holding registers when Modbus is not connected");
+                    throw new Exception("Modbus is not connected.");
+                }
                 return master.ReadHoldingRegisters(slaveId, startAddress, numRegisters);
             }
             catch (Exception ex)
@@ -91,7 +95,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to read input registers when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 return master.ReadInputRegisters(slaveId, startAddress, numRegisters);
             }
             catch (Exception ex)
@@ -106,7 +114,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to read coils when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 return master.ReadCoils(slaveId, startAddress, numCoils);
             }
             catch (Exception ex)
@@ -121,7 +133,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to write single register when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 master.WriteSingleRegister(slaveId, address, value);
             }
             catch (Exception ex)
@@ -135,7 +151,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to write registers when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 master.WriteMultipleRegisters(slaveId, startAddress, values);
             }
             catch (Exception ex)
@@ -149,7 +169,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to write single coil when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 master.WriteSingleCoil(slaveId, address, value);
             }
             catch (Exception ex)
@@ -163,7 +187,11 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null) throw new Exception("Modbus is not connected!");
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to write coils when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
                 master.WriteMultipleCoils(slaveId, startAddress, values);
             }
             catch (Exception ex)

@@ -11,6 +11,10 @@ import SideNavigationBar from './Pages/SideNavigationBar.js';
 import MainPage from './Pages/MainPage.js';
 import CrossroadPage from './Pages/CrossroadPage.js';
 import CommunicationPage from './Pages/CommunicationPage.js';
+import CrosswalkPage from './Pages/CrosswalkPage.js';
+import RegulatorPage from './Pages/RegulatorPage.js';
+import CarWashPage from './Pages/CarWashPage.js';
+import WashingMachinePage from './Pages/WashingMachinePage.js';
 
 function App() {
   const [aside, setAside] = useState(null);
@@ -35,10 +39,14 @@ function App() {
     
       <main className="app__main stack">
         <Routes>
-          <Route path="/" element={<Navigate to="/mainpage" replace />} />
-          <Route path="/mainpage" element={<MainPage setAside={setAside} />} />
-          <Route path="/crossroad" element={<CrossroadPage setAside={setAside} />} />
+          <Route path="/" element={<Navigate to="/communication" replace />} />
+          {/*<Route path="/mainpage" element={<MainPage setAside={setAside} />} />*/}
           <Route path="/communication" element={<CommunicationPage setAside={setAside} />} />
+          <Route path="/crossroad" element={<CrossroadPage setAside={setAside} />} />
+          <Route path="/crosswalk" element={<CrosswalkPage setAside={setAside} />} />
+          <Route path="/regulator" element={<RegulatorPage setAside={setAside} />} />
+          <Route path="/carwash" element={<CarWashPage setAside={setAside} />} />
+          <Route path="/washingmachine" element={<WashingMachinePage setAside={setAside} />} />
         </Routes>
       </main>
 

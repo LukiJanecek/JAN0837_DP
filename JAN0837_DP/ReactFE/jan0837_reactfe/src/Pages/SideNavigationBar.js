@@ -17,14 +17,28 @@ function SideNavigationBar() {
   return (
     <>
       <Nav className="nav_text">
+        {/*}
         <Nav.Link as={NavLink} to="/mainpage">
           Main Page
+        </Nav.Link>
+        */}
+        <Nav.Link as={NavLink} to="/communication">
+           Communication
         </Nav.Link>
         <Nav.Link as={NavLink} to="/crossroad">
            Crossroad
         </Nav.Link>
-        <Nav.Link as={NavLink} to="/communication">
-           Communication
+        <Nav.Link as={NavLink} to="/crosswalk">
+           Crosswalk
+        </Nav.Link>
+        <Nav.Link as={NavLink} to="/washingmachine">
+           Washing Machine
+        </Nav.Link>
+        <Nav.Link as={NavLink} to="/carwash">
+           Car Wash
+        </Nav.Link>
+        <Nav.Link as={NavLink} to="/regulator">
+           Regulator
         </Nav.Link>
       </Nav>
 

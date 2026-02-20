@@ -37,6 +37,56 @@ Crossroad_Output_UDT_FIELDS = [
     ("pedestrianLightRed2", "Bool", "FALSE")
 ]
 
+Crosswalk_Input_UDT_NAME = "Crosswalk_Input"
+
+Crosswalk_Input_UDT_FIELDS = [
+    ("btnStart", "Bool", "FALSE"),
+    ("btnPause", "Bool", "FALSE"),
+    ("btnStop", "Bool", "FALSE"),
+    ("btnCrosswalk1", "Bool", "FALSE"),
+    ("btnCrosswalk2", "Bool", "FALSE")
+]
+
+Crosswalk_Output_UDT_NAME = "Crosswalk_Output"
+
+Crosswalk_Output_UDT_FIELDS = [
+    ("crosswalkType", "Bool", "FALSE"),
+    ("trafficLightGreen1", "Bool", "FALSE"),
+    ("trafficLightsYellow1", "Bool", "FALSE"),
+    ("trafficLightsRed1", "Bool", "FALSE"),
+    ("trafficLightGreen2", "Bool", "FALSE"),
+    ("trafficLightsYellow2", "Bool", "FALSE"),
+    ("trafficLightsRed2", "Bool", "FALSE"),
+    ("pedestrianLightGreen1", "Bool", "FALSE"),
+    ("pedestrianLightRed1", "Bool", "FALSE"),
+    ("pedestrianLightGreen2", "Bool", "FALSE"),
+    ("pedestrianLightRed2", "Bool", "FALSE")
+]
+
+CarWash_Input_UDT_NAME = "CarWash_Input"
+
+CarWash_Input_UDT_FIELDS = []
+
+CarWash_Output_UDT_NAME = "CarWash_Output"
+
+CarWash_Output_UDT_FIELDS = []
+
+WashingMachine_Input_UDT_NAME = "WashingMachine_Input"
+
+WashingMachine_Input_UDT_FIELDS = []
+
+WashingMachine_Output_UDT_NAME = "WashingMachine_Output"
+
+WashingMachine_Output_UDT_FIELDS = []
+
+Regulator_Input_UDT_NAME = "Regulator_Input"
+
+Regulator_Input_UDT_FIELDS = []
+
+Regulator_Output_UDT_NAME = "Regulator_Output"
+
+Regulator_Output_UDT_FIELDS = []
+
 DEFAULT_DB_NAME = "DB_ProcessData"
 DEFAULT_DB_OPTIMIZED = True
 

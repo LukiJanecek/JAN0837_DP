@@ -278,7 +278,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
   return (
     <div>
-      <h3>Parametry:</h3>
+      <h3>Parameters:</h3>
       {/*
       <div className="gap-2 mb-2">
         <div className="text-muted small text-center">

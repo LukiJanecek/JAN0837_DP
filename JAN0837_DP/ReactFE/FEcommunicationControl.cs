@@ -317,6 +317,111 @@ namespace JAN0837_DP.ReactFE
             });
         }
 
+        private static void ApplyCrosswalkUpdate(string key, string value)
+        {
+            CrosswalkData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "crosswalkType": CrosswalkData.crosswalkType = value; break;
+                    case "btnCrosswalkStart": CrosswalkData.btnCrosswalkStart = value; break;
+                    case "btnCrosswalkPause": CrosswalkData.btnCrosswalkPause = value; break;
+                    case "btnCrosswalkStop": CrosswalkData.btnCrosswalkStop = value; break;
+                    case "btnCrosswalk1_crosswalk": CrosswalkData.btnCrosswalk1 = value; break;
+                    case "btnCrosswalk2_crosswalk": CrosswalkData.btnCrosswalk2 = value; break;
+                    case "trafficLight1_green_crosswalk": CrosswalkData.trafficLight1_green = value; break;
+                    case "trafficLight1_yellow_crosswalk": CrosswalkData.trafficLight1_yellow = value; break;
+                    case "trafficLight1_red_crosswalk": CrosswalkData.trafficLight1_red = value; break;
+                    case "trafficLight2_green_crosswalk": CrosswalkData.trafficLight2_green = value; break;
+                    case "trafficLight2_yellow_crosswalk": CrosswalkData.trafficLight2_yellow = value; break;
+                    case "trafficLight2_red_crosswalk": CrosswalkData.trafficLight2_red = value; break;
+                    case "pedestrian1_green_crosswalk": CrosswalkData.pedestrian1_green = value; break;
+                    case "pedestrian1_red_crosswalk": CrosswalkData.pedestrian1_red = value; break;
+                    case "pedestrian2_green_crosswalk": CrosswalkData.pedestrian2_green = value; break;
+                    case "pedestrian2_red_crosswalk": CrosswalkData.pedestrian2_red = value; break;
+                }
+            });
+        }
+
+        private static void ApplyRegulatorUpdate(string key, string value)
+        {
+            RegulatorData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "btnStart_regulator": RegulatorData.btnStart = value; break;
+                    case "R": RegulatorData.R = value; break;
+                    case "C": RegulatorData.C = value; break;
+                    case "U": RegulatorData.U = value; break;
+                    case "I": RegulatorData.I = value; break;
+                }
+            });
+        }
+
+        private static void ApplyCarWashUpdate(string key, string value)
+        {
+            CarWashData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "btnCarWashEmergencyStop": CarWashData.btnCarWashEmergencyStop = value; break;
+                    case "btnStartCarWash": CarWashData.btnStartCarWash = value; break;
+                    case "btnStopCarWash": CarWashData.btnStopCarWash = value; break;
+                    case "CarWashErrorSystem": CarWashData.CarWashErrorSystem = value; break;
+                    case "CarWashCarPosition": CarWashData.CarWashCarPosition = value; break;
+                    case "CarWashShowerPosition": CarWashData.CarWashShowerPosition = value; break;
+                    case "CarWashMode": CarWashData.CarWashMode = value; break;
+                    case "CarWashLight_green": CarWashData.CarWashLight_green = value; break;
+                    case "CarWashLight_yellow": CarWashData.CarWashLight_yellow = value; break;
+                    case "CarWashLight_red": CarWashData.CarWashLight_red = value; break;
+                    case "CarWashDoor1_Up": CarWashData.CarWashDoor1_Up = value; break;
+                    case "CarWashDoor1_Down": CarWashData.CarWashDoor1_Down = value; break;
+                    case "CarWashDoor2_Up": CarWashData.CarWashDoor2_Up = value; break;
+                    case "CarWashDoor2_Down": CarWashData.CarWashDoor2_Down = value; break;
+                    case "CarWashChemicalsFront": CarWashData.CarWashChemicalsFront = value; break;
+                    case "CarWashChemicalsSides": CarWashData.CarWashChemicalsSides = value; break;
+                    case "CarWashChemicalsBack": CarWashData.CarWashChemicalsBack = value; break;
+                    case "CarWashPrewash": CarWashData.CarWashPrewash = value; break;
+                    case "CarWashWater": CarWashData.CarWashWater = value; break;
+                    case "CarWashWax": CarWashData.CarWashWax = value; break;
+                    case "CarWashDry": CarWashData.CarWashDry = value; break;
+                    case "CarWashBrushes": CarWashData.CarWashBrushes = value; break;
+                    case "CarWashSoap": CarWashData.CarWashSoap = value; break;
+                    case "CarWashActiveFoam": CarWashData.CarWashActiveFoam = value; break;
+                    case "CarWashTimeDoorMovement": CarWashData.CarWashTimeDoorMovement = value; break;
+                    case "CarWashMEMDoor": CarWashData.CarWashMEMDoor = value; break;
+                    case "CarWashMEMDoorTrig": CarWashData.CarWashMEMDoorTrig = value; break;
+                    case "CarWashMEMDoorClosingtrig": CarWashData.CarWashMEMDoorClosingtrig = value; break;
+                }
+            });
+        }
+
+        private static void ApplyWashingMachineUpdate(string key, string value)
+        {
+            WashingMachineData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "btnWashingMachineEmergencyStop": WashingMachineData.btnWashingMachineEmergencyStop = value; break;
+                    case "btnStartWashingMachine": WashingMachineData.btnStartWashingMachine = value; break;
+                    case "btnStopWashingMachine": WashingMachineData.btnStopWashingMachine = value; break;
+                    case "WashingMachineErrorSystem": WashingMachineData.WashingMachineErrorSystem = value; break;
+                    case "WashingMachineMode": WashingMachineData.WashingMachineMode = value; break;
+                    case "WashingMachineLight_green": WashingMachineData.WashingMachineLight_green = value; break;
+                    case "WashingMachineLight_yellow": WashingMachineData.WashingMachineLight_yellow = value; break;
+                    case "WashingMachineLight_red": WashingMachineData.WashingMachineLight_red = value; break;
+                    case "WashingMachineDoorClosed": WashingMachineData.WashingMachineDoorClosed = value; break;
+                    case "WashingMachineChemicals": WashingMachineData.WashingMachineChemicals = value; break;
+                    case "WashingMachinePrewash": WashingMachineData.WashingMachinePrewash = value; break;
+                    case "WashingMachineWater": WashingMachineData.WashingMachineWater = value; break;
+                    case "WashingMachineDry": WashingMachineData.WashingMachineDry = value; break;
+                    case "WashingMachineBrushes": WashingMachineData.WashingMachineBrushes = value; break;
+                    case "WashingMachineSoap": WashingMachineData.WashingMachineSoap = value; break;
+                    case "WashingMachineActiveFoam": WashingMachineData.WashingMachineActiveFoam = value; break;
+                }
+            });
+        }
+
         public async Task HandleAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -411,6 +516,10 @@ namespace JAN0837_DP.ReactFE
                 {
                     var testdata = TestData.AppState.Get();
                     var crossroaddata = CrossroadData.Get();
+                    var crosswalkdata = CrosswalkData.Get();
+                    var regulatordata = RegulatorData.Get();
+                    var carwashdata = CarWashData.Get();
+                    var washingmachinedata = WashingMachineData.Get();
 
                     WriteJSON(resp, new
                     {
@@ -435,7 +544,80 @@ namespace JAN0837_DP.ReactFE
                         pedestrian1_green = crossroaddata.pedestrian1_green,
                         pedestrian1_red = crossroaddata.pedestrian1_red,
                         pedestrian2_green = crossroaddata.pedestrian2_green,
-                        pedestrian2_red = crossroaddata.pedestrian2_red
+                        pedestrian2_red = crossroaddata.pedestrian2_red,
+
+                        // CrosswalkData
+                        crosswalkType = crosswalkdata.crosswalkType,
+                        btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
+                        btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
+                        btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
+                        btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
+                        btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
+                        trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
+                        trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
+                        trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
+                        trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
+                        trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
+                        trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
+                        pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
+                        pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
+                        pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
+                        pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red,
+
+                        // RegulatorData
+                        btnStart_regulator = regulatordata.btnStart,
+                        R = regulatordata.R,
+                        C = regulatordata.C,
+                        U = regulatordata.U,
+                        I = regulatordata.I,
+
+                        // CarWashData
+                        btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
+                        btnStartCarWash = carwashdata.btnStartCarWash,
+                        btnStopCarWash = carwashdata.btnStopCarWash,
+                        CarWashErrorSystem = carwashdata.CarWashErrorSystem,
+                        CarWashCarPosition = carwashdata.CarWashCarPosition,
+                        CarWashShowerPosition = carwashdata.CarWashShowerPosition,
+                        CarWashMode = carwashdata.CarWashMode,
+                        CarWashLight_green = carwashdata.CarWashLight_green,
+                        CarWashLight_yellow = carwashdata.CarWashLight_yellow,
+                        CarWashLight_red = carwashdata.CarWashLight_red,
+                        CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
+                        CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
+                        CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
+                        CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
+                        CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
+                        CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
+                        CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
+                        CarWashPrewash = carwashdata.CarWashPrewash,
+                        CarWashWater = carwashdata.CarWashWater,
+                        CarWashWax = carwashdata.CarWashWax,
+                        CarWashDry = carwashdata.CarWashDry,
+                        CarWashBrushes = carwashdata.CarWashBrushes,
+                        CarWashSoap = carwashdata.CarWashSoap,
+                        CarWashActiveFoam = carwashdata.CarWashActiveFoam,
+                        CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
+                        CarWashMEMDoor = carwashdata.CarWashMEMDoor,
+                        CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
+                        CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig,
+
+                        // WashingMachineData
+                        btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
+                        btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
+                        btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
+                        WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
+                        WashingMachineMode = washingmachinedata.WashingMachineMode,
+                        WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
+                        WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
+                        WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
+                        WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
+                        WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
+                        WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
+                        WashingMachineWater = washingmachinedata.WashingMachineWater,
+                        WashingMachineDry = washingmachinedata.WashingMachineDry,
+                        WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
+                        WashingMachineSoap = washingmachinedata.WashingMachineSoap,
+                        WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
                     });
                     return;
                 }
@@ -466,59 +648,43 @@ namespace JAN0837_DP.ReactFE
 
                     TestData.AppState.Set(testdata);
 
-                    // CrossroadData
+                    // Apply updates to all data classes
                     foreach (var kv in updates)
                     {
-                        switch (kv.Key)
+                        var key = kv.Key;
+                        var value = kv.Value ?? "";
+
+                        // CrossroadData
+                        if (key == "crossroadType" || key.StartsWith("btnCrossroad") || key.StartsWith("btnCrosswalk") ||
+                            key.StartsWith("trafficLight") && !key.Contains("crosswalk") || 
+                            key.StartsWith("pedestrian") && !key.Contains("crosswalk"))
                         {
-                            case "crossroadType":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "btnCrossroadStart":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "btnCrossroadPause":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "btnCrossroadStop":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "btnCrosswalk1":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "btnCrosswalk2":   
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight1_green":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight1_yellow":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight1_red":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight2_green":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight2_yellow":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "trafficLight2_red":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "pedestrian1_green":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "pedestrian1_red":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "pedestrian2_green":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
-                            case "pedestrian2_red":
-                                ApplyCrossroadUpdate(kv.Key, kv.Value ?? "");
-                                break;
+                            ApplyCrossroadUpdate(key, value);
+                        }
+                        // CrosswalkData (has suffix to avoid collision with CrossroadData)
+                        else if (key == "crosswalkType" || key.StartsWith("btnCrosswalk") && key.Contains("crosswalk") ||
+                                 key.Contains("_crosswalk"))
+                        {
+                            ApplyCrosswalkUpdate(key, value);
+                        }
+                        // RegulatorData
+                        else if (key == "btnStart_regulator" || key == "R" || key == "C" || key == "U" || key == "I")
+                        {
+                            ApplyRegulatorUpdate(key, value);
+                        }
+                        // CarWashData
+                        else if (key.StartsWith("CarWash") || key.StartsWith("btnCarWash") || 
+                                 key.StartsWith("btnStart") && key.Contains("CarWash") ||
+                                 key.StartsWith("btnStop") && key.Contains("CarWash"))
+                        {
+                            ApplyCarWashUpdate(key, value);
+                        }
+                        // WashingMachineData
+                        else if (key.StartsWith("WashingMachine") || key.StartsWith("btnWashingMachine") ||
+                                 key.StartsWith("btnStart") && key.Contains("WashingMachine") ||
+                                 key.StartsWith("btnStop") && key.Contains("WashingMachine"))
+                        {
+                            ApplyWashingMachineUpdate(key, value);
                         }
                     }
 
@@ -561,6 +727,10 @@ namespace JAN0837_DP.ReactFE
         {
             var testdata = TestData.AppState.Get();
             var crossroaddata = CrossroadData.Get();
+            var crosswalkdata = CrosswalkData.Get();
+            var regulatordata = RegulatorData.Get();
+            var carwashdata = CarWashData.Get();
+            var washingmachinedata = WashingMachineData.Get();
 
             return new
             {
@@ -569,13 +739,13 @@ namespace JAN0837_DP.ReactFE
                 number = testdata.number,
                 toggle = testdata.toggle,
 
-                // CrossroadData
-                //crossroadType = crossroaddata.crossroadType,
+                // CrossroadData - only inputs
+                crossroadType = crossroaddata.crossroadType,
                 btnCrossroadStart = crossroaddata.btnCrossroadStart,
                 btnCrossroadPause = crossroaddata.btnCrossroadPause,
                 btnCrossroadStop = crossroaddata.btnCrossroadStop,
                 btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                btnCrosswalk2 = crossroaddata.btnCrosswalk2//,
+                btnCrosswalk2 = crossroaddata.btnCrosswalk2,
                 //trafficLight1_green = crossroaddata.trafficLight1_green,
                 //trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
                 //trafficLight1_red = crossroaddata.trafficLight1_red,
@@ -585,7 +755,80 @@ namespace JAN0837_DP.ReactFE
                 //pedestrian1_green = crossroaddata.pedestrian1_green,
                 //pedestrian1_red = crossroaddata.pedestrian1_red,
                 //pedestrian2_green = crossroaddata.pedestrian2_green,
-                //pedestrian2_red = crossroaddata.pedestrian2_red
+                //pedestrian2_red = crossroaddata.pedestrian2_red,
+
+                // CrosswalkData - only inputs
+                crosswalkType = crosswalkdata.crosswalkType,
+                btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
+                btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
+                btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
+                btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
+                btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
+                //trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
+                //trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
+                //trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
+                //trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
+                //trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
+                //trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
+                //pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
+                //pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
+                //pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
+                //pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red,
+
+                // RegulatorData - only inputs
+                btnStart_regulator = regulatordata.btnStart,
+                R = regulatordata.R,
+                C = regulatordata.C,
+                U = regulatordata.U,
+                I = regulatordata.I,
+
+                // CarWashData - only inputs
+                btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
+                btnStartCarWash = carwashdata.btnStartCarWash,
+                btnStopCarWash = carwashdata.btnStopCarWash,
+                CarWashErrorSystem = carwashdata.CarWashErrorSystem,
+                CarWashCarPosition = carwashdata.CarWashCarPosition,
+                CarWashShowerPosition = carwashdata.CarWashShowerPosition,
+                CarWashMode = carwashdata.CarWashMode,
+                //CarWashLight_green = carwashdata.CarWashLight_green,
+                //CarWashLight_yellow = carwashdata.CarWashLight_yellow,
+                //CarWashLight_red = carwashdata.CarWashLight_red,
+                //CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
+                //CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
+                //CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
+                //CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
+                //CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
+                //CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
+                //CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
+                //CarWashPrewash = carwashdata.CarWashPrewash,
+                //CarWashWater = carwashdata.CarWashWater,
+                //CarWashWax = carwashdata.CarWashWax,
+                //CarWashDry = carwashdata.CarWashDry,
+                //CarWashBrushes = carwashdata.CarWashBrushes,
+                //CarWashSoap = carwashdata.CarWashSoap,
+                //CarWashActiveFoam = carwashdata.CarWashActiveFoam,
+                //CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
+                //CarWashMEMDoor = carwashdata.CarWashMEMDoor,
+                //CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
+                //CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig,
+
+                // WashingMachineData - only inputs
+                btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
+                btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
+                btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
+                WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
+                WashingMachineMode = washingmachinedata.WashingMachineMode
+                //WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
+                //WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
+                //WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
+                //WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
+                //WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
+                //WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
+                //WashingMachineWater = washingmachinedata.WashingMachineWater,
+                //WashingMachineDry = washingmachinedata.WashingMachineDry,
+                //WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
+                //WashingMachineSoap = washingmachinedata.WashingMachineSoap,
+                //WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
             };
         }
 
@@ -606,56 +849,62 @@ namespace JAN0837_DP.ReactFE
 
         public Task<TestData> GetTestDataAsync()
         {
-            // Use internal URL for same-machine requests
             return GetDataAsync<TestData>(internalVariables.internalApiDataURL);
         }
 
         public Task<CrossroadData.State> GetCrossroadDataAsync()
         {
-            // Use internal URL for same-machine requests
             return GetDataAsync<CrossroadData.State>(internalVariables.internalApiDataURL);
         }
 
-
-        public async Task<TestData> GetDataAsync()
+        public Task<CrosswalkData.State> GetCrosswalkDataAsync()
         {
-            // Use internal URL for same-machine requests
-            var url = internalVariables.internalApiDataURL;
-            using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-            resp.EnsureSuccessStatusCode();
-
-            var json = await resp.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<TestData>(json) ?? new TestData();
+            return GetDataAsync<CrosswalkData.State>(internalVariables.internalApiDataURL);
         }
 
-        public void ApplySnapshot(dynamic snap)
+        public Task<RegulatorData.State> GetRegulatorDataAsync()
         {
-            //TestData.Update(snap.number, snap.text, snap.ToggleBool);
+            return GetDataAsync<RegulatorData.State>(internalVariables.internalApiDataURL);
+        }
 
+        public Task<CarWashData.State> GetCarWashDataAsync()
+        {
+            return GetDataAsync<CarWashData.State>(internalVariables.internalApiDataURL);
+        }
+
+        public Task<WashingMachineData.State> GetWashingMachineDataAsync()
+        {
+            return GetDataAsync<WashingMachineData.State>(internalVariables.internalApiDataURL);
+        }
+
+        public void ApplySnapshot(TestData snap)
+        {
             TestData.AppState.Set(snap);
+        }
 
-            Update("number", snap.number);
-            Update("text", snap.text);
-            Update("toggle", snap.toggle);
-
+        public void ApplySnapshot(CrossroadData.State snap)
+        {
             CrossroadData.Set(snap);
+        }
 
-            Update("crossroadType", snap.crossroadType);
-            Update("btnCrossroadStart", snap.btnCrossroadStart);
-            Update("btnCrossroadPause", snap.btnCrossroadPause);
-            Update("btnCrossroadStop", snap.btnCrossroadStop);
-            Update("btnCrosswalk1", snap.btnCrosswalk1);
-            Update("btnCrosswalk2", snap.btnCrosswalk2);
-            Update("trafficlight1_green", snap.trafficlight1_green);
-            Update("trafficLight1_yellow", snap.trafficLight1_yellow);
-            Update("trafficLight1_red", snap.trafficLight1_red);
-            Update("trafficLight2_green", snap.trafficLight2_green);
-            Update("trafficLight2_yellow", snap.trafficLight2_yellow);
-            Update("trafficLight2_red", snap.trafficLight2_red);
-            Update("pedestrian1_green", snap.pedestrian1_green);
-            Update("pedestrian1_red", snap.pedestrian1_red);
-            Update("pedestrian2_green", snap.pedestrian2_green);
-            Update("pedestrian2_red", snap.pedestrian2_red);
+        public void ApplySnapshot(CrosswalkData.State snap)
+        {
+            CrosswalkData.Set(snap);
+        }
+
+        public void ApplySnapshot(RegulatorData.State snap)
+        {
+            RegulatorData.Set(snap);
+        }
+
+        public void ApplySnapshot(CarWashData.State snap)
+        {
+            CarWashData.Set(snap);
+        }
+
+        public void ApplySnapshot(WashingMachineData.State snap)
+        {
+            WashingMachineData.Set(snap);
         }
 
         public async Task<bool> IsAliveAsync(string url)
@@ -665,14 +914,14 @@ namespace JAN0837_DP.ReactFE
                 using var resp = await healthCheckClient.GetAsync(url);
                 return resp.IsSuccessStatusCode;
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
-                // Timeout
+                Logger.LogException(ex, $"Health check timeout for {url}");
                 return false;
             }
-            catch (HttpRequestException)
+            catch (HttpRequestException httpex)
             {
-                // Connection failed
+                Logger.LogException(httpex, $"Health check error for {url}");
                 return false;
             }
             catch (Exception ex)
@@ -691,7 +940,6 @@ namespace JAN0837_DP.ReactFE
                 await Task.Delay(pollMs);
             }
             
-            // Log the timeout
             var errorMsg = $"Service not reachable after {timeoutMs}ms: {url}";
             Logger.LogError(errorMsg);
             throw new TimeoutException(errorMsg);
@@ -699,44 +947,29 @@ namespace JAN0837_DP.ReactFE
 
         public async Task EnsureCommunicationServiceAsync()
         {
-            // API health-check using internal URL (works even if bound to localhost)
             var apiHealth = internalVariables.internalApiDataURL;
-            
-            Console.WriteLine($"Checking API health at: {apiHealth}");
-            //Logger.LogInfo($"Checking API health at: {apiHealth}");
 
             if (!await IsAliveAsync(apiHealth))
             {
                 await WaitUntilAliveAsync(apiHealth, timeoutMs: 5000);
             }
-            
-            Console.WriteLine("API service is alive!");
-            //Logger.LogInfo("API service is alive!");
         }
 
         public async Task EnsureReactDevServerAsync()
         {
-            // Use internal URL for health check (localhost works even if server binds to 0.0.0.0)
             var internalFeUrl = internalVariables.internalFeURL;
-            
-            Console.WriteLine($"Checking React FE at: {internalFeUrl}");
-            //Logger.LogInfo($"Checking React FE at: {internalFeUrl}");
             
             if (await IsAliveAsync(internalFeUrl))
             {
                 Console.WriteLine("React FE server is already running!");
-                //Logger.LogInfo("React FE server is already running!");
                 internalVariables.feServerStarted = true;
                 return;
             }
             
-            // React not running - try to start it
             if (reactDevServerProc == null || reactDevServerProc.HasExited)
             {
-                // Verify the React project path exists
                 var reactPath = paths.feReactProjectPath;
                 Console.WriteLine($"React project path: {reactPath}");
-                //Logger.LogInfo($"React project path: {reactPath}");
                 
                 if (!Directory.Exists(reactPath))
                 {
@@ -746,7 +979,6 @@ namespace JAN0837_DP.ReactFE
                     throw new DirectoryNotFoundException(errorMsg);
                 }
                 
-                // Check if package.json exists
                 var packageJson = Path.Combine(reactPath, "package.json");
                 if (!File.Exists(packageJson))
                 {
@@ -759,20 +991,12 @@ namespace JAN0837_DP.ReactFE
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    // Use quotes around SET values to avoid trailing spaces
                     Arguments = $"/k set \"HOST=0.0.0.0\" && set \"PORT={internalVariables.fePort}\" && npm start",
                     WorkingDirectory = reactPath,
                     UseShellExecute = true,
-                    CreateNoWindow = false  // Show window so you can see React output
+                    CreateNoWindow = false
                 };
-                
-                Console.WriteLine($"Starting React dev server...");
-                Console.WriteLine($"  Command: {startInfo.Arguments}");
-                Console.WriteLine($"  Working dir: {startInfo.WorkingDirectory}");
-                Console.WriteLine($"  Port: {internalVariables.fePort}");
-                Console.WriteLine("  NOTE: A command window will open. Wait for 'Compiled successfully!'");
-                //Logger.LogInfo($"Starting React dev server on port {internalVariables.fePort}");
-                
+                          
                 try
                 {
                     reactDevServerProc = Process.Start(startInfo);
@@ -785,11 +1009,8 @@ namespace JAN0837_DP.ReactFE
                 }
             }
 
-            // Wait using internal URL (localhost) with progress logging
-            Console.WriteLine($"Waiting for React server to be ready at {internalFeUrl}...");
-            Console.WriteLine("(This can take 30-60 seconds on first run)");
             var startTime = Environment.TickCount;
-            var timeoutMs = 120000;  // 2 minutes timeout for first compile
+            var timeoutMs = 120000;
             var pollMs = 2000;
             
             while (Environment.TickCount - startTime < timeoutMs)
@@ -797,9 +1018,6 @@ namespace JAN0837_DP.ReactFE
                 if (await IsAliveAsync(internalFeUrl))
                 {
                     internalVariables.feServerStarted = true;
-                    Console.WriteLine($"React FE server is running!");
-                    Console.WriteLine($"External access: {internalVariables.feURL}");
-                    //Logger.LogInfo($"React FE server started - External: {internalVariables.feURL}");
                     return;
                 }
                 
@@ -808,22 +1026,7 @@ namespace JAN0837_DP.ReactFE
                 await Task.Delay(pollMs);
             }
             
-            // Timeout - log detailed info
-            var errorMessage = $"React server not responding after 120s at {internalFeUrl}";
-            Console.WriteLine($"ERROR: {errorMessage}");
-            Console.WriteLine($"Check the npm window for errors!");
-            Console.WriteLine($"You can also start React manually:");
-            Console.WriteLine($"  cd \"{paths.feReactProjectPath}\"");
-            Console.WriteLine($"  npm start");
-            
-            // Log all details to log file
-            Logger.LogError(errorMessage);
-            Logger.LogError($"React project path: {paths.feReactProjectPath}");
-            Logger.LogError($"Expected URL: {internalFeUrl}");
-            Logger.LogError($"Process PID: {reactDevServerProc?.Id}");
-            Logger.LogError($"Process HasExited: {reactDevServerProc?.HasExited}");
-            //Logger.LogInfo("Hint: Start React manually with: npm start");
-            
+            var errorMessage = $"React dev server did not start within {timeoutMs / 1000} seconds. Check the console window for npm errors.";
             var err = new TimeoutException(errorMessage);
             Logger.LogException(err, "EnsureReactDevServerAsync");
             throw err;

@@ -200,6 +200,60 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 Logger.LogException(ex, "Failed to write multiple coils");
             }
         }
+
+        // Helper methods for working with holding registers as boolean values
+        public void WriteMultipleRegistersAsBool(byte slaveId, ushort startAddress, bool[] values)
+        {
+            try
+            {
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to write registers when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
+
+                ushort[] registers = new ushort[values.Length];
+                for (int i = 0; i < values.Length; i++)
+                {
+                    registers[i] = (ushort)(values[i] ? 1 : 0);
+                }
+
+                master.WriteMultipleRegisters(slaveId, startAddress, registers);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Writing error: {ex.Message}");
+                Logger.LogException(ex, "Failed to write multiple registers as bool");
+            }
+        }
+
+        public bool[] ReadHoldingRegistersAsBool(byte slaveId, ushort startAddress, ushort count)
+        {
+            try
+            {
+                if (master == null)
+                {
+                    Logger.LogError("Attempt to read registers when Modbus is not connected");
+                    throw new Exception("Modbus is not connected!");
+                }
+
+                ushort[] registers = master.ReadHoldingRegisters(slaveId, startAddress, count);
+                bool[] result = new bool[registers.Length];
+                
+                for (int i = 0; i < registers.Length; i++)
+                {
+                    result[i] = registers[i] != 0;
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Reading error: {ex.Message}");
+                Logger.LogException(ex, "Failed to read holding registers as bool");
+                return null;
+            }
+        }
     }
 
     public class ModbusTCPIPimServer
@@ -343,6 +397,49 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
                 {
                     Console.WriteLine($"Wrong coil address: {(startAddress + i)}");
                     Logger.LogError($"Wrong coil address: {(startAddress + i)}");
+                }
+            }
+
+            return result;
+        }
+
+        // New methods for working with holding registers (for boolean values stored as 0/1)
+        public void SetRegisters(ushort startAddress, bool[] values)
+        {
+            if (slave?.DataStore?.HoldingRegisters == null || values == null) return;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                ushort idx = (ushort)(startAddress + i);
+                if (idx < slave.DataStore.HoldingRegisters.Count)
+                {
+                    slave.DataStore.HoldingRegisters[idx] = (ushort)(values[i] ? 1 : 0);
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong register address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong register address: {(startAddress + i)}");
+                }
+            }
+        }
+
+        public bool[] GetRegisters(ushort startAddress, ushort count)
+        {
+            if (slave?.DataStore?.HoldingRegisters == null) return null;
+
+            bool[] result = new bool[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                ushort idx = (ushort)(startAddress + i);
+                if (idx < slave.DataStore.HoldingRegisters.Count)
+                {
+                    result[i] = slave.DataStore.HoldingRegisters[idx] != 0;
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong register address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong register address: {(startAddress + i)}");
                 }
             }
 

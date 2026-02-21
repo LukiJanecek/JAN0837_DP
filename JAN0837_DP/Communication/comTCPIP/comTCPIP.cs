@@ -33,16 +33,17 @@ namespace JAN0837_DP.Communication.comTCPIP
         public enum LightFlagsByte0 : byte
         {
             None = 0,
-            Light1_Green = 1 << 0,
-            Light1_Yellow = 1 << 1,
-            Light1_Red = 1 << 2,
-            Light2_Green = 1 << 3,
-            Light2_Yellow = 1 << 4,
-            Light2_Red = 1 << 5,
-            Pedestrian1_Green = 1 << 6,
-            Pedestrian1_Red = 1 << 7,
-            Pedestrian2_Green = 2 << 0,
-            Pedestrian2_Red = 2 << 1
+            crossroadType = 1 << 0,
+            Light1_Green = 1 << 1,
+            Light1_Yellow = 1 << 2,
+            Light1_Red = 1 << 3,
+            Light2_Green = 1 << 4,
+            Light2_Yellow = 1 << 5,
+            Light2_Red = 1 << 6,
+            Pedestrian1_Green = 1 << 7,
+            Pedestrian1_Red = 2 << 0,
+            Pedestrian2_Green = 2 << 1,
+            Pedestrian2_Red = 2 << 2
         }
 
         [Flags]

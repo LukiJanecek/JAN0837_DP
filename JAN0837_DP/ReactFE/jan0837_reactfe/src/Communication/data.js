@@ -76,10 +76,10 @@ export const STATE_SCHEMA = {
   CarWashBrushes: { type: 'boolean', default: false },
   CarWashSoap: { type: 'boolean', default: false },
   CarWashActiveFoam: { type: 'boolean', default: false },
-  CarWashTimeDoorMovement: { type: 'string', default: "" }, // int? (time)
-  CarWashMEMDoor: { type: 'string', default: "false" }, // bool
-  CarWashMEMDoorTrig: { type: 'string', default: "false" }, // bool
-  CarWashMEMDoorClosingtrig: { type: 'string', default: "false" }, // bool
+  CarWashTimeDoorMovement: { type: 'boolean', default: false }, // int? (time)
+  CarWashMEMDoor: { type: 'boolean', default: false }, // bool
+  CarWashMEMDoorTrig: { type: 'boolean', default: false }, // bool
+  CarWashMEMDoorClosingtrig: { type: 'boolean', default: false }, // bool
 
   // WashingMachine variables
   btnWashingMachineEmergencyStop: { type: 'boolean', default: false },

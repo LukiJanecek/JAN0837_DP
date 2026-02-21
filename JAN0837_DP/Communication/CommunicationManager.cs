@@ -1250,9 +1250,9 @@ namespace JAN0837_DP.Communication
                             _ucCommunicationControl.SetStatus($"This communication is already running in the project on http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/");
                             break;
                         case "Sharp7":                            
-                            int activeDBnumber = CrossroadData.CrossroadDBnumber;
-                            byte[] readBuffer = new byte[20];
-                            byte[] writeBuffer = new byte[20];
+                            int activeDBnumber = CrossroadData.CrossroadDBnumber; // ? hard number 
+                            byte[] readBuffer = new byte[20]; // ? find out 
+                            byte[] writeBuffer = new byte[20]; // ? find out 
 
                             int read1 = _sharp7.readDB(activeDBnumber, CrossroadData.CrossroadReadBuffer, 0);
 

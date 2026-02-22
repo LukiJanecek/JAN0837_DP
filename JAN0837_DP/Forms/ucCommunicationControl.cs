@@ -59,9 +59,11 @@ namespace JAN0837_DP.Forms
                 rbtnMQTT.Visible = true;
                 rbtnMQTT.Checked = false;
 
+                /*
                 rbtnTCPIP.Enabled = true;
                 rbtnTCPIP.Visible = true;
                 rbtnTCPIP.Checked = false;
+                */
 
                 rbtnModbusTCPIP.Enabled = true;
                 rbtnModbusTCPIP.Visible = true;
@@ -73,7 +75,7 @@ namespace JAN0837_DP.Forms
 
                 rbtnOPCUA.Tag = "OPCUA";
                 rbtnMQTT.Tag = "MQTT";
-                rbtnTCPIP.Tag = "TCPIP";
+                //rbtnTCPIP.Tag = "TCPIP";
                 rbtnModbusTCPIP.Tag = "ModbusTCPIP";
                 rbtnRESTAPI.Tag = "RestApi";
 
@@ -143,7 +145,7 @@ namespace JAN0837_DP.Forms
                     rbtnModbusTCPIP_CheckedChanged(sender, e);
                     break;
                 case "TCPIP":
-                    rbtnTCPIP.Checked = true;
+                    //rbtnTCPIP.Checked = true;
                     rbtnTCPIP_CheckedChanged(sender, e);
                     break;
                 case "RESTAPI":
@@ -167,7 +169,7 @@ namespace JAN0837_DP.Forms
                 // rbtns
                 rbtnOPCUA.Enabled = false;
                 rbtnMQTT.Enabled = false;
-                rbtnTCPIP.Enabled = false;
+                //rbtnTCPIP.Enabled = false;
                 rbtnModbusTCPIP.Enabled = false;
                 rbtnRESTAPI.Enabled = false;
                 //rbtnS7.Enabled = false;
@@ -240,14 +242,14 @@ namespace JAN0837_DP.Forms
             lblCheckBox.Text = "What is this device?";
 
             checkBoxMaster.Visible = true;
-            checkBoxMaster.Enabled = true;
+            checkBoxMaster.Enabled = false;
             checkBoxMaster.Text = "Server";
             checkBoxMaster.Checked = false;
 
             checkBoxSlave.Visible = true;
             checkBoxSlave.Enabled = true;
             checkBoxSlave.Text = "Client";
-            checkBoxSlave.Checked = false;
+            checkBoxSlave.Checked = true;
 
             #endregion
         }
@@ -633,6 +635,8 @@ namespace JAN0837_DP.Forms
             lblCommunicationStatus.Text = "Starting communication.";
             lblStatus.Text = "Starting communication.";
 
+            btnStartCommunicationThread.Enabled = false;
+
             bool isRunning = internalVariables.communicationTask != null && !internalVariables.communicationTask.IsCompleted;
 
             if (isRunning)
@@ -655,6 +659,7 @@ namespace JAN0837_DP.Forms
                         string broker_ipAddress = internalVariables.txtBoxParam1;
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int broker_port))
                         {
+                            btnStartCommunicationThread.Enabled = true;
                             lblStatus.Text = "Port is not a valid number.";
                             return; // break
                         }
@@ -665,27 +670,39 @@ namespace JAN0837_DP.Forms
 
                             _mqttClient.OnMessage += (topic, bytes, text) =>
                             {
-                                if (topic == "JAN0837/Crossroad/Output")
+                                
+                                if (topic == "JAN0837/plc/status")
+                                {
+                                    // plc connected? 
+                                }
+                                else if (topic == "JAN087/pc/status")
+                                {
+                                    // pc connected? 
+                                }
+                                else if (topic == "JAN0837/Crossroad/Output")
                                 {
                                     // zpracování outputu z PLC -> CrossroadData
-                                    MQTTClient.CrossroadOutputMapper.   ApplyOutputJsonToCrossroadData(text);
-
-                                    // UI update:
-                                    /*
-                                    BeginInvoke(new Action(() =>
-                                    {
-                                        lblStatus.Text = $"RX Output: {text}";
-                                    }));
-                                    */
+                                    MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(text);
                                 }
-                                else if (topic == "JAN0837/plc/status")
+                                else if (topic == "JAN0837/Crosswalk/Output")
                                 {
-                                    /*
-                                    BeginInvoke(new Action(() =>
-                                    {
-                                        lblStatus.Text = $"PLC status: {text}";
-                                    }));
-                                    */
+                                    // zpracování outputu z PLC -> CrosswalkData
+                                    MQTTClient.CrosswalkOutputMapper.ApplyOutputJsonToCrosswalkData(text);
+                                }
+                                else if (topic == "JAN0837/Regulator/Output")
+                                {
+                                    // zpracování outputu z PLC -> RegulatorData
+                                    MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(text);
+                                }
+                                else if (topic == "JAN0837/CarWash/Output")
+                                {
+                                    // zpracování outputu z PLC -> CarWashData
+                                    MQTTClient.CarWashOutputMapper.ApplyOutputJsonToCarWashData(text);
+                                }
+                                else if (topic == "JAN0837/WashingMachine/Output")
+                                {
+                                    // zpracování outputu z PLC -> WashingMachineData
+                                    MQTTClient.WashingMachineOutputMapper.ApplyOutputJsonToWashingMachineData(text);
                                 }
                             };
 
@@ -693,7 +710,11 @@ namespace JAN0837_DP.Forms
                             _mqttClient.SubscribeTopics = new[]
                             {
                                 "JAN0837/plc/status",
-                                "JAN0837/Crossroad/Output"
+                                "JAN0837/Crossroad/Output",
+                                "JAN0837/Crosswalk/Output",
+                                "JAN0837/Regulator/Output",
+                                "JAN0837/CarWash/Output",
+                                "JAN0837/WashingMachine/Output"
                             };
                         }
 
@@ -715,6 +736,7 @@ namespace JAN0837_DP.Forms
                         else
                         {
                             // no checkbox selected 
+                            btnStartCommunicationThread.Enabled = true;
                             lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
                             return; // break;
                         }
@@ -729,7 +751,7 @@ namespace JAN0837_DP.Forms
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int opcuaPort))
                         {
                             opcuaPort = 4841; // default OPC UA port
-                            txtBoxPara2.Text = $"{opcuaPort}";
+                            txtBoxPara2.Text = $"I set default port {opcuaPort}.";
                         }
 
                         if (internalVariables.checkBoxMaster == true)
@@ -749,6 +771,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"OPC UA server failed to start.";
                                 Logger.LogError($"OPC UA server failed to start.");
                                 return;
@@ -774,6 +797,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"OPC UA connection to {opcuaServerUrl} failed.";
                                 Logger.LogError($"OPC UA connection to {opcuaServerUrl} failed.");
                                 return;
@@ -782,6 +806,7 @@ namespace JAN0837_DP.Forms
                         else
                         {
                             // no checkbox selected 
+                            btnStartCommunicationThread.Enabled = true;
                             lblStatus.Text = $"Error: Please select Server or Client mode for OPC UA.";
                             return; // break;
                         }
@@ -795,6 +820,7 @@ namespace JAN0837_DP.Forms
                         
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int tcpipPort))
                         {
+                            btnStartCommunicationThread.Enabled = true;
                             lblStatus.Text = $"Error: TCP/IP port is not a valid number.";
                             return;
                         }
@@ -810,6 +836,7 @@ namespace JAN0837_DP.Forms
                             bool started = _tcpipServer.Start();
                             if (!started)
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"Error: TCP/IP Server failed to start on {tcpipAddress}:{tcpipPort}.";
                                 Logger.LogError($"TCP/IP Server failed to start on {tcpipAddress}:{tcpipPort}.");
                                 return;
@@ -833,6 +860,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"TCP/IP Client connection to {tcpipAddress}:{tcpipPort} failed.";
                                 Logger.LogError($"TCP/IP Client connection to {tcpipAddress}:{tcpipPort} failed.");
                                 return;
@@ -853,6 +881,7 @@ namespace JAN0837_DP.Forms
 
                         if (!int.TryParse(internalVariables.txtBoxParam2.Trim(), out int ModbusTCPIP_port))
                         {
+                            btnStartCommunicationThread.Enabled = true;
                             lblStatus.Text = $"Error: Modbus TCP/IP port is not a valid number.";
                             return;
                         }
@@ -872,6 +901,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"Error: Modbus TCP/IP Server failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.";
                                 Logger.LogError($"Error: Modbus TCP/IP Server failed to start on {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port}.");
                                 return;
@@ -896,6 +926,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"Modbus TCP/IP Client connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.";
                                 Logger.LogError($"Modbus TCP/IP Client connection to {ModbusTCPIP_ipaddress}:{ModbusTCPIP_port} failed.");
                                 return;
@@ -914,6 +945,11 @@ namespace JAN0837_DP.Forms
 
                         break;
                     case "Sharp7":
+                        if (_sharp7 == null)
+                        {
+                            _sharp7 = new comSharp7();
+                        }
+
                         lblCommunicationStatus.Text = "Sharp7 communication started.";
                         lblStatus.Text = "Sharp7 communication started.";
 
@@ -929,6 +965,7 @@ namespace JAN0837_DP.Forms
                             }
                             else
                             {
+                                btnStartCommunicationThread.Enabled = true;
                                 lblStatus.Text = $"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.";
                                 Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
                                 return; // break;
@@ -946,6 +983,7 @@ namespace JAN0837_DP.Forms
 
                         break;*/
                     default:
+                        btnStartCommunicationThread.Enabled = true;
                         lblCommunicationStatus.Text = "No communication protocol selected.";
                         lblStatus.Text = "No communication protocol selected.";
                         Logger.LogError($"Start Communication: Unknown communication protocol: {internalVariables.communicationFlag}");
@@ -962,7 +1000,7 @@ namespace JAN0837_DP.Forms
                 #region UI
                 rbtnOPCUA.Enabled = false;
                 rbtnMQTT.Enabled = false;
-                rbtnTCPIP.Enabled = false;
+                //rbtnTCPIP.Enabled = false;
                 rbtnModbusTCPIP.Enabled = false;
                 rbtnRESTAPI.Enabled = false;
                 //rbtnS7.Enabled = false;
@@ -1202,7 +1240,7 @@ namespace JAN0837_DP.Forms
             #region UI 
             rbtnOPCUA.Enabled = true;
             rbtnMQTT.Enabled = true;
-            rbtnTCPIP.Enabled = true;
+            //rbtnTCPIP.Enabled = true;
             rbtnModbusTCPIP.Enabled = true;
             rbtnRESTAPI.Enabled = true;
             //rbtnS7.Enabled = true;
@@ -1291,6 +1329,7 @@ namespace JAN0837_DP.Forms
                 // broker port
                 txtBoxPara2.Text = "1883";
             }
+            /*
             else if (rbtnTCPIP.Checked == true)
             {
                 // TCP port 
@@ -1314,6 +1353,7 @@ namespace JAN0837_DP.Forms
                     txtBoxPara1.Text = "192.168.1.251";
                 }               
             }
+            */
             else if (rbtnModbusTCPIP.Checked == true)
             {
                 // TCP port

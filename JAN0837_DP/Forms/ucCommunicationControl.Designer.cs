@@ -33,7 +33,6 @@
             lblStatus = new ToolStripStatusLabel();
             rbtnOPCUA = new RadioButton();
             rbtnMQTT = new RadioButton();
-            rbtnTCPIP = new RadioButton();
             rbtnModbusTCPIP = new RadioButton();
             rbtnRESTAPI = new RadioButton();
             lblPara2 = new Label();
@@ -98,21 +97,10 @@
             rbtnMQTT.UseVisualStyleBackColor = true;
             rbtnMQTT.CheckedChanged += rbtnMQTT_CheckedChanged;
             // 
-            // rbtnTCPIP
-            // 
-            rbtnTCPIP.AutoSize = true;
-            rbtnTCPIP.Location = new Point(3, 63);
-            rbtnTCPIP.Name = "rbtnTCPIP";
-            rbtnTCPIP.Size = new Size(72, 24);
-            rbtnTCPIP.TabIndex = 6;
-            rbtnTCPIP.Text = "TCP/IP";
-            rbtnTCPIP.UseVisualStyleBackColor = true;
-            rbtnTCPIP.CheckedChanged += rbtnTCPIP_CheckedChanged;
-            // 
             // rbtnModbusTCPIP
             // 
             rbtnModbusTCPIP.AutoSize = true;
-            rbtnModbusTCPIP.Location = new Point(3, 93);
+            rbtnModbusTCPIP.Location = new Point(3, 63);
             rbtnModbusTCPIP.Name = "rbtnModbusTCPIP";
             rbtnModbusTCPIP.Size = new Size(130, 24);
             rbtnModbusTCPIP.TabIndex = 7;
@@ -123,7 +111,7 @@
             // rbtnRESTAPI
             // 
             rbtnRESTAPI.AutoSize = true;
-            rbtnRESTAPI.Location = new Point(3, 123);
+            rbtnRESTAPI.Location = new Point(3, 93);
             rbtnRESTAPI.Name = "rbtnRESTAPI";
             rbtnRESTAPI.Size = new Size(89, 24);
             rbtnRESTAPI.TabIndex = 8;
@@ -229,7 +217,7 @@
             // rbtnSharp7
             // 
             rbtnSharp7.AutoSize = true;
-            rbtnSharp7.Location = new Point(3, 153);
+            rbtnSharp7.Location = new Point(3, 123);
             rbtnSharp7.Name = "rbtnSharp7";
             rbtnSharp7.Size = new Size(76, 24);
             rbtnSharp7.TabIndex = 23;
@@ -264,7 +252,6 @@
             Controls.Add(lblPara2);
             Controls.Add(rbtnRESTAPI);
             Controls.Add(rbtnModbusTCPIP);
-            Controls.Add(rbtnTCPIP);
             Controls.Add(rbtnMQTT);
             Controls.Add(rbtnOPCUA);
             Controls.Add(statusStripCommunicationControl);
@@ -284,7 +271,6 @@
         private ToolStripStatusLabel lblStatus;
         private RadioButton rbtnOPCUA;
         private RadioButton rbtnMQTT;
-        private RadioButton rbtnTCPIP;
         private RadioButton rbtnModbusTCPIP;
         private RadioButton rbtnRESTAPI;
         private Label lblPara2;

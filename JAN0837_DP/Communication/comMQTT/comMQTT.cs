@@ -78,7 +78,11 @@ namespace JAN0837_DP.Communication.comMQTT
         public string[] SubscribeTopics { get; set; } = new[]
         {
             "JAN0837/plc/status",
-            "JAN0837/Crossroad/Output"
+            "JAN0837/Crossroad/Output",
+            "JAN0837/Crosswalk/Output",
+            "JAN0837/Regulator/Output",
+            "JAN0837/CarWash/Output",
+            "JAN0837/WashingMachine/Output"
         };
 
         public MQTTClient()
@@ -240,6 +244,149 @@ namespace JAN0837_DP.Communication.comMQTT
                 {
                     Console.WriteLine($"Output JSON parse failed: {ex.Message}");
                     Logger.LogException(ex, "Failed to parse output JSON");
+                }
+            }
+        }
+
+        public static class CrosswalkOutputMapper
+        {
+            private class OutputDto
+            {
+                public int lightsMask { get; set; }
+                public int crosswalkType { get; set; }
+            }
+
+            public static void ApplyOutputJsonToCrosswalkData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+
+                    CrosswalkData.crosswalkType = dto.crosswalkType.ToString();
+                    CrosswalkData.trafficLight1_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.trafficLight1_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.trafficLight1_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.trafficLight2_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.trafficLight2_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.trafficLight2_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.pedestrian1_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.pedestrian1_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.pedestrian2_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                    CrosswalkData.pedestrian2_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Crosswalk output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse Crosswalk output JSON");
+                }
+            }
+        }
+
+        public static class RegulatorOutputMapper
+        {
+            private class OutputDto
+            {
+                public string R { get; set; }
+                public string C { get; set; }
+                public string U { get; set; }
+                public string I { get; set; }
+            }
+
+            public static void ApplyOutputJsonToRegulatorData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+
+                    RegulatorData.R = dto.R ?? "";
+                    RegulatorData.C = dto.C ?? "";
+                    RegulatorData.U = dto.U ?? "";
+                    RegulatorData.I = dto.I ?? "";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Regulator output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse Regulator output JSON");
+                }
+            }
+        }
+
+        public static class CarWashOutputMapper
+        {
+            private class OutputDto
+            {
+                public int statusMask { get; set; }
+                public string mode { get; set; }
+            }
+
+            public static void ApplyOutputJsonToCarWashData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+
+                    CarWashData.CarWashLight_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashLight_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashLight_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashDoor1_Up = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashDoor1_Down = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashDoor2_Up = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashDoor2_Down = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashChemicalsFront = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashChemicalsSides = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashChemicalsBack = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashPrewash = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashWater = ((dto.statusMask >> 11) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashWax = ((dto.statusMask >> 12) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashDry = ((dto.statusMask >> 13) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashBrushes = ((dto.statusMask >> 14) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashSoap = ((dto.statusMask >> 15) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashActiveFoam = ((dto.statusMask >> 16) & 1) == 1 ? "true" : "false";
+                    CarWashData.CarWashMode = dto.mode ?? "";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"CarWash output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse CarWash output JSON");
+                }
+            }
+        }
+
+        public static class WashingMachineOutputMapper
+        {
+            private class OutputDto
+            {
+                public int statusMask { get; set; }
+                public string mode { get; set; }
+            }
+
+            public static void ApplyOutputJsonToWashingMachineData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+
+                    WashingMachineData.WashingMachineLight_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineLight_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineLight_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineDoorClosed = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineChemicals = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachinePrewash = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineWater = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineDry = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineBrushes = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineSoap = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineActiveFoam = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.WashingMachineMode = dto.mode ?? "";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"WashingMachine output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse WashingMachine output JSON");
                 }
             }
         }

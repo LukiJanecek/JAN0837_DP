@@ -13,7 +13,7 @@ import PictureSwitcher from '../Components/PictureSwitcher.js';
 import ResponsiveImage from '../Components/ResponsiveImage.js';
 
 import { useRefresh } from '../Communication/RefreshContext.js';
-import { useData } from '../Communication/DataProvider.js';
+import { useData, useSectionData } from '../Communication/DataProvider.js';
 
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
@@ -201,181 +201,56 @@ function WashingMachineCanvas({ background, lights, pedControls }) {
 function WashingMachineParamsSidebar({names, idx, onPrev, onNext, onJump,}) 
 {
   const { interval, setInterval } = useRefresh();
-  const { data, saveData, error, isFetching, refresh } = useData();
+  const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('WashingMachine');
 
   const [status, setStatus] = React.useState('');
-  
-  const number = Number(data?.number ?? 0);
-  const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
-  const toggle = (() => {
-        const t = String(data?.toggle ?? '').toLowerCase();
-        return t === 'true' || t === 'on' || t === '1';
-  })();
 
-  const crosswalkType = toBool(data?.crosswalkType);
+  const btnEmergencyStop = toBool(d?.btnWashingMachineEmergencyStop);
+  const btnStart = toBool(d?.btnStartWashingMachine);
+  const btnStop = toBool(d?.btnStopWashingMachine);
+  const errorSystem = toBool(d?.WashingMachineErrorSystem);
+  const mode = String(d?.WashingMachineMode ?? '');
+  const lightGreen = toBool(d?.WashingMachineLight_green);
+  const lightYellow = toBool(d?.WashingMachineLight_yellow);
+  const lightRed = toBool(d?.WashingMachineLight_red);
+  const doorClosed = toBool(d?.WashingMachineDoorClosed);
 
-  const btnCrosswalkStart = toBool(data?.btnCrosswalkStart);
-  const btnCrosswalkPause = toBool(data?.btnCrosswalkPause);
-  const btnCrosswalkStop = toBool(data?.btnCrosswalkStop);
-
-  const trafficLight1_green = toBool(data?.trafficLight1_green);
-  const trafficLight1_yellow = toBool(data?.trafficLight1_yellow);
-  const trafficLight1_red = toBool(data?.trafficLight1_red); 
-  const trafficLight2_green = toBool(data?.trafficLight2_green);
-  const trafficLight2_yellow = toBool(data?.trafficLight2_yellow);
-  const trafficLight2_red = toBool(data?.trafficLight2_red); 
-  const pedestrian1_green = toBool(data?.pedestrian1_green);
-  const pedestrian1_red = toBool(data?.pedestrian1_red); 
-  const pedestrian2_green = toBool(data?.pedestrian2_green);
-  const pedestrian2_red = toBool(data?.pedestrian2_red);
-
-  //const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
-
-  const setCrosswalkType = () => saveData({ crosswalkType: !crosswalkType });
-
-  const setStartAsync = () => saveData({ btnCrosswalkStart: !btnCrosswalkStart });
-  const setPauseAsync = () => saveData({ btnCrosswalkPause: !btnCrosswalkPause });
-  const setStopAsync  = () => saveData({ btnCrosswalkStop: !btnCrosswalkStop });
-
-  const setCrosswalkLightGreen1 = () => saveData({ trafficLight1_green: !trafficLight1_green });
-  const setCrosswalkLightYellow1 = () => saveData({ trafficLight1_yellow: !trafficLight1_yellow });
-  const setCrosswalkLightRed1 = () => saveData({ trafficLight1_red: !trafficLight1_red });
-  const setCrosswalkLightGreen2 = () => saveData({ trafficLight2_green: !trafficLight2_green });
-  const setCrosswalkLightYellow2 = () => saveData({ trafficLight2_yellow: !trafficLight2_yellow });
-  const setCrosswalkLightRed2 = () => saveData({ trafficLight2_red: !trafficLight2_red });
-  const setPedestrianLightGreen1 = () => saveData({ pedestrian1_green: !pedestrian1_green });
-  const setPedestrianLightRed1 = () => saveData({ pedestrian1_red: !pedestrian1_red });
-  const setPedestrianLightGreen2 = () => saveData({ pedestrian2_green: !pedestrian2_green });
-  const setPedestrianLightRed2 = () => saveData({ pedestrian2_red: !pedestrian2_red });
-
-  const toggleCrosswalkType = async () => {
-    try {
-      const current = toBool(data?.crosswalkType ?? data?.crosswalk_type);
-      const next = !current;
-
-      setStatus(`sending… (current=${String(current)} → next=${String(next)})`);
-      console.log('toggleCrosswalkType', { current, next, data });
-
-      // DŮLEŽITÉ: pošli camel i snake variantu, aby to prošlo i přes případné mapování/whitelist
-      // Pokud tvůj provider snake/camel NEMÁ, druhý klíč ignoruje.
-      const payload = {
-        crosswalkType: next,
-        crosswalk_type: next,
-      };
-      const maybePromise = saveData(payload);
-
-      // saveData může být sync nebo async → ošetříme obě varianty
-      if (maybePromise && typeof maybePromise.then === 'function') {
-        await maybePromise;
-      }
-
-      setStatus(`ok ✔ (store now: ${String(toBool((data?.crosswalkType ?? data?.crosswalk_type)))})`);
-    } catch (e) {
-      console.error(e);
-      setStatus(`error ✖ ${e?.message ?? e}`);
-    }
-  };
+  const setEmergencyStop = () => saveSection({ btnWashingMachineEmergencyStop: !btnEmergencyStop });
+  const setStartAsync = () => saveSection({ btnStartWashingMachine: !btnStart });
+  const setStopAsync = () => saveSection({ btnStopWashingMachine: !btnStop });
 
   return (
     <div>
       <h3>Parameters:</h3>
-      {/*
-      <div className="gap-2 mb-2">
-        <div className="text-muted small text-center">
-          Obrázek {idx + 1} / {names.length}
-        </div>
-        
-        <Button variant="outline-secondary" onClick={onPrev}>
-          &laquo; Předchozí
-        </Button>
-        
-        <Button variant="primary" onClick={onNext}>
-          Další &raquo;
-        </Button>
-
-        <Form.Select value={idx} onChange={(e) => onJump(Number(e.target.value))} className="mb-3">          
-          {names.map((n, i) => (
-            <option key={n} value={i}>
-              {n}
-            </option>
-          ))}
-        </Form.Select>
-
-      </div>
-      */}
-      
-      <div className="gap-2 mb-3">
-        <Button onClick={toggleCrosswalkType}>
-          CrosswalkType ({String(crosswalkType)})
-        </Button>
-      </div>
 
       <div>
         <Col>
           <div className="gap-2 mb-2">
-            <Button className="btn--start" onClick={() => setStartAsync(!btnCrosswalkStart) /*toggleBtn("btnCrosswalkStart", !btnCrosswalkStart)*/} /*disabled={isFetching}*/>
-              Start ({String(btnCrosswalkStart)})
+            <Button className="btn--start" onClick={setStartAsync}>
+              Start ({String(btnStart)})
             </Button>
-          
-            <Button className="btn--pause" onClick={() => setPauseAsync(!btnCrosswalkPause) /*toggleBtn("btnCrosswalkPause", !btnCrosswalkPause)*/} /*disabled={isFetching}*/>
-              Pause ({String(btnCrosswalkPause)})
+            <Button className="btn--stop" onClick={setStopAsync}>
+              Stop ({String(btnStop)})
             </Button>
-          
-            <Button className="btn--stop" onClick={() => setStopAsync(!btnCrosswalkStop) /*toggleBtn("btnCrosswalkStop", !btnCrosswalkStop)*/} /*disabled={isFetching}*/>
-              Stop ({String(btnCrosswalkStop)})
-            </Button>  
-          </div>
-
-          <div className="gap-2 mb-2">
-            <Button onClick={() => setCrosswalkLightGreen1(!trafficLight1_green)}>
-              Crosswalk green 1 ({String(trafficLight1_green)})
-            </Button>
-            <Button onClick={() => setCrosswalkLightYellow1(!trafficLight1_yellow)}>
-              Crosswalk yellow 1 ({String(trafficLight1_yellow)})
-            </Button>
-            <Button onClick={() => setCrosswalkLightRed1(!trafficLight1_red)}>
-              Crosswalk red 1 ({String(trafficLight1_red)})
+            <Button variant="danger" onClick={setEmergencyStop}>
+              Emergency Stop ({String(btnEmergencyStop)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setCrosswalkLightGreen2(!trafficLight2_green)}>
-              Crosswalk green 2 ({String(trafficLight2_green)})
-            </Button>
-            <Button onClick={() => setCrosswalkLightYellow2(!trafficLight2_yellow)}>
-              Crosswalk yellow 2 ({String(trafficLight2_yellow)})
-            </Button>
-            <Button onClick={() => setCrosswalkLightRed2(!trafficLight2_red)}>
-              Crosswalk red 2 ({String(trafficLight2_red)})
-            </Button>
+            <div><strong>Mode:</strong> {mode}</div>
+            <div><strong>Error:</strong> {String(errorSystem)}</div>
+            <div><strong>Door Closed:</strong> {String(doorClosed)}</div>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen1(!pedestrian1_green)}>
-              Pedestrian green 1 ({String(pedestrian1_green)})
-            </Button>
-            <Button onClick={() => setPedestrianLightRed1(!pedestrian1_red)}>
-              Pedestrian red 1 ({String(pedestrian1_red)})
-            </Button>
-          </div>
-
-          <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen2(!pedestrian2_green)}>
-              Pedestrian green 2 ({String(pedestrian2_green)})
-            </Button>
-            <Button onClick={() => setPedestrianLightRed2(!pedestrian2_red)}>
-              Pedestrian red 2 ({String(pedestrian2_red)})
-            </Button>
+            <div><strong>Light:</strong> G={String(lightGreen)} Y={String(lightYellow)} R={String(lightRed)}</div>
           </div>
         </Col>
 
-        {/*}
-        */}
         <pre style={{background:'#f6f8fa', padding:8, borderRadius:6, marginTop:12}}>
           {JSON.stringify(data, null, 2)}
         </pre>
-        
-        
       </div>
     </div>
   );
@@ -383,35 +258,11 @@ function WashingMachineParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
 function WashingMachinePage({ setAside }) {
   const [idx, setIdx] = useState(0);
-  const { data, saveData } = useData();
+  const { section: d, saveSection, data } = useSectionData('WashingMachine');
 
     useEffect(() => {
-    if (
-      data?.trafficLight1_green === undefined &&
-      data?.trafficLight1_yellow === undefined &&
-      data?.trafficLight1_red === undefined &&
-      data?.trafficLight2_green === undefined &&
-      data?.trafficLight2_yellow === undefined &&
-      data?.trafficLight2_red === undefined &&
-      data?.pedestrian1_green === undefined &&
-      data?.pedestrian1_red === undefined &&
-      data?.pedestrian2_green === undefined &&
-      data?.pedestrian2_red === undefined
-    ) {
-      saveData({
-        trafficLight1_green: 'false',
-        trafficLight1_yellow: 'false',
-        trafficLight1_red: 'false',
-        trafficLight2_green: 'false',
-        trafficLight2_yellow: 'false',
-        trafficLight2_red: 'false',
-        pedestrian1_green: 'false',
-        pedestrian1_red: 'false',
-        pedestrian2_green: 'false',
-        pedestrian2_red: 'false',
-      });
-    }
-  }, [data, saveData]);
+    // WashingMachine doesn't need traffic light init
+  }, []);
 
   useEffect(() => {
     const preload = (name) => {
@@ -442,10 +293,8 @@ function WashingMachinePage({ setAside }) {
     }, [setAside]);
   */}
 
-  const isNight = toBool(data?.crosswalkType);
-  const background = isNight
-    ? '/images/crosswalk_night_blank.png'
-    : '/images/crosswalk_day_blank.png';
+  const isNight = false; // WashingMachine doesn't use day/night
+  const background = '/images/crosswalk_day_blank.png'; // placeholder
 
   useEffect(() => {
     ['/images/crosswalk_day_blank.png', '/images/crosswalk_night_blank.png'].forEach(src => {
@@ -455,25 +304,25 @@ function WashingMachinePage({ setAside }) {
   }, []);
 
   const CARW = {
-    green: data?.trafficLight1_green ?? false,
-    yellow: data?.trafficLight1_yellow ?? false,
-    red: data?.trafficLight1_red ?? false,
+    green: d?.WashingMachineLight_green ?? false,
+    yellow: d?.WashingMachineLight_yellow ?? false,
+    red: d?.WashingMachineLight_red ?? false,
   };
 
   const CARE = {
-    green: data?.trafficLight2_green ?? false,
-    yellow: data?.trafficLight2_yellow ?? false,
-    red: data?.trafficLight2_red ?? false,
+    green: false,
+    yellow: false,
+    red: false,
   };
 
   const PEDN = {
-    green: data?.pedestrian1_green ?? false,
-    red: data?.pedestrian1_red ?? false,
+    green: false,
+    red: false,
   };
 
   const PEDS = {
-    green: data?.pedestrian2_green ?? false,
-    red: data?.pedestrian2_red ?? false,
+    green: false,
+    red: false,
   };
 
   const lights = [
@@ -492,11 +341,11 @@ function WashingMachinePage({ setAside }) {
     { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
   ];
 
-  const btnPed1 = toBool(data?.btnCrosswalk1);
-  const btnPed2 = toBool(data?.btnCrosswalk2);
+  const btnPed1 = false;
+  const btnPed2 = false;
 
-  const togglePedN = () => saveData({ btnCrosswalk1: !btnPed1 });
-  const togglePedS = () => saveData({ btnCrosswalk2: !btnPed2 });
+  const togglePedN = () => {};
+  const togglePedS = () => {};
 
   return (
     <Row className="washingmachinepage">

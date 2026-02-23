@@ -13,7 +13,7 @@ import PictureSwitcher from '../Components/PictureSwitcher.js';
 import ResponsiveImage from '../Components/ResponsiveImage.js';
 
 import { useRefresh } from '../Communication/RefreshContext.js';
-import { useData } from '../Communication/DataProvider';
+import { useData, useSectionData } from '../Communication/DataProvider';
 
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
@@ -201,75 +201,55 @@ function CrossroadCanvas({ background, lights, pedControls }) {
 function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,}) 
 {
   const { interval, setInterval } = useRefresh();
-  const { data, saveData, error, isFetching, refresh } = useData();
+  const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CrossroadData');
 
   const [status, setStatus] = React.useState('');
-  
-  const number = Number(data?.number ?? 0);
-  const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
-  const toggle = (() => {
-        const t = String(data?.toggle ?? '').toLowerCase();
-        return t === 'true' || t === 'on' || t === '1';
-  })();
 
-  const crossroadType = toBool(data?.crossroadType);
+  const crossroadType = toBool(d?.crossroadType);
 
-  const btnCrossroadStart = toBool(data?.btnCrossroadStart);
-  const btnCrossroadPause = toBool(data?.btnCrossroadPause);
-  const btnCrossroadStop = toBool(data?.btnCrossroadStop);
+  const btnCrossroadStart = toBool(d?.btnCrossroadStart);
+  const btnCrossroadPause = toBool(d?.btnCrossroadPause);
+  const btnCrossroadStop = toBool(d?.btnCrossroadStop);
 
-  const trafficLight1_green = toBool(data?.trafficLight1_green);
-  const trafficLight1_yellow = toBool(data?.trafficLight1_yellow);
-  const trafficLight1_red = toBool(data?.trafficLight1_red); 
-  const trafficLight2_green = toBool(data?.trafficLight2_green);
-  const trafficLight2_yellow = toBool(data?.trafficLight2_yellow);
-  const trafficLight2_red = toBool(data?.trafficLight2_red); 
-  const pedestrian1_green = toBool(data?.pedestrian1_green);
-  const pedestrian1_red = toBool(data?.pedestrian1_red); 
-  const pedestrian2_green = toBool(data?.pedestrian2_green);
-  const pedestrian2_red = toBool(data?.pedestrian2_red);
+  const trafficLight1_green = toBool(d?.trafficLight1_green);
+  const trafficLight1_yellow = toBool(d?.trafficLight1_yellow);
+  const trafficLight1_red = toBool(d?.trafficLight1_red); 
+  const trafficLight2_green = toBool(d?.trafficLight2_green);
+  const trafficLight2_yellow = toBool(d?.trafficLight2_yellow);
+  const trafficLight2_red = toBool(d?.trafficLight2_red); 
+  const pedestrian1_green = toBool(d?.pedestrian1_green);
+  const pedestrian1_red = toBool(d?.pedestrian1_red); 
+  const pedestrian2_green = toBool(d?.pedestrian2_green);
+  const pedestrian2_red = toBool(d?.pedestrian2_red);
 
-  //const setFlag = (key, value) => saveData({ [key]: value ? 'true' : 'false' });
+  const setCrossroadType = () => saveSection({ crossroadType: !crossroadType });
 
-  const setCrossroadType = () => saveData({ crossroadType: !crossroadType });
+  const setStartAsync = () => saveSection({ btnCrossroadStart: !btnCrossroadStart });
+  const setPauseAsync = () => saveSection({ btnCrossroadPause: !btnCrossroadPause });
+  const setStopAsync  = () => saveSection({ btnCrossroadStop: !btnCrossroadStop });
 
-  const setStartAsync = () => saveData({ btnCrossroadStart: !btnCrossroadStart });
-  const setPauseAsync = () => saveData({ btnCrossroadPause: !btnCrossroadPause });
-  const setStopAsync  = () => saveData({ btnCrossroadStop: !btnCrossroadStop });
-
-  const setCrossroadLightGreen1 = () => saveData({ trafficLight1_green: !trafficLight1_green });
-  const setCrossroadLightYellow1 = () => saveData({ trafficLight1_yellow: !trafficLight1_yellow });
-  const setCrossroadLightRed1 = () => saveData({ trafficLight1_red: !trafficLight1_red });
-  const setCrossroadLightGreen2 = () => saveData({ trafficLight2_green: !trafficLight2_green });
-  const setCrossroadLightYellow2 = () => saveData({ trafficLight2_yellow: !trafficLight2_yellow });
-  const setCrossroadLightRed2 = () => saveData({ trafficLight2_red: !trafficLight2_red });
-  const setPedestrianLightGreen1 = () => saveData({ pedestrian1_green: !pedestrian1_green });
-  const setPedestrianLightRed1 = () => saveData({ pedestrian1_red: !pedestrian1_red });
-  const setPedestrianLightGreen2 = () => saveData({ pedestrian2_green: !pedestrian2_green });
-  const setPedestrianLightRed2 = () => saveData({ pedestrian2_red: !pedestrian2_red });
+  const setCrossroadLightGreen1 = () => saveSection({ trafficLight1_green: !trafficLight1_green });
+  const setCrossroadLightYellow1 = () => saveSection({ trafficLight1_yellow: !trafficLight1_yellow });
+  const setCrossroadLightRed1 = () => saveSection({ trafficLight1_red: !trafficLight1_red });
+  const setCrossroadLightGreen2 = () => saveSection({ trafficLight2_green: !trafficLight2_green });
+  const setCrossroadLightYellow2 = () => saveSection({ trafficLight2_yellow: !trafficLight2_yellow });
+  const setCrossroadLightRed2 = () => saveSection({ trafficLight2_red: !trafficLight2_red });
+  const setPedestrianLightGreen1 = () => saveSection({ pedestrian1_green: !pedestrian1_green });
+  const setPedestrianLightRed1 = () => saveSection({ pedestrian1_red: !pedestrian1_red });
+  const setPedestrianLightGreen2 = () => saveSection({ pedestrian2_green: !pedestrian2_green });
+  const setPedestrianLightRed2 = () => saveSection({ pedestrian2_red: !pedestrian2_red });
 
   const toggleCrossroadType = async () => {
     try {
-      const current = toBool(data?.crossroadType ?? data?.crossroad_type);
+      const current = toBool(d?.crossroadType);
       const next = !current;
 
       setStatus(`sending… (current=${String(current)} → next=${String(next)})`);
       console.log('toggleCrossroadType', { current, next, data });
 
-      // DŮLEŽITÉ: pošli camel i snake variantu, aby to prošlo i přes případné mapování/whitelist
-      // Pokud tvůj provider snake/camel NEMÁ, druhý klíč ignoruje.
-      const payload = {
-        crossroadType: next,
-        crossroad_type: next,
-      };
-      const maybePromise = saveData(payload);
+      await saveSection({ crossroadType: next });
 
-      // saveData může být sync nebo async → ošetříme obě varianty
-      if (maybePromise && typeof maybePromise.then === 'function') {
-        await maybePromise;
-      }
-
-      setStatus(`ok ✔ (store now: ${String(toBool((data?.crossroadType ?? data?.crossroad_type)))})`);
+      setStatus(`ok ✔ (store now: ${String(toBool(d?.crossroadType))})`);
     } catch (e) {
       console.error(e);
       setStatus(`error ✖ ${e?.message ?? e}`);
@@ -383,22 +363,22 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
 function CrossroadPage({ setAside }) {
   const [idx, setIdx] = useState(0);
-  const { data, saveData } = useData();
+  const { section: d, saveSection, data } = useSectionData('CrossroadData');
 
     useEffect(() => {
     if (
-      data?.trafficLight1_green === undefined &&
-      data?.trafficLight1_yellow === undefined &&
-      data?.trafficLight1_red === undefined &&
-      data?.trafficLight2_green === undefined &&
-      data?.trafficLight2_yellow === undefined &&
-      data?.trafficLight2_red === undefined &&
-      data?.pedestrian1_green === undefined &&
-      data?.pedestrian1_red === undefined &&
-      data?.pedestrian2_green === undefined &&
-      data?.pedestrian2_red === undefined
+      d?.trafficLight1_green === undefined &&
+      d?.trafficLight1_yellow === undefined &&
+      d?.trafficLight1_red === undefined &&
+      d?.trafficLight2_green === undefined &&
+      d?.trafficLight2_yellow === undefined &&
+      d?.trafficLight2_red === undefined &&
+      d?.pedestrian1_green === undefined &&
+      d?.pedestrian1_red === undefined &&
+      d?.pedestrian2_green === undefined &&
+      d?.pedestrian2_red === undefined
     ) {
-      saveData({
+      saveSection({
         trafficLight1_green: 'false',
         trafficLight1_yellow: 'false',
         trafficLight1_red: 'false',
@@ -411,7 +391,7 @@ function CrossroadPage({ setAside }) {
         pedestrian2_red: 'false',
       });
     }
-  }, [data, saveData]);
+  }, [d, saveSection]);
 
   useEffect(() => {
     const preload = (name) => {
@@ -442,7 +422,7 @@ function CrossroadPage({ setAside }) {
     }, [setAside]);
   */}
 
-  const isNight = toBool(data?.crossroadType);
+  const isNight = toBool(d?.crossroadType);
   const background = isNight
     ? '/images/crossroad_night_blank.png'
     : '/images/crossroad_day_blank.png';
@@ -455,25 +435,25 @@ function CrossroadPage({ setAside }) {
   }, []);
 
   const CARW = {
-    green: data?.trafficLight1_green ?? false,
-    yellow: data?.trafficLight1_yellow ?? false,
-    red: data?.trafficLight1_red ?? false,
+    green: d?.trafficLight1_green ?? false,
+    yellow: d?.trafficLight1_yellow ?? false,
+    red: d?.trafficLight1_red ?? false,
   };
 
   const CARE = {
-    green: data?.trafficLight2_green ?? false,
-    yellow: data?.trafficLight2_yellow ?? false,
-    red: data?.trafficLight2_red ?? false,
+    green: d?.trafficLight2_green ?? false,
+    yellow: d?.trafficLight2_yellow ?? false,
+    red: d?.trafficLight2_red ?? false,
   };
 
   const PEDN = {
-    green: data?.pedestrian1_green ?? false,
-    red: data?.pedestrian1_red ?? false,
+    green: d?.pedestrian1_green ?? false,
+    red: d?.pedestrian1_red ?? false,
   };
 
   const PEDS = {
-    green: data?.pedestrian2_green ?? false,
-    red: data?.pedestrian2_red ?? false,
+    green: d?.pedestrian2_green ?? false,
+    red: d?.pedestrian2_red ?? false,
   };
 
   const lights = [
@@ -492,11 +472,11 @@ function CrossroadPage({ setAside }) {
     { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
   ];
 
-  const btnPed1 = toBool(data?.btnCrosswalk1);
-  const btnPed2 = toBool(data?.btnCrosswalk2);
+  const btnPed1 = toBool(d?.btnCrosswalk1);
+  const btnPed2 = toBool(d?.btnCrosswalk2);
 
-  const togglePedN = () => saveData({ btnCrosswalk1: !btnPed1 });
-  const togglePedS = () => saveData({ btnCrosswalk2: !btnPed2 });
+  const togglePedN = () => saveSection({ btnCrosswalk1: !btnPed1 });
+  const togglePedS = () => saveSection({ btnCrosswalk2: !btnPed2 });
 
   return (
     <Row className="crossroadpage">

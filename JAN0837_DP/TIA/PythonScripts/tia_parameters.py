@@ -66,17 +66,17 @@ Crosswalk_Output_UDT_FIELDS = [
 Regulator_Input_UDT_NAME = "Regulator_Input"
 
 Regulator_Input_UDT_FIELDS = [   
-    ("btnStart", "Bool", "FALSE"),
+    ("switchstate", "Bool", "FALSE"),
     ("R", "Real", "0.0"),
     ("C", "Real", "0.0"),
     ("U", "Real", "0.0"),
-    ("I", "Real", "0.0")
+    ("dopravnizpozdeni", "Real", "0.0"),
 ]
 
 Regulator_Output_UDT_NAME = "Regulator_Output"
 
 Regulator_Output_UDT_FIELDS = [
-    # ???
+    ("Uc", "Real", "0.0"),
 ]
 
 CarWash_Input_UDT_NAME = "CarWash_Input"
@@ -140,6 +140,29 @@ WashingMachine_Output_UDT_FIELDS = [
     ("WashingMachineBrushes", "Bool", "FALSE"),
     ("WashingMachineSoap", "Bool", "FALSE"),
     ("WashingMachineActiveFoam", "Bool", "FALSE"),
+]
+
+CarLight_Input_UDT_NAME = "CarLight_Input"
+
+CarLight_Input_UDT_FIELDS = [
+    ("btnCarLightEmergencyStop", "Bool", "FALSE"),
+    ("btnStartCarLight", "Bool", "FALSE"),
+    ("btnStopCarLight", "Bool", "FALSE"),
+    ("CarLightErrorSystem", "Bool", "FALSE"),
+    ("CarLightMode", "String", "''"),
+]
+
+CarLight_Output_UDT_NAME = "CarLight_Output"
+
+CarLight_Output_UDT_FIELDS = [
+    ("CarLightLight_green", "Bool", "FALSE"),
+    ("CarLightLight_yellow", "Bool", "FALSE"),
+    ("CarLightLight_red", "Bool", "FALSE"),
+    ("CarLightHeadlights", "Bool", "FALSE"),
+    ("CarLightTaillights", "Bool", "FALSE"),
+    ("CarLightTurnSignalLeft", "Bool", "FALSE"),
+    ("CarLightTurnSignalRight", "Bool", "FALSE"),
+    ("CarLightHazardLights", "Bool", "FALSE"),
 ]
 
 DEFAULT_DB_NAME = "DB_ProcessData"

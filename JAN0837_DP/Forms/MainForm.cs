@@ -144,14 +144,15 @@ namespace JAN0837_DP
                 var path = System.IO.Path.Combine(paths.tiaDLLPath, name);
                 return System.IO.File.Exists(path) ? System.Reflection.Assembly.LoadFrom(path) : null;
             };
+
+            // Auto-open Communication Control on startup
+            ShowInMain(_ucCommControl);
         }
 
         // toolStripMain components
         #region toolStripMain components
         private void btnGenerateTIATemplate_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Openning TIA Portal control.";
-
             /*
             mainWindow.Controls.Clear();
             var visual = new ucTIAControl();
@@ -164,8 +165,6 @@ namespace JAN0837_DP
 
         private void btnCommunicationControl_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Openning communication control.";
-
             /*
             mainWindow.Controls.Clear();
             var visual = new ucCommunicationControl();
@@ -178,8 +177,6 @@ namespace JAN0837_DP
 
         private void btnLocalHost_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Starting React dev server and ASP.NET server…"; // Openning localhost in browser.
-
             // starting reading 
             PeriodicalReading.Interval = internalVariables.communicationRefreshInterval;
             PeriodicalReading.Start();
@@ -264,8 +261,6 @@ namespace JAN0837_DP
 
         private async void btnExit_Click(object sender, EventArgs e)
         {
-            lblStatus.Text = "Exitting...";
-
             // communication thread stop
             
             if (internalVariables.communicationThread != null || internalVariables.communicationThreadRunningFlag == true)
@@ -311,12 +306,9 @@ namespace JAN0837_DP
 
                 _feServer = new FEserver(_feCommunication);
                 await _feServer.serverStart();
-
-                SetStatus($"Server started on {internalVariables.LocalIP}:{internalVariables.apiPort}");
             }
             catch (Exception ex)
             {
-                SetStatus("Error: " + ex.Message);
                 Logger.LogException(ex, "Visualization");
             }
         }
@@ -359,18 +351,6 @@ namespace JAN0837_DP
                 {
                     PeriodicalReading.Start();
                 }
-            }
-        }
-
-        public void SetStatus(string message)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => lblStatus.Text = message));
-            }
-            else
-            {
-                lblStatus.Text = message;
             }
         }
 

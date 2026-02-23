@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useMemo } from 'react';
 
 import { API_URL } from '../variables';
 import { useRefresh } from './RefreshContext';
@@ -83,3 +83,22 @@ export function DataProvider({ children }) {
 }
 
 export const useData = () => useContext(DataContext);
+
+/**
+ * Hook for section-scoped data access.
+ * Returns { section, saveSection } where:
+ *   - section is the nested object for that section (e.g. data.CrossroadData)
+ *   - saveSection(patch) wraps the patch into { [sectionName]: patch } before saving
+ */
+export function useSectionData(sectionName) {
+  const { data, saveData, error, isFetching, refresh } = useData();
+
+  const section = data?.[sectionName] ?? {};
+
+  const saveSection = useMemo(
+    () => (patch) => saveData(patch),
+    [saveData]
+  );
+
+  return { section, saveSection, data, error, isFetching, refresh };
+}

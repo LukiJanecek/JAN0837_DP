@@ -653,101 +653,108 @@ namespace JAN0837_DP.ReactFE
 
                     WriteJSON(resp, new
                     {
-                        // TestData
-                        number = testdata.number,
-                        text = testdata.text,
-                        toggle = testdata.toggle,
-
-                        // CrossroadData
-                        crossroadType = crossroaddata.crossroadType,
-                        btnCrossroadStart = crossroaddata.btnCrossroadStart,
-                        btnCrossroadPause = crossroaddata.btnCrossroadPause,
-                        btnCrossroadStop = crossroaddata.btnCrossroadStop,
-                        btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                        btnCrosswalk2 = crossroaddata.btnCrosswalk2,
-                        trafficLight1_green = crossroaddata.trafficLight1_green,
-                        trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
-                        trafficLight1_red = crossroaddata.trafficLight1_red,
-                        trafficLight2_green = crossroaddata.trafficLight2_green,
-                        trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
-                        trafficLight2_red = crossroaddata.trafficLight2_red,
-                        pedestrian1_green = crossroaddata.pedestrian1_green,
-                        pedestrian1_red = crossroaddata.pedestrian1_red,
-                        pedestrian2_green = crossroaddata.pedestrian2_green,
-                        pedestrian2_red = crossroaddata.pedestrian2_red,
-
-                        // CrosswalkData
-                        crosswalkType = crosswalkdata.crosswalkType,
-                        btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
-                        btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
-                        btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
-                        btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
-                        btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
-                        trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
-                        trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
-                        trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
-                        trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
-                        trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
-                        trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
-                        pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
-                        pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
-                        pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
-                        pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red,
-
-                        // RegulatorData
-                        btnStart_regulator = regulatordata.btnStart,
-                        R = regulatordata.R,
-                        C = regulatordata.C,
-                        U = regulatordata.U,
-                        I = regulatordata.I,
-
-                        // CarWashData
-                        btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
-                        btnStartCarWash = carwashdata.btnStartCarWash,
-                        btnStopCarWash = carwashdata.btnStopCarWash,
-                        CarWashErrorSystem = carwashdata.CarWashErrorSystem,
-                        CarWashCarPosition = carwashdata.CarWashCarPosition,
-                        CarWashShowerPosition = carwashdata.CarWashShowerPosition,
-                        CarWashMode = carwashdata.CarWashMode,
-                        CarWashLight_green = carwashdata.CarWashLight_green,
-                        CarWashLight_yellow = carwashdata.CarWashLight_yellow,
-                        CarWashLight_red = carwashdata.CarWashLight_red,
-                        CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
-                        CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
-                        CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
-                        CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
-                        CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
-                        CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
-                        CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
-                        CarWashPrewash = carwashdata.CarWashPrewash,
-                        CarWashWater = carwashdata.CarWashWater,
-                        CarWashWax = carwashdata.CarWashWax,
-                        CarWashDry = carwashdata.CarWashDry,
-                        CarWashBrushes = carwashdata.CarWashBrushes,
-                        CarWashSoap = carwashdata.CarWashSoap,
-                        CarWashActiveFoam = carwashdata.CarWashActiveFoam,
-                        CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
-                        CarWashMEMDoor = carwashdata.CarWashMEMDoor,
-                        CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
-                        CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig,
-
-                        // WashingMachineData
-                        btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
-                        btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
-                        btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
-                        WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
-                        WashingMachineMode = washingmachinedata.WashingMachineMode,
-                        WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
-                        WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
-                        WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
-                        WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
-                        WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
-                        WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
-                        WashingMachineWater = washingmachinedata.WashingMachineWater,
-                        WashingMachineDry = washingmachinedata.WashingMachineDry,
-                        WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
-                        WashingMachineSoap = washingmachinedata.WashingMachineSoap,
-                        WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
+                        TestData = new
+                        {
+                            number = testdata.number,
+                            text = testdata.text,
+                            toggle = testdata.toggle
+                        },
+                        CrossroadData = new
+                        {
+                            crossroadType = crossroaddata.crossroadType,
+                            btnCrossroadStart = crossroaddata.btnCrossroadStart,
+                            btnCrossroadPause = crossroaddata.btnCrossroadPause,
+                            btnCrossroadStop = crossroaddata.btnCrossroadStop,
+                            btnCrosswalk1 = crossroaddata.btnCrosswalk1,
+                            btnCrosswalk2 = crossroaddata.btnCrosswalk2,
+                            trafficLight1_green = crossroaddata.trafficLight1_green,
+                            trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
+                            trafficLight1_red = crossroaddata.trafficLight1_red,
+                            trafficLight2_green = crossroaddata.trafficLight2_green,
+                            trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
+                            trafficLight2_red = crossroaddata.trafficLight2_red,
+                            pedestrian1_green = crossroaddata.pedestrian1_green,
+                            pedestrian1_red = crossroaddata.pedestrian1_red,
+                            pedestrian2_green = crossroaddata.pedestrian2_green,
+                            pedestrian2_red = crossroaddata.pedestrian2_red
+                        },
+                        CrosswalkData = new
+                        {
+                            crosswalkType = crosswalkdata.crosswalkType,
+                            btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
+                            btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
+                            btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
+                            btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
+                            btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
+                            trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
+                            trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
+                            trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
+                            trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
+                            trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
+                            trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
+                            pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
+                            pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
+                            pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
+                            pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red
+                        },
+                        RegulatorData = new
+                        {
+                            btnStart_regulator = regulatordata.btnStart,
+                            R = regulatordata.R,
+                            C = regulatordata.C,
+                            U = regulatordata.U,
+                            I = regulatordata.I
+                        },
+                        CarWash = new
+                        {
+                            btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
+                            btnStartCarWash = carwashdata.btnStartCarWash,
+                            btnStopCarWash = carwashdata.btnStopCarWash,
+                            CarWashErrorSystem = carwashdata.CarWashErrorSystem,
+                            CarWashCarPosition = carwashdata.CarWashCarPosition,
+                            CarWashShowerPosition = carwashdata.CarWashShowerPosition,
+                            CarWashMode = carwashdata.CarWashMode,
+                            CarWashLight_green = carwashdata.CarWashLight_green,
+                            CarWashLight_yellow = carwashdata.CarWashLight_yellow,
+                            CarWashLight_red = carwashdata.CarWashLight_red,
+                            CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
+                            CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
+                            CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
+                            CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
+                            CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
+                            CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
+                            CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
+                            CarWashPrewash = carwashdata.CarWashPrewash,
+                            CarWashWater = carwashdata.CarWashWater,
+                            CarWashWax = carwashdata.CarWashWax,
+                            CarWashDry = carwashdata.CarWashDry,
+                            CarWashBrushes = carwashdata.CarWashBrushes,
+                            CarWashSoap = carwashdata.CarWashSoap,
+                            CarWashActiveFoam = carwashdata.CarWashActiveFoam,
+                            CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
+                            CarWashMEMDoor = carwashdata.CarWashMEMDoor,
+                            CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
+                            CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig
+                        },
+                        WashingMachine = new
+                        {
+                            btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
+                            btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
+                            btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
+                            WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
+                            WashingMachineMode = washingmachinedata.WashingMachineMode,
+                            WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
+                            WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
+                            WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
+                            WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
+                            WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
+                            WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
+                            WashingMachineWater = washingmachinedata.WashingMachineWater,
+                            WashingMachineDry = washingmachinedata.WashingMachineDry,
+                            WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
+                            WashingMachineSoap = washingmachinedata.WashingMachineSoap,
+                            WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
+                        }
                     });
                     return;
                 }
@@ -865,101 +872,56 @@ namespace JAN0837_DP.ReactFE
 
             return new
             {
-                // TestData
-                text = testdata.text,
-                number = testdata.number,
-                toggle = testdata.toggle,
-
-                // CrossroadData - only inputs
-                crossroadType = crossroaddata.crossroadType,
-                btnCrossroadStart = crossroaddata.btnCrossroadStart,
-                btnCrossroadPause = crossroaddata.btnCrossroadPause,
-                btnCrossroadStop = crossroaddata.btnCrossroadStop,
-                btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                btnCrosswalk2 = crossroaddata.btnCrosswalk2,
-                //trafficLight1_green = crossroaddata.trafficLight1_green,
-                //trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
-                //trafficLight1_red = crossroaddata.trafficLight1_red,
-                //trafficLight2_green = crossroaddata.trafficLight2_green,
-                //trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
-                //trafficLight2_red = crossroaddata.trafficLight2_red,
-                //pedestrian1_green = crossroaddata.pedestrian1_green,
-                //pedestrian1_red = crossroaddata.pedestrian1_red,
-                //pedestrian2_green = crossroaddata.pedestrian2_green,
-                //pedestrian2_red = crossroaddata.pedestrian2_red,
-
-                // CrosswalkData - only inputs
-                crosswalkType = crosswalkdata.crosswalkType,
-                btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
-                btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
-                btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
-                btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
-                btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
-                //trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
-                //trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
-                //trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
-                //trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
-                //trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
-                //trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
-                //pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
-                //pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
-                //pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
-                //pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red,
-
-                // RegulatorData - only inputs
-                btnStart_regulator = regulatordata.btnStart,
-                R = regulatordata.R,
-                C = regulatordata.C,
-                U = regulatordata.U,
-                I = regulatordata.I,
-
-                // CarWashData - only inputs
-                btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
-                btnStartCarWash = carwashdata.btnStartCarWash,
-                btnStopCarWash = carwashdata.btnStopCarWash,
-                CarWashErrorSystem = carwashdata.CarWashErrorSystem,
-                CarWashCarPosition = carwashdata.CarWashCarPosition,
-                CarWashShowerPosition = carwashdata.CarWashShowerPosition,
-                CarWashMode = carwashdata.CarWashMode,
-                //CarWashLight_green = carwashdata.CarWashLight_green,
-                //CarWashLight_yellow = carwashdata.CarWashLight_yellow,
-                //CarWashLight_red = carwashdata.CarWashLight_red,
-                //CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
-                //CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
-                //CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
-                //CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
-                //CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
-                //CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
-                //CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
-                //CarWashPrewash = carwashdata.CarWashPrewash,
-                //CarWashWater = carwashdata.CarWashWater,
-                //CarWashWax = carwashdata.CarWashWax,
-                //CarWashDry = carwashdata.CarWashDry,
-                //CarWashBrushes = carwashdata.CarWashBrushes,
-                //CarWashSoap = carwashdata.CarWashSoap,
-                //CarWashActiveFoam = carwashdata.CarWashActiveFoam,
-                //CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
-                //CarWashMEMDoor = carwashdata.CarWashMEMDoor,
-                //CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
-                //CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig,
-
-                // WashingMachineData - only inputs
-                btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
-                btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
-                btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
-                WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
-                WashingMachineMode = washingmachinedata.WashingMachineMode
-                //WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
-                //WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
-                //WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
-                //WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
-                //WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
-                //WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
-                //WashingMachineWater = washingmachinedata.WashingMachineWater,
-                //WashingMachineDry = washingmachinedata.WashingMachineDry,
-                //WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
-                //WashingMachineSoap = washingmachinedata.WashingMachineSoap,
-                //WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
+                TestData = new
+                {
+                    text = testdata.text,
+                    number = testdata.number,
+                    toggle = testdata.toggle
+                },
+                CrossroadData = new
+                {
+                    crossroadType = crossroaddata.crossroadType,
+                    btnCrossroadStart = crossroaddata.btnCrossroadStart,
+                    btnCrossroadPause = crossroaddata.btnCrossroadPause,
+                    btnCrossroadStop = crossroaddata.btnCrossroadStop,
+                    btnCrosswalk1 = crossroaddata.btnCrosswalk1,
+                    btnCrosswalk2 = crossroaddata.btnCrosswalk2
+                },
+                CrosswalkData = new
+                {
+                    crosswalkType = crosswalkdata.crosswalkType,
+                    btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
+                    btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
+                    btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
+                    btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
+                    btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2
+                },
+                RegulatorData = new
+                {
+                    btnStart_regulator = regulatordata.btnStart,
+                    R = regulatordata.R,
+                    C = regulatordata.C,
+                    U = regulatordata.U,
+                    I = regulatordata.I
+                },
+                CarWash = new
+                {
+                    btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
+                    btnStartCarWash = carwashdata.btnStartCarWash,
+                    btnStopCarWash = carwashdata.btnStopCarWash,
+                    CarWashErrorSystem = carwashdata.CarWashErrorSystem,
+                    CarWashCarPosition = carwashdata.CarWashCarPosition,
+                    CarWashShowerPosition = carwashdata.CarWashShowerPosition,
+                    CarWashMode = carwashdata.CarWashMode
+                },
+                WashingMachine = new
+                {
+                    btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
+                    btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
+                    btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
+                    WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
+                    WashingMachineMode = washingmachinedata.WashingMachineMode
+                }
             };
         }
 

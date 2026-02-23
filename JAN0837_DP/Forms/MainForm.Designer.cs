@@ -30,8 +30,6 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            statusStripMain = new StatusStrip();
-            lblStatus = new ToolStripStatusLabel();
             toolStripMain = new ToolStrip();
             btnCommunicationControl = new ToolStripButton();
             btnGenerateTIATemplate = new ToolStripButton();
@@ -39,25 +37,8 @@
             btnExit = new ToolStripButton();
             mainWindow = new Panel();
             PeriodicalReading = new System.Windows.Forms.Timer(components);
-            statusStripMain.SuspendLayout();
             toolStripMain.SuspendLayout();
             SuspendLayout();
-            // 
-            // statusStripMain
-            // 
-            statusStripMain.ImageScalingSize = new Size(20, 20);
-            statusStripMain.Items.AddRange(new ToolStripItem[] { lblStatus });
-            statusStripMain.Location = new Point(0, 357);
-            statusStripMain.Name = "statusStripMain";
-            statusStripMain.Size = new Size(832, 26);
-            statusStripMain.TabIndex = 0;
-            statusStripMain.Text = "statusStrip1";
-            // 
-            // lblStatus
-            // 
-            lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(90, 20);
-            lblStatus.Text = "Default text.";
             // 
             // toolStripMain
             // 
@@ -116,7 +97,7 @@
             mainWindow.Dock = DockStyle.Fill;
             mainWindow.Location = new Point(0, 27);
             mainWindow.Name = "mainWindow";
-            mainWindow.Size = new Size(832, 330);
+            mainWindow.Size = new Size(832, 356);
             mainWindow.TabIndex = 21;
             mainWindow.Paint += mainWindow_Paint;
             // 
@@ -131,12 +112,9 @@
             ClientSize = new Size(832, 383);
             Controls.Add(mainWindow);
             Controls.Add(toolStripMain);
-            Controls.Add(statusStripMain);
             Name = "MainForm";
             ShowIcon = false;
             Load += MainForm_Load;
-            statusStripMain.ResumeLayout(false);
-            statusStripMain.PerformLayout();
             toolStripMain.ResumeLayout(false);
             toolStripMain.PerformLayout();
             ResumeLayout(false);
@@ -144,10 +122,7 @@
         }
 
         #endregion
-
-        private StatusStrip statusStripMain;
         private ToolStrip toolStripMain;
-        private ToolStripStatusLabel lblStatus;
         private ToolStripButton btnGenerateTIATemplate;
         private ToolStripButton btnLocalHost;
         private ToolStripButton btnExit;

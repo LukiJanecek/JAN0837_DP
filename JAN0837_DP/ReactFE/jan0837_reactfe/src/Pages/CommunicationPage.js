@@ -6,7 +6,7 @@ import '../App.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { useRefresh } from '../Communication/RefreshContext.js';
-import { useData } from '../Communication/DataProvider';
+import { useData, useSectionData } from '../Communication/DataProvider';
 import { API_URL } from '../variables.js'; 
 
 function CommunicationParamsSidebar({data, refresh, isFetching}) {
@@ -61,17 +61,17 @@ function CommunicationParamsSidebar({data, refresh, isFetching}) {
 function CommunicationPage() {
     //const { number, text, toggle, error, isFetching, inc, dec, setToggleAsync, setTextAsync, refresh } = useData();
     const { interval, setInterval } = useRefresh();
-    const { data, saveData, error, isFetching, refresh } = useData();
+    const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('TestData');
 
-    const number = Number(data?.number ?? 0);
-    const text = typeof data?.text === 'string' ? data.text : String(data?.text ?? '');
+    const number = Number(d?.number ?? 0);
+    const text = typeof d?.text === 'string' ? d.text : String(d?.text ?? '');
     const toggle = (() => {
-        const t = String(data?.toggle ?? '').toLowerCase();
+        const t = String(d?.toggle ?? '').toLowerCase();
         return t === 'true' || t === 'on' || t === '1';
     })();
-    const inc = () => saveData({ number: number + 1 });
-    const dec = () => saveData({ number: number - 1 });
-    const setToggleAsync = () => saveData({ toggle: !toggle ? 'true' : 'false' });
+    const inc = () => saveSection({ number: number + 1 });
+    const dec = () => saveSection({ number: number - 1 });
+    const setToggleAsync = () => saveSection({ toggle: !toggle ? 'true' : 'false' });
 
     return (
         <Row className="g-0">

@@ -110,7 +110,7 @@ CarWash_Output_UDT_FIELDS = [
     ("Dry", "Bool", "FALSE"),
     ("Brushes", "Bool", "FALSE"),
     ("Soap", "Bool", "FALSE"),
-    ("TimeDoorMovement", "Bool", "FALSE"),
+    ("TimeDoorMovement", "Int", "0"),
     ("MEMDoor", "Bool", "FALSE"),
     ("MEMDoorMovement", "Bool", "FALSE"),
     ("MEMDoorClosingTrig", "Bool", "FALSE"),

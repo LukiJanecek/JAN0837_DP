@@ -37,7 +37,6 @@ const toBool = (v) => {
  *   done                        Bool – sequence completed correctly
  */
 
-/* ── Visual car-light panel ───────────────────────────── */
 function CarLightCanvas({ d }) {
   const marker = toBool(d?.markerLight);
   const brake  = toBool(d?.brakeLight);
@@ -69,7 +68,6 @@ function CarLightCanvas({ d }) {
   );
 }
 
-/* ── Sidebar: inputs + outputs ────────────────────────── */
 function CarLightParamsSidebar() {
   const { interval, setInterval } = useRefresh();
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CarLight');
@@ -234,8 +232,7 @@ function CarLightParamsSidebar() {
     </div>
   );
 }
-
-/* ── Page ─────────────────────────────────────────────── */
+    
 function CarLightPage() {
   const { section: d } = useSectionData('CarLight');
 

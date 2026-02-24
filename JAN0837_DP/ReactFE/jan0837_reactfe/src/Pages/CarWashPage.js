@@ -50,7 +50,6 @@ const toBool = (v) => {
   return s === 'true' || s === '1' || s === 'on';
 };
 
-/* ── Sidebar ─────────────────────────────────────────── */
 function CarWashParamsSidebar() {
   const { interval, setInterval } = useRefresh();
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CarWash');
@@ -108,7 +107,6 @@ function CarWashParamsSidebar() {
   );
 }
 
-/* ── Page ─────────────────────────────────────────────── */
 function CarWashPage() {
   const { section: d } = useSectionData('CarWash');
 

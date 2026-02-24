@@ -381,8 +381,8 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnStart_regulator": 
-                        RegulatorData.btnStart = value; 
+                    case "switchstate_regulator": 
+                        RegulatorData.switchstate = value; 
                         break;
                     case "R": 
                         RegulatorData.R = value; 
@@ -393,8 +393,11 @@ namespace JAN0837_DP.ReactFE
                     case "U": 
                         RegulatorData.U = value; 
                         break;
-                    case "I": 
-                        RegulatorData.I = value; 
+                    case "Td": 
+                        RegulatorData.Td = value; 
+                        break;
+                    case "Uc":
+                        RegulatorData.Uc = value;
                         break;
                 }
             });
@@ -552,6 +555,40 @@ namespace JAN0837_DP.ReactFE
             });
         }
 
+        private static void ApplyCarLightUpdate(string key, string value)
+        {
+            CarLightData.Update(() =>
+            {
+                switch (key)
+                {
+                    case "btnStart_carlight":
+                        CarLightData.btnStart = value;
+                        break;
+                    case "btnReset_carlight":
+                        CarLightData.btnReset = value;
+                        break;
+                    case "markerLight":
+                        CarLightData.markerLight = value;
+                        break;
+                    case "brakeLight":
+                        CarLightData.brakeLight = value;
+                        break;
+                    case "turnLight":
+                        CarLightData.turnLight = value;
+                        break;
+                    case "sensorPosition":
+                        CarLightData.sensorPosition = value;
+                        break;
+                    case "sensorConnectorConnected":
+                        CarLightData.sensorConnectorConnected = value;
+                        break;
+                    case "done_carlight":
+                        CarLightData.done = value;
+                        break;
+                }
+            });
+        }
+
         public async Task HandleAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -650,6 +687,7 @@ namespace JAN0837_DP.ReactFE
                     var regulatordata = RegulatorData.Get();
                     var carwashdata = CarWashData.Get();
                     var washingmachinedata = WashingMachineData.Get();
+                    var carlightdata = CarLightData.Get();
 
                     WriteJSON(resp, new
                     {
@@ -699,11 +737,11 @@ namespace JAN0837_DP.ReactFE
                         },
                         RegulatorData = new
                         {
-                            btnStart_regulator = regulatordata.btnStart,
+                            switchstate_regulator = regulatordata.switchstate,
                             R = regulatordata.R,
                             C = regulatordata.C,
                             U = regulatordata.U,
-                            I = regulatordata.I
+                            Td = regulatordata.Td
                         },
                         CarWash = new
                         {
@@ -754,6 +792,14 @@ namespace JAN0837_DP.ReactFE
                             WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
                             WashingMachineSoap = washingmachinedata.WashingMachineSoap,
                             WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
+                        },
+                        CarLight = new
+                        {
+                            btnStart_carlight = carlightdata.btnStart,
+                            btnReset_carlight = carlightdata.btnReset,
+                            markerLight = carlightdata.markerLight,
+                            brakeLight = carlightdata.brakeLight,
+                            turnLight = carlightdata.turnLight
                         }
                     });
                     return;
@@ -805,7 +851,7 @@ namespace JAN0837_DP.ReactFE
                             ApplyCrosswalkUpdate(key, value);
                         }
                         // RegulatorData
-                        else if (key == "btnStart_regulator" || key == "R" || key == "C" || key == "U" || key == "I")
+                        else if (key == "switchstate_regulator" || key == "R" || key == "C" || key == "U" || key == "Td" || key == "Uc")
                         {
                             ApplyRegulatorUpdate(key, value);
                         }
@@ -822,6 +868,12 @@ namespace JAN0837_DP.ReactFE
                                  key.StartsWith("btnStop") && key.Contains("WashingMachine"))
                         {
                             ApplyWashingMachineUpdate(key, value);
+                        }
+                        // CarLightData
+                        else if (key.Contains("_carlight") || key == "markerLight" || key == "brakeLight" || 
+                                 key == "turnLight" || key == "sensorPosition" || key == "sensorConnectorConnected")
+                        {
+                            ApplyCarLightUpdate(key, value);
                         }
                     }
 
@@ -869,6 +921,7 @@ namespace JAN0837_DP.ReactFE
             var regulatordata = RegulatorData.Get();
             var carwashdata = CarWashData.Get();
             var washingmachinedata = WashingMachineData.Get();
+            var carlightdata = CarLightData.Get();
 
             return new
             {
@@ -898,11 +951,11 @@ namespace JAN0837_DP.ReactFE
                 },
                 RegulatorData = new
                 {
-                    btnStart_regulator = regulatordata.btnStart,
+                    switchstate_regulator = regulatordata.switchstate,
                     R = regulatordata.R,
                     C = regulatordata.C,
                     U = regulatordata.U,
-                    I = regulatordata.I
+                    Td = regulatordata.Td
                 },
                 CarWash = new
                 {
@@ -921,6 +974,14 @@ namespace JAN0837_DP.ReactFE
                     btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
                     WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
                     WashingMachineMode = washingmachinedata.WashingMachineMode
+                },
+                CarLight = new
+                {
+                    btnStart_carlight = carlightdata.btnStart,
+                    btnReset_carlight = carlightdata.btnReset,
+                    markerLight = carlightdata.markerLight,
+                    brakeLight = carlightdata.brakeLight,
+                    turnLight = carlightdata.turnLight
                 }
             };
         }
@@ -970,6 +1031,11 @@ namespace JAN0837_DP.ReactFE
             return GetDataAsync<WashingMachineData.State>(internalVariables.internalApiDataURL);
         }
 
+        public Task<CarLightData.State> GetCarLightDataAsync()
+        {
+            return GetDataAsync<CarLightData.State>(internalVariables.internalApiDataURL);
+        }
+
         public void ApplySnapshot(TestData snap)
         {
             TestData.AppState.Set(snap);
@@ -998,6 +1064,11 @@ namespace JAN0837_DP.ReactFE
         public void ApplySnapshot(WashingMachineData.State snap)
         {
             WashingMachineData.Set(snap);
+        }
+
+        public void ApplySnapshot(CarLightData.State snap)
+        {
+            CarLightData.Set(snap);
         }
 
         public async Task<bool> IsAliveAsync(string url)

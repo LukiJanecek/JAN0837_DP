@@ -83,23 +83,23 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                btnWashingMachineEmergencyStop = s.btnWashingMachineEmergencyStop; // ?
-                btnStartWashingMachine = s.btnStartWashingMachine; // ? 
-                btnStopWashingMachine = s.btnStopWashingMachine; // ? 
-                WashingMachineErrorSystem = s.WashingMachineErrorSystem; // ? 
-                WashingMachineMode = s.WashingMachineMode; // ? 
+                if (s.btnWashingMachineEmergencyStop != null) btnWashingMachineEmergencyStop = s.btnWashingMachineEmergencyStop;
+                if (s.btnStartWashingMachine != null) btnStartWashingMachine = s.btnStartWashingMachine;
+                if (s.btnStopWashingMachine != null) btnStopWashingMachine = s.btnStopWashingMachine;
+                if (s.WashingMachineErrorSystem != null) WashingMachineErrorSystem = s.WashingMachineErrorSystem;
+                if (s.WashingMachineMode != null) WashingMachineMode = s.WashingMachineMode;
 
-                WashingMachineLight_green = s.WashingMachineLight_green;
-                WashingMachineLight_yellow = s.WashingMachineLight_yellow;
-                WashingMachineLight_red = s.WashingMachineLight_red;
-                WashingMachineDoorClosed = s.WashingMachineDoorClosed;
-                WashingMachineChemicals = s.WashingMachineChemicals;
-                WashingMachinePrewash = s.WashingMachinePrewash;
-                WashingMachineWater = s.WashingMachineWater;
-                WashingMachineDry = s.WashingMachineDry;
-                WashingMachineBrushes = s.WashingMachineBrushes;
-                WashingMachineSoap = s.WashingMachineSoap;
-                WashingMachineActiveFoam = s.WashingMachineActiveFoam;
+                if (s.WashingMachineLight_green != null) WashingMachineLight_green = s.WashingMachineLight_green;
+                if (s.WashingMachineLight_yellow != null) WashingMachineLight_yellow = s.WashingMachineLight_yellow;
+                if (s.WashingMachineLight_red != null) WashingMachineLight_red = s.WashingMachineLight_red;
+                if (s.WashingMachineDoorClosed != null) WashingMachineDoorClosed = s.WashingMachineDoorClosed;
+                if (s.WashingMachineChemicals != null) WashingMachineChemicals = s.WashingMachineChemicals;
+                if (s.WashingMachinePrewash != null) WashingMachinePrewash = s.WashingMachinePrewash;
+                if (s.WashingMachineWater != null) WashingMachineWater = s.WashingMachineWater;
+                if (s.WashingMachineDry != null) WashingMachineDry = s.WashingMachineDry;
+                if (s.WashingMachineBrushes != null) WashingMachineBrushes = s.WashingMachineBrushes;
+                if (s.WashingMachineSoap != null) WashingMachineSoap = s.WashingMachineSoap;
+                if (s.WashingMachineActiveFoam != null) WashingMachineActiveFoam = s.WashingMachineActiveFoam;
             }
         }
 

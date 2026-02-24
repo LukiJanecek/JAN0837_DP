@@ -14,6 +14,7 @@ import CommunicationPage from './Pages/CommunicationPage.js';
 import CrosswalkPage from './Pages/CrosswalkPage.js';
 import RegulatorPage from './Pages/RegulatorPage.js';
 import CarWashPage from './Pages/CarWashPage.js';
+import CarLightPage from './Pages/CarLightPage.js';
 import WashingMachinePage from './Pages/WashingMachinePage.js';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/crosswalk" element={<CrosswalkPage setAside={setAside} />} />
           <Route path="/regulator" element={<RegulatorPage setAside={setAside} />} />
           <Route path="/carwash" element={<CarWashPage setAside={setAside} />} />
+          <Route path="/carlight" element={<CarLightPage setAside={setAside} />} />
           <Route path="/washingmachine" element={<WashingMachinePage setAside={setAside} />} />
         </Routes>
       </main>

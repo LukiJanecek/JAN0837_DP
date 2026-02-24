@@ -15,6 +15,30 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData, useSectionData } from '../Communication/DataProvider';
 
+/*
+ * ── CrossroadData variable map ────────────────────
+ *
+ * INPUTS  (FE → PLC):
+ *   btnCrossroadStart    Bool – start crossroad
+ *   btnCrossroadPause    Bool – pause crossroad
+ *   btnCrossroadStop     Bool – stop crossroad
+ *   btnCrosswalk1        Bool – pedestrian button N
+ *   btnCrosswalk2        Bool – pedestrian button S
+ *
+ * OUTPUTS (PLC → FE):
+ *   crossroadType            Bool – night / day
+ *   trafficLight1_green      Bool
+ *   trafficLight1_yellow     Bool
+ *   trafficLight1_red        Bool
+ *   trafficLight2_green      Bool
+ *   trafficLight2_yellow     Bool
+ *   trafficLight2_red        Bool
+ *   pedestrian1_green        Bool
+ *   pedestrian1_red          Bool
+ *   pedestrian2_green        Bool
+ *   pedestrian2_red          Bool
+ */
+
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
   const s = String(v ?? '').trim().toLowerCase();

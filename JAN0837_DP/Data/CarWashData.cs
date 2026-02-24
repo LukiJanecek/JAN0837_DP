@@ -119,36 +119,36 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                btnCarWashEmergencyStop = s.btnCarWashEmergencyStop; // ?
-                btnStartCarWash = s.btnStartCarWash; // ? 
-                btnStopCarWash = s.btnStopCarWash; // ? 
-                CarWashErrorSystem = s.CarWashErrorSystem; // ? 
-                CarWashCarPosition = s.CarWashCarPosition; // ? 
-                CarWashShowerPosition = s.CarWashShowerPosition; // ?
-                CarWashMode = s.CarWashMode; // ?
+                if (s.btnCarWashEmergencyStop != null) btnCarWashEmergencyStop = s.btnCarWashEmergencyStop;
+                if (s.btnStartCarWash != null) btnStartCarWash = s.btnStartCarWash;
+                if (s.btnStopCarWash != null) btnStopCarWash = s.btnStopCarWash;
+                if (s.CarWashErrorSystem != null) CarWashErrorSystem = s.CarWashErrorSystem;
+                if (s.CarWashCarPosition != null) CarWashCarPosition = s.CarWashCarPosition;
+                if (s.CarWashShowerPosition != null) CarWashShowerPosition = s.CarWashShowerPosition;
+                if (s.CarWashMode != null) CarWashMode = s.CarWashMode;
 
-                CarWashLight_green = s.CarWashLight_green;
-                CarWashLight_yellow = s.CarWashLight_yellow;
-                CarWashLight_red = s.CarWashLight_red;
-                CarWashDoor1_Up = s.CarWashDoor1_Up;
-                CarWashDoor1_Down = s.CarWashDoor1_Down;
-                CarWashDoor2_Up = s.CarWashDoor2_Up;
-                CarWashDoor2_Down = s.CarWashDoor2_Down;
-                CarWashChemicalsFront = s.CarWashChemicalsFront;
-                CarWashChemicalsSides = s.CarWashChemicalsSides;
-                CarWashChemicalsBack = s.CarWashChemicalsBack;
-                CarWashPrewash = s.CarWashPrewash;
-                CarWashWater = s.CarWashWater;
-                CarWashWax = s.CarWashWax;
-                CarWashDry = s.CarWashDry;
-                CarWashBrushes = s.CarWashBrushes;
-                CarWashSoap = s.CarWashSoap;
-                CarWashActiveFoam = s.CarWashActiveFoam;
-                CarWashTimeDoorMovement = s.CarWashTimeDoorMovement;
+                if (s.CarWashLight_green != null) CarWashLight_green = s.CarWashLight_green;
+                if (s.CarWashLight_yellow != null) CarWashLight_yellow = s.CarWashLight_yellow;
+                if (s.CarWashLight_red != null) CarWashLight_red = s.CarWashLight_red;
+                if (s.CarWashDoor1_Up != null) CarWashDoor1_Up = s.CarWashDoor1_Up;
+                if (s.CarWashDoor1_Down != null) CarWashDoor1_Down = s.CarWashDoor1_Down;
+                if (s.CarWashDoor2_Up != null) CarWashDoor2_Up = s.CarWashDoor2_Up;
+                if (s.CarWashDoor2_Down != null) CarWashDoor2_Down = s.CarWashDoor2_Down;
+                if (s.CarWashChemicalsFront != null) CarWashChemicalsFront = s.CarWashChemicalsFront;
+                if (s.CarWashChemicalsSides != null) CarWashChemicalsSides = s.CarWashChemicalsSides;
+                if (s.CarWashChemicalsBack != null) CarWashChemicalsBack = s.CarWashChemicalsBack;
+                if (s.CarWashPrewash != null) CarWashPrewash = s.CarWashPrewash;
+                if (s.CarWashWater != null) CarWashWater = s.CarWashWater;
+                if (s.CarWashWax != null) CarWashWax = s.CarWashWax;
+                if (s.CarWashDry != null) CarWashDry = s.CarWashDry;
+                if (s.CarWashBrushes != null) CarWashBrushes = s.CarWashBrushes;
+                if (s.CarWashSoap != null) CarWashSoap = s.CarWashSoap;
+                if (s.CarWashActiveFoam != null) CarWashActiveFoam = s.CarWashActiveFoam;
+                if (s.CarWashTimeDoorMovement != null) CarWashTimeDoorMovement = s.CarWashTimeDoorMovement;
 
-                CarWashMEMDoor = s.CarWashMEMDoor;
-                CarWashMEMDoorTrig = s.CarWashMEMDoorTrig;
-                CarWashMEMDoorClosingtrig = s.CarWashMEMDoorClosingtrig;
+                if (s.CarWashMEMDoor != null) CarWashMEMDoor = s.CarWashMEMDoor;
+                if (s.CarWashMEMDoorTrig != null) CarWashMEMDoorTrig = s.CarWashMEMDoorTrig;
+                if (s.CarWashMEMDoorClosingtrig != null) CarWashMEMDoorClosingtrig = s.CarWashMEMDoorClosingtrig;
             }
         }
 

@@ -80,27 +80,27 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                crosswalkType = s.crosswalkType;
+                if (s.crosswalkType != null) crosswalkType = s.crosswalkType;
 
-                //btnCrossroadStart = s.btnCrossroadStart;
-                //btnCrossroadPause = s.btnCrossroadPause;
-                //btnCrossroadStop = s.btnCrossroadStop;
+                //if (s.btnCrosswalkStart != null) btnCrosswalkStart = s.btnCrosswalkStart;
+                //if (s.btnCrosswalkPause != null) btnCrosswalkPause = s.btnCrosswalkPause;
+                //if (s.btnCrosswalkStop != null) btnCrosswalkStop = s.btnCrosswalkStop;
 
-                //btnCrosswalk1 = s.btnCrosswalk1;
-                //btnCrosswalk2 = s.btnCrosswalk2;
+                //if (s.btnCrosswalk1 != null) btnCrosswalk1 = s.btnCrosswalk1;
+                //if (s.btnCrosswalk2 != null) btnCrosswalk2 = s.btnCrosswalk2;
 
-                trafficLight1_green = s.trafficLight1_green;
-                trafficLight1_yellow = s.trafficLight1_yellow;
-                trafficLight1_red = s.trafficLight1_red;
+                if (s.trafficLight1_green != null) trafficLight1_green = s.trafficLight1_green;
+                if (s.trafficLight1_yellow != null) trafficLight1_yellow = s.trafficLight1_yellow;
+                if (s.trafficLight1_red != null) trafficLight1_red = s.trafficLight1_red;
 
-                trafficLight2_green = s.trafficLight2_green;
-                trafficLight2_yellow = s.trafficLight2_yellow;
-                trafficLight2_red = s.trafficLight2_red;
+                if (s.trafficLight2_green != null) trafficLight2_green = s.trafficLight2_green;
+                if (s.trafficLight2_yellow != null) trafficLight2_yellow = s.trafficLight2_yellow;
+                if (s.trafficLight2_red != null) trafficLight2_red = s.trafficLight2_red;
 
-                pedestrian1_green = s.pedestrian1_green;
-                pedestrian1_red = s.pedestrian1_red;
-                pedestrian2_green = s.pedestrian2_green;
-                pedestrian2_red = s.pedestrian2_red;
+                if (s.pedestrian1_green != null) pedestrian1_green = s.pedestrian1_green;
+                if (s.pedestrian1_red != null) pedestrian1_red = s.pedestrian1_red;
+                if (s.pedestrian2_green != null) pedestrian2_green = s.pedestrian2_green;
+                if (s.pedestrian2_red != null) pedestrian2_red = s.pedestrian2_red;
             }
         }
 

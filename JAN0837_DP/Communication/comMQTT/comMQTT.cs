@@ -290,7 +290,8 @@ namespace JAN0837_DP.Communication.comMQTT
                 public string R { get; set; }
                 public string C { get; set; }
                 public string U { get; set; }
-                public string I { get; set; }
+                public string Td { get; set; }
+                public string Uc { get; set; }
             }
 
             public static void ApplyOutputJsonToRegulatorData(string json)
@@ -300,10 +301,11 @@ namespace JAN0837_DP.Communication.comMQTT
                     var dto = JsonSerializer.Deserialize<OutputDto>(json);
                     if (dto is null) return;
 
-                    RegulatorData.R = dto.R ?? "";
-                    RegulatorData.C = dto.C ?? "";
-                    RegulatorData.U = dto.U ?? "";
-                    RegulatorData.I = dto.I ?? "";
+                    RegulatorData.R = dto.R ?? "0.0";
+                    RegulatorData.C = dto.C ?? "0.0";
+                    RegulatorData.U = dto.U ?? "0.0";
+                    RegulatorData.Td = dto.Td ?? "0.0";
+                    RegulatorData.Uc = dto.Uc ?? "0.0";
                 }
                 catch (Exception ex)
                 {

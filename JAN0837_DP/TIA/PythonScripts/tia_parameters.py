@@ -70,7 +70,7 @@ Regulator_Input_UDT_FIELDS = [
     ("R", "Real", "0.0"),
     ("C", "Real", "0.0"),
     ("U", "Real", "0.0"),
-    ("dopravnizpozdeni", "Real", "0.0"),
+    ("Td", "Real", "0.0"),
 ]
 
 Regulator_Output_UDT_NAME = "Regulator_Output"
@@ -82,87 +82,82 @@ Regulator_Output_UDT_FIELDS = [
 CarWash_Input_UDT_NAME = "CarWash_Input"
 
 CarWash_Input_UDT_FIELDS = [
-    ("btnCarWashEmergencyStop", "Bool", "FALSE"),
-    ("btnStartCarWash", "Bool", "FALSE"),
-    ("btnStopCarWash", "Bool", "FALSE"),
-    ("CarWashErrorSystem", "Bool", "FALSE"),
-    ("CarWashCarPosition", "Bool", "FALSE"),
-    ("CarWashShowerPosition", "Bool", "FALSE"),
-    ("CarWashMode", "String", "''"),
+    ("btnEmergencyStop", "Bool", "FALSE"),
+    ("btnStart", "Bool", "FALSE"),
+    ("btnStop", "Bool", "FALSE"),
+    ("ErrorSystem", "Bool", "FALSE"),
+    ("CarPosition", "Bool", "FALSE"),
+    ("ShowerPosition", "Bool", "FALSE"),
+    ("Mode", "Int", "0"),
 ]
 
 CarWash_Output_UDT_NAME = "CarWash_Output"
 
 CarWash_Output_UDT_FIELDS = [
-    ("CarWashLight_green", "Bool", "FALSE"),
-    ("CarWashLight_yellow", "Bool", "FALSE"),
-    ("CarWashLight_red", "Bool", "FALSE"),
-    ("CarWashDoor1_Up", "Bool", "FALSE"),
-    ("CarWashDoor1_Down", "Bool", "FALSE"),
-    ("CarWashDoor2_Up", "Bool", "FALSE"),
+    ("Light_green", "Bool", "FALSE"),
+    ("Light_yellow", "Bool", "FALSE"),
+    ("Light_red", "Bool", "FALSE"),
+    ("Door1_Up", "Bool", "FALSE"),
+    ("Door1_Down", "Bool", "FALSE"),
+    ("Door2_Up", "Bool", "FALSE"),
     ("CarWashDoor2_Down", "Bool", "FALSE"),
-    ("CarWashChemicalsFront", "Bool", "FALSE"),
-    ("CarWashChemicalsSides", "Bool", "FALSE"),
-    ("CarWashChemicalsBack", "Bool", "FALSE"),
-    ("CarWashPrewash", "Bool", "FALSE"),
-    ("CarWashWater", "Bool", "FALSE"),
-    ("CarWashWax", "Bool", "FALSE"),
-    ("CarWashDry", "Bool", "FALSE"),
-    ("CarWashBrushes", "Bool", "FALSE"),
-    ("CarWashSoap", "Bool", "FALSE"),
-    ("CarWashTimeDoorMovement", "Bool", "FALSE"),
-    ("CarWashMEMDoor", "Bool", "FALSE"),
-    ("CarWashMEMDoorMovement", "Bool", "FALSE"),
-    ("CarWashMEMDoorClosingTrig", "Bool", "FALSE"),
+    ("ChemicalsFront", "Bool", "FALSE"),
+    ("ChemicalsSides", "Bool", "FALSE"),
+    ("ChemicalsBack", "Bool", "FALSE"),
+    ("Prewash", "Bool", "FALSE"),
+    ("Water", "Bool", "FALSE"),
+    ("Wax", "Bool", "FALSE"),
+    ("Dry", "Bool", "FALSE"),
+    ("Brushes", "Bool", "FALSE"),
+    ("Soap", "Bool", "FALSE"),
+    ("TimeDoorMovement", "Bool", "FALSE"),
+    ("MEMDoor", "Bool", "FALSE"),
+    ("MEMDoorMovement", "Bool", "FALSE"),
+    ("MEMDoorClosingTrig", "Bool", "FALSE"),
 ]
 
 WashingMachine_Input_UDT_NAME = "WashingMachine_Input"
 
 WashingMachine_Input_UDT_FIELDS = [
-    ("btnWashingMachineEmergencyStop", "Bool", "FALSE"),
-    ("btnStartWashingMachine", "Bool", "FALSE"),
-    ("btnStopWashingMachine", "Bool", "FALSE"),
-    ("WashingMachineErrorSystem", "Bool", "FALSE"),
-    ("WashingMachineMode", "String", "''"),
+    ("btnEmergencyStop", "Bool", "FALSE"),
+    ("btnMachine", "Bool", "FALSE"),
+    ("btnStop", "Bool", "FALSE"),
+    ("ErrorSystem", "Bool", "FALSE"),
+    ("Mode", "Int", "0"),
 ]
 
 WashingMachine_Output_UDT_NAME = "WashingMachine_Output"
 
 WashingMachine_Output_UDT_FIELDS = [
-    ("WashingMachineLight_green", "Bool", "FALSE"),
-    ("WashingMachineLight_yellow", "Bool", "FALSE"),
-    ("WashingMachineLight_red", "Bool", "FALSE"),
-    ("WashingMachineDoorClosed", "Bool", "FALSE"),
-    ("WashingMachinePreWash", "Bool", "FALSE"),
-    ("WashingMachineWater", "Bool", "FALSE"),
-    ("WashingMachineWax", "Bool", "FALSE"),
-    ("WashingMachineDry", "Bool", "FALSE"),
-    ("WashingMachineBrushes", "Bool", "FALSE"),
-    ("WashingMachineSoap", "Bool", "FALSE"),
-    ("WashingMachineActiveFoam", "Bool", "FALSE"),
+    ("Light_green", "Bool", "FALSE"),
+    ("Light_yellow", "Bool", "FALSE"),
+    ("Light_red", "Bool", "FALSE"),
+    ("DoorClosed", "Bool", "FALSE"),
+    ("PreWash", "Bool", "FALSE"),
+    ("Water", "Bool", "FALSE"),
+    ("Wax", "Bool", "FALSE"),
+    ("Dry", "Bool", "FALSE"),
+    ("Brushes", "Bool", "FALSE"),
+    ("Soap", "Bool", "FALSE"),
+    ("ActiveFoam", "Bool", "FALSE"),
 ]
 
 CarLight_Input_UDT_NAME = "CarLight_Input"
 
 CarLight_Input_UDT_FIELDS = [
-    ("btnCarLightEmergencyStop", "Bool", "FALSE"),
-    ("btnStartCarLight", "Bool", "FALSE"),
-    ("btnStopCarLight", "Bool", "FALSE"),
-    ("CarLightErrorSystem", "Bool", "FALSE"),
-    ("CarLightMode", "String", "''"),
+    ("btnStart", "Bool", "FALSE"),
+    ("btnReset", "Bool", "FALSE"),
+    ("markerLight", "Bool", "FALSE"),
+    ("brakeLight", "Bool", "FALSE"),
+    ("turnLight", "Bool", "FALSE"),
 ]
 
 CarLight_Output_UDT_NAME = "CarLight_Output"
 
 CarLight_Output_UDT_FIELDS = [
-    ("CarLightLight_green", "Bool", "FALSE"),
-    ("CarLightLight_yellow", "Bool", "FALSE"),
-    ("CarLightLight_red", "Bool", "FALSE"),
-    ("CarLightHeadlights", "Bool", "FALSE"),
-    ("CarLightTaillights", "Bool", "FALSE"),
-    ("CarLightTurnSignalLeft", "Bool", "FALSE"),
-    ("CarLightTurnSignalRight", "Bool", "FALSE"),
-    ("CarLightHazardLights", "Bool", "FALSE"),
+    ("sensorPosition", "Bool", "FALSE"),
+    ("sensorConnectorConnected", "Bool", "FALSE"),
+    ("done", "Bool", "FALSE"),
 ]
 
 DEFAULT_DB_NAME = "DB_ProcessData"

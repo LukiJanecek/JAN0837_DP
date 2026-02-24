@@ -1,0 +1,98 @@
+.carlightpage {
+  min-width: 500px;
+}
+
+/* ── Visual light panel ───────────────────────────────── */
+.carlight-canvas {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #1a1a2e;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carlight-row {
+  display: flex;
+  gap: 3rem;
+}
+
+.carlight-bulb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.carlight-bulb i {
+  font-size: 3rem;
+  transition: color 0.3s ease, filter 0.3s ease;
+}
+
+/* marker – yellow */
+.carlight-bulb--marker.on {
+  color: #ffc107;
+  text-shadow: 0 0 12px rgba(255,193,7,.6);
+}
+.carlight-bulb--marker.on i {
+  color: #ffc107;
+  filter: drop-shadow(0 0 10px #ffc107);
+}
+
+/* brake – red */
+.carlight-bulb--brake.on {
+  color: #dc3545;
+  text-shadow: 0 0 12px rgba(220,53,69,.6);
+}
+.carlight-bulb--brake.on i {
+  color: #dc3545;
+  filter: drop-shadow(0 0 10px #dc3545);
+}
+
+/* turn – cyan / info */
+.carlight-bulb--turn.on {
+  color: #0dcaf0;
+  text-shadow: 0 0 12px rgba(13,202,240,.6);
+}
+.carlight-bulb--turn.on i {
+  color: #0dcaf0;
+  filter: drop-shadow(0 0 10px #0dcaf0);
+}
+
+/* ── Shared button styles (reused from other pages) ───── */
+.btn.btn--start {
+  --bs-btn-color: var(--black);
+  --bs-btn-bg: var(--green-light);
+  --bs-btn-border-color: var(--green-tree);
+  --bs-btn-hover-color: var(--green);
+  --bs-btn-hover-bg: var(--green-tree);
+  --bs-btn-hover-border-color: var(--green);
+  --bs-btn-active-color: var(--white);
+  --bs-btn-active-bg: var(--green-dark);
+  --bs-btn-active-border-color: var(--green-dark);
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.btn.btn--stop {
+  --bs-btn-color: var(--white);
+  --bs-btn-bg: var(--red);
+  --bs-btn-border-color: var(--red);
+  --bs-btn-hover-color: var(--red);
+  --bs-btn-hover-bg: var(--red-dark);
+  --bs-btn-hover-border-color: var(--red-dark);
+  --bs-btn-active-color: var(--black);
+  --bs-btn-active-bg: var(--red-light);
+  --bs-btn-active-border-color: var(--red-light);
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}

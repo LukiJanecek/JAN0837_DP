@@ -317,29 +317,8 @@ namespace JAN0837_DP
         {
             try
             {
-                // TestData
-                var snapTestData = await _feCommunication.GetTestDataAsync();
-                _feCommunication.ApplySnapshot(snapTestData);
-
-                // CrossroadData
-                var snapCrossroadData = await _feCommunication.GetCrossroadDataAsync();
-                _feCommunication.ApplySnapshot(snapCrossroadData);
-
-                // CrosswalkData
-                var snapCrosswalkData = await _feCommunication.GetCrosswalkDataAsync();
-                _feCommunication.ApplySnapshot(snapCrosswalkData);
-
-                // RegulatorData
-                var snapRegulatorData = await _feCommunication.GetRegulatorDataAsync();
-                _feCommunication.ApplySnapshot(snapRegulatorData);
-
-                // CarWash
-                var snapCarWashData = await _feCommunication.GetCarWashDataAsync();
-                _feCommunication.ApplySnapshot(snapCarWashData);
-
-                // WashingMachine
-                var snapWashingMachineData = await _feCommunication.GetWashingMachineDataAsync();
-                _feCommunication.ApplySnapshot(snapWashingMachineData);
+                // Data jsou už aktualizována v CommunicationManager
+                // Periodické čtení není potřeba - data se mění v reálném čase přes komunikační protokoly
             }
             catch (Exception ex)
             {

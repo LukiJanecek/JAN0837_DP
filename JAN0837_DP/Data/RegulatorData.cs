@@ -10,25 +10,27 @@ namespace JAN0837_DP.Data
 {
     public static class RegulatorData
     {
-        // inputs 
-        public static string btnStart { get; set; } = "false"; // bool
-        public static string R { get; set; } = ""; // int
-        public static string C { get; set; } = ""; // int
-        public static string U { get; set; } = ""; // int
-        public static string I { get; set; } = ""; // int
+        // Inputs (written TO PLC)
+        public static string switchstate { get; set; } = "false"; // Bool
+        public static string R { get; set; } = "0.0"; // Real
+        public static string C { get; set; } = "0.0"; // Real
+        public static string U { get; set; } = "0.0"; // Real
+        public static string Td { get; set; } = "0.0"; // Real
 
-        // outputs 
+        // Outputs (read FROM PLC)
+        public static string Uc { get; set; } = "0.0"; // Real
 
-        // thread safety 
+        // Thread safety 
         private static readonly object _lock = new();
 
-        // snapshot
+        // Snapshot
         public readonly record struct State(
-            string btnStart,
+            string switchstate,
             string R,
             string C,
             string U,
-            string I
+            string Td,
+            string Uc
         );
 
         public static State Get()
@@ -36,11 +38,12 @@ namespace JAN0837_DP.Data
             lock (_lock)
             {
                 return new State(
-                    btnStart,
+                    switchstate,
                     R,
                     C,
                     U,
-                    I
+                    Td,
+                    Uc
                 );
             }
         }
@@ -49,11 +52,12 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                btnStart = s.btnStart; // ?
-                R = s.R; // ?
-                C = s.C; // ? 
-                U = s.U; // ? 
-                I = s.I; // ?
+                if (s.switchstate != null) switchstate = s.switchstate;
+                if (s.R != null) R = s.R;
+                if (s.C != null) C = s.C;
+                if (s.U != null) U = s.U;
+                if (s.Td != null) Td = s.Td;
+                if (s.Uc != null) Uc = s.Uc;
             }
         }
 
@@ -67,19 +71,19 @@ namespace JAN0837_DP.Data
         {
             // ═══════════════════════════════════════════════════════════
             // INPUT VARIABLES (written TO PLC)
-            // Find these in UAExpert: DB_ProcessData > input > ...
+            // Find these in UAExpert: DB_ProcessData > Regulator_Input > ...
             // ═══════════════════════════════════════════════════════════
-            public static string btnStart { get; set; } = "ns=4;i=?";
+            public static string switchstate { get; set; } = "ns=4;i=?";
             public static string R { get; set; } = "ns=4;i=?";
             public static string C { get; set; } = "ns=4;i=?";
             public static string U { get; set; } = "ns=4;i=?";
-            public static string I { get; set; } = "ns=4;i=?";
+            public static string Td { get; set; } = "ns=4;i=?";
 
             // ═══════════════════════════════════════════════════════════
             // OUTPUT VARIABLES (read FROM PLC)
-            // Find these in UAExpert: DB_ProcessData > output > ...
+            // Find these in UAExpert: DB_ProcessData > Regulator_Output > ...
             // ═══════════════════════════════════════════════════════════
-            
+            public static string Uc { get; set; } = "ns=4;i=?";
         }
     }
 }

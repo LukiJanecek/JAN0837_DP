@@ -24,7 +24,7 @@ namespace JAN0837_DP.Communication.comOPCUA
         private ApplicationInstance _application;
         private CrossroadOpcUaServer _server;
         public bool running = false;
-                
+
         public async Task<bool> startOPCUAserver(string ipAddress, int port)
         {
             if (running)
@@ -33,7 +33,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
 
             try
-            {               
+            {
                 string serverUrl = $"opc.tcp://{ipAddress}:{port}";
 
                 // Create application configuration
@@ -43,7 +43,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                     ApplicationType = Opc.Ua.ApplicationType.Server,
                     ApplicationUri = $"urn:{System.Net.Dns.GetHostName()}:JAN0837_DP:OPCUAServer",
                     ProductUri = "http://jan0837/opcuaserver",
-                    
+
                     SecurityConfiguration = new Opc.Ua.SecurityConfiguration
                     {
                         ApplicationCertificate = new Opc.Ua.CertificateIdentifier
@@ -71,20 +71,20 @@ namespace JAN0837_DP.Communication.comOPCUA
                         MinimumCertificateKeySize = 1024,
                         AddAppCertToTrustedStore = true
                     },
-                    
+
                     ServerConfiguration = new Opc.Ua.ServerConfiguration
                     {
                         BaseAddresses = new Opc.Ua.StringCollection { serverUrl },
                         MinRequestThreadCount = 5,
                         MaxRequestThreadCount = 100,
                         MaxQueuedRequestCount = 200,
-                        
+
                         // Add alternative URLs for flexibility
                         AlternateBaseAddresses = new Opc.Ua.StringCollection()
                     },
-                    
-                    TransportQuotas = new Opc.Ua.TransportQuotas 
-                    { 
+
+                    TransportQuotas = new Opc.Ua.TransportQuotas
+                    {
                         OperationTimeout = 600000,
                         MaxStringLength = 1048576,
                         MaxByteStringLength = 1048576,
@@ -94,7 +94,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                         ChannelLifetime = 300000,
                         SecurityTokenLifetime = 3600000
                     },
-                    
+
                     TraceConfiguration = new Opc.Ua.TraceConfiguration
                     {
                         OutputFilePath = Path.Combine(Path.GetTempPath(), "JAN0837_Server.log"),
@@ -122,11 +122,11 @@ namespace JAN0837_DP.Communication.comOPCUA
                 // Load or create certificate
                 var certIdentifier = config.SecurityConfiguration.ApplicationCertificate;
                 var certificate = await certIdentifier.Find(true);
-                
+
                 if (certificate == null)
                 {
                     Console.WriteLine("Creating new self-signed application certificate...");
-                    
+
                     // Create certificate
                     certificate = CertificateFactory.CreateCertificate(
                         config.ApplicationUri,
@@ -134,10 +134,10 @@ namespace JAN0837_DP.Communication.comOPCUA
                         "CN=" + config.ApplicationName,
                         null
                     ).CreateForRSA();
-                    
+
                     // Set it in the configuration
                     config.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
-                    
+
                     Console.WriteLine($"Certificate created with thumbprint: {certificate.Thumbprint}");
                 }
                 else
@@ -187,7 +187,23 @@ namespace JAN0837_DP.Communication.comOPCUA
         }
 
         // Update variable value in the server
-        public void UpdateVariable(string variableName, bool value)
+        public void UpdateBoolVariable(string variableName, bool value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateBoolVariable(variableName, value);
+            }
+        }
+
+        public void UpdateSringVariable(string variableName, string value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateVariable(variableName, value);
+            }
+        }
+
+        public void UpdateIntVariable(string variableName, int value)
         {
             if (_server != null && running)
             {
@@ -211,7 +227,7 @@ namespace JAN0837_DP.Communication.comOPCUA
         public Opc.Ua.Client.Session clientSession;
         public Opc.Ua.Client.SessionReconnectHandler reconnectHandler;
         public bool connected = false;
-        public bool running = false;    
+        public bool running = false;
         public CancellationTokenSource _cts;
         public ConcurrentQueue<(string nodeId, object value)> _writeQueue = new();
         public Opc.Ua.Client.Subscription subscription;
@@ -328,7 +344,7 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 // 5. Select endpoint based on authentication type
                 Console.WriteLine($"Discovering endpoints at: {serverURL}");
-                
+
                 bool useCredentials = !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass);
                 EndpointDescription endpointDescription;
 
@@ -337,18 +353,18 @@ namespace JAN0837_DP.Communication.comOPCUA
                     // When using username/password, we need a secure endpoint
                     // First, discover all endpoints and find one that supports UserName token
                     Console.WriteLine("Credentials provided - searching for secure endpoint with UserName support...");
-                    
+
                     using var discoveryClient = DiscoveryClient.Create(new Uri(serverURL));
                     var endpoints = await discoveryClient.GetEndpointsAsync(null, CancellationToken.None);
-                    
+
                     // Find endpoint with security that supports UserName authentication
                     endpointDescription = endpoints
-                        .Where(e => 
+                        .Where(e =>
                             e.SecurityMode != MessageSecurityMode.None &&
                             e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName))
                         .OrderByDescending(e => e.SecurityLevel)
                         .FirstOrDefault();
-                    
+
                     if (endpointDescription == null)
                     {
                         // Fallback: try any endpoint that supports UserName (even without encryption)
@@ -358,7 +374,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                             .OrderByDescending(e => e.SecurityLevel)
                             .FirstOrDefault();
                     }
-                    
+
                     if (endpointDescription == null)
                     {
                         Logger.LogError("No endpoint found that supports UserName authentication. Check server configuration.");
@@ -498,7 +514,7 @@ namespace JAN0837_DP.Communication.comOPCUA
 
             // převezmi novou session
             clientSession = (Opc.Ua.Client.Session)reconnectHandler.Session;
-            reconnectHandler.Dispose();
+            reconnectHandler.dispose();
             reconnectHandler = null;
 
             connected = clientSession?.Connected == true;
@@ -558,7 +574,7 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 // Attempt reconnection
                 bool success = await connectToOPCUAserver(_lastServerUrl, _lastUser, _lastPass);
-                
+
                 if (success)
                 {
                     Console.WriteLine("Reconnection successful!");
@@ -598,9 +614,9 @@ namespace JAN0837_DP.Communication.comOPCUA
                 // Optional: Pre-read to check node status (useful for debugging)
                 client.clientSession.Read(null, 0, TimestampsToReturn.Neither,
                     new ReadValueIdCollection {
-                        new ReadValueId { 
-                            NodeId = nodeIdParsed, 
-                            AttributeId = Attributes.Value 
+                        new ReadValueId {
+                            NodeId = nodeIdParsed,
+                            AttributeId = Attributes.Value
                         }
                     },
                     out DataValueCollection readValues,
@@ -631,7 +647,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             catch (ServiceResultException ex)
             {
                 // Handle session-related errors with reconnection
-                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
                     ex.StatusCode == StatusCodes.BadSessionNotActivated ||
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
@@ -691,7 +707,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             catch (ServiceResultException ex)
             {
                 // Handle session-related errors with reconnection
-                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid || 
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
                     ex.StatusCode == StatusCodes.BadSessionClosed ||
                     ex.StatusCode == StatusCodes.BadSessionNotActivated ||
                     ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
@@ -721,6 +737,254 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
         }
 
+        public string ReadOPCUAInt(opcuaKlient client, string nodeId)
+        {
+            try
+            {
+                // Validate session before reading
+                if (!ValidateSession())
+                {
+                    Logger.LogWarning($"Session invalid, cannot read from {nodeId}");
+                    return string.Empty;
+                }
+
+                var id = NodeId.Parse(nodeId);
+
+                // Read value directly (single read instead of double)
+                DataValue value = client.clientSession.ReadValue(id);
+
+                if (StatusCode.IsBad(value.StatusCode))
+                {
+                    Logger.LogWarning($"Read {nodeId} returned bad status: 0x{value.StatusCode.Code:X8}");
+                    return string.Empty;
+                }
+
+                if (value.Value != null)
+                {
+                    return Convert.ToString(value.Value) ?? string.Empty;
+                }
+
+                return string.Empty;
+            }
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors with reconnection
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
+                {
+                    Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
+                }
+                else
+                {
+                    Logger.LogError($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, $"OPC UA ReadInt {nodeId}");
+                return string.Empty;
+            }
+        }
+
+        public float ReadOPCUAFloat(opcuaKlient client, string nodeId)
+        {
+            try
+            {
+                // Validate session before reading
+                if (!ValidateSession())
+                {
+                    Logger.LogWarning($"Session invalid, cannot read from {nodeId}");
+                    return 0f;
+                }
+
+                var id = NodeId.Parse(nodeId);
+
+                // Read value directly (single read instead of double)
+                DataValue value = client.clientSession.ReadValue(id);
+
+                if (StatusCode.IsBad(value.StatusCode))
+                {
+                    Logger.LogWarning($"Read {nodeId} returned bad status: 0x{value.StatusCode.Code:X8}");
+                    return 0f;
+                }
+
+                if (value.Value != null)
+                {
+                    return Convert.ToSingle(value.Value);
+                }
+
+                return 0f;
+            }
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors with reconnection
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
+                {
+                    Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
+                }
+                else
+                {
+                    Logger.LogError($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                }
+                return 0f;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, $"OPC UA ReadFloat {nodeId}");
+                return 0f;
+            }
+        }
+
+        public double ReadOPCUADouble(opcuaKlient client, string nodeId)
+        {
+            try
+            {
+                // Validate session before reading
+                if (!ValidateSession())
+                {
+                    Logger.LogWarning($"Session invalid, cannot read from {nodeId}");
+                    return 0d;
+                }
+
+                var id = NodeId.Parse(nodeId);
+
+                // Read value directly (single read instead of double)
+                DataValue value = client.clientSession.ReadValue(id);
+
+                if (StatusCode.IsBad(value.StatusCode))
+                {
+                    Logger.LogWarning($"Read {nodeId} returned bad status: 0x{value.StatusCode.Code:X8}");
+                    return 0d;
+                }
+
+                if (value.Value != null)
+                {
+                    return Convert.ToDouble(value.Value);
+                }
+
+                return 0d;
+            }
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors with reconnection
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
+                {
+                    Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
+                }
+                else
+                {
+                    Logger.LogError($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                }
+                return 0d;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, $"OPC UA ReadDouble {nodeId}");
+                return 0d;
+            }
+        }
+
+        public string ReadOPCUAString(opcuaKlient client, string nodeId)
+        {
+            try
+            {
+                // Validate session before reading
+                if (!ValidateSession())
+                {
+                    Logger.LogWarning($"Session invalid, cannot read from {nodeId}");
+                    return string.Empty;
+                }
+
+                var id = NodeId.Parse(nodeId);
+
+                // Read value directly (single read instead of double)
+                DataValue value = client.clientSession.ReadValue(id);
+
+                if (StatusCode.IsBad(value.StatusCode))
+                {
+                    Logger.LogWarning($"Read {nodeId} returned bad status: 0x{value.StatusCode.Code:X8}");
+                    return string.Empty;
+                }
+
+                if (value.Value != null)
+                {
+                    return Convert.ToString(value.Value) ?? string.Empty;
+                }
+
+                return string.Empty;
+            }
+            catch (ServiceResultException ex)
+            {
+                // Handle session-related errors with reconnection
+                if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
+                    ex.StatusCode == StatusCodes.BadSessionClosed ||
+                    ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                    ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                    ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                    ex.StatusCode == StatusCodes.BadNotConnected ||
+                    ex.StatusCode == StatusCodes.BadServerNotConnected)
+                {
+                    Logger.LogError($"Session error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                    connected = false;
+
+                    // Trigger async reconnection
+                    if (!_isReconnecting)
+                    {
+                        _ = TryReconnectAsync();
+                    }
+                }
+                else
+                {
+                    Logger.LogError($"OPC UA error reading from {nodeId}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, $"OPC UA ReadString {nodeId}");
+                return string.Empty;
+            }
+        }
+
         // Validate and restore session if needed
         private bool ValidateSession()
         {
@@ -744,7 +1008,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                     // Restart keep-alive by setting the interval again
                     clientSession.KeepAlive += ClientSession_KeepAlive;
                     clientSession.KeepAliveInterval = 5000;
-                    
+
                     // The session will automatically start sending keep-alives
                     Console.WriteLine("KeepAlive restarted successfully");
                 }
@@ -761,70 +1025,6 @@ namespace JAN0837_DP.Communication.comOPCUA
         }
 
         ///
-        public async Task<bool> connectToOPCUAserver_v2(string serverURL, string user, string pass)
-        {
-            if (clientSession?.Connected == true)
-            {
-                connected = true;
-                return true;
-            }
-
-            try
-            {
-                var application = new ApplicationInstance
-                {
-                    ApplicationType = Opc.Ua.ApplicationType.Client,
-                    ConfigSectionName = "Client"
-                };
-
-                await application.LoadApplicationConfiguration(false);
-
-                var config = application.ApplicationConfiguration;
-                await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
-                config.CertificateValidator.CertificateValidation += CertificateValidator_CertificateValidation;
-
-                // === ENDPOINT SELECTION ===
-                EndpointDescription selectedEndpoint;
-
-                // connectToOPCUAserver_v2: replace endpoint discovery + session create
-                using var discoveryClient = DiscoveryClient.Create(new Uri(serverURL));
-                var endpoints = await discoveryClient.GetEndpointsAsync(null, CancellationToken.None);
-
-                selectedEndpoint = endpoints
-                    .Where(e =>
-                        e.SecurityMode != MessageSecurityMode.None &&
-                        e.UserIdentityTokens.Any(t => t.TokenType == UserTokenType.UserName))
-                    .OrderByDescending(e => e.SecurityLevel)
-                    .FirstOrDefault()
-                    ?? throw new Exception("No secure endpoint with UserName token found.");
-
-                var endpoint = new ConfiguredEndpoint(
-                    null,
-                    selectedEndpoint,
-                    EndpointConfiguration.Create(config)
-                );
-
-                IUserIdentity identity = string.IsNullOrWhiteSpace(user) ? new UserIdentity(new AnonymousIdentityToken()) : new UserIdentity(new UserNameIdentityToken
-                {
-                    UserName = user,
-                    Password = System.Text.Encoding.UTF8.GetBytes(pass ?? string.Empty)
-                });
-
-                clientSession = await Opc.Ua.Client.Session.Create(config, endpoint, false, "OPCUA Client", 60000, identity, null);
-
-                clientSession.KeepAlive += ClientSession_KeepAlive;
-
-                connected = clientSession.Connected;
-                return connected;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex, "OPC UA Connect v2");
-                connected = false;
-                clientSession = null;
-                throw new Exception("OPCUA connect failed", ex);
-            }
-        }
 
         public bool ReadBool(string nodeId)
         {
@@ -857,7 +1057,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             {
                 Logger.LogError($"OPCUA Write failed for {nodeId}: 0x{results[0].Code:X8}");
                 throw new Exception($"OPCUA Write failed: {results[0]}");
-            }    
+            }
         }
 
         private static object ChangeType(DataValue current, object value)
@@ -877,7 +1077,7 @@ namespace JAN0837_DP.Communication.comOPCUA
     }
 
     // Custom OPC UA Server 
-    internal class CrossroadOpcUaServer : StandardServer
+    public class CrossroadOpcUaServer : StandardServer
     {
         private CrossroadNodeManager _nodeManager;
 
@@ -886,7 +1086,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             Console.WriteLine("Creating master node manager...");
 
             var nodeManagers = new List<INodeManager>();
-            
+
             // Note: CoreNodeManager requires dynamicNamespaceIndex parameter
             // We skip it and only use our custom node manager
 
@@ -912,7 +1112,17 @@ namespace JAN0837_DP.Communication.comOPCUA
             return properties;
         }
 
-        public void UpdateVariable(string variableName, bool value)
+        public void UpdateBoolVariable(string variableName, bool value)
+        {
+            _nodeManager?.UpdateBoolVariable(variableName, value);
+        }
+
+        public void UpdateVariable(string variableName, string value)
+        {
+            _nodeManager?.UpdateVariable(variableName, value);
+        }
+
+        public void UpdateVariable(string variableName, int value)
         {
             _nodeManager?.UpdateVariable(variableName, value);
         }
@@ -924,55 +1134,15 @@ namespace JAN0837_DP.Communication.comOPCUA
     }
 
     // Node Manager for variables
-    internal class CrossroadNodeManager : CustomNodeManager2
+    public class CrossroadNodeManager : CustomNodeManager2
     {
         private readonly Dictionary<string, BaseDataVariableState> _variables = new Dictionary<string, BaseDataVariableState>();
         private FolderState _crossroadFolder;
         private ushort _namespaceIndex;
 
-        public CrossroadNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration) : base(server, configuration, Namespaces.CrossroadNamespace)
+        public CrossroadNodeManager(IServerInternal server, Opc.Ua.ApplicationConfiguration configuration) : base(server, "JAN0837_DP_OPC_UA_Server", "http://jan0837.opcua.server/data")
         {
             SystemContext.NodeIdFactory = this;
-        }
-
-        public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
-        {
-            lock (Lock)
-            {
-                LoadPredefinedNodes(SystemContext, externalReferences);
-
-                // Get namespace index
-                _namespaceIndex = Server.NamespaceUris.GetIndexOrAppend(Namespaces.CrossroadNamespace);
-
-                // Create Crossroad folder
-                _crossroadFolder = CreateFolder(null, "Crossroad", "Crossroad");
-                _crossroadFolder.AddReference(ReferenceTypes.Organizes, true, ObjectIds.ObjectsFolder);
-                AddRootNotifier(_crossroadFolder);
-
-                // Create all variables
-                CreateVariable(_crossroadFolder, "CrossroadType", "CrossroadType", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "BtnCrossroadStart", "Start Button", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "BtnCrossroadPause", "Pause Button", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "BtnCrossroadStop", "Stop Button", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "BtnCrosswalk1", "Crosswalk 1 Button", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "BtnCrosswalk2", "Crosswalk 2 Button", DataTypeIds.Boolean, false);
-
-                CreateVariable(_crossroadFolder, "TrafficLight1_Green", "Traffic Light 1 Green", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "TrafficLight1_Yellow", "Traffic Light 1 Yellow", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "TrafficLight1_Red", "Traffic Light 1 Red", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "TrafficLight2_Green", "Traffic Light 2 Green", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "TrafficLight2_Yellow", "Traffic Light 2 Yellow", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "TrafficLight2_Red", "Traffic Light 2 Red", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "Pedestrian1_Green", "Pedestrian 1 Green", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "Pedestrian1_Red", "Pedestrian 1 Red", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "Pedestrian2_Green", "Pedestrian 2 Green", DataTypeIds.Boolean, false);
-                CreateVariable(_crossroadFolder, "Pedestrian2_Red", "Pedestrian 2 Red", DataTypeIds.Boolean, false);
-
-                AddPredefinedNode(SystemContext, _crossroadFolder);
-
-                Console.WriteLine($"Created {_variables.Count} OPC UA variables in namespace index {_namespaceIndex}");
-                Logger.LogInfo($"OPC UA Server address space initialized with {_variables.Count} variables in namespace index {_namespaceIndex}");
-            }
         }
 
         private FolderState CreateFolder(NodeState parent, string path, string name)
@@ -1024,7 +1194,33 @@ namespace JAN0837_DP.Communication.comOPCUA
             AddPredefinedNode(SystemContext, variable);
         }
 
-        public void UpdateVariable(string variableName, bool value)
+        public void UpdateBoolVariable(string variableName, bool value)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+            }
+        }
+
+        public void UpdateVariable(string variableName, string value)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+            }
+        }
+
+        public void UpdateVariable(string variableName, int value)
         {
             lock (Lock)
             {
@@ -1049,115 +1245,4 @@ namespace JAN0837_DP.Communication.comOPCUA
             return false;
         }
     }
-
-    // Namespace definitions
-    internal static class Namespaces
-    {
-        public const string CrossroadNamespace = "http://jan0837.opcua.server/data";
-    }
-
-    internal static class OpcUaConfigHelpers
-    {
-        public static Opc.Ua.ApplicationConfiguration LoadConfiguration(string configPath, Opc.Ua.ApplicationType appType)
-        {
-            using var stream = File.OpenRead(configPath);
-            var serializer = new DataContractSerializer(typeof(Opc.Ua.ApplicationConfiguration));
-
-            if (serializer.ReadObject(stream) is not Opc.Ua.ApplicationConfiguration config)
-            {
-                throw new InvalidOperationException($"Invalid OPC UA config: {configPath}");
-            }
-
-            config.ApplicationType = appType;
-            config.Validate(appType);
-            return config;
-        }
-
-        public static async Task EnsureApplicationCertificateAsync(Opc.Ua.ApplicationConfiguration config)
-        {
-            var pkiRoot = Path.Combine(Path.GetTempPath(), "OPC Foundation", "pki");
-            Directory.CreateDirectory(Path.Combine(pkiRoot, "own"));
-            Directory.CreateDirectory(Path.Combine(pkiRoot, "trusted"));
-            Directory.CreateDirectory(Path.Combine(pkiRoot, "issuer"));
-            Directory.CreateDirectory(Path.Combine(pkiRoot, "rejected"));
-
-            var certIdentifier = config.SecurityConfiguration.ApplicationCertificate;
-            var certificate = await certIdentifier.Find(true);
-
-            if (certificate == null)
-            {
-                certificate = CertificateFactory.CreateCertificate(
-                    config.ApplicationUri,
-                    config.ApplicationName,
-                    "CN=" + config.ApplicationName,
-                    null
-                ).CreateForRSA();
-
-                config.SecurityConfiguration.ApplicationCertificate.Certificate = certificate;
-            }
-        }
-    }
-
-    public static class OpcUaXmlBoot
-    {
-        // Example: Start client session using XML config (Client.Config.xml)
-        public static async Task<Opc.Ua.Client.Session> StartClientFromXmlAsync(string configPath, string serverUrl, string? username = null, string? password = null, bool autoAcceptUntrusted = true)
-        {
-            // Load application configuration from XML file
-            var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Client);
-
-            // Optional: auto-accept untrusted certificates
-            config.CertificateValidator.CertificateValidation += (s, e) =>
-            {
-                if (autoAcceptUntrusted) e.Accept = true;
-            };
-
-            // Ensure application certificate exists
-            await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
-
-            // Select endpoint (secure if available)
-            var ep = CoreClientUtils.SelectEndpoint(config, serverUrl, true);
-            var endpoint = new ConfiguredEndpoint(null, ep, EndpointConfiguration.Create(config));
-
-            // Identity (Anonymous or Username/Password)
-            IUserIdentity identity = string.IsNullOrWhiteSpace(username) ? new UserIdentity(new AnonymousIdentityToken()) : new UserIdentity(new UserNameIdentityToken
-            {
-                UserName = username!,
-                Password = System.Text.Encoding.UTF8.GetBytes(password ?? string.Empty)
-            });
-
-            //var endpointCollection = new EndpointDescriptionCollection { ep };
-
-            var session = await Opc.Ua.Client.Session.Create(config, endpoint, false, config.ApplicationName ?? "XmlClient", 60000, identity, null);
-
-            return session;
-        }
-
-        // Example: Start server using XML config (Server.Config.xml)
-        public static async Task<(ApplicationInstance App, StandardServer Server)> StartServerFromXmlAsync(string configPath, bool autoAcceptUntrusted = true)
-        {
-            // Load server configuration from XML file
-            var config = OpcUaConfigHelpers.LoadConfiguration(configPath, Opc.Ua.ApplicationType.Server);
-
-            // Optional: auto-accept untrusted certs (DEV only)
-            config.SecurityConfiguration.AutoAcceptUntrustedCertificates = autoAcceptUntrusted;
-
-            // Ensure application certificate exists
-            await OpcUaConfigHelpers.EnsureApplicationCertificateAsync(config);
-
-            // Start server
-            var app = new ApplicationInstance
-            {
-                ApplicationType = Opc.Ua.ApplicationType.Server,
-                ApplicationConfiguration = config
-            };
-
-            var server = new StandardServer();
-            await app.Start(server);
-
-            return (app, server);
-        }
-    }
-
-
 }

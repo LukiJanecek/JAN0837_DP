@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Row, Col, Button, Form, Badge } from 'react-bootstrap';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 import '../App.css';
 import './RegulatorPage.css';
@@ -28,19 +29,57 @@ const toBool = (v) => {
   return s === 'true' || s === '1' || s === 'on';
 };
 
-/* ── Overlay labels for the RC circuit diagram ────────── */
-function RegulatorCanvas({ background, d }) {
-  const Uc = Number(d?.Uc ?? 0);
+/* ── RC circuit diagram (image only, no overlays) ────── */
+function RegulatorCanvas({ background }) {
+  return (
+    <div className="regulator-img-wrap">
+      <img src={background} alt="RC circuit" className="regulator-img" />
+    </div>
+  );
+}
+
+/* ── Uc chart with rolling history ───────────────────── */
+const MAX_POINTS = 200;
+
+function UcChart({ Uc }) {
+  const [history, setHistory] = useState([]);
+  const startRef = useRef(Date.now());
+
+  useEffect(() => {
+    setHistory(prev => {
+      const t = ((Date.now() - startRef.current) / 1000).toFixed(1);
+      const next = [...prev, { t: Number(t), Uc: Number(Uc) }];
+      return next.length > MAX_POINTS ? next.slice(next.length - MAX_POINTS) : next;
+    });
+  }, [Uc]);
+
+  const clearHistory = () => {
+    setHistory([]);
+    startRef.current = Date.now();
+  };
 
   return (
-    <div className="regulator" style={{ backgroundImage: `url(${background})` }}>
-      {/* Descriptive labels positioned over the schematic */}
-      <span className="reg-label reg-label--R">R</span>
-      <span className="reg-label reg-label--C">C</span>
-      <span className="reg-label reg-label--U">U</span>
-      <span className="reg-label reg-label--Uc">
-        U<sub>c</sub> = {Uc.toFixed(2)}
-      </span>
+    <div className="uc-chart-wrap">
+      <div className="d-flex align-items-center justify-content-between mb-2">
+        <h5 className="mb-0">U<sub>c</sub> v čase</h5>
+        <Button size="sm" variant="outline-secondary" onClick={clearHistory}>Reset graf</Button>
+      </div>
+      <ResponsiveContainer width="100%" height={280}>
+        <LineChart data={history}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="t"
+            label={{ value: 't (s)', position: 'insideBottomRight', offset: -5 }}
+            type="number"
+            domain={['dataMin', 'dataMax']}
+          />
+          <YAxis
+            label={{ value: 'Uc (V)', angle: -90, position: 'insideLeft' }}
+          />
+          <Tooltip formatter={(v) => [Number(v).toFixed(3) + ' V', 'Uc']} />
+          <Line type="monotone" dataKey="Uc" stroke="#0d6efd" dot={false} isAnimationActive={false} />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -152,19 +191,16 @@ function RegulatorParamsSidebar() {
 
 function RegulatorPage() {
   const { section: d } = useSectionData('RegulatorData');
+  const Uc = Number(d?.Uc ?? 0);
 
   const background = '/images/regulator_RC.PNG';
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = '/images/regulator_RC.PNG';
-  }, []);
 
   return (
     <Row className="regulatorpage">
       <Col xs={12} lg={8}>
         <div className="mt-3">
-          <RegulatorCanvas background={background} d={d} />
+          <RegulatorCanvas background={background} />
+          <UcChart Uc={Uc} />
         </div>
       </Col>
 

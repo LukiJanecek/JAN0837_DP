@@ -213,14 +213,99 @@ def main():
         )
         print(f"[OK] UDT '{params.Crossroad_Output_UDT_NAME}' created successfully")
 
+        # Crosswalk PLC data type 
+        print(f"[NOTE] Creating UDT '{params.Crosswalk_Input_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.Crosswalk_Input_UDT_NAME,
+            fields=params.Crosswalk_Input_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.Crosswalk_Input_UDT_NAME}' created successfully")
+
+        print(f"[NOTE] Creating UDT '{params.Crosswalk_Output_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.Crosswalk_Output_UDT_NAME,
+            fields=params.Crosswalk_Output_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.Crosswalk_Output_UDT_NAME}' created successfully")
+
+        # Regulator PLC data type
+        print(f"[NOTE] Creating UDT '{params.Regulator_Input_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.Regulator_Input_UDT_NAME,
+            fields=params.Regulator_Input_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.Regulator_Input_UDT_NAME}' created successfully")
+
+        print(f"[NOTE] Creating UDT '{params.Regulator_Output_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.Regulator_Output_UDT_NAME,
+            fields=params.Regulator_Output_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.Regulator_Output_UDT_NAME}' created successfully")
+
+        # CarWash PLC data type
+        print(f"[NOTE] Creating UDT '{params.CarWash_Input_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.CarWash_Input_UDT_NAME,
+            fields=params.CarWash_Input_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.CarWash_Input_UDT_NAME}' created successfully")
+
+        print(f"[NOTE] Creating UDT '{params.CarWash_Output_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.CarWash_Output_UDT_NAME,
+            fields=params.CarWash_Output_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.CarWash_Output_UDT_NAME}' created successfully")
+
+        # WashingMachine PLC data type
+        print(f"[NOTE] Creating UDT '{params.WashingMachine_Input_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.WashingMachine_Input_UDT_NAME,
+            fields=params.WashingMachine_Input_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.WashingMachine_Input_UDT_NAME}' created successfully")
+
+        print(f"[NOTE] Creating UDT '{params.WashingMachine_Output_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.WashingMachine_Output_UDT_NAME,
+            fields=params.WashingMachine_Output_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.WashingMachine_Output_UDT_NAME}' created successfully")
+
+        # CarLight PLC data type
+        print(f"[NOTE] Creating UDT '{params.CarLight_Input_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.CarLight_Input_UDT_NAME,
+            fields=params.CarLight_Input_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.CarLight_Input_UDT_NAME}' created successfully")
+
+        print(f"[NOTE] Creating UDT '{params.CarLight_Output_UDT_NAME}'...")
+        fc.create_or_replace_udt(
+            plc_sw,
+            params.CarLight_Output_UDT_NAME,
+            fields=params.CarLight_Output_UDT_FIELDS,
+        )
+        print(f"[OK] UDT '{params.CarLight_Output_UDT_NAME}' created successfully")
+
         # Create DB with both UDTs
         print(f"[NOTE] Creating Data Block '{params.DEFAULT_DB_NAME}' with input and output UDTs...")
         fc.create_or_replace_db_with_multiple_udts(
             plc_sw,
             params.DEFAULT_DB_NAME,
             udt_vars=[
-                ("input", params.Crossroad_Input_UDT_NAME),
-                ("output", params.Crossroad_Output_UDT_NAME),
+                ("input", params.CarLight_Input_UDT_NAME),
+                ("output", params.CarLight_Output_UDT_NAME),
             ],
             optimized=params.DEFAULT_DB_OPTIMIZED,
         )

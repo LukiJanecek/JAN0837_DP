@@ -267,13 +267,13 @@ namespace JAN0837_DP.ReactFE
                         break;
 
                     case "btnCrossroadStart": 
-                        CrossroadData.btnCrossroadStart = value; 
+                        CrossroadData.btnStart = value; 
                         break;
                     case "btnCrossroadPause": 
-                        CrossroadData.btnCrossroadPause = value; 
+                        CrossroadData.btnPause = value; 
                         break;
                     case "btnCrossroadStop": 
-                        CrossroadData.btnCrossroadStop = value; 
+                        CrossroadData.btnStop = value; 
                         break;
 
                     case "btnCrosswalk1": 
@@ -409,89 +409,89 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnCarWashEmergencyStop": 
-                        CarWashData.btnCarWashEmergencyStop = value; 
+                    case "btnEmergencyStop": 
+                        CarWashData.btnEmergencyStop = value; 
                         break;
-                    case "btnStartCarWash": 
-                        CarWashData.btnStartCarWash = value; 
+                    case "btnStart": 
+                        CarWashData.btnStart = value; 
                         break;
-                    case "btnStopCarWash": 
-                        CarWashData.btnStopCarWash = value; 
+                    case "btnStop": 
+                        CarWashData.btnStop = value; 
                         break;
-                    case "CarWashErrorSystem": 
-                        CarWashData.CarWashErrorSystem = value; 
+                    case "ErrorSystem": 
+                        CarWashData.ErrorSystem = value; 
                         break;
-                    case "CarWashCarPosition": 
-                        CarWashData.CarWashCarPosition = value; 
+                    case "CarPosition": 
+                        CarWashData.CarPosition = value; 
                         break;
-                    case "CarWashShowerPosition": 
-                        CarWashData.CarWashShowerPosition = value; 
+                    case "ShowerPosition": 
+                        CarWashData.ShowerPosition = value; 
                         break;
-                    case "CarWashMode": 
-                        CarWashData.CarWashMode = value; 
+                    case "Mode": 
+                        CarWashData.Mode = value; 
                         break;
-                    case "CarWashLight_green": 
-                        CarWashData.CarWashLight_green = value; 
+                    case "Light_green": 
+                        CarWashData.Light_green = value; 
                         break;
-                    case "CarWashLight_yellow": 
-                        CarWashData.CarWashLight_yellow = value; 
+                    case "Light_yellow": 
+                        CarWashData.Light_yellow = value; 
                         break;
-                    case "CarWashLight_red": 
-                        CarWashData.CarWashLight_red = value; 
+                    case "Light_red": 
+                        CarWashData.Light_red = value; 
                         break;
-                    case "CarWashDoor1_Up": 
-                        CarWashData.CarWashDoor1_Up = value; 
+                    case "Door1_Up": 
+                        CarWashData.Door1_Up = value; 
                         break;
-                    case "CarWashDoor1_Down": 
-                        CarWashData.CarWashDoor1_Down = value; 
+                    case "Door1_Down": 
+                        CarWashData.Door1_Down = value; 
                         break;
-                    case "CarWashDoor2_Up": 
-                        CarWashData.CarWashDoor2_Up = value; 
+                    case "Door2_Up": 
+                        CarWashData.Door2_Up = value; 
                         break;
-                    case "CarWashDoor2_Down": 
-                        CarWashData.CarWashDoor2_Down = value; 
+                    case "Door2_Down": 
+                        CarWashData.Door2_Down = value; 
                         break;
-                    case "CarWashChemicalsFront": 
-                        CarWashData.CarWashChemicalsFront = value; 
+                    case "ChemicalsFront": 
+                        CarWashData.ChemicalsFront = value; 
                         break;
-                    case "CarWashChemicalsSides": 
-                        CarWashData.CarWashChemicalsSides = value; 
+                    case "ChemicalsSides": 
+                        CarWashData.ChemicalsSides = value; 
                         break;
-                    case "CarWashChemicalsBack": 
-                        CarWashData.CarWashChemicalsBack = value; 
+                    case "ChemicalsBack": 
+                        CarWashData.ChemicalsBack = value; 
                         break;
-                    case "CarWashPrewash": 
-                        CarWashData.CarWashPrewash = value; 
+                    case "Prewash": 
+                        CarWashData.Prewash = value; 
                         break;
-                    case "CarWashWater": 
-                        CarWashData.CarWashWater = value; 
+                    case "Water": 
+                        CarWashData.Water = value; 
                         break;
-                    case "CarWashWax": 
-                        CarWashData.CarWashWax = value; 
+                    case "Wax": 
+                        CarWashData.Wax = value; 
                         break;
-                    case "CarWashDry": 
-                        CarWashData.CarWashDry = value; 
+                    case "Dry": 
+                        CarWashData.Dry = value; 
                         break;
-                    case "CarWashBrushes": 
-                        CarWashData.CarWashBrushes = value; 
+                    case "Brushes": 
+                        CarWashData.Brushes = value; 
                         break;
-                    case "CarWashSoap": 
-                        CarWashData.CarWashSoap = value; 
+                    case "Soap": 
+                        CarWashData.Soap = value; 
                         break;
-                    case "CarWashActiveFoam": 
-                        CarWashData.CarWashActiveFoam = value; 
+                    case "ActiveFoam": 
+                        CarWashData.ActiveFoam = value; 
                         break;
-                    case "CarWashTimeDoorMovement": 
-                        CarWashData.CarWashTimeDoorMovement = value; 
+                    case "TimeDoorMovement": 
+                        CarWashData.TimeDoorMovement = value; 
                         break;
-                    case "CarWashMEMDoor": 
-                        CarWashData.CarWashMEMDoor = value; 
+                    case "MEMDoor": 
+                        CarWashData.MEMDoor = value; 
                         break;
-                    case "CarWashMEMDoorTrig": 
-                        CarWashData.CarWashMEMDoorTrig = value; 
+                    case "MEMDoorTrig": 
+                        CarWashData.MEMDoorTrig = value; 
                         break;
-                    case "CarWashMEMDoorClosingtrig": 
-                        CarWashData.CarWashMEMDoorClosingtrig = value; 
+                    case "MEMDoorClosingtrig": 
+                        CarWashData.MEMDoorClosingtrig = value; 
                         break;
                 }
             });
@@ -700,9 +700,9 @@ namespace JAN0837_DP.ReactFE
                         CrossroadData = new
                         {
                             crossroadType = crossroaddata.crossroadType,
-                            btnCrossroadStart = crossroaddata.btnCrossroadStart,
-                            btnCrossroadPause = crossroaddata.btnCrossroadPause,
-                            btnCrossroadStop = crossroaddata.btnCrossroadStop,
+                            btnCrossroadStart = crossroaddata.btnStart,
+                            btnCrossroadPause = crossroaddata.btnPause,
+                            btnCrossroadStop = crossroaddata.btnStop,
                             btnCrosswalk1 = crossroaddata.btnCrosswalk1,
                             btnCrosswalk2 = crossroaddata.btnCrosswalk2,
                             trafficLight1_green = crossroaddata.trafficLight1_green,
@@ -745,34 +745,34 @@ namespace JAN0837_DP.ReactFE
                         },
                         CarWash = new
                         {
-                            btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
-                            btnStartCarWash = carwashdata.btnStartCarWash,
-                            btnStopCarWash = carwashdata.btnStopCarWash,
-                            CarWashErrorSystem = carwashdata.CarWashErrorSystem,
-                            CarWashCarPosition = carwashdata.CarWashCarPosition,
-                            CarWashShowerPosition = carwashdata.CarWashShowerPosition,
-                            CarWashMode = carwashdata.CarWashMode,
-                            CarWashLight_green = carwashdata.CarWashLight_green,
-                            CarWashLight_yellow = carwashdata.CarWashLight_yellow,
-                            CarWashLight_red = carwashdata.CarWashLight_red,
-                            CarWashDoor1_Up = carwashdata.CarWashDoor1_Up,
-                            CarWashDoor1_Down = carwashdata.CarWashDoor1_Down,
-                            CarWashDoor2_Up = carwashdata.CarWashDoor2_Up,
-                            CarWashDoor2_Down = carwashdata.CarWashDoor2_Down,
-                            CarWashChemicalsFront = carwashdata.CarWashChemicalsFront,
-                            CarWashChemicalsSides = carwashdata.CarWashChemicalsSides,
-                            CarWashChemicalsBack = carwashdata.CarWashChemicalsBack,
-                            CarWashPrewash = carwashdata.CarWashPrewash,
-                            CarWashWater = carwashdata.CarWashWater,
-                            CarWashWax = carwashdata.CarWashWax,
-                            CarWashDry = carwashdata.CarWashDry,
-                            CarWashBrushes = carwashdata.CarWashBrushes,
-                            CarWashSoap = carwashdata.CarWashSoap,
-                            CarWashActiveFoam = carwashdata.CarWashActiveFoam,
-                            CarWashTimeDoorMovement = carwashdata.CarWashTimeDoorMovement,
-                            CarWashMEMDoor = carwashdata.CarWashMEMDoor,
-                            CarWashMEMDoorTrig = carwashdata.CarWashMEMDoorTrig,
-                            CarWashMEMDoorClosingtrig = carwashdata.CarWashMEMDoorClosingtrig
+                            btnCarWashEmergencyStop = carwashdata.btnEmergencyStop,
+                            btnStartCarWash = carwashdata.btnStart,
+                            btnStopCarWash = carwashdata.btnStop,
+                            CarWashErrorSystem = carwashdata.ErrorSystem,
+                            CarWashCarPosition = carwashdata.CarPosition,
+                            CarWashShowerPosition = carwashdata.ShowerPosition,
+                            CarWashMode = carwashdata.Mode,
+                            CarWashLight_green = carwashdata.Light_green,
+                            CarWashLight_yellow = carwashdata.Light_yellow,
+                            CarWashLight_red = carwashdata.Light_red,
+                            CarWashDoor1_Up = carwashdata.Door1_Up,
+                            CarWashDoor1_Down = carwashdata.Door1_Down,
+                            CarWashDoor2_Up = carwashdata.Door2_Up,
+                            CarWashDoor2_Down = carwashdata.Door2_Down,
+                            CarWashChemicalsFront = carwashdata.ChemicalsFront,
+                            CarWashChemicalsSides = carwashdata.ChemicalsSides,
+                            CarWashChemicalsBack = carwashdata.ChemicalsBack,
+                            CarWashPrewash = carwashdata.Prewash,
+                            CarWashWater = carwashdata.Water,
+                            CarWashWax = carwashdata.Wax,
+                            CarWashDry = carwashdata.Dry,
+                            CarWashBrushes = carwashdata.Brushes,
+                            CarWashSoap = carwashdata.Soap,
+                            CarWashActiveFoam = carwashdata.ActiveFoam,
+                            CarWashTimeDoorMovement = carwashdata.TimeDoorMovement,
+                            CarWashMEMDoor = carwashdata.MEMDoor,
+                            CarWashMEMDoorTrig = carwashdata.MEMDoorTrig,
+                            CarWashMEMDoorClosingtrig = carwashdata.MEMDoorClosingtrig
                         },
                         WashingMachine = new
                         {
@@ -934,9 +934,9 @@ namespace JAN0837_DP.ReactFE
                 CrossroadData = new
                 {
                     crossroadType = crossroaddata.crossroadType,
-                    btnCrossroadStart = crossroaddata.btnCrossroadStart,
-                    btnCrossroadPause = crossroaddata.btnCrossroadPause,
-                    btnCrossroadStop = crossroaddata.btnCrossroadStop,
+                    btnCrossroadStart = crossroaddata.btnStart,
+                    btnCrossroadPause = crossroaddata.btnPause,
+                    btnCrossroadStop = crossroaddata.btnStop,
                     btnCrosswalk1 = crossroaddata.btnCrosswalk1,
                     btnCrosswalk2 = crossroaddata.btnCrosswalk2
                 },
@@ -959,13 +959,13 @@ namespace JAN0837_DP.ReactFE
                 },
                 CarWash = new
                 {
-                    btnCarWashEmergencyStop = carwashdata.btnCarWashEmergencyStop,
-                    btnStartCarWash = carwashdata.btnStartCarWash,
-                    btnStopCarWash = carwashdata.btnStopCarWash,
-                    CarWashErrorSystem = carwashdata.CarWashErrorSystem,
-                    CarWashCarPosition = carwashdata.CarWashCarPosition,
-                    CarWashShowerPosition = carwashdata.CarWashShowerPosition,
-                    CarWashMode = carwashdata.CarWashMode
+                    btnCarWashEmergencyStop = carwashdata.btnEmergencyStop,
+                    btnStartCarWash = carwashdata.btnStart,
+                    btnStopCarWash = carwashdata.btnStop,
+                    CarWashErrorSystem = carwashdata.ErrorSystem,
+                    CarWashCarPosition = carwashdata.CarPosition,
+                    CarWashShowerPosition = carwashdata.ShowerPosition,
+                    CarWashMode = carwashdata.Mode
                 },
                 WashingMachine = new
                 {

@@ -275,6 +275,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 
         public string BoolToStr(bool b)
             => b ? "true" : "false";
+        
+        public string IntToStr(int i)
+            => i.ToString();
+
+        public string IntToStr(bool value)
+            => value ? "1" : "0";
 
         public bool Start()
         {

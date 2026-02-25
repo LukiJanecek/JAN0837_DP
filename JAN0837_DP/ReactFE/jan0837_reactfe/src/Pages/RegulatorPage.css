@@ -2,14 +2,15 @@
     min-width: 500px;
 }
 
-.regulator {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background-size: cover;
-  background-position: center;
-  /*background-repeat: no-repeat;*/
-  overflow: hidden; 
+.regulator-img-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.regulator-img {
+  max-width: 65%;
+  height: auto;
+  border-radius: 8px;
 }
 
 .light {
@@ -125,25 +126,15 @@
   top: 95%; 
 }
 
-/* ── Regulator overlay labels ─────────────────────────── */
-.reg-label {
-  position: absolute;
-  font-weight: 700;
-  font-size: clamp(0.75rem, 2vw, 1.25rem);
-  color: #222;
-  background: rgba(255,255,255,.75);
-  padding: 2px 8px;
-  border-radius: 6px;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.reg-label--R  { left: 25%; top: 30%; }
-.reg-label--C  { left: 60%; top: 30%; }
-.reg-label--U  { left: 5%;  top: 50%; }
-.reg-label--Uc { right: 5%; top: 50%; color: #0d6efd; }
-
 .reg-output .badge {
   font-size: 1.1rem;
   padding: 8px 16px;
+}
+
+/* ── Uc chart ─────────────────────────────────────────── */
+.uc-chart-wrap {
+  margin-top: 1.5rem;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
 }

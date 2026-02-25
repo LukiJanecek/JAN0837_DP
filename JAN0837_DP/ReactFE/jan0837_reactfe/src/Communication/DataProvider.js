@@ -96,8 +96,8 @@ export function useSectionData(sectionName) {
   const section = data?.[sectionName] ?? {};
 
   const saveSection = useMemo(
-    () => (patch) => saveData(patch),
-    [saveData]
+    () => (patch) => saveData({ [sectionName]: patch }),
+    [saveData, sectionName]
   );
 
   return { section, saveSection, data, error, isFetching, refresh };

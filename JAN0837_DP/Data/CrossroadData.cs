@@ -11,7 +11,6 @@ namespace JAN0837_DP.Data
 {
     public static class CrossroadData
     {
-        public const int CrossroadDBnumber = 1;
         public const int CrossroadDBlength = 4;
         public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
         public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
@@ -20,9 +19,9 @@ namespace JAN0837_DP.Data
         //public static string crossroadNight { get; set; } = "";
 
         // inputs 
-        public static string btnCrossroadStart { get; set; } = "true"; // bool
-        public static string btnCrossroadPause { get; set; } = "false"; // bool
-        public static string btnCrossroadStop { get; set; } = "false"; // bool
+        public static string btnStart { get; set; } = "true"; // bool
+        public static string btnPause { get; set; } = "false"; // bool
+        public static string btnStop { get; set; } = "false"; // bool
         public static string btnCrosswalk1 { get; set; } = "false"; // bool
         public static string btnCrosswalk2 { get; set; } = "false"; // bool
 
@@ -45,9 +44,9 @@ namespace JAN0837_DP.Data
         // snapshot
         public readonly record struct State(
             string crossroadType,
-            string btnCrossroadStart,
-            string btnCrossroadPause,
-            string btnCrossroadStop,
+            string btnStart,
+            string btnPause,
+            string btnStop,
             string btnCrosswalk1,
             string btnCrosswalk2,
             string trafficLight1_green,
@@ -68,9 +67,9 @@ namespace JAN0837_DP.Data
             {
                 return new State(
                     crossroadType,
-                    btnCrossroadStart,
-                    btnCrossroadPause,
-                    btnCrossroadStop,
+                    btnStart,
+                    btnPause,
+                    btnStop,
                     btnCrosswalk1,
                     btnCrosswalk2,
                     trafficLight1_green,

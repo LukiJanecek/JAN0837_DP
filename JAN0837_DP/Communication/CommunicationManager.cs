@@ -75,9 +75,9 @@ namespace JAN0837_DP.Communication
                                     // CrossroadData - Input
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -172,13 +172,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -191,26 +191,26 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -290,9 +290,9 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -355,13 +355,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -374,26 +374,26 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -473,9 +473,9 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -543,13 +543,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -562,26 +562,26 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -661,9 +661,9 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -731,13 +731,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -750,26 +750,26 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -849,9 +849,9 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -919,13 +919,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -938,26 +938,217 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        timeDoorMovement = CarWashData.TimeDoorMovement,
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
+                                    };
+                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarWash/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
+                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
+
+                                    // add carwash mems 
+
+                                    // WashingMachine - Input
+                                    var washingmachineInput = new
+                                    {
+                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
+                                        start = WashingMachineData.btnStartWashingMachine == "true",
+                                        stop = WashingMachineData.btnStopWashingMachine == "true",
+                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
+                                        mode = WashingMachineData.WashingMachineMode
+                                    };
+                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/WashingMachine/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
+                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
+
+                                    // WashingMachine - Output
+                                    var washingmachineOutput = new
+                                    {
+                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
+                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
+                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
+                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
+                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
+                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
+                                        water = WashingMachineData.WashingMachineWater == "true",
+                                        wax = WashingMachineData.WashingMachineWax == "true",
+                                        dry = WashingMachineData.WashingMachineDry == "true",
+                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
+                                        soap = WashingMachineData.WashingMachineSoap == "true",
+                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                    };
+                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/WashingMachine/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
+                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
+
+                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
+                                }
+                                catch (OperationCanceledException) 
+                                { 
+                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
+                                    throw;
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
+                                    Logger.LogException(ex, "Exception error MQTT: ");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+                            }
+                            else if (internalVariables.checkBoxSlave == true)
+                            {
+                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
+                                {
+                                    await Task.Delay(200, token);
+                                    continue; // NE break
+                                }
+
+                                // Slave publishes same structure to separate topics
+                                try
+                                {
+                                    // Crossroad Input/Output
+                                    var crossroadInput = new
+                                    {
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
+                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
+                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                    };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+
+                                    var crossroadOutput = new
+                                    {
+                                        type = CrossroadData.crossroadType == "true",
+                                        tl1_green = CrossroadData.trafficLight1_green == "true",
+                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
+                                        tl1_red = CrossroadData.trafficLight1_red == "true",
+                                        tl2_green = CrossroadData.trafficLight2_green == "true",
+                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
+                                        tl2_red = CrossroadData.trafficLight2_red == "true",
+                                        ped1_green = CrossroadData.pedestrian1_green == "true",
+                                        ped1_red = CrossroadData.pedestrian1_red == "true",
+                                        ped2_green = CrossroadData.pedestrian2_green == "true",
+                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                    };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+
+                                    // Crosswalk Input/Output
+                                    var crosswalkInput = new
+                                    {
+                                        start = CrosswalkData.btnCrosswalkStart == "true",
+                                        pause = CrosswalkData.btnCrosswalkPause == "true",
+                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
+                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
+                                    };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+
+                                    var crosswalkOutput = new
+                                    {
+                                        type = CrosswalkData.crosswalkType == "true",
+                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
+                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
+                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
+                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
+                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
+                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
+                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
+                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
+                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
+                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
+                                    };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+
+                                    // Regulator Input/Output
+                                    var regulatorInput = new
+                                    {
+                                        switchstate = RegulatorData.switchstate == "true",
+                                        R = RegulatorData.R,
+                                        C = RegulatorData.C,
+                                        U = RegulatorData.U,
+                                        Td = RegulatorData.Td
+                                    };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Regulator/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
+
+                                    // CarWash - Input
+                                    var carwashInput = new
+                                    {
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
+                                    };
+                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarWash/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
+                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
+
+                                    // CarWash - Output
+                                    var carwashOutput = new
+                                    {
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -1037,9 +1228,9 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
+                                        start = CrossroadData.btnStart == "true",
+                                        pause = CrossroadData.btnPause == "true",
+                                        stop = CrossroadData.btnStop == "true",
                                         cw1 = CrossroadData.btnCrosswalk1 == "true",
                                         cw2 = CrossroadData.btnCrosswalk2 == "true"
                                     };
@@ -1107,13 +1298,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Input
                                     var carwashInput = new
                                     {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
+                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
+                                        start = CarWashData.btnStart == "true",
+                                        stop = CarWashData.btnStop == "true",
+                                        errorSystem = CarWashData.ErrorSystem == "true",
+                                        carPosition = CarWashData.CarPosition == "true",
+                                        showerPosition = CarWashData.ShowerPosition == "true",
+                                        mode = CarWashData.Mode
                                     };
                                     var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Input")
@@ -1126,214 +1317,27 @@ namespace JAN0837_DP.Communication
                                     // CarWash - Output
                                     var carwashOutput = new
                                     {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-
-                                    // WashingMachine - Input
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-
-                                    // WashingMachine - Output
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        start = CrossroadData.btnCrossroadStart == "true",
-                                        pause = CrossroadData.btnCrossroadPause == "true",
-                                        stop = CrossroadData.btnCrossroadStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // CarWash - Input
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnCarWashEmergencyStop == "true",
-                                        start = CarWashData.btnStartCarWash == "true",
-                                        stop = CarWashData.btnStopCarWash == "true",
-                                        errorSystem = CarWashData.CarWashErrorSystem == "true",
-                                        carPosition = CarWashData.CarWashCarPosition == "true",
-                                        showerPosition = CarWashData.CarWashShowerPosition == "true",
-                                        mode = CarWashData.CarWashMode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-
-                                    // CarWash - Output
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.CarWashLight_green == "true",
-                                        light_yellow = CarWashData.CarWashLight_yellow == "true",
-                                        light_red = CarWashData.CarWashLight_red == "true",
-                                        door1_up = CarWashData.CarWashDoor1_Up == "true",
-                                        door1_down = CarWashData.CarWashDoor1_Down == "true",
-                                        door2_up = CarWashData.CarWashDoor2_Up == "true",
-                                        door2_down = CarWashData.CarWashDoor2_Down == "true",
-                                        chemicals_front = CarWashData.CarWashChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.CarWashChemicalsSides == "true",
-                                        chemicals_back = CarWashData.CarWashChemicalsBack == "true",
-                                        prewash = CarWashData.CarWashPrewash == "true",
-                                        water = CarWashData.CarWashWater == "true",
-                                        wax = CarWashData.CarWashWax == "true",
-                                        dry = CarWashData.CarWashDry == "true",
-                                        brushes = CarWashData.CarWashBrushes == "true",
-                                        soap = CarWashData.CarWashSoap == "true",
-                                        activeFoam = CarWashData.CarWashActiveFoam == "true",
-                                        memDoor = CarWashData.CarWashMEMDoor == "true",
-                                        memDoorTrig = CarWashData.CarWashMEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.CarWashMEMDoorClosingtrig == "true"
+                                        light_green = CarWashData.Light_green == "true",
+                                        light_yellow = CarWashData.Light_yellow == "true",
+                                        light_red = CarWashData.Light_red == "true",
+                                        door1_up = CarWashData.Door1_Up == "true",
+                                        door1_down = CarWashData.Door1_Down == "true",
+                                        door2_up = CarWashData.Door2_Up == "true",
+                                        door2_down = CarWashData.Door2_Down == "true",
+                                        chemicals_front = CarWashData.ChemicalsFront == "true",
+                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
+                                        chemicals_back = CarWashData.ChemicalsBack == "true",
+                                        prewash = CarWashData.Prewash == "true",
+                                        water = CarWashData.Water == "true",
+                                        wax = CarWashData.Wax == "true",
+                                        dry = CarWashData.Dry == "true",
+                                        brushes = CarWashData.Brushes == "true",
+                                        soap = CarWashData.Soap == "true",
+                                        activeFoam = CarWashData.ActiveFoam == "true",
+                                        timeDoorMovement = CarWashData.TimeDoorMovement,
+                                        memDoor = CarWashData.MEMDoor == "true",
+                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
+                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
                                     };
                                     var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarWash/Output")
@@ -1434,23 +1438,23 @@ namespace JAN0837_DP.Communication
                                 try
                                 {
                                     // CrossroadData
-                                    CrossroadData.btnCrossroadStart = opcuaServer.ReadVariable("BtnCrossroadStart") ? "true" : "false";
-                                    CrossroadData.btnCrossroadPause = opcuaServer.ReadVariable("BtnCrossroadPause") ? "true" : "false";
-                                    CrossroadData.btnCrossroadStop = opcuaServer.ReadVariable("BtnCrossroadStop") ? "true" : "false";
+                                    CrossroadData.btnStart = opcuaServer.ReadVariable("BtnCrossroadStart") ? "true" : "false";
+                                    CrossroadData.btnPause = opcuaServer.ReadVariable("BtnCrossroadPause") ? "true" : "false";
+                                    CrossroadData.btnStop = opcuaServer.ReadVariable("BtnCrossroadStop") ? "true" : "false";
                                     CrossroadData.btnCrosswalk1 = opcuaServer.ReadVariable("BtnCrosswalk1") ? "true" : "false";
                                     CrossroadData.btnCrosswalk2 = opcuaServer.ReadVariable("BtnCrosswalk2") ? "true" : "false";
 
-                                    opcuaServer.UpdateVariable("CrossroadType", CrossroadData.crossroadType == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Green", CrossroadData.trafficLight1_green == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Yellow", CrossroadData.trafficLight1_yellow == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Red", CrossroadData.trafficLight1_red == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Green", CrossroadData.trafficLight2_green == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Yellow", CrossroadData.trafficLight2_yellow == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Red", CrossroadData.trafficLight2_red == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian1_Green", CrossroadData.pedestrian1_green == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian1_Red", CrossroadData.pedestrian1_red == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian2_Green", CrossroadData.pedestrian2_green == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian2_Red", CrossroadData.pedestrian2_red == "true");
+                                    opcuaServer.UpdateBoolVariable("CrossroadType", CrossroadData.crossroadType == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Green", CrossroadData.trafficLight1_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Yellow", CrossroadData.trafficLight1_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Red", CrossroadData.trafficLight1_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Green", CrossroadData.trafficLight2_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Yellow", CrossroadData.trafficLight2_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Red", CrossroadData.trafficLight2_red == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Green", CrossroadData.pedestrian1_green == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Red", CrossroadData.pedestrian1_red == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Green", CrossroadData.pedestrian2_green == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Red", CrossroadData.pedestrian2_red == "true");
 
                                     // CrosswalkData
                                     CrosswalkData.btnCrosswalkStart = opcuaServer.ReadVariable("BtnCrosswalkStart_Crosswalk") ? "true" : "false";
@@ -1459,17 +1463,17 @@ namespace JAN0837_DP.Communication
                                     CrosswalkData.btnCrosswalk1 = opcuaServer.ReadVariable("BtnCrosswalk1_Crosswalk") ? "true" : "false";
                                     CrosswalkData.btnCrosswalk2 = opcuaServer.ReadVariable("BtnCrosswalk2_Crosswalk") ? "true" : "false";
                                     
-                                    opcuaServer.UpdateVariable("CrosswalkType", CrosswalkData.crosswalkType == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Green_Crosswalk", CrosswalkData.trafficLight1_green == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Yellow_Crosswalk", CrosswalkData.trafficLight1_yellow == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight1_Red_Crosswalk", CrosswalkData.trafficLight1_red == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Green_Crosswalk", CrosswalkData.trafficLight2_green == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Yellow_Crosswalk", CrosswalkData.trafficLight2_yellow == "true");
-                                    opcuaServer.UpdateVariable("TrafficLight2_Red_Crosswalk", CrosswalkData.trafficLight2_red == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian1_Green_Crosswalk", CrosswalkData.pedestrian1_green == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian1_Red_Crosswalk", CrosswalkData.pedestrian1_red == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian2_Green_Crosswalk", CrosswalkData.pedestrian2_green == "true");
-                                    opcuaServer.UpdateVariable("Pedestrian2_Red_Crosswalk", CrosswalkData.pedestrian2_red == "true");
+                                    opcuaServer.UpdateBoolVariable("CrosswalkType", CrosswalkData.crosswalkType == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Green_Crosswalk", CrosswalkData.trafficLight1_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Yellow_Crosswalk", CrosswalkData.trafficLight1_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Red_Crosswalk", CrosswalkData.trafficLight1_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Green_Crosswalk", CrosswalkData.trafficLight2_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Yellow_Crosswalk", CrosswalkData.trafficLight2_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Red_Crosswalk", CrosswalkData.trafficLight2_red == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Green_Crosswalk", CrosswalkData.pedestrian1_green == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Red_Crosswalk", CrosswalkData.pedestrian1_red == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Green_Crosswalk", CrosswalkData.pedestrian2_green == "true");
+                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Red_Crosswalk", CrosswalkData.pedestrian2_red == "true");
 
                                     // RegulatorData (read inputs FROM OPC UA server)
                                     RegulatorData.switchstate = opcuaServer.ReadVariable("Switchstate") ? "true" : "false";
@@ -1479,35 +1483,35 @@ namespace JAN0837_DP.Communication
                                     RegulatorData.Td = opcuaServer.ReadVariable("Td").ToString();
 
                                     // CarWash
-                                    CarWashData.btnCarWashEmergencyStop = opcuaServer.ReadVariable("BtnCarWashEmergencyStop") ? "true" : "false";
-                                    CarWashData.btnStartCarWash = opcuaServer.ReadVariable("BtnStartCarWash") ? "true" : "false";
-                                    CarWashData.btnStopCarWash = opcuaServer.ReadVariable("BtnStopCarWash") ? "true" : "false";
-                                    CarWashData.CarWashErrorSystem = opcuaServer.ReadVariable("CarWashErrorSystem") ? "true" : "false";
-                                    CarWashData.CarWashCarPosition = opcuaServer.ReadVariable("CarWashCarPosition") ? "true" : "false";
-                                    CarWashData.CarWashShowerPosition = opcuaServer.ReadVariable("CarWashShowerPosition") ? "true" : "false";
-                                    CarWashData.CarWashMode = opcuaServer.ReadVariable("CarWashMode").ToString();
+                                    CarWashData.btnEmergencyStop = opcuaServer.ReadVariable("BtnCarWashEmergencyStop") ? "true" : "false";
+                                    CarWashData.btnStart = opcuaServer.ReadVariable("BtnStartCarWash") ? "true" : "false";
+                                    CarWashData.btnStop = opcuaServer.ReadVariable("BtnStopCarWash") ? "true" : "false";
+                                    CarWashData.ErrorSystem = opcuaServer.ReadVariable("CarWashErrorSystem") ? "true" : "false";
+                                    CarWashData.CarPosition = opcuaServer.ReadVariable("CarWashCarPosition") ? "true" : "false";
+                                    CarWashData.ShowerPosition = opcuaServer.ReadVariable("CarWashShowerPosition") ? "true" : "false";
+                                    CarWashData.Mode = opcuaServer.ReadVariable("CarWashMode").ToString();
 
-                                    opcuaServer.UpdateVariable("CarWashLight_Green", CarWashData.CarWashLight_green == "true");
-                                    opcuaServer.UpdateVariable("CarWashLight_Yellow", CarWashData.CarWashLight_yellow == "true");
-                                    opcuaServer.UpdateVariable("CarWashLight_Red", CarWashData.CarWashLight_red == "true");
-                                    opcuaServer.UpdateVariable("CarWashDoor1_Up", CarWashData.CarWashDoor1_Up == "true");
-                                    opcuaServer.UpdateVariable("CarWashDoor1_Down", CarWashData.CarWashDoor1_Down == "true");
-                                    opcuaServer.UpdateVariable("CarWashDoor2_Up", CarWashData.CarWashDoor2_Up == "true");
-                                    opcuaServer.UpdateVariable("CarWashDoor2_Down", CarWashData.CarWashDoor2_Down == "true");
-                                    opcuaServer.UpdateVariable("CarWashChemicalsFront", CarWashData.CarWashChemicalsFront == "true");
-                                    opcuaServer.UpdateVariable("CarWashChemicalsSides", CarWashData.CarWashChemicalsSides == "true");
-                                    opcuaServer.UpdateVariable("CarWashChemicalsBack", CarWashData.CarWashChemicalsBack == "true");
-                                    opcuaServer.UpdateVariable("CarWashPrewash", CarWashData.CarWashPrewash == "true");
-                                    opcuaServer.UpdateVariable("CarWashWater", CarWashData.CarWashWater == "true");
-                                    opcuaServer.UpdateVariable("CarWashWax", CarWashData.CarWashWax == "true");
-                                    opcuaServer.UpdateVariable("CarWashDry", CarWashData.CarWashDry == "true");
-                                    opcuaServer.UpdateVariable("CarWashBrushes", CarWashData.CarWashBrushes == "true");
-                                    opcuaServer.UpdateVariable("CarWashSoap", CarWashData.CarWashSoap == "true");
-                                    opcuaServer.UpdateVariable("CarWashActiveFoam", CarWashData.CarWashActiveFoam == "true");
-                                    //opcuaServer.UpdateVariable("CarWashTimeDoorMovement", CarWash.CarWashTimeDoorMovement.ToString());
-                                    opcuaServer.UpdateVariable("CarWashMEMDoor", CarWashData.CarWashMEMDoor == "true");
-                                    opcuaServer.UpdateVariable("CarWashMEMDoorTrig", CarWashData.CarWashMEMDoorTrig == "true");
-                                    opcuaServer.UpdateVariable("CarWashMEMDoorClosingtrig", CarWashData.CarWashMEMDoorClosingtrig == "true");
+                                    opcuaServer.UpdateBoolVariable("Light_Green", CarWashData.Light_green == "true");
+                                    opcuaServer.UpdateBoolVariable("Light_Yellow", CarWashData.Light_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("Light_Red", CarWashData.Light_red == "true");
+                                    opcuaServer.UpdateBoolVariable("Door1_Up", CarWashData.Door1_Up == "true");
+                                    opcuaServer.UpdateBoolVariable("Door1_Down", CarWashData.Door1_Down == "true");
+                                    opcuaServer.UpdateBoolVariable("Door2_Up", CarWashData.Door2_Up == "true");
+                                    opcuaServer.UpdateBoolVariable("Door2_Down", CarWashData.Door2_Down == "true");
+                                    opcuaServer.UpdateBoolVariable("ChemicalsFront", CarWashData.ChemicalsFront == "true");
+                                    opcuaServer.UpdateBoolVariable("ChemicalsSides", CarWashData.ChemicalsSides == "true");
+                                    opcuaServer.UpdateBoolVariable("ChemicalsBack", CarWashData.ChemicalsBack == "true");
+                                    opcuaServer.UpdateBoolVariable("Prewash", CarWashData.Prewash == "true");
+                                    opcuaServer.UpdateBoolVariable("Water", CarWashData.Water == "true");
+                                    opcuaServer.UpdateBoolVariable("Wax", CarWashData.Wax == "true");
+                                    opcuaServer.UpdateBoolVariable("Dry", CarWashData.Dry == "true");
+                                    opcuaServer.UpdateBoolVariable("Brushes", CarWashData.Brushes == "true");
+                                    opcuaServer.UpdateBoolVariable("Soap", CarWashData.Soap == "true");
+                                    opcuaServer.UpdateBoolVariable("ActiveFoam", CarWashData.ActiveFoam == "true");
+                                    opcuaServer.UpdateSringVariable("TimeDoorMovement", CarWashData.TimeDoorMovement);
+                                    opcuaServer.UpdateBoolVariable("MEMDoor", CarWashData.MEMDoor == "true");
+                                    opcuaServer.UpdateBoolVariable("MEMDoorTrig", CarWashData.MEMDoorTrig == "true");
+                                    opcuaServer.UpdateBoolVariable("MEMDoorClosingtrig", CarWashData.MEMDoorClosingtrig == "true");
 
                                     // WashingMachine
                                     WashingMachineData.btnWashingMachineEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
@@ -1516,18 +1520,18 @@ namespace JAN0837_DP.Communication
                                     WashingMachineData.WashingMachineErrorSystem = opcuaServer.ReadVariable("WashingMachineErrorSystem") ? "true" : "false";
                                     WashingMachineData.WashingMachineMode = opcuaServer.ReadVariable("WashingMachineMode").ToString();
 
-                                    opcuaServer.UpdateVariable("WashingMachineLight_Green", WashingMachineData.WashingMachineLight_green == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineLight_Yellow", WashingMachineData.WashingMachineLight_yellow == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineLight_Red", WashingMachineData.WashingMachineLight_red == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineDoorClosed", WashingMachineData.WashingMachineDoorClosed == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineChemicals", WashingMachineData.WashingMachineChemicals == "true");
-                                    opcuaServer.UpdateVariable("WashingMachinePrewash", WashingMachineData.WashingMachinePrewash == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineWater", WashingMachineData.WashingMachineWater == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineWax", WashingMachineData.WashingMachineWax == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineDry", WashingMachineData.WashingMachineDry == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineBrushes", WashingMachineData.WashingMachineBrushes == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineSoap", WashingMachineData.WashingMachineSoap == "true");
-                                    opcuaServer.UpdateVariable("WashingMachineActiveFoam", WashingMachineData.WashingMachineActiveFoam == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Green", WashingMachineData.WashingMachineLight_green == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Yellow", WashingMachineData.WashingMachineLight_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Red", WashingMachineData.WashingMachineLight_red == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineDoorClosed", WashingMachineData.WashingMachineDoorClosed == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineChemicals", WashingMachineData.WashingMachineChemicals == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachinePrewash", WashingMachineData.WashingMachinePrewash == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineWater", WashingMachineData.WashingMachineWater == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineWax", WashingMachineData.WashingMachineWax == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineDry", WashingMachineData.WashingMachineDry == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.WashingMachineBrushes == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.WashingMachineSoap == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.WashingMachineActiveFoam == "true");
 
                                     _ucCommunicationControl.SetStatus("OPC UA Server: Hosting all data for external clients");
                                 }
@@ -1556,9 +1560,9 @@ namespace JAN0837_DP.Communication
                                 {
                                     // CrossroadData 
                                     // Write input values to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStart, CrossroadData.btnCrossroadStart == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnPause, CrossroadData.btnCrossroadPause == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStop, CrossroadData.btnCrossroadStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStart, CrossroadData.btnStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnPause, CrossroadData.btnPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStop, CrossroadData.btnStop == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnCrosswalk1, CrossroadData.btnCrosswalk1 == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnCrosswalk2, CrossroadData.btnCrosswalk2 == "true");
 
@@ -1663,13 +1667,13 @@ namespace JAN0837_DP.Communication
 
                                     // CarWashData
                                     // Write input values to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnCarWashEmergencyStop, CarWashData.btnCarWashEmergencyStop == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnStartCarWash, CarWashData.btnStartCarWash == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnStopCarWash, CarWashData.btnStopCarWash == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.CarWashErrorSystem, CarWashData.CarWashErrorSystem == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.CarWashCarPosition, CarWashData.CarWashCarPosition == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.CarWashShowerPosition, CarWashData.CarWashShowerPosition == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.CarWashMode, CarWashData.CarWashMode);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnEmergencyStop, CarWashData.btnEmergencyStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnStart, CarWashData.btnStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnStop, CarWashData.btnStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.ErrorSystem, CarWashData.ErrorSystem == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.CarPosition, CarWashData.CarPosition == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.ShowerPosition, CarWashData.ShowerPosition == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.Mode, CarWashData.Mode);
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1681,27 +1685,27 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     // Read output values from PLC 
-                                    CarWashData.CarWashLight_green = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashLight_green) ? "true" : "false";
-                                    CarWashData.CarWashLight_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashLight_yellow) ? "true" : "false";
-                                    CarWashData.CarWashLight_red = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashLight_red) ? "true" : "false";
-                                    CarWashData.CarWashDoor1_Up = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashDoor1_Up) ? "true" : "false";
-                                    CarWashData.CarWashDoor1_Down = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashDoor1_Down) ? "true" : "false";
-                                    CarWashData.CarWashDoor2_Up = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashDoor2_Up) ? "true" : "false";
-                                    CarWashData.CarWashDoor2_Down = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashDoor2_Down) ? "true" : "false";
-                                    CarWashData.CarWashChemicalsFront = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashChemicalsFront) ? "true" : "false";
-                                    CarWashData.CarWashChemicalsSides = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashChemicalsSides) ? "true" : "false";
-                                    CarWashData.CarWashChemicalsBack = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashChemicalsBack) ? "true" : "false";
-                                    CarWashData.CarWashPrewash = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashPrewash) ? "true" : "false";
-                                    CarWashData.CarWashWater = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashWater) ? "true" : "false";
-                                    CarWashData.CarWashWax = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashWax) ? "true" : "false";
-                                    CarWashData.CarWashDry = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashDry) ? "true" : "false";
-                                    CarWashData.CarWashBrushes = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashBrushes) ? "true" : "false";
-                                    CarWashData.CarWashSoap = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashSoap) ? "true" : "false";
-                                    CarWashData.CarWashActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashActiveFoam) ? "true" : "false";
-                                    //CarWashData.CarWashTimeDoorMovement = opcuaClient.ReadOPCUAInt(opcuaClient, CarWashData.OpcUaNodeIds.CarWashTimeDoorMovement);
-                                    CarWashData.CarWashMEMDoor = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashMEMDoor) ? "true" : "false";
-                                    CarWashData.CarWashMEMDoorTrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashMEMDoorTrig) ? "true" : "false";
-                                    CarWashData.CarWashMEMDoorClosingtrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.CarWashMEMDoorClosingtrig) ? "true" : "false";
+                                    CarWashData.Light_green = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Light_green) ? "true" : "false";
+                                    CarWashData.Light_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Light_yellow) ? "true" : "false";
+                                    CarWashData.Light_red = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Light_red) ? "true" : "false";
+                                    CarWashData.Door1_Up = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Door1_Up) ? "true" : "false";
+                                    CarWashData.Door1_Down = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Door1_Down) ? "true" : "false";
+                                    CarWashData.Door2_Up = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Door2_Up) ? "true" : "false";
+                                    CarWashData.Door2_Down = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Door2_Down) ? "true" : "false";
+                                    CarWashData.ChemicalsFront = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.ChemicalsFront) ? "true" : "false";
+                                    CarWashData.ChemicalsSides = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.ChemicalsSides) ? "true" : "false";
+                                    CarWashData.ChemicalsBack = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.ChemicalsBack) ? "true" : "false";
+                                    CarWashData.Prewash = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Prewash) ? "true" : "false";
+                                    CarWashData.Water = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Water) ? "true" : "false";
+                                    CarWashData.Wax = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Wax) ? "true" : "false";
+                                    CarWashData.Dry = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Dry) ? "true" : "false";
+                                    CarWashData.Brushes = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Brushes) ? "true" : "false";
+                                    CarWashData.Soap = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.Soap) ? "true" : "false";
+                                    CarWashData.ActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.ActiveFoam) ? "true" : "false";
+                                    CarWashData.TimeDoorMovement = opcuaClient.ReadOPCUAInt(opcuaClient, CarWashData.OpcUaNodeIds.TimeDoorMovement);
+                                    CarWashData.MEMDoor = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoor) ? "true" : "false";
+                                    CarWashData.MEMDoorTrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoorTrig) ? "true" : "false";
+                                    CarWashData.MEMDoorClosingtrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoorClosingtrig) ? "true" : "false";
 
                                     // WashingMachineData
                                     // Write input values to PLC
@@ -1780,9 +1784,9 @@ namespace JAN0837_DP.Communication
                                     // CrossroadData buttons: registers 0-4
                                     bool[] crossroadButtons = new bool[5]
                                     {
-                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadStart),
-                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadPause),
-                                        _modbusServer.StrToBool(CrossroadData.btnCrossroadStop),
+                                        _modbusServer.StrToBool(CrossroadData.btnStart),
+                                        _modbusServer.StrToBool(CrossroadData.btnPause),
+                                        _modbusServer.StrToBool(CrossroadData.btnStop),
                                         _modbusServer.StrToBool(CrossroadData.btnCrosswalk1),
                                         _modbusServer.StrToBool(CrossroadData.btnCrosswalk2)
                                     };
@@ -1813,13 +1817,13 @@ namespace JAN0837_DP.Communication
                                     // CarWash inputs: registers 15-21
                                     bool[] carwashInputs = new bool[7]
                                     {
-                                        _modbusServer.StrToBool(CarWashData.btnCarWashEmergencyStop),
-                                        _modbusServer.StrToBool(CarWashData.btnStartCarWash),
-                                        _modbusServer.StrToBool(CarWashData.btnStopCarWash),
-                                        _modbusServer.StrToBool(CarWashData.CarWashErrorSystem),
-                                        _modbusServer.StrToBool(CarWashData.CarWashCarPosition),
-                                        _modbusServer.StrToBool(CarWashData.CarWashShowerPosition),
-                                        !string.IsNullOrEmpty(CarWashData.CarWashMode)
+                                        _modbusServer.StrToBool(CarWashData.btnEmergencyStop),
+                                        _modbusServer.StrToBool(CarWashData.btnStart),
+                                        _modbusServer.StrToBool(CarWashData.btnStop),
+                                        _modbusServer.StrToBool(CarWashData.ErrorSystem),
+                                        _modbusServer.StrToBool(CarWashData.CarPosition),
+                                        _modbusServer.StrToBool(CarWashData.ShowerPosition),
+                                        !string.IsNullOrEmpty(CarWashData.Mode)
                                     };
                                     _modbusServer.SetRegisters(15, carwashInputs);
 
@@ -1878,26 +1882,27 @@ namespace JAN0837_DP.Communication
                                     bool[] carwashOutputs = _modbusServer.GetRegisters(52, 21);
                                     if (carwashOutputs != null && carwashOutputs.Length >= 21)
                                     {
-                                        CarWashData.CarWashLight_green = _modbusServer.BoolToStr(carwashOutputs[0]);
-                                        CarWashData.CarWashLight_yellow = _modbusServer.BoolToStr(carwashOutputs[1]);
-                                        CarWashData.CarWashLight_red = _modbusServer.BoolToStr(carwashOutputs[2]);
-                                        CarWashData.CarWashDoor1_Up = _modbusServer.BoolToStr(carwashOutputs[3]);
-                                        CarWashData.CarWashDoor1_Down = _modbusServer.BoolToStr(carwashOutputs[4]);
-                                        CarWashData.CarWashDoor2_Up = _modbusServer.BoolToStr(carwashOutputs[5]);
-                                        CarWashData.CarWashDoor2_Down = _modbusServer.BoolToStr(carwashOutputs[6]);
-                                        CarWashData.CarWashChemicalsFront = _modbusServer.BoolToStr(carwashOutputs[7]);
-                                        CarWashData.CarWashChemicalsSides = _modbusServer.BoolToStr(carwashOutputs[8]);
-                                        CarWashData.CarWashChemicalsBack = _modbusServer.BoolToStr(carwashOutputs[9]);
-                                        CarWashData.CarWashPrewash = _modbusServer.BoolToStr(carwashOutputs[10]);
-                                        CarWashData.CarWashWater = _modbusServer.BoolToStr(carwashOutputs[11]);
-                                        CarWashData.CarWashWax = _modbusServer.BoolToStr(carwashOutputs[12]);
-                                        CarWashData.CarWashDry = _modbusServer.BoolToStr(carwashOutputs[13]);
-                                        CarWashData.CarWashBrushes = _modbusServer.BoolToStr(carwashOutputs[14]);
-                                        CarWashData.CarWashSoap = _modbusServer.BoolToStr(carwashOutputs[15]);
-                                        CarWashData.CarWashActiveFoam = _modbusServer.BoolToStr(carwashOutputs[16]);
-                                        CarWashData.CarWashMEMDoor = _modbusServer.BoolToStr(carwashOutputs[17]);
-                                        CarWashData.CarWashMEMDoorTrig = _modbusServer.BoolToStr(carwashOutputs[18]);
-                                        CarWashData.CarWashMEMDoorClosingtrig = _modbusServer.BoolToStr(carwashOutputs[19]);
+                                        CarWashData.Light_green = _modbusServer.BoolToStr(carwashOutputs[0]);
+                                        CarWashData.Light_yellow = _modbusServer.BoolToStr(carwashOutputs[1]);
+                                        CarWashData.Light_red = _modbusServer.BoolToStr(carwashOutputs[2]);
+                                        CarWashData.Door1_Up = _modbusServer.BoolToStr(carwashOutputs[3]);
+                                        CarWashData.Door1_Down = _modbusServer.BoolToStr(carwashOutputs[4]);
+                                        CarWashData.Door2_Up = _modbusServer.BoolToStr(carwashOutputs[5]);
+                                        CarWashData.Door2_Down = _modbusServer.BoolToStr(carwashOutputs[6]);
+                                        CarWashData.ChemicalsFront = _modbusServer.BoolToStr(carwashOutputs[7]);
+                                        CarWashData.ChemicalsSides = _modbusServer.BoolToStr(carwashOutputs[8]);
+                                        CarWashData.ChemicalsBack = _modbusServer.BoolToStr(carwashOutputs[9]);
+                                        CarWashData.Prewash = _modbusServer.BoolToStr(carwashOutputs[10]);
+                                        CarWashData.Water = _modbusServer.BoolToStr(carwashOutputs[11]);
+                                        CarWashData.Wax = _modbusServer.BoolToStr(carwashOutputs[12]);
+                                        CarWashData.Dry = _modbusServer.BoolToStr(carwashOutputs[13]);
+                                        CarWashData.Brushes = _modbusServer.BoolToStr(carwashOutputs[14]);
+                                        CarWashData.Soap = _modbusServer.BoolToStr(carwashOutputs[15]);
+                                        CarWashData.ActiveFoam = _modbusServer.BoolToStr(carwashOutputs[16]);
+                                        CarWashData.TimeDoorMovement = _modbusServer.IntToStr(carwashOutputs[20]); 
+                                        CarWashData.MEMDoor = _modbusServer.BoolToStr(carwashOutputs[17]);
+                                        CarWashData.MEMDoorTrig = _modbusServer.BoolToStr(carwashOutputs[18]);
+                                        CarWashData.MEMDoorClosingtrig = _modbusServer.BoolToStr(carwashOutputs[19]);
                                         // carwashOutputs[20] reserved for CarWashTimeDoorMovement
                                     }
 
@@ -1939,17 +1944,17 @@ namespace JAN0837_DP.Communication
                             
                             byte buttons = 0;
 
-                            if (CrossroadData.btnCrossroadStart == "true")
+                            if (CrossroadData.btnStart == "true")
                             {
                                 buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrossroadStart;
                             }
                                 
-                            if (CrossroadData.btnCrossroadPause == "true")
+                            if (CrossroadData.btnPause == "true")
                             {
                                 buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrossroadPause;
                             }
                                 
-                            if (CrossroadData.btnCrossroadStop == "true")
+                            if (CrossroadData.btnStop == "true")
                             {
                                 buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrossroadStop;
                             }
@@ -2081,7 +2086,7 @@ namespace JAN0837_DP.Communication
                             _ucCommunicationControl.SetStatus($"This communication is already running in the project on http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/");
                             break;
                         case "Sharp7":                            
-                            int activeDBnumber = CrossroadData.CrossroadDBnumber; // ? hard number 
+                            int activeDBnumber = 1; // ? hard number 
                             byte[] readBuffer = new byte[20]; // ? find out 
                             byte[] writeBuffer = new byte[20]; // ? find out 
 
@@ -2119,26 +2124,26 @@ namespace JAN0837_DP.Communication
                                 
 
                                 // CarWashData bytes 10-14
-                                CarWashData.CarWashLight_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 0));
-                                CarWashData.CarWashLight_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 1));
-                                CarWashData.CarWashLight_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 2));
-                                CarWashData.CarWashDoor1_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 0));
-                                CarWashData.CarWashDoor1_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 1));
-                                CarWashData.CarWashDoor2_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 2));
-                                CarWashData.CarWashDoor2_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 3));
-                                CarWashData.CarWashChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 4));
-                                CarWashData.CarWashChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 5));
-                                CarWashData.CarWashChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 6));
-                                CarWashData.CarWashPrewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 7));
-                                CarWashData.CarWashWater = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 0));
-                                CarWashData.CarWashWax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 1));
-                                CarWashData.CarWashDry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 2));
-                                CarWashData.CarWashBrushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 3));
-                                CarWashData.CarWashSoap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 4));
-                                CarWashData.CarWashActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 5));
-                                CarWashData.CarWashMEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 0));
-                                CarWashData.CarWashMEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 1));
-                                CarWashData.CarWashMEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 2));
+                                CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 0));
+                                CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 1));
+                                CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 2));
+                                CarWashData.Door1_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 0));
+                                CarWashData.Door1_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 1));
+                                CarWashData.Door2_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 2));
+                                CarWashData.Door2_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 3));
+                                CarWashData.ChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 4));
+                                CarWashData.ChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 5));
+                                CarWashData.ChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 6));
+                                CarWashData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 7));
+                                CarWashData.Water = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 0));
+                                CarWashData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 1));
+                                CarWashData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 2));
+                                CarWashData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 3));
+                                CarWashData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 4));
+                                CarWashData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 5));
+                                CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 0));
+                                CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 1));
+                                CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 2));
 
                                 // WashingMachineData bytes 15-17
                                 WashingMachineData.WashingMachineLight_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 0));
@@ -2164,9 +2169,9 @@ namespace JAN0837_DP.Communication
 
                             // CrossroadData write inputs to byte 0, outputs to bytes 2-3
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnCrossroadStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnCrossroadPause));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnCrossroadStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnPause));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnStop));
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnCrosswalk1));
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 5, Convert.ToBoolean(CrossroadData.btnCrosswalk2));
 
@@ -2208,35 +2213,35 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Td));
 
                             // CarWashData write to bytes 10-14
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnCarWashEmergencyStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStartCarWash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStopCarWash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 3, Convert.ToBoolean(CarWashData.CarWashErrorSystem));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarWashCarPosition));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 5, Convert.ToBoolean(CarWashData.CarWashShowerPosition));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 3, Convert.ToBoolean(CarWashData.ErrorSystem));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarPosition));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 5, Convert.ToBoolean(CarWashData.ShowerPosition));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 0, Convert.ToBoolean(CarWashData.CarWashLight_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 1, Convert.ToBoolean(CarWashData.CarWashLight_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 2, Convert.ToBoolean(CarWashData.CarWashLight_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 3, Convert.ToBoolean(CarWashData.CarWashDoor1_Up));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 4, Convert.ToBoolean(CarWashData.CarWashDoor1_Down));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 5, Convert.ToBoolean(CarWashData.CarWashDoor2_Up));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 6, Convert.ToBoolean(CarWashData.CarWashDoor2_Down));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 7, Convert.ToBoolean(CarWashData.CarWashChemicalsFront));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 0, Convert.ToBoolean(CarWashData.Light_green));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 1, Convert.ToBoolean(CarWashData.Light_yellow));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 2, Convert.ToBoolean(CarWashData.Light_red));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 3, Convert.ToBoolean(CarWashData.Door1_Up));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 4, Convert.ToBoolean(CarWashData.Door1_Down));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 5, Convert.ToBoolean(CarWashData.Door2_Up));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 6, Convert.ToBoolean(CarWashData.Door2_Down));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 7, Convert.ToBoolean(CarWashData.ChemicalsFront));
+                
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 0, Convert.ToBoolean(CarWashData.ChemicalsSides));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 1, Convert.ToBoolean(CarWashData.ChemicalsBack));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 2, Convert.ToBoolean(CarWashData.Prewash));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 3, Convert.ToBoolean(CarWashData.Water));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 4, Convert.ToBoolean(CarWashData.Wax));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 5, Convert.ToBoolean(CarWashData.Dry));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 6, Convert.ToBoolean(CarWashData.Brushes));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 7, Convert.ToBoolean(CarWashData.Soap));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 0, Convert.ToBoolean(CarWashData.CarWashChemicalsSides));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 1, Convert.ToBoolean(CarWashData.CarWashChemicalsBack));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 2, Convert.ToBoolean(CarWashData.CarWashPrewash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 3, Convert.ToBoolean(CarWashData.CarWashWater));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 4, Convert.ToBoolean(CarWashData.CarWashWax));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 5, Convert.ToBoolean(CarWashData.CarWashDry));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 6, Convert.ToBoolean(CarWashData.CarWashBrushes));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 7, Convert.ToBoolean(CarWashData.CarWashSoap));
-                            
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 0, Convert.ToBoolean(CarWashData.CarWashActiveFoam));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 1, Convert.ToBoolean(CarWashData.CarWashMEMDoor));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 2, Convert.ToBoolean(CarWashData.CarWashMEMDoorTrig));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 3, Convert.ToBoolean(CarWashData.CarWashMEMDoorClosingtrig));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 0, Convert.ToBoolean(CarWashData.ActiveFoam));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
 
                             // WashingMachineData write to bytes 15-17
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnWashingMachineEmergencyStop));

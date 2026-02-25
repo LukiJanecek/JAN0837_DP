@@ -330,24 +330,24 @@ namespace JAN0837_DP.Communication.comMQTT
                     var dto = JsonSerializer.Deserialize<OutputDto>(json);
                     if (dto is null) return;
 
-                    CarWashData.CarWashLight_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashLight_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashLight_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashDoor1_Up = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashDoor1_Down = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashDoor2_Up = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashDoor2_Down = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashChemicalsFront = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashChemicalsSides = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashChemicalsBack = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashPrewash = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashWater = ((dto.statusMask >> 11) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashWax = ((dto.statusMask >> 12) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashDry = ((dto.statusMask >> 13) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashBrushes = ((dto.statusMask >> 14) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashSoap = ((dto.statusMask >> 15) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashActiveFoam = ((dto.statusMask >> 16) & 1) == 1 ? "true" : "false";
-                    CarWashData.CarWashMode = dto.mode ?? "";
+                    CarWashData.Light_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
+                    CarWashData.Light_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
+                    CarWashData.Light_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
+                    CarWashData.Door1_Up = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
+                    CarWashData.Door1_Down = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
+                    CarWashData.Door2_Up = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
+                    CarWashData.Door2_Down = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
+                    CarWashData.ChemicalsFront = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
+                    CarWashData.ChemicalsSides = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
+                    CarWashData.ChemicalsBack = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
+                    CarWashData.Prewash = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
+                    CarWashData.Water = ((dto.statusMask >> 11) & 1) == 1 ? "true" : "false";
+                    CarWashData.Wax = ((dto.statusMask >> 12) & 1) == 1 ? "true" : "false";
+                    CarWashData.Dry = ((dto.statusMask >> 13) & 1) == 1 ? "true" : "false";
+                    CarWashData.Brushes = ((dto.statusMask >> 14) & 1) == 1 ? "true" : "false";
+                    CarWashData.Soap = ((dto.statusMask >> 15) & 1) == 1 ? "true" : "false";
+                    CarWashData.ActiveFoam = ((dto.statusMask >> 16) & 1) == 1 ? "true" : "false";
+                    CarWashData.Mode = dto.mode ?? "";
                 }
                 catch (Exception ex)
                 {

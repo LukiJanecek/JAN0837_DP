@@ -53,10 +53,10 @@ namespace JAN0837_DP.ReactFE
             // Try different prefixes in order of preference
             string[] prefixesToTry = new[]
             {
-                $"http://+:{internalVariables.apiPort}/api/",                    // All interfaces (requires admin/urlacl)
-                $"http://*:{internalVariables.apiPort}/api/",                    // Alternative all interfaces
-                $"http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/",  // Specific IP
-                $"http://localhost:{internalVariables.apiPort}/api/"             // Localhost only (always works)
+                $"http://+:{internalVariables.apiPort}/api/",                   
+                $"http://*:{internalVariables.apiPort}/api/",                    
+                $"http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/", 
+                $"http://localhost:{internalVariables.apiPort}/api/"            
             };
 
             bool started = false;
@@ -157,103 +157,41 @@ namespace JAN0837_DP.ReactFE
             }
         }
 
-        public void Update(string key, object value)
+        public void Update(string category, string key, string value)
         {
-            var testdata = TestData.AppState.Get();
-
-            string newValue = Convert.ToString(value) ?? "";
-
-            switch (key)
+            switch (category)
             {
-                case "status":
-                    testdata.text = Convert.ToString(value) ?? "";
-                    break;
-
-                case "parameter1":
-                    if (value is int i)
+                case "TestData":
+                    var testdata = TestData.AppState.Get();
+                    switch (key)
                     {
-                        testdata.number = i;
+                        case "text": testdata.text = value; break;
+                        case "number":
+                            if (int.TryParse(value, out var n)) testdata.number = n;
+                            break;
+                        case "toggle": testdata.toggle = value; break;
                     }
-                    else if (value is long l)
-                    {
-                        testdata.number = (int)l;
-                    }
-                    else if (int.TryParse(Convert.ToString(value), out var n))
-                    {
-                        testdata.number = n;
-                    }
+                    TestData.AppState.Set(testdata);
                     break;
-
-                case "refreshInterval":
-                    if (value is int ri)
-                    {
-                        internalVariables.communicationRefreshInterval = ri;
-                    }
-                    else if (value is long rl)
-                    {
-                        internalVariables.communicationRefreshInterval = (int)rl;
-                    }
-                    else if (int.TryParse(Convert.ToString(value), out var r))
-                    {
-                        internalVariables.communicationRefreshInterval = r;
-                    }
+                case "CrossroadData":
+                    ApplyCrossroadUpdate(key, value);
                     break;
-
-                case "toggle":
-                    ApplyCrossroadUpdate(key, newValue);
+                case "CrosswalkData":
+                    ApplyCrosswalkUpdate(key, value);
                     break;
-
-                case "crossroadType":
-                    ApplyCrossroadUpdate(key, newValue);
+                case "RegulatorData":
+                    ApplyRegulatorUpdate(key, value);
                     break;
-                case "btnCrossroadStart":
-                    ApplyCrossroadUpdate(key, newValue);
+                case "CarWash":
+                    ApplyCarWashUpdate(key, value);
                     break;
-                case "btnCrossroadPause":
-                    ApplyCrossroadUpdate(key, newValue);
+                case "WashingMachine":
+                    ApplyWashingMachineUpdate(key, value);
                     break;
-                case "btnCrossroadStop":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "btnCrosswalk1":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "btnCrosswalk2":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight1_green":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight1_yellow":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight1_red":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight2_green":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight2_yellow":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "trafficLight2_red":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "pedestrian1_green":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "pedestrian1_red":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "pedestrian2_green":
-                    ApplyCrossroadUpdate(key, newValue);
-                    break;
-                case "pedestrian2_red":
-                    ApplyCrossroadUpdate(key, newValue);
+                case "CarLight":
+                    ApplyCarLightUpdate(key, value);
                     break;
             }
-
-            TestData.AppState.Set(testdata);
         }
 
         private static void ApplyCrossroadUpdate(string key, string value)
@@ -262,10 +200,6 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "crossroadType": 
-                        CrossroadData.crossroadType = value; 
-                        break;
-
                     case "btnCrossroadStart": 
                         CrossroadData.btnStart = value; 
                         break;
@@ -275,14 +209,15 @@ namespace JAN0837_DP.ReactFE
                     case "btnCrossroadStop": 
                         CrossroadData.btnStop = value; 
                         break;
-
                     case "btnCrosswalk1": 
                         CrossroadData.btnCrosswalk1 = value; 
                         break;
                     case "btnCrosswalk2": 
                         CrossroadData.btnCrosswalk2 = value; 
                         break;
-
+                    case "crossroadType":
+                        CrossroadData.crossroadType = value;
+                        break;
                     case "trafficLight1_green": 
                         CrossroadData.trafficLight1_green = value; 
                         break;
@@ -292,15 +227,14 @@ namespace JAN0837_DP.ReactFE
                     case "trafficLight1_red": 
                         CrossroadData.trafficLight1_red = value; 
                         break;
-
                     case "trafficLight2_green": 
                         CrossroadData.trafficLight2_green = value; 
                         break;
                     case "trafficLight2_yellow": 
                         CrossroadData.trafficLight2_yellow = value; 
                         break;
-                    case "trafficLight2_red": CrossroadData.trafficLight2_red = value; break;
-
+                    case "trafficLight2_red": CrossroadData.trafficLight2_red = value; 
+                        break;
                     case "pedestrian1_green": 
                         CrossroadData.pedestrian1_green = value; 
                         break;
@@ -323,52 +257,52 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "crosswalkType": 
-                        CrosswalkData.crosswalkType = value; 
+                    case "btnStart": 
+                        CrosswalkData.btnStart = value; 
                         break;
-                    case "btnCrosswalkStart": 
-                        CrosswalkData.btnCrosswalkStart = value; 
+                    case "btnPause": 
+                        CrosswalkData.btnPause = value; 
                         break;
-                    case "btnCrosswalkPause": 
-                        CrosswalkData.btnCrosswalkPause = value; 
+                    case "btnStop": 
+                        CrosswalkData.btnStop = value; 
                         break;
-                    case "btnCrosswalkStop": 
-                        CrosswalkData.btnCrosswalkStop = value; 
-                        break;
-                    case "btnCrosswalk1_crosswalk": 
+                    case "btnCrosswalk1": 
                         CrosswalkData.btnCrosswalk1 = value; 
                         break;
-                    case "btnCrosswalk2_crosswalk": 
+                    case "btnCrosswalk2": 
                         CrosswalkData.btnCrosswalk2 = value; 
                         break;
-                    case "trafficLight1_green_crosswalk": 
+                    case "crosswalkType":
+                        CrosswalkData.crosswalkType = value;
+                        break;
+                    case "trafficLight1_green": 
                         CrosswalkData.trafficLight1_green = value; 
                         break;
-                    case "trafficLight1_yellow_crosswalk": 
+                    case "trafficLight1_yellow": 
                         CrosswalkData.trafficLight1_yellow = value; 
                         break;
-                    case "trafficLight1_red_crosswalk": 
+                    case "trafficLight1_red": 
                         CrosswalkData.trafficLight1_red = value; 
                         break;
-                    case "trafficLight2_green_crosswalk": 
+                    case "trafficLight2_green": 
                         CrosswalkData.trafficLight2_green = value; 
                         break;
-                    case "trafficLight2_yellow_crosswalk": 
+                    case "trafficLight2_yellow": 
                         CrosswalkData.trafficLight2_yellow = value; 
                         break;
-                    case "trafficLight2_red_crosswalk": 
+                    case "trafficLight2_red": 
                         CrosswalkData.trafficLight2_red = value; 
                         break;
-                    case "pedestrian1_green_crosswalk": 
+                    case "pedestrian1_green": 
                         CrosswalkData.pedestrian1_green = value; 
                         break;
-                    case "pedestrian1_red_crosswalk": 
+                    case "pedestrian1_red": 
                         CrosswalkData.pedestrian1_red = value; 
                         break;
-                    case "pedestrian2_green_crosswalk": 
+                    case "pedestrian2_green": 
                         CrosswalkData.pedestrian2_green = value; 
                         break;
-                    case "pedestrian2_red_crosswalk": 
+                    case "pedestrian2_red": 
                         CrosswalkData.pedestrian2_red = value; 
                         break;
                 }
@@ -381,7 +315,7 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "switchstate_regulator": 
+                    case "switchstate": 
                         RegulatorData.switchstate = value; 
                         break;
                     case "R": 
@@ -503,53 +437,53 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnWashingMachineEmergencyStop": 
-                        WashingMachineData.btnWashingMachineEmergencyStop = value; 
+                    case "btnEmergencyStop": 
+                        WashingMachineData.btnEmergencyStop = value; 
                         break;
-                    case "btnStartWashingMachine": 
-                        WashingMachineData.btnStartWashingMachine = value; 
+                    case "btnStart": 
+                        WashingMachineData.btnStart = value; 
                         break;
-                    case "btnStopWashingMachine": 
-                        WashingMachineData.btnStopWashingMachine = value; 
+                    case "btnStop": 
+                        WashingMachineData.btnStop = value; 
                         break;
-                    case "WashingMachineErrorSystem": 
-                        WashingMachineData.WashingMachineErrorSystem = value; 
+                    case "ErrorSystem": 
+                        WashingMachineData.ErrorSystem = value; 
                         break;
-                    case "WashingMachineMode": 
-                        WashingMachineData.WashingMachineMode = value; 
+                    case "Mode": 
+                        WashingMachineData.Mode = value; 
                         break;
-                    case "WashingMachineLight_green": 
-                        WashingMachineData.WashingMachineLight_green = value; 
+                    case "Light_green": 
+                        WashingMachineData.Light_green = value; 
                         break;
-                    case "WashingMachineLight_yellow": 
-                        WashingMachineData.WashingMachineLight_yellow = value; 
+                    case "Light_yellow": 
+                        WashingMachineData.Light_yellow = value; 
                         break;
-                    case "WashingMachineLight_red": 
-                        WashingMachineData.WashingMachineLight_red = value; 
+                    case "Light_red": 
+                        WashingMachineData.Light_red = value; 
                         break;
-                    case "WashingMachineDoorClosed": 
-                        WashingMachineData.WashingMachineDoorClosed = value; 
+                    case "DoorClosed": 
+                        WashingMachineData.DoorClosed = value; 
                         break;
-                    case "WashingMachineChemicals": 
-                        WashingMachineData.WashingMachineChemicals = value; 
+                    case "Chemicals": 
+                        WashingMachineData.Chemicals = value; 
                         break;
-                    case "WashingMachinePrewash": 
-                        WashingMachineData.WashingMachinePrewash = value; 
+                    case "Prewash": 
+                        WashingMachineData.Prewash = value; 
                         break;
-                    case "WashingMachineWater": 
-                        WashingMachineData.WashingMachineWater = value;
+                    case "Water": 
+                        WashingMachineData.Water = value;
                         break;
-                    case "WashingMachineDry": 
-                        WashingMachineData.WashingMachineDry = value; 
+                    case "Dry": 
+                        WashingMachineData.Dry = value; 
                         break;
-                    case "WashingMachineBrushes": 
-                        WashingMachineData.WashingMachineBrushes = value; 
+                    case "Brushes": 
+                        WashingMachineData.Brushes = value; 
                         break;
-                    case "WashingMachineSoap": 
-                        WashingMachineData.WashingMachineSoap = value; 
+                    case "Soap": 
+                        WashingMachineData.Soap = value; 
                         break;
-                    case "WashingMachineActiveFoam": 
-                        WashingMachineData.WashingMachineActiveFoam = value; 
+                    case "ActiveFoam": 
+                        WashingMachineData.ActiveFoam = value; 
                         break;
                 }
             });
@@ -561,10 +495,10 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnStart_carlight":
+                    case "btnStart":
                         CarLightData.btnStart = value;
                         break;
-                    case "btnReset_carlight":
+                    case "btnReset":
                         CarLightData.btnReset = value;
                         break;
                     case "markerLight":
@@ -700,9 +634,9 @@ namespace JAN0837_DP.ReactFE
                         CrossroadData = new
                         {
                             crossroadType = crossroaddata.crossroadType,
-                            btnCrossroadStart = crossroaddata.btnStart,
-                            btnCrossroadPause = crossroaddata.btnPause,
-                            btnCrossroadStop = crossroaddata.btnStop,
+                            btnStart = crossroaddata.btnStart,
+                            btnPause = crossroaddata.btnPause,
+                            btnStop = crossroaddata.btnStop,
                             btnCrosswalk1 = crossroaddata.btnCrosswalk1,
                             btnCrosswalk2 = crossroaddata.btnCrosswalk2,
                             trafficLight1_green = crossroaddata.trafficLight1_green,
@@ -719,87 +653,91 @@ namespace JAN0837_DP.ReactFE
                         CrosswalkData = new
                         {
                             crosswalkType = crosswalkdata.crosswalkType,
-                            btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
-                            btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
-                            btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
-                            btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
-                            btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2,
-                            trafficLight1_green_crosswalk = crosswalkdata.trafficLight1_green,
-                            trafficLight1_yellow_crosswalk = crosswalkdata.trafficLight1_yellow,
-                            trafficLight1_red_crosswalk = crosswalkdata.trafficLight1_red,
-                            trafficLight2_green_crosswalk = crosswalkdata.trafficLight2_green,
-                            trafficLight2_yellow_crosswalk = crosswalkdata.trafficLight2_yellow,
-                            trafficLight2_red_crosswalk = crosswalkdata.trafficLight2_red,
-                            pedestrian1_green_crosswalk = crosswalkdata.pedestrian1_green,
-                            pedestrian1_red_crosswalk = crosswalkdata.pedestrian1_red,
-                            pedestrian2_green_crosswalk = crosswalkdata.pedestrian2_green,
-                            pedestrian2_red_crosswalk = crosswalkdata.pedestrian2_red
+                            btnStart = crosswalkdata.btnStart,
+                            btnPause = crosswalkdata.btnPause,
+                            btnStop = crosswalkdata.btnStop,
+                            btnCrosswalk1 = crosswalkdata.btnCrosswalk1,
+                            btnCrosswalk2 = crosswalkdata.btnCrosswalk2,
+                            trafficLight1_green = crosswalkdata.trafficLight1_green,
+                            trafficLight1_yellow = crosswalkdata.trafficLight1_yellow,
+                            trafficLight1_red = crosswalkdata.trafficLight1_red,
+                            trafficLight2_green = crosswalkdata.trafficLight2_green,
+                            trafficLight2_yellow = crosswalkdata.trafficLight2_yellow,
+                            trafficLight2_red = crosswalkdata.trafficLight2_red,
+                            pedestrian1_green = crosswalkdata.pedestrian1_green,
+                            pedestrian1_red = crosswalkdata.pedestrian1_red,
+                            pedestrian2_green = crosswalkdata.pedestrian2_green,
+                            pedestrian2_red = crosswalkdata.pedestrian2_red
                         },
                         RegulatorData = new
                         {
-                            switchstate_regulator = regulatordata.switchstate,
+                            switchstate = regulatordata.switchstate,
                             R = regulatordata.R,
                             C = regulatordata.C,
                             U = regulatordata.U,
-                            Td = regulatordata.Td
+                            Td = regulatordata.Td,
+                            Uc = regulatordata.Uc
                         },
                         CarWash = new
                         {
-                            btnCarWashEmergencyStop = carwashdata.btnEmergencyStop,
-                            btnStartCarWash = carwashdata.btnStart,
-                            btnStopCarWash = carwashdata.btnStop,
-                            CarWashErrorSystem = carwashdata.ErrorSystem,
-                            CarWashCarPosition = carwashdata.CarPosition,
-                            CarWashShowerPosition = carwashdata.ShowerPosition,
-                            CarWashMode = carwashdata.Mode,
-                            CarWashLight_green = carwashdata.Light_green,
-                            CarWashLight_yellow = carwashdata.Light_yellow,
-                            CarWashLight_red = carwashdata.Light_red,
-                            CarWashDoor1_Up = carwashdata.Door1_Up,
-                            CarWashDoor1_Down = carwashdata.Door1_Down,
-                            CarWashDoor2_Up = carwashdata.Door2_Up,
-                            CarWashDoor2_Down = carwashdata.Door2_Down,
-                            CarWashChemicalsFront = carwashdata.ChemicalsFront,
-                            CarWashChemicalsSides = carwashdata.ChemicalsSides,
-                            CarWashChemicalsBack = carwashdata.ChemicalsBack,
-                            CarWashPrewash = carwashdata.Prewash,
-                            CarWashWater = carwashdata.Water,
-                            CarWashWax = carwashdata.Wax,
-                            CarWashDry = carwashdata.Dry,
-                            CarWashBrushes = carwashdata.Brushes,
-                            CarWashSoap = carwashdata.Soap,
-                            CarWashActiveFoam = carwashdata.ActiveFoam,
-                            CarWashTimeDoorMovement = carwashdata.TimeDoorMovement,
-                            CarWashMEMDoor = carwashdata.MEMDoor,
-                            CarWashMEMDoorTrig = carwashdata.MEMDoorTrig,
-                            CarWashMEMDoorClosingtrig = carwashdata.MEMDoorClosingtrig
+                            btnEmergencyStop = carwashdata.btnEmergencyStop,
+                            btnStart = carwashdata.btnStart,
+                            btnStop = carwashdata.btnStop,
+                            ErrorSystem = carwashdata.ErrorSystem,
+                            CarPosition = carwashdata.CarPosition,
+                            ShowerPosition = carwashdata.ShowerPosition,
+                            Mode = carwashdata.Mode,
+                            Light_green = carwashdata.Light_green,
+                            Light_yellow = carwashdata.Light_yellow,
+                            Light_red = carwashdata.Light_red,
+                            Door1_Up = carwashdata.Door1_Up,
+                            Door1_Down = carwashdata.Door1_Down,
+                            Door2_Up = carwashdata.Door2_Up,
+                            Door2_Down = carwashdata.Door2_Down,
+                            ChemicalsFront = carwashdata.ChemicalsFront,
+                            ChemicalsSides = carwashdata.ChemicalsSides,
+                            ChemicalsBack = carwashdata.ChemicalsBack,
+                            Prewash = carwashdata.Prewash,
+                            Water = carwashdata.Water,
+                            Wax = carwashdata.Wax,
+                            Dry = carwashdata.Dry,
+                            Brushes = carwashdata.Brushes,
+                            Soap = carwashdata.Soap,
+                            ActiveFoam = carwashdata.ActiveFoam,
+                            TimeDoorMovement = carwashdata.TimeDoorMovement,
+                            MEMDoor = carwashdata.MEMDoor,
+                            MEMDoorTrig = carwashdata.MEMDoorTrig,
+                            MEMDoorClosingtrig = carwashdata.MEMDoorClosingtrig
                         },
                         WashingMachine = new
                         {
-                            btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
-                            btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
-                            btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
-                            WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
-                            WashingMachineMode = washingmachinedata.WashingMachineMode,
-                            WashingMachineLight_green = washingmachinedata.WashingMachineLight_green,
-                            WashingMachineLight_yellow = washingmachinedata.WashingMachineLight_yellow,
-                            WashingMachineLight_red = washingmachinedata.WashingMachineLight_red,
-                            WashingMachineDoorClosed = washingmachinedata.WashingMachineDoorClosed,
-                            WashingMachineChemicals = washingmachinedata.WashingMachineChemicals,
-                            WashingMachinePrewash = washingmachinedata.WashingMachinePrewash,
-                            WashingMachineWater = washingmachinedata.WashingMachineWater,
-                            WashingMachineDry = washingmachinedata.WashingMachineDry,
-                            WashingMachineBrushes = washingmachinedata.WashingMachineBrushes,
-                            WashingMachineSoap = washingmachinedata.WashingMachineSoap,
-                            WashingMachineActiveFoam = washingmachinedata.WashingMachineActiveFoam
+                            btnEmergencyStop = washingmachinedata.btnEmergencyStop,
+                            btnStart = washingmachinedata.btnStart,
+                            btnStop = washingmachinedata.btnStop,
+                            ErrorSystem = washingmachinedata.ErrorSystem,
+                            Mode = washingmachinedata.Mode,
+                            Light_green = washingmachinedata.Light_green,
+                            Light_yellow = washingmachinedata.Light_yellow,
+                            Light_red = washingmachinedata.Light_red,
+                            DoorClosed = washingmachinedata.DoorClosed,
+                            Chemicals = washingmachinedata.Chemicals,
+                            Prewash = washingmachinedata.Prewash,
+                            Water = washingmachinedata.Water,
+                            Dry = washingmachinedata.Dry,
+                            Brushes = washingmachinedata.Brushes,
+                            Soap = washingmachinedata.Soap,
+                            ActiveFoam = washingmachinedata.ActiveFoam
                         },
                         CarLight = new
                         {
-                            btnStart_carlight = carlightdata.btnStart,
-                            btnReset_carlight = carlightdata.btnReset,
+                            btnStart = carlightdata.btnStart,
+                            btnReset = carlightdata.btnReset,
                             markerLight = carlightdata.markerLight,
                             brakeLight = carlightdata.brakeLight,
-                            turnLight = carlightdata.turnLight
+                            turnLight = carlightdata.turnLight,
+                            sensorPosition = carlightdata.sensorPosition,
+                            sensorConnectorConnected = carlightdata.sensorConnectorConnected,
+                            done = carlightdata.done
                         }
                     });
                     return;
@@ -809,71 +747,15 @@ namespace JAN0837_DP.ReactFE
                     using var sr = new StreamReader(req.InputStream);
                     var body = sr.ReadToEnd();
 
-                    var updates = JsonConvert.DeserializeObject<Dictionary<string, string>>(body) ?? new Dictionary<string, string>();
+                    // Nested JSON: { "CrossroadData": { "btnStart": "true" }, "CarWash": { "Mode": "1" }, ... }
+                    var categories = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(body)
+                        ?? new Dictionary<string, Dictionary<string, string>>();
 
-                    var testdata = TestData.AppState.Get();
-
-                    // TestData
-                    if (updates.TryGetValue("number", out var ns) && int.TryParse(ns, out var n))
+                    foreach (var category in categories)
                     {
-                        testdata.number = Convert.ToInt32(n);
-                    }
-
-                    if (updates.TryGetValue("text", out var t))
-                    {
-                        testdata.text = Convert.ToString(t);
-                    }
-
-                    if (updates.TryGetValue("toggle", out var g))
-                    {
-                        testdata.toggle = Convert.ToString(g);
-                    }
-
-                    TestData.AppState.Set(testdata);
-
-                    // Apply updates to all data classes -> this will need huge upgrade -> for now it is totally wrong 
-                    foreach (var kv in updates)
-                    {
-                        var key = kv.Key;
-                        var value = kv.Value ?? "";
-
-                        // CrossroadData
-                        if (key == "crossroadType" || key.StartsWith("btnCrossroad") || key.StartsWith("btnCrosswalk") ||
-                            key.StartsWith("trafficLight") && !key.Contains("crosswalk") || 
-                            key.StartsWith("pedestrian") && !key.Contains("crosswalk"))
+                        foreach (var kv in category.Value)
                         {
-                            ApplyCrossroadUpdate(key, value);
-                        }
-                        // CrosswalkData (has suffix to avoid collision with CrossroadData)
-                        else if (key == "crosswalkType" || key.StartsWith("btnCrosswalk") && key.Contains("crosswalk") ||
-                                 key.Contains("_crosswalk"))
-                        {
-                            ApplyCrosswalkUpdate(key, value);
-                        }
-                        // RegulatorData
-                        else if (key == "switchstate_regulator" || key == "R" || key == "C" || key == "U" || key == "Td" || key == "Uc")
-                        {
-                            ApplyRegulatorUpdate(key, value);
-                        }
-                        // CarWashData
-                        else if (key.StartsWith("CarWash") || key.StartsWith("btnCarWash") || 
-                                 key.StartsWith("btnStart") && key.Contains("CarWash") ||
-                                 key.StartsWith("btnStop") && key.Contains("CarWash"))
-                        {
-                            ApplyCarWashUpdate(key, value);
-                        }
-                        // WashingMachineData
-                        else if (key.StartsWith("WashingMachine") || key.StartsWith("btnWashingMachine") ||
-                                 key.StartsWith("btnStart") && key.Contains("WashingMachine") ||
-                                 key.StartsWith("btnStop") && key.Contains("WashingMachine"))
-                        {
-                            ApplyWashingMachineUpdate(key, value);
-                        }
-                        // CarLightData
-                        else if (key.Contains("_carlight") || key == "markerLight" || key == "brakeLight" || 
-                                 key == "turnLight" || key == "sensorPosition" || key == "sensorConnectorConnected")
-                        {
-                            ApplyCarLightUpdate(key, value);
+                            Update(category.Key, kv.Key, kv.Value ?? "");
                         }
                     }
 
@@ -943,9 +825,9 @@ namespace JAN0837_DP.ReactFE
                 CrosswalkData = new
                 {
                     crosswalkType = crosswalkdata.crosswalkType,
-                    btnCrosswalkStart = crosswalkdata.btnCrosswalkStart,
-                    btnCrosswalkPause = crosswalkdata.btnCrosswalkPause,
-                    btnCrosswalkStop = crosswalkdata.btnCrosswalkStop,
+                    btnStart = crosswalkdata.btnStart,
+                    btnPause = crosswalkdata.btnPause,
+                    btnStop = crosswalkdata.btnStop,
                     btnCrosswalk1_crosswalk = crosswalkdata.btnCrosswalk1,
                     btnCrosswalk2_crosswalk = crosswalkdata.btnCrosswalk2
                 },
@@ -959,21 +841,21 @@ namespace JAN0837_DP.ReactFE
                 },
                 CarWash = new
                 {
-                    btnCarWashEmergencyStop = carwashdata.btnEmergencyStop,
-                    btnStartCarWash = carwashdata.btnStart,
-                    btnStopCarWash = carwashdata.btnStop,
-                    CarWashErrorSystem = carwashdata.ErrorSystem,
-                    CarWashCarPosition = carwashdata.CarPosition,
-                    CarWashShowerPosition = carwashdata.ShowerPosition,
-                    CarWashMode = carwashdata.Mode
+                    btnEmergencyStop = carwashdata.btnEmergencyStop,
+                    btnStart = carwashdata.btnStart,
+                    btnStop = carwashdata.btnStop,
+                    ErrorSystem = carwashdata.ErrorSystem,
+                    CarPosition = carwashdata.CarPosition,
+                    ShowerPosition = carwashdata.ShowerPosition,
+                    Mode = carwashdata.Mode
                 },
                 WashingMachine = new
                 {
-                    btnWashingMachineEmergencyStop = washingmachinedata.btnWashingMachineEmergencyStop,
-                    btnStartWashingMachine = washingmachinedata.btnStartWashingMachine,
-                    btnStopWashingMachine = washingmachinedata.btnStopWashingMachine,
-                    WashingMachineErrorSystem = washingmachinedata.WashingMachineErrorSystem,
-                    WashingMachineMode = washingmachinedata.WashingMachineMode
+                    btnEmergencyStop = washingmachinedata.btnEmergencyStop,
+                    btnStart = washingmachinedata.btnStart,
+                    btnStop = washingmachinedata.btnStop,
+                    ErrorSystem = washingmachinedata.ErrorSystem,
+                    Mode = washingmachinedata.Mode
                 },
                 CarLight = new
                 {
@@ -986,10 +868,10 @@ namespace JAN0837_DP.ReactFE
             };
         }
 
-        public void HandleUpdate(Dictionary<string, object> updates)
+        public void HandleUpdate(string category, Dictionary<string, string> updates)
         {
             foreach (var kv in updates)
-                Update(kv.Key, kv.Value);
+                Update(category, kv.Key, kv.Value ?? "");
         }
 
         public async Task<T> GetDataAsync<T>(string url)
@@ -999,76 +881,6 @@ namespace JAN0837_DP.ReactFE
 
             var json = await resp.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(json) ?? Activator.CreateInstance<T>();
-        }
-
-        public Task<TestData> GetTestDataAsync()
-        {
-            return GetDataAsync<TestData>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<CrossroadData.State> GetCrossroadDataAsync()
-        {
-            return GetDataAsync<CrossroadData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<CrosswalkData.State> GetCrosswalkDataAsync()
-        {
-            return GetDataAsync<CrosswalkData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<RegulatorData.State> GetRegulatorDataAsync()
-        {
-            return GetDataAsync<RegulatorData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<CarWashData.State> GetCarWashDataAsync()
-        {
-            return GetDataAsync<CarWashData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<WashingMachineData.State> GetWashingMachineDataAsync()
-        {
-            return GetDataAsync<WashingMachineData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public Task<CarLightData.State> GetCarLightDataAsync()
-        {
-            return GetDataAsync<CarLightData.State>(internalVariables.internalApiDataURL);
-        }
-
-        public void ApplySnapshot(TestData snap)
-        {
-            TestData.AppState.Set(snap);
-        }
-
-        public void ApplySnapshot(CrossroadData.State snap)
-        {
-            CrossroadData.Set(snap);
-        }
-
-        public void ApplySnapshot(CrosswalkData.State snap)
-        {
-            CrosswalkData.Set(snap);
-        }
-
-        public void ApplySnapshot(RegulatorData.State snap)
-        {
-            RegulatorData.Set(snap);
-        }
-
-        public void ApplySnapshot(CarWashData.State snap)
-        {
-            CarWashData.Set(snap);
-        }
-
-        public void ApplySnapshot(WashingMachineData.State snap)
-        {
-            WashingMachineData.Set(snap);
-        }
-
-        public void ApplySnapshot(CarLightData.State snap)
-        {
-            CarLightData.Set(snap);
         }
 
         public async Task<bool> IsAliveAsync(string url)

@@ -90,14 +90,14 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                if (s.crossroadType != null) crossroadType = s.crossroadType;
-
                 //if (s.btnCrossroadStart != null) btnCrossroadStart = s.btnCrossroadStart;
                 //if (s.btnCrossroadPause != null) btnCrossroadPause = s.btnCrossroadPause;
                 //if (s.btnCrossroadStop != null) btnCrossroadStop = s.btnCrossroadStop;
 
                 //if (s.btnCrosswalk1 != null) btnCrosswalk1 = s.btnCrosswalk1;
                 //if (s.btnCrosswalk2 != null) btnCrosswalk2 = s.btnCrosswalk2;
+
+                if (s.crossroadType != null) crossroadType = s.crossroadType;
 
                 if (s.trafficLight1_green != null) trafficLight1_green = s.trafficLight1_green;
                 if (s.trafficLight1_yellow != null) trafficLight1_yellow = s.trafficLight1_yellow;
@@ -149,20 +149,14 @@ namespace JAN0837_DP.Data
         */
         public static class OpcUaNodeIds
         {
-            // ═══════════════════════════════════════════════════════════
-            // INPUT VARIABLES (written TO PLC)
-            // Find these in UAExpert: DB_ProcessData > input > ...
-            // ═══════════════════════════════════════════════════════════
+            // Inputs
             public static string btnStart { get; set; } = "ns=4;i=15";        
             public static string btnPause { get; set; } = "ns=4;i=16";        
             public static string btnStop { get; set; } = "ns=4;i=17";        
             public static string btnCrosswalk1 { get; set; } = "ns=4;i=18";  
             public static string btnCrosswalk2 { get; set; } = "ns=4;i=19";   
 
-            // ═══════════════════════════════════════════════════════════
-            // OUTPUT VARIABLES (read FROM PLC)
-            // Find these in UAExpert: DB_ProcessData > output > ...
-            // ═══════════════════════════════════════════════════════════
+            // Outputs
             public static string crossroadType { get; set; } = "ns=4;i=33";          
             public static string trafficLightGreen1 { get; set; } = "ns=4;i=34";   
             public static string trafficLightsYellow1 { get; set; } = "ns=4;i=35";   

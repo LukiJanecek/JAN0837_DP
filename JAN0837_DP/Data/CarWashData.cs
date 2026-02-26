@@ -119,13 +119,13 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                if (s.btnEmergencyStop != null) btnEmergencyStop = s.btnEmergencyStop;
-                if (s.btnStart != null) btnStart = s.btnStart;
-                if (s.btnStop != null) btnStop = s.btnStop;
-                if (s.ErrorSystem != null) ErrorSystem = s.ErrorSystem;
-                if (s.CarPosition != null) CarPosition = s.CarPosition;
-                if (s.ShowerPosition != null) ShowerPosition = s.ShowerPosition;
-                if (s.Mode != null) Mode = s.Mode;
+                //if (s.btnEmergencyStop != null) btnEmergencyStop = s.btnEmergencyStop;
+                //if (s.btnStart != null) btnStart = s.btnStart;
+                //if (s.btnStop != null) btnStop = s.btnStop;
+                //if (s.ErrorSystem != null) ErrorSystem = s.ErrorSystem;
+                //if (s.CarPosition != null) CarPosition = s.CarPosition;
+                //if (s.ShowerPosition != null) ShowerPosition = s.ShowerPosition;
+                //if (s.Mode != null) Mode = s.Mode;
 
                 if (s.Light_green != null) Light_green = s.Light_green;
                 if (s.Light_yellow != null) Light_yellow = s.Light_yellow;

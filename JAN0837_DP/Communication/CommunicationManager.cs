@@ -115,9 +115,9 @@ namespace JAN0837_DP.Communication
                                     // CrosswalkData - Input
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -223,11 +223,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -240,18 +240,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -317,9 +317,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -406,11 +406,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -423,18 +423,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -500,9 +500,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -594,11 +594,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -611,18 +611,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -688,9 +688,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -782,11 +782,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -799,18 +799,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -876,9 +876,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -973,11 +973,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -990,18 +990,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -1067,9 +1067,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -1161,11 +1161,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -1178,18 +1178,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -1255,9 +1255,9 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnCrosswalkStart == "true",
-                                        pause = CrosswalkData.btnCrosswalkPause == "true",
-                                        stop = CrosswalkData.btnCrosswalkStop == "true",
+                                        start = CrosswalkData.btnStart == "true",
+                                        pause = CrosswalkData.btnPause == "true",
+                                        stop = CrosswalkData.btnStop == "true",
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
@@ -1350,11 +1350,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Input
                                     var washingmachineInput = new
                                     {
-                                        emergencyStop = WashingMachineData.btnWashingMachineEmergencyStop == "true",
-                                        start = WashingMachineData.btnStartWashingMachine == "true",
-                                        stop = WashingMachineData.btnStopWashingMachine == "true",
-                                        errorSystem = WashingMachineData.WashingMachineErrorSystem == "true",
-                                        mode = WashingMachineData.WashingMachineMode
+                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
+                                        start = WashingMachineData.btnStart == "true",
+                                        stop = WashingMachineData.btnStop == "true",
+                                        errorSystem = WashingMachineData.ErrorSystem == "true",
+                                        mode = WashingMachineData.Mode
                                     };
                                     var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Input")
@@ -1367,18 +1367,18 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine - Output
                                     var washingmachineOutput = new
                                     {
-                                        light_green = WashingMachineData.WashingMachineLight_green == "true",
-                                        light_yellow = WashingMachineData.WashingMachineLight_yellow == "true",
-                                        light_red = WashingMachineData.WashingMachineLight_red == "true",
-                                        doorClosed = WashingMachineData.WashingMachineDoorClosed == "true",
-                                        chemicals = WashingMachineData.WashingMachineChemicals == "true",
-                                        prewash = WashingMachineData.WashingMachinePrewash == "true",
-                                        water = WashingMachineData.WashingMachineWater == "true",
-                                        wax = WashingMachineData.WashingMachineWax == "true",
-                                        dry = WashingMachineData.WashingMachineDry == "true",
-                                        brushes = WashingMachineData.WashingMachineBrushes == "true",
-                                        soap = WashingMachineData.WashingMachineSoap == "true",
-                                        activeFoam = WashingMachineData.WashingMachineActiveFoam == "true"
+                                        light_green = WashingMachineData.Light_green == "true",
+                                        light_yellow = WashingMachineData.Light_yellow == "true",
+                                        light_red = WashingMachineData.Light_red == "true",
+                                        doorClosed = WashingMachineData.DoorClosed == "true",
+                                        chemicals = WashingMachineData.Chemicals == "true",
+                                        prewash = WashingMachineData.Prewash == "true",
+                                        water = WashingMachineData.Water == "true",
+                                        wax = WashingMachineData.Wax == "true",
+                                        dry = WashingMachineData.Dry == "true",
+                                        brushes = WashingMachineData.Brushes == "true",
+                                        soap = WashingMachineData.Soap == "true",
+                                        activeFoam = WashingMachineData.ActiveFoam == "true"
                                     };
                                     var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/WashingMachine/Output")
@@ -1457,9 +1457,9 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("Pedestrian2_Red", CrossroadData.pedestrian2_red == "true");
 
                                     // CrosswalkData
-                                    CrosswalkData.btnCrosswalkStart = opcuaServer.ReadVariable("BtnCrosswalkStart_Crosswalk") ? "true" : "false";
-                                    CrosswalkData.btnCrosswalkPause = opcuaServer.ReadVariable("BtnCrosswalkPause_Crosswalk") ? "true" : "false";
-                                    CrosswalkData.btnCrosswalkStop = opcuaServer.ReadVariable("BtnCrosswalkStop_Crosswalk") ? "true" : "false";
+                                    CrosswalkData.btnStart = opcuaServer.ReadVariable("BtnCrosswalkStart_Crosswalk") ? "true" : "false";
+                                    CrosswalkData.btnPause = opcuaServer.ReadVariable("BtnCrosswalkPause_Crosswalk") ? "true" : "false";
+                                    CrosswalkData.btnStop = opcuaServer.ReadVariable("BtnCrosswalkStop_Crosswalk") ? "true" : "false";
                                     CrosswalkData.btnCrosswalk1 = opcuaServer.ReadVariable("BtnCrosswalk1_Crosswalk") ? "true" : "false";
                                     CrosswalkData.btnCrosswalk2 = opcuaServer.ReadVariable("BtnCrosswalk2_Crosswalk") ? "true" : "false";
                                     
@@ -1514,24 +1514,24 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("MEMDoorClosingtrig", CarWashData.MEMDoorClosingtrig == "true");
 
                                     // WashingMachine
-                                    WashingMachineData.btnWashingMachineEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
-                                    WashingMachineData.btnStartWashingMachine = opcuaServer.ReadVariable("BtnStartWashingMachine") ? "true" : "false";
-                                    WashingMachineData.btnStopWashingMachine = opcuaServer.ReadVariable("BtnStopWashingMachine") ? "true" : "false";
-                                    WashingMachineData.WashingMachineErrorSystem = opcuaServer.ReadVariable("WashingMachineErrorSystem") ? "true" : "false";
-                                    WashingMachineData.WashingMachineMode = opcuaServer.ReadVariable("WashingMachineMode").ToString();
+                                    WashingMachineData.btnEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
+                                    WashingMachineData.btnStart = opcuaServer.ReadVariable("BtnStartWashingMachine") ? "true" : "false";
+                                    WashingMachineData.btnStop = opcuaServer.ReadVariable("BtnStopWashingMachine") ? "true" : "false";
+                                    WashingMachineData.ErrorSystem = opcuaServer.ReadVariable("WashingMachineErrorSystem") ? "true" : "false";
+                                    WashingMachineData.Mode = opcuaServer.ReadVariable("WashingMachineMode").ToString();
 
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Green", WashingMachineData.WashingMachineLight_green == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Yellow", WashingMachineData.WashingMachineLight_yellow == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Red", WashingMachineData.WashingMachineLight_red == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineDoorClosed", WashingMachineData.WashingMachineDoorClosed == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineChemicals", WashingMachineData.WashingMachineChemicals == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachinePrewash", WashingMachineData.WashingMachinePrewash == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineWater", WashingMachineData.WashingMachineWater == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineWax", WashingMachineData.WashingMachineWax == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineDry", WashingMachineData.WashingMachineDry == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.WashingMachineBrushes == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.WashingMachineSoap == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.WashingMachineActiveFoam == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Green", WashingMachineData.Light_green == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Yellow", WashingMachineData.Light_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Red", WashingMachineData.Light_red == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineDoorClosed", WashingMachineData.DoorClosed == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineChemicals", WashingMachineData.Chemicals == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachinePrewash", WashingMachineData.Prewash == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineWater", WashingMachineData.Water == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineWax", WashingMachineData.Wax == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineDry", WashingMachineData.Dry == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.Brushes == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.Soap == "true");
+                                    opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.ActiveFoam == "true");
 
                                     _ucCommunicationControl.SetStatus("OPC UA Server: Hosting all data for external clients");
                                 }
@@ -1599,9 +1599,9 @@ namespace JAN0837_DP.Communication
 
                                     // CrosswalkData
                                     // Write input values to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalkStart, CrosswalkData.btnCrosswalkStart == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalkPause, CrosswalkData.btnCrosswalkPause == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalkStop, CrosswalkData.btnCrosswalkStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnStart, CrosswalkData.btnStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnPause, CrosswalkData.btnPause == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnStop, CrosswalkData.btnStop == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalk1, CrosswalkData.btnCrosswalk1 == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalk2, CrosswalkData.btnCrosswalk2 == "true");
 
@@ -1709,11 +1709,11 @@ namespace JAN0837_DP.Communication
 
                                     // WashingMachineData
                                     // Write input values to PLC
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnWashingMachineEmergencyStop, WashingMachineData.btnWashingMachineEmergencyStop == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnStartWashingMachine, WashingMachineData.btnStartWashingMachine == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnStopWashingMachine, WashingMachineData.btnStopWashingMachine == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineErrorSystem, WashingMachineData.WashingMachineErrorSystem == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineMode, WashingMachineData.WashingMachineMode == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnEmergencyStop, WashingMachineData.btnEmergencyStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnStart, WashingMachineData.btnStart == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnStop, WashingMachineData.btnStop == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.ErrorSystem, WashingMachineData.ErrorSystem == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.Mode, WashingMachineData.Mode == "true");
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1725,18 +1725,18 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     // Read output values from PLC 
-                                    WashingMachineData.WashingMachineLight_green = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineLight_green) ? "true" : "false";
-                                    WashingMachineData.WashingMachineLight_yellow = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineLight_yellow) ? "true" : "false";
-                                    WashingMachineData.WashingMachineLight_red = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineLight_red) ? "true" : "false";
-                                    WashingMachineData.WashingMachineDoorClosed = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineDoorClosed) ? "true" : "false";
-                                    WashingMachineData.WashingMachineChemicals = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineChemicals) ? "true" : "false";
-                                    WashingMachineData.WashingMachinePrewash = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachinePrewash) ? "true" : "false";
-                                    WashingMachineData.WashingMachineWater = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineWater) ? "true" : "false";
-                                    WashingMachineData.WashingMachineWax = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineWax) ? "true" : "false";
-                                    WashingMachineData.WashingMachineDry = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineDry) ? "true" : "false";
-                                    WashingMachineData.WashingMachineBrushes = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineBrushes) ? "true" : "false";
-                                    WashingMachineData.WashingMachineSoap = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineSoap) ? "true" : "false";
-                                    WashingMachineData.WashingMachineActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.WashingMachineActiveFoam) ? "true" : "false";
+                                    WashingMachineData.Light_green = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Light_green) ? "true" : "false";
+                                    WashingMachineData.Light_yellow = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Light_yellow) ? "true" : "false";
+                                    WashingMachineData.Light_red = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Light_red) ? "true" : "false";
+                                    WashingMachineData.DoorClosed = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.DoorClosed) ? "true" : "false";
+                                    WashingMachineData.Chemicals = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Chemicals) ? "true" : "false";
+                                    WashingMachineData.Prewash = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Prewash) ? "true" : "false";
+                                    WashingMachineData.Water = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Water) ? "true" : "false";
+                                    WashingMachineData.Wax = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Wax) ? "true" : "false";
+                                    WashingMachineData.Dry = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Dry) ? "true" : "false";
+                                    WashingMachineData.Brushes = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Brushes) ? "true" : "false";
+                                    WashingMachineData.Soap = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Soap) ? "true" : "false";
+                                    WashingMachineData.ActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.ActiveFoam) ? "true" : "false";
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1795,9 +1795,9 @@ namespace JAN0837_DP.Communication
                                     // CrosswalkData buttons: registers 5-9
                                     bool[] crosswalkButtons = new bool[5]
                                     {
-                                        _modbusServer.StrToBool(CrosswalkData.btnCrosswalkStart),
-                                        _modbusServer.StrToBool(CrosswalkData.btnCrosswalkPause),
-                                        _modbusServer.StrToBool(CrosswalkData.btnCrosswalkStop),
+                                        _modbusServer.StrToBool(CrosswalkData.btnStart),
+                                        _modbusServer.StrToBool(CrosswalkData.btnPause),
+                                        _modbusServer.StrToBool(CrosswalkData.btnStop),
                                         _modbusServer.StrToBool(CrosswalkData.btnCrosswalk1),
                                         _modbusServer.StrToBool(CrosswalkData.btnCrosswalk2)
                                     };
@@ -1830,11 +1830,11 @@ namespace JAN0837_DP.Communication
                                     // WashingMachine inputs: registers 22-26
                                     bool[] washingmachineInputs = new bool[5]
                                     {
-                                        _modbusServer.StrToBool(WashingMachineData.btnWashingMachineEmergencyStop),
-                                        _modbusServer.StrToBool(WashingMachineData.btnStartWashingMachine),
-                                        _modbusServer.StrToBool(WashingMachineData.btnStopWashingMachine),
-                                        _modbusServer.StrToBool(WashingMachineData.WashingMachineErrorSystem),
-                                        !string.IsNullOrEmpty(WashingMachineData.WashingMachineMode)
+                                        _modbusServer.StrToBool(WashingMachineData.btnEmergencyStop),
+                                        _modbusServer.StrToBool(WashingMachineData.btnStart),
+                                        _modbusServer.StrToBool(WashingMachineData.btnStop),
+                                        _modbusServer.StrToBool(WashingMachineData.ErrorSystem),
+                                        !string.IsNullOrEmpty(WashingMachineData.Mode)
                                     };
                                     _modbusServer.SetRegisters(22, washingmachineInputs);
 
@@ -1910,18 +1910,18 @@ namespace JAN0837_DP.Communication
                                     bool[] washingmachineOutputs = _modbusServer.GetRegisters(73, 12);
                                     if (washingmachineOutputs != null && washingmachineOutputs.Length >= 12)
                                     {
-                                        WashingMachineData.WashingMachineLight_green = _modbusServer.BoolToStr(washingmachineOutputs[0]);
-                                        WashingMachineData.WashingMachineLight_yellow = _modbusServer.BoolToStr(washingmachineOutputs[1]);
-                                        WashingMachineData.WashingMachineLight_red = _modbusServer.BoolToStr(washingmachineOutputs[2]);
-                                        WashingMachineData.WashingMachineDoorClosed = _modbusServer.BoolToStr(washingmachineOutputs[3]);
-                                        WashingMachineData.WashingMachineChemicals = _modbusServer.BoolToStr(washingmachineOutputs[4]);
-                                        WashingMachineData.WashingMachinePrewash = _modbusServer.BoolToStr(washingmachineOutputs[5]);
-                                        WashingMachineData.WashingMachineWater = _modbusServer.BoolToStr(washingmachineOutputs[6]);
-                                        WashingMachineData.WashingMachineWax = _modbusServer.BoolToStr(washingmachineOutputs[7]);
-                                        WashingMachineData.WashingMachineDry = _modbusServer.BoolToStr(washingmachineOutputs[8]);
-                                        WashingMachineData.WashingMachineBrushes = _modbusServer.BoolToStr(washingmachineOutputs[9]);
-                                        WashingMachineData.WashingMachineSoap = _modbusServer.BoolToStr(washingmachineOutputs[10]);
-                                        WashingMachineData.WashingMachineActiveFoam = _modbusServer.BoolToStr(washingmachineOutputs[11]);
+                                        WashingMachineData.Light_green = _modbusServer.BoolToStr(washingmachineOutputs[0]);
+                                        WashingMachineData.Light_yellow = _modbusServer.BoolToStr(washingmachineOutputs[1]);
+                                        WashingMachineData.Light_red = _modbusServer.BoolToStr(washingmachineOutputs[2]);
+                                        WashingMachineData.DoorClosed = _modbusServer.BoolToStr(washingmachineOutputs[3]);
+                                        WashingMachineData.Chemicals = _modbusServer.BoolToStr(washingmachineOutputs[4]);
+                                        WashingMachineData.Prewash = _modbusServer.BoolToStr(washingmachineOutputs[5]);
+                                        WashingMachineData.Water = _modbusServer.BoolToStr(washingmachineOutputs[6]);
+                                        WashingMachineData.Wax = _modbusServer.BoolToStr(washingmachineOutputs[7]);
+                                        WashingMachineData.Dry = _modbusServer.BoolToStr(washingmachineOutputs[8]);
+                                        WashingMachineData.Brushes = _modbusServer.BoolToStr(washingmachineOutputs[9]);
+                                        WashingMachineData.Soap = _modbusServer.BoolToStr(washingmachineOutputs[10]);
+                                        WashingMachineData.ActiveFoam = _modbusServer.BoolToStr(washingmachineOutputs[11]);
                                     }
 
                                     _ucCommunicationControl.SetStatus("Modbus Client: All data synchronized");
@@ -2146,18 +2146,18 @@ namespace JAN0837_DP.Communication
                                 CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 2));
 
                                 // WashingMachineData bytes 15-17
-                                WashingMachineData.WashingMachineLight_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 0));
-                                WashingMachineData.WashingMachineLight_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 1));
-                                WashingMachineData.WashingMachineLight_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 2));
-                                WashingMachineData.WashingMachineDoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 3));
-                                WashingMachineData.WashingMachineChemicals = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 4));
-                                WashingMachineData.WashingMachinePrewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 5));
-                                WashingMachineData.WashingMachineWater = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 6));
-                                WashingMachineData.WashingMachineWax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 7));
-                                WashingMachineData.WashingMachineDry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 0));
-                                WashingMachineData.WashingMachineBrushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 1));
-                                WashingMachineData.WashingMachineSoap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 2));
-                                WashingMachineData.WashingMachineActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 3));
+                                WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 0));
+                                WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 1));
+                                WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 2));
+                                WashingMachineData.DoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 3));
+                                WashingMachineData.Chemicals = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 4));
+                                WashingMachineData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 5));
+                                WashingMachineData.Water = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 6));
+                                WashingMachineData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 7));
+                                WashingMachineData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 0));
+                                WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 1));
+                                WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 2));
+                                WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 3));
 
                                 _ucCommunicationControl.SetStatus($"Sharp7: ReadDB OK - All data read from DB{activeDBnumber}");
                             }
@@ -2188,9 +2188,9 @@ namespace JAN0837_DP.Communication
 
                             // CrosswalkData write to bytes 4-7
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 0, Convert.ToBoolean(CrosswalkData.crosswalkType));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 1, Convert.ToBoolean(CrosswalkData.btnCrosswalkStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 2, Convert.ToBoolean(CrosswalkData.btnCrosswalkPause));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 3, Convert.ToBoolean(CrosswalkData.btnCrosswalkStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 1, Convert.ToBoolean(CrosswalkData.btnStart));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 2, Convert.ToBoolean(CrosswalkData.btnPause));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 3, Convert.ToBoolean(CrosswalkData.btnStop));
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 4, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 5, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
 
@@ -2244,24 +2244,24 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
 
                             // WashingMachineData write to bytes 15-17
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnWashingMachineEmergencyStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStartWashingMachine));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStopWashingMachine));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.WashingMachineErrorSystem));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.ErrorSystem));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.WashingMachineLight_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.WashingMachineLight_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.WashingMachineLight_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.WashingMachineDoorClosed));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.WashingMachineChemicals));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.WashingMachinePrewash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.WashingMachineWater));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.WashingMachineWax));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.Light_green));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.Light_yellow));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.Light_red));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.DoorClosed));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.Chemicals));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.Prewash));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.Water));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.Wax));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.WashingMachineDry));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.WashingMachineBrushes));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.WashingMachineSoap));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.WashingMachineActiveFoam));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.Dry));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
+                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
 
                             int write1 = _sharp7.writeDB(activeDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
 

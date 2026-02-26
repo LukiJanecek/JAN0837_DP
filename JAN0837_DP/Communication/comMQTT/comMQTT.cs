@@ -372,18 +372,18 @@ namespace JAN0837_DP.Communication.comMQTT
                     var dto = JsonSerializer.Deserialize<OutputDto>(json);
                     if (dto is null) return;
 
-                    WashingMachineData.WashingMachineLight_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineLight_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineLight_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineDoorClosed = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineChemicals = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachinePrewash = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineWater = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineDry = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineBrushes = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineSoap = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineActiveFoam = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
-                    WashingMachineData.WashingMachineMode = dto.mode ?? "";
+                    WashingMachineData.Light_green = ((dto.statusMask >> 0) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Light_yellow = ((dto.statusMask >> 1) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Light_red = ((dto.statusMask >> 2) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.DoorClosed = ((dto.statusMask >> 3) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Chemicals = ((dto.statusMask >> 4) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Prewash = ((dto.statusMask >> 5) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Water = ((dto.statusMask >> 6) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Dry = ((dto.statusMask >> 7) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Brushes = ((dto.statusMask >> 8) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Soap = ((dto.statusMask >> 9) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.ActiveFoam = ((dto.statusMask >> 10) & 1) == 1 ? "true" : "false";
+                    WashingMachineData.Mode = dto.mode ?? "";
                 }
                 catch (Exception ex)
                 {

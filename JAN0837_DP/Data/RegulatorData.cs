@@ -52,11 +52,12 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                if (s.switchstate != null) switchstate = s.switchstate;
-                if (s.R != null) R = s.R;
-                if (s.C != null) C = s.C;
-                if (s.U != null) U = s.U;
-                if (s.Td != null) Td = s.Td;
+                //if (s.switchstate != null) switchstate = s.switchstate;
+                //if (s.R != null) R = s.R;
+                //if (s.C != null) C = s.C;
+                //if (s.U != null) U = s.U;
+                //if (s.Td != null) Td = s.Td;
+
                 if (s.Uc != null) Uc = s.Uc;
             }
         }
@@ -69,20 +70,14 @@ namespace JAN0837_DP.Data
 
         public static class OpcUaNodeIds
         {
-            // ═══════════════════════════════════════════════════════════
-            // INPUT VARIABLES (written TO PLC)
-            // Find these in UAExpert: DB_ProcessData > Regulator_Input > ...
-            // ═══════════════════════════════════════════════════════════
+            // Inputs
             public static string switchstate { get; set; } = "ns=4;i=?";
             public static string R { get; set; } = "ns=4;i=?";
             public static string C { get; set; } = "ns=4;i=?";
             public static string U { get; set; } = "ns=4;i=?";
             public static string Td { get; set; } = "ns=4;i=?";
 
-            // ═══════════════════════════════════════════════════════════
-            // OUTPUT VARIABLES (read FROM PLC)
-            // Find these in UAExpert: DB_ProcessData > Regulator_Output > ...
-            // ═══════════════════════════════════════════════════════════
+            // Outputs 
             public static string Uc { get; set; } = "ns=4;i=?";
         }
     }

@@ -9,9 +9,9 @@ namespace JAN0837_DP.Data
     public static class CrosswalkData
     {
         // inputs 
-        public static string btnCrosswalkStart { get; set; } = "true"; // bool
-        public static string btnCrosswalkPause { get; set; } = "false"; // bool
-        public static string btnCrosswalkStop { get; set; } = "false"; // bool
+        public static string btnStart { get; set; } = "true"; // bool
+        public static string btnPause { get; set; } = "false"; // bool
+        public static string btnStop { get; set; } = "false"; // bool
         public static string btnCrosswalk1 { get; set; } = "false"; // bool
         public static string btnCrosswalk2 { get; set; } = "false"; // bool
 
@@ -34,9 +34,9 @@ namespace JAN0837_DP.Data
         // snapshot
         public readonly record struct State(
             string crosswalkType,
-            string btnCrosswalkStart,
-            string btnCrosswalkPause,
-            string btnCrosswalkStop,
+            string btnStart,
+            string btnPause,
+            string btnStop,
             string btnCrosswalk1,
             string btnCrosswalk2,
             string trafficLight1_green,
@@ -57,9 +57,9 @@ namespace JAN0837_DP.Data
             {
                 return new State(
                     crosswalkType,
-                    btnCrosswalkStart,
-                    btnCrosswalkPause,
-                    btnCrosswalkStop,
+                    btnStart,
+                    btnPause,
+                    btnStop,
                     btnCrosswalk1,
                     btnCrosswalk2,
                     trafficLight1_green,
@@ -80,14 +80,14 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                if (s.crosswalkType != null) crosswalkType = s.crosswalkType;
-
-                //if (s.btnCrosswalkStart != null) btnCrosswalkStart = s.btnCrosswalkStart;
-                //if (s.btnCrosswalkPause != null) btnCrosswalkPause = s.btnCrosswalkPause;
-                //if (s.btnCrosswalkStop != null) btnCrosswalkStop = s.btnCrosswalkStop;
+                //if (s.btnStart != null) btnStart = s.btnStart;
+                //if (s.btnPause != null) btnPause = s.btnPause;
+                //if (s.btnStop != null) btnStop = s.btnStop;
 
                 //if (s.btnCrosswalk1 != null) btnCrosswalk1 = s.btnCrosswalk1;
                 //if (s.btnCrosswalk2 != null) btnCrosswalk2 = s.btnCrosswalk2;
+
+                if (s.crosswalkType != null) crosswalkType = s.crosswalkType;
 
                 if (s.trafficLight1_green != null) trafficLight1_green = s.trafficLight1_green;
                 if (s.trafficLight1_yellow != null) trafficLight1_yellow = s.trafficLight1_yellow;
@@ -112,20 +112,14 @@ namespace JAN0837_DP.Data
 
         public static class OpcUaNodeIds
         {
-            // ═══════════════════════════════════════════════════════════
-            // INPUT VARIABLES (written TO PLC)
-            // Find these in UAExpert: DB_ProcessData > input > ...
-            // ═══════════════════════════════════════════════════════════
-            public static string btnCrosswalkStart { get; set; } = "ns=4;i=?";
-            public static string btnCrosswalkPause { get; set; } = "ns=4;i=?";
-            public static string btnCrosswalkStop { get; set; } = "ns=4;i=?";
+            // Inputs
+            public static string btnStart { get; set; } = "ns=4;i=?";
+            public static string btnPause { get; set; } = "ns=4;i=?";
+            public static string btnStop { get; set; } = "ns=4;i=?";
             public static string btnCrosswalk1 { get; set; } = "ns=4;i=?";
             public static string btnCrosswalk2 { get; set; } = "ns=4;i=?";
 
-            // ═══════════════════════════════════════════════════════════
-            // OUTPUT VARIABLES (read FROM PLC)
-            // Find these in UAExpert: DB_ProcessData > output > ...
-            // ═══════════════════════════════════════════════════════════
+            //Outputs
             public static string crosswalkType { get; set; } = "ns=4;i=?";
             public static string trafficLight1_green { get; set; } = "ns=4;i=?";
             public static string trafficLight1_yellow { get; set; } = "ns=4;i=?";

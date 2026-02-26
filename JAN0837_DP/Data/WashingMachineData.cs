@@ -11,47 +11,47 @@ namespace JAN0837_DP.Data
     public static class WashingMachineData
     {
         //inputs
-        public static string btnWashingMachineEmergencyStop { get; set; } = "false"; // bool
-        public static string btnStartWashingMachine { get; set; } = "fasle"; // bool
-        public static string btnStopWashingMachine { get; set; } = "false"; // bool
-        public static string WashingMachineErrorSystem { get; set; } = "false"; // bool
-        public static string WashingMachineMode { get; set; } = ""; // int?
+        public static string btnEmergencyStop { get; set; } = "false"; // bool
+        public static string btnStart { get; set; } = "fasle"; // bool
+        public static string btnStop { get; set; } = "false"; // bool
+        public static string ErrorSystem { get; set; } = "false"; // bool
+        public static string Mode { get; set; } = ""; // int?
 
         //outputs
-        public static string WashingMachineLight_green { get; set; } = "fasle"; // bool
-        public static string WashingMachineLight_yellow { get; set; } = "false"; // bool 
-        public static string WashingMachineLight_red { get; set; } = "false"; // bool 
-        public static string WashingMachineDoorClosed { get; set; } = "false"; // bool
-        public static string WashingMachineChemicals { get; set; } = "false"; // bool
-        public static string WashingMachinePrewash { get; set; } = "false"; // bool                                                                   
-        public static string WashingMachineWater { get; set; } = "false"; // bool
-        public static string WashingMachineWax { get; set; } = "false"; // bool
-        public static string WashingMachineDry { get; set; } = "false"; // bool
-        public static string WashingMachineBrushes { get; set; } = "false"; // bool
-        public static string WashingMachineSoap { get; set; } = "false"; // bool
-        public static string WashingMachineActiveFoam { get; set; } = "false"; // bool
+        public static string Light_green { get; set; } = "fasle"; // bool
+        public static string Light_yellow { get; set; } = "false"; // bool 
+        public static string Light_red { get; set; } = "false"; // bool 
+        public static string DoorClosed { get; set; } = "false"; // bool
+        public static string Chemicals { get; set; } = "false"; // bool
+        public static string Prewash { get; set; } = "false"; // bool                                                                   
+        public static string Water { get; set; } = "false"; // bool
+        public static string Wax { get; set; } = "false"; // bool
+        public static string Dry { get; set; } = "false"; // bool
+        public static string Brushes { get; set; } = "false"; // bool
+        public static string Soap { get; set; } = "false"; // bool
+        public static string ActiveFoam { get; set; } = "false"; // bool
 
         // thread safety 
         private static readonly object _lock = new();
 
         // snapshot
         public readonly record struct State(
-            string btnWashingMachineEmergencyStop,
-            string btnStartWashingMachine,
-            string btnStopWashingMachine,
-            string WashingMachineErrorSystem,
-            string WashingMachineMode,
-            string WashingMachineLight_green,
-            string WashingMachineLight_yellow,
-            string WashingMachineLight_red,
-            string WashingMachineDoorClosed,
-            string WashingMachineChemicals,
-            string WashingMachinePrewash,
-            string WashingMachineWater,
-            string WashingMachineDry,
-            string WashingMachineBrushes,
-            string WashingMachineSoap,
-            string WashingMachineActiveFoam
+            string btnEmergencyStop,
+            string btnStart,
+            string btnStop,
+            string ErrorSystem,
+            string Mode,
+            string Light_green,
+            string Light_yellow,
+            string Light_red,
+            string DoorClosed,
+            string Chemicals,
+            string Prewash,
+            string Water,
+            string Dry,
+            string Brushes,
+            string Soap,
+            string ActiveFoam
         );
 
         public static State Get()
@@ -59,22 +59,22 @@ namespace JAN0837_DP.Data
             lock (_lock)
             {
                 return new State(
-                    btnWashingMachineEmergencyStop, 
-                    btnStartWashingMachine, 
-                    btnStopWashingMachine, 
-                    WashingMachineErrorSystem, 
-                    WashingMachineMode, 
-                    WashingMachineLight_green,
-                    WashingMachineLight_yellow,
-                    WashingMachineLight_red,
-                    WashingMachineDoorClosed,
-                    WashingMachineChemicals,
-                    WashingMachinePrewash,
-                    WashingMachineWater,
-                    WashingMachineDry,
-                    WashingMachineBrushes,
-                    WashingMachineSoap,
-                    WashingMachineActiveFoam
+                    btnEmergencyStop, 
+                    btnStart, 
+                    btnStop, 
+                    ErrorSystem, 
+                    Mode, 
+                    Light_green,
+                    Light_yellow,
+                    Light_red,
+                    DoorClosed,
+                    Chemicals,
+                    Prewash,
+                    Water,
+                    Dry,
+                    Brushes,
+                    Soap,
+                    ActiveFoam
                 );
             }
         }
@@ -83,23 +83,23 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                if (s.btnWashingMachineEmergencyStop != null) btnWashingMachineEmergencyStop = s.btnWashingMachineEmergencyStop;
-                if (s.btnStartWashingMachine != null) btnStartWashingMachine = s.btnStartWashingMachine;
-                if (s.btnStopWashingMachine != null) btnStopWashingMachine = s.btnStopWashingMachine;
-                if (s.WashingMachineErrorSystem != null) WashingMachineErrorSystem = s.WashingMachineErrorSystem;
-                if (s.WashingMachineMode != null) WashingMachineMode = s.WashingMachineMode;
+                //if (s.btnEmergencyStop != null) btnEmergencyStop = s.btnEmergencyStop;
+                //if (s.btnStart != null) btnStart = s.btnStart;
+                //if (s.btnStop != null) btnStop = s.btnStop;
+                //if (s.ErrorSystem != null) ErrorSystem = s.ErrorSystem;
+                //if (s.Mode != null) Mode = s.Mode;
 
-                if (s.WashingMachineLight_green != null) WashingMachineLight_green = s.WashingMachineLight_green;
-                if (s.WashingMachineLight_yellow != null) WashingMachineLight_yellow = s.WashingMachineLight_yellow;
-                if (s.WashingMachineLight_red != null) WashingMachineLight_red = s.WashingMachineLight_red;
-                if (s.WashingMachineDoorClosed != null) WashingMachineDoorClosed = s.WashingMachineDoorClosed;
-                if (s.WashingMachineChemicals != null) WashingMachineChemicals = s.WashingMachineChemicals;
-                if (s.WashingMachinePrewash != null) WashingMachinePrewash = s.WashingMachinePrewash;
-                if (s.WashingMachineWater != null) WashingMachineWater = s.WashingMachineWater;
-                if (s.WashingMachineDry != null) WashingMachineDry = s.WashingMachineDry;
-                if (s.WashingMachineBrushes != null) WashingMachineBrushes = s.WashingMachineBrushes;
-                if (s.WashingMachineSoap != null) WashingMachineSoap = s.WashingMachineSoap;
-                if (s.WashingMachineActiveFoam != null) WashingMachineActiveFoam = s.WashingMachineActiveFoam;
+                if (s.Light_green != null) Light_green = s.Light_green;
+                if (s.Light_yellow != null) Light_yellow = s.Light_yellow;
+                if (s.Light_red != null) Light_red = s.Light_red;
+                if (s.DoorClosed != null) DoorClosed = s.DoorClosed;
+                if (s.Chemicals != null) Chemicals = s.Chemicals;
+                if (s.Prewash != null) Prewash = s.Prewash;
+                if (s.Water != null) Water = s.Water;
+                if (s.Dry != null) Dry = s.Dry;
+                if (s.Brushes != null) Brushes = s.Brushes;
+                if (s.Soap != null) Soap = s.Soap;
+                if (s.ActiveFoam != null) ActiveFoam = s.ActiveFoam;
             }
         }
 
@@ -112,25 +112,26 @@ namespace JAN0837_DP.Data
         public static class OpcUaNodeIds
         {
             // Inputs
-            public static string btnWashingMachineEmergencyStop { get; set; } = "ns=4;i=?"; // bool
-            public static string btnStartWashingMachine { get; set; } = "ns=4;i=?"; // bool
-            public static string btnStopWashingMachine { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineErrorSystem { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineMode { get; set; } = "ns=4;i=?"; // int?
+            public static string btnEmergencyStop { get; set; } = "ns=4;i=?"; // bool
+            public static string btnStart { get; set; } = "ns=4;i=?"; // bool
+            public static string btnStop { get; set; } = "ns=4;i=?"; // bool
+            public static string Washing { get; set; } = "ns=4;i=?"; // bool
+            public static string ErrorSystem { get; set; } = "ns=4;i=?"; // bool
+            public static string Mode { get; set; } = "ns=4;i=?"; // int?
 
             // Outputs
-            public static string WashingMachineLight_green { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineLight_yellow { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineLight_red { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineDoorClosed { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineChemicals { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachinePrewash { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineWater { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineWax { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineDry { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineBrushes { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineSoap { get; set; } = "ns=4;i=?"; // bool
-            public static string WashingMachineActiveFoam { get; set; } = "ns=4;i=?"; // bool
+            public static string Light_green { get; set; } = "ns=4;i=?"; // bool
+            public static string Light_yellow { get; set; } = "ns=4;i=?"; // bool
+            public static string Light_red { get; set; } = "ns=4;i=?"; // bool
+            public static string DoorClosed { get; set; } = "ns=4;i=?"; // bool
+            public static string Chemicals { get; set; } = "ns=4;i=?"; // bool
+            public static string Prewash { get; set; } = "ns=4;i=?"; // bool
+            public static string Water { get; set; } = "ns=4;i=?"; // bool
+            public static string Wax { get; set; } = "ns=4;i=?"; // bool
+            public static string Dry { get; set; } = "ns=4;i=?"; // bool
+            public static string Brushes { get; set; } = "ns=4;i=?"; // bool
+            public static string Soap { get; set; } = "ns=4;i=?"; // bool
+            public static string ActiveFoam { get; set; } = "ns=4;i=?"; // bool
         }
     }
 }

@@ -49,8 +49,12 @@ namespace JAN0837_DP.ReactFE
                         {
                             using var reader = new StreamReader(ctx.Request.Body);
                             var body = await reader.ReadToEndAsync();
-                            var incoming = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
-                            _feCommunication.HandleUpdate(incoming);
+                            var categories = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(body)
+                                ?? new Dictionary<string, Dictionary<string, string>>();
+                            foreach (var category in categories)
+                            {
+                                _feCommunication.HandleUpdate(category.Key, category.Value);
+                            }
                             ctx.Response.StatusCode = 204;
                             return;
                         }

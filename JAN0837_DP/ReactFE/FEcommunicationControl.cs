@@ -613,6 +613,33 @@ namespace JAN0837_DP.ReactFE
 
             try
             {
+                // ── Swagger UI ──
+                if (req.HttpMethod == "GET" && (path == "/swagger" || path == "/swagger/index.html"))
+                {
+                    var host = req.Url.Authority;
+                    var specUrl = $"http://{host}/api/swagger/openapi.json";
+                    var html = SwaggerContent.GetSwaggerHtml(specUrl);
+                    var buf = Encoding.UTF8.GetBytes(html);
+                    resp.ContentType = "text/html; charset=utf-8";
+                    resp.ContentLength64 = buf.Length;
+                    resp.OutputStream.Write(buf, 0, buf.Length);
+                    resp.Close();
+                    return;
+                }
+
+                if (req.HttpMethod == "GET" && path == "/swagger/openapi.json")
+                {
+                    var host = req.Url.Authority;
+                    var json = SwaggerContent.GetOpenApiSpec(host);
+                    var buf = Encoding.UTF8.GetBytes(json);
+                    resp.ContentType = "application/json; charset=utf-8";
+                    resp.ContentLength64 = buf.Length;
+                    resp.OutputStream.Write(buf, 0, buf.Length);
+                    resp.Close();
+                    return;
+                }
+
+                // ── Data endpoints ──
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
                     var testdata = TestData.AppState.Get();

@@ -139,7 +139,7 @@ function RegulatorParamsSidebar() {
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>C (F)</Form.Label>
+          <Form.Label>C (uF)</Form.Label>
           <Form.Control
             type="number"
             step="any"
@@ -151,7 +151,7 @@ function RegulatorParamsSidebar() {
         </Form.Group>
 
         <Form.Group className="mb-2">
-          <Form.Label>U (V)</Form.Label>
+          <Form.Label>U<sub>in</sub> (V)</Form.Label>
           <Form.Control
             type="number"
             step="any"
@@ -193,7 +193,7 @@ function RegulatorPage() {
   const { section: d } = useSectionData('RegulatorData');
   const Uc = Number(d?.Uc ?? 0);
 
-  const background = '/images/regulator_RC.PNG';
+  const background = '/images/regulator/regulator_RC.PNG';
 
   return (
     <Row className="regulatorpage">

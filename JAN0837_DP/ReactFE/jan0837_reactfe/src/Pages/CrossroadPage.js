@@ -22,21 +22,33 @@ import { useData, useSectionData } from '../Communication/DataProvider';
  *   btnCrossroadStart    Bool – start crossroad
  *   btnCrossroadPause    Bool – pause crossroad
  *   btnCrossroadStop     Bool – stop crossroad
- *   btnCrosswalk1        Bool – pedestrian button N
- *   btnCrosswalk2        Bool – pedestrian button S
+ *   btnWestCrosswalk1    Bool – pedestrian button N
+ *   btnWestCrosswalk2    Bool – pedestrian button S
+ *   btnEastCrosswalk1    Bool – pedestrian button W
+ *   btnEastCrosswalk2    Bool – pedestrian button E
  *
  * OUTPUTS (PLC → FE):
- *   crossroadType            Bool – night / day
- *   trafficLight1_green      Bool
- *   trafficLight1_yellow     Bool
- *   trafficLight1_red        Bool
- *   trafficLight2_green      Bool
- *   trafficLight2_yellow     Bool
- *   trafficLight2_red        Bool
- *   pedestrian1_green        Bool
- *   pedestrian1_red          Bool
- *   pedestrian2_green        Bool
- *   pedestrian2_red          Bool
+ *   crossroadType               Bool – night / day
+ *   trafficLightNorth_green     Bool
+ *   trafficLightNorth_yellow    Bool
+ *   trafficLightNorth_red       Bool
+ *   trafficLightSouth_green     Bool
+ *   trafficLightSouth_yellow    Bool
+ *   trafficLightSouth_red       Bool
+ *   trafficLightWest_green      Bool
+ *   trafficLightWest_yellow     Bool
+ *   trafficLightWest_red        Bool
+ *   trafficLightEast_green      Bool
+ *   trafficLightEast_yellow     Bool
+ *   trafficLightEast_red        Bool
+ *   pedestrianNorth_green       Bool
+ *   pedestrianNorth_red         Bool
+ *   pedestrianSouth_green       Bool
+ *   pedestrianSouth_red         Bool
+ *   pedestrianWest_green        Bool
+ *   pedestrianWest_red          Bool
+ *   pedestrianEast_green        Bool
+ *   pedestrianEast_red          Bool
  */
 
 const toBool = (v) => {
@@ -45,9 +57,9 @@ const toBool = (v) => {
   return s === 'true' || s === '1' || s === 'on';
 };
 
-const names = ['crossroad_basic', 'crossroad_day', 'crossroad_night', 'crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
+const names = ['crossroad_day', 'crossroad_day_blank', 'crossroad_night', 'crossroad_night_blank'];
 const ext = 'png';         
-const folder = 'images'; 
+const folder = 'images/crossroad'; 
 
 const LIGHT_SOURCES = {
   car: {
@@ -99,40 +111,40 @@ function pickCarSrc({ green, yellow, red }, dir = 0) {
   const r = toBool(red);
   const y = toBool(yellow);
   const g = toBool(green);
-  if (r) return `/images/${LIGHT_SOURCES.car['red' + d]}`;
-  if (y) return `/images/${LIGHT_SOURCES.car['yellow' + d]}`;
-  if (g) return `/images/${LIGHT_SOURCES.car['green' + d]}`;
-  return `/images/${LIGHT_SOURCES.car['blank' + d]}`;
+  if (r) return `/images/headlights/${LIGHT_SOURCES.car['red' + d]}`;
+  if (y) return `/images/headlights/${LIGHT_SOURCES.car['yellow' + d]}`;
+  if (g) return `/images/headlights/${LIGHT_SOURCES.car['green' + d]}`;
+  return `/images/headlights/${LIGHT_SOURCES.car['blank' + d]}`;
 }
 
 function pickPedRedSrc(red, dir = 0) {
   const d = String(dir);
   const r = toBool(red);
   return r
-    ? `/images/${LIGHT_SOURCES.ped['red' + d]}`
-    : `/images/${LIGHT_SOURCES.ped['redblank' + d]}`;
+    ? `/images/headlights/${LIGHT_SOURCES.ped['red' + d]}`
+    : `/images/headlights/${LIGHT_SOURCES.ped['redblank' + d]}`;
 }
 
 function pickPedGreenSrc(green, dir = 0) {
   const d = String(dir);
   const g = toBool(green);
   return g
-    ? `/images/${LIGHT_SOURCES.ped['green' + d]}`
-    : `/images/${LIGHT_SOURCES.ped['greenblank' + d]}`;
+    ? `/images/headlights/${LIGHT_SOURCES.ped['green' + d]}`
+    : `/images/headlights/${LIGHT_SOURCES.ped['greenblank' + d]}`;
 }
 
 function pickCarLensSrc(color, state, dir = 0) {
   const d = String(dir);
   const on = toBool(state?.[color]); // green, yellow, red
   const key = on ? `${color}${d}` : `blank${d}`;
-  return `/images/${LIGHT_SOURCES.car[key]}`;
+  return `/images/headlights/${LIGHT_SOURCES.car[key]}`;
 }
 
 function pickPedLensSrc(color, state, dir = 0) {
   const d = String(dir);
   const on = toBool(state?.[color]); // green, red
   const key = on ? `${color}${d}` : `${color}blank${d}`;
-  return `/images/${LIGHT_SOURCES.ped[key]}`;
+  return `/images/headlights/${LIGHT_SOURCES.ped[key]}`;
 }
 
 function PedLens({ color, state, dir=0, x, y, alt }) {
@@ -211,11 +223,65 @@ function CrossroadCanvas({ background, lights, pedControls }) {
 
         <button
           type="button"
+          className="ped-btn ped-btn--north-2 btn btn-sm btn-light"
+          onClick={pedControls.onNorth}
+          aria-label="Toggle pedestrian North second"
+        >
+          N {pedControls.btnPedN ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
           className="ped-btn ped-btn--south btn btn-sm btn-light"
           onClick={pedControls.onSouth}
           aria-label="Toggle pedestrian South"
         >
           S {pedControls.btnPedS ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--south-2 btn btn-sm btn-light"
+          onClick={pedControls.onSouth}
+          aria-label="Toggle pedestrian South second"
+        >
+          S {pedControls.btnPedS ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--west btn btn-sm btn-light"
+          onClick={pedControls.onWest}
+          aria-label="Toggle pedestrian West"
+        >
+          W {pedControls.btnPedW ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--west-2 btn btn-sm btn-light"
+          onClick={pedControls.onWest}
+          aria-label="Toggle pedestrian West second"
+        >
+          W {pedControls.btnPedW ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--east btn btn-sm btn-light"
+          onClick={pedControls.onEast}
+          aria-label="Toggle pedestrian East"
+        >
+          E {pedControls.btnPedE ? '🟢' : '⚪'}
+        </button>
+
+        <button
+          type="button"
+          className="ped-btn ped-btn--east-2 btn btn-sm btn-light"
+          onClick={pedControls.onEast}
+          aria-label="Toggle pedestrian East second"
+        >
+          E {pedControls.btnPedE ? '🟢' : '⚪'}
         </button>
       </>
     </div>
@@ -235,16 +301,27 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const btnCrossroadPause = toBool(d?.btnCrossroadPause);
   const btnCrossroadStop = toBool(d?.btnCrossroadStop);
 
-  const trafficLight1_green = toBool(d?.trafficLight1_green);
-  const trafficLight1_yellow = toBool(d?.trafficLight1_yellow);
-  const trafficLight1_red = toBool(d?.trafficLight1_red); 
-  const trafficLight2_green = toBool(d?.trafficLight2_green);
-  const trafficLight2_yellow = toBool(d?.trafficLight2_yellow);
-  const trafficLight2_red = toBool(d?.trafficLight2_red); 
-  const pedestrian1_green = toBool(d?.pedestrian1_green);
-  const pedestrian1_red = toBool(d?.pedestrian1_red); 
-  const pedestrian2_green = toBool(d?.pedestrian2_green);
-  const pedestrian2_red = toBool(d?.pedestrian2_red);
+  const trafficLightNorth_green = toBool(d?.trafficLightNorth_green);
+  const trafficLightNorth_yellow = toBool(d?.trafficLightNorth_yellow);
+  const trafficLightNorth_red = toBool(d?.trafficLightNorth_red);
+  const trafficLightSouth_green = toBool(d?.trafficLightSouth_green);
+  const trafficLightSouth_yellow = toBool(d?.trafficLightSouth_yellow);
+  const trafficLightSouth_red = toBool(d?.trafficLightSouth_red);
+  const trafficLightWest_green = toBool(d?.trafficLightWest_green);
+  const trafficLightWest_yellow = toBool(d?.trafficLightWest_yellow);
+  const trafficLightWest_red = toBool(d?.trafficLightWest_red);
+  const trafficLightEast_green = toBool(d?.trafficLightEast_green);
+  const trafficLightEast_yellow = toBool(d?.trafficLightEast_yellow);
+  const trafficLightEast_red = toBool(d?.trafficLightEast_red);
+
+  const pedestrianNorth_green = toBool(d?.pedestrianNorth_green);
+  const pedestrianNorth_red = toBool(d?.pedestrianNorth_red);
+  const pedestrianSouth_green = toBool(d?.pedestrianSouth_green);
+  const pedestrianSouth_red = toBool(d?.pedestrianSouth_red);
+  const pedestrianWest_green = toBool(d?.pedestrianWest_green);
+  const pedestrianWest_red = toBool(d?.pedestrianWest_red);
+  const pedestrianEast_green = toBool(d?.pedestrianEast_green);
+  const pedestrianEast_red = toBool(d?.pedestrianEast_red);
 
   const setCrossroadType = () => saveSection({ crossroadType: !crossroadType });
 
@@ -252,16 +329,27 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const setPauseAsync = () => saveSection({ btnCrossroadPause: !btnCrossroadPause });
   const setStopAsync  = () => saveSection({ btnCrossroadStop: !btnCrossroadStop });
 
-  const setCrossroadLightGreen1 = () => saveSection({ trafficLight1_green: !trafficLight1_green });
-  const setCrossroadLightYellow1 = () => saveSection({ trafficLight1_yellow: !trafficLight1_yellow });
-  const setCrossroadLightRed1 = () => saveSection({ trafficLight1_red: !trafficLight1_red });
-  const setCrossroadLightGreen2 = () => saveSection({ trafficLight2_green: !trafficLight2_green });
-  const setCrossroadLightYellow2 = () => saveSection({ trafficLight2_yellow: !trafficLight2_yellow });
-  const setCrossroadLightRed2 = () => saveSection({ trafficLight2_red: !trafficLight2_red });
-  const setPedestrianLightGreen1 = () => saveSection({ pedestrian1_green: !pedestrian1_green });
-  const setPedestrianLightRed1 = () => saveSection({ pedestrian1_red: !pedestrian1_red });
-  const setPedestrianLightGreen2 = () => saveSection({ pedestrian2_green: !pedestrian2_green });
-  const setPedestrianLightRed2 = () => saveSection({ pedestrian2_red: !pedestrian2_red });
+  const setCrossroadLightNorthGreen = () => saveSection({ trafficLightNorth_green: !trafficLightNorth_green });
+  const setCrossroadLightNorthYellow = () => saveSection({ trafficLightNorth_yellow: !trafficLightNorth_yellow });
+  const setCrossroadLightNorthRed = () => saveSection({ trafficLightNorth_red: !trafficLightNorth_red });
+  const setCrossroadLightSouthGreen = () => saveSection({ trafficLightSouth_green: !trafficLightSouth_green });
+  const setCrossroadLightSouthYellow = () => saveSection({ trafficLightSouth_yellow: !trafficLightSouth_yellow });
+  const setCrossroadLightSouthRed = () => saveSection({ trafficLightSouth_red: !trafficLightSouth_red });
+  const setCrossroadLightWestGreen = () => saveSection({ trafficLightWest_green: !trafficLightWest_green });
+  const setCrossroadLightWestYellow = () => saveSection({ trafficLightWest_yellow: !trafficLightWest_yellow });
+  const setCrossroadLightWestRed = () => saveSection({ trafficLightWest_red: !trafficLightWest_red });
+  const setCrossroadLightEastGreen = () => saveSection({ trafficLightEast_green: !trafficLightEast_green });
+  const setCrossroadLightEastYellow = () => saveSection({ trafficLightEast_yellow: !trafficLightEast_yellow });
+  const setCrossroadLightEastRed = () => saveSection({ trafficLightEast_red: !trafficLightEast_red });
+
+  const setPedestrianNorthGreen = () => saveSection({ pedestrianNorth_green: !pedestrianNorth_green });
+  const setPedestrianNorthRed = () => saveSection({ pedestrianNorth_red: !pedestrianNorth_red });
+  const setPedestrianSouthGreen = () => saveSection({ pedestrianSouth_green: !pedestrianSouth_green });
+  const setPedestrianSouthRed = () => saveSection({ pedestrianSouth_red: !pedestrianSouth_red });
+  const setPedestrianWestGreen = () => saveSection({ pedestrianWest_green: !pedestrianWest_green });
+  const setPedestrianWestRed = () => saveSection({ pedestrianWest_red: !pedestrianWest_red });
+  const setPedestrianEastGreen = () => saveSection({ pedestrianEast_green: !pedestrianEast_green });
+  const setPedestrianEastRed = () => saveSection({ pedestrianEast_red: !pedestrianEast_red });
 
   const toggleCrossroadType = async () => {
     try {
@@ -273,7 +361,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
       await saveSection({ crossroadType: next });
 
-      setStatus(`ok ✔ (store now: ${String(toBool(d?.crossroadType))})`);
+      setStatus(`ok (store now: ${String(toBool(d?.crossroadType))})`);
     } catch (e) {
       console.error(e);
       setStatus(`error ✖ ${e?.message ?? e}`);
@@ -317,58 +405,100 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       <div>
         <Col>
           <div className="gap-2 mb-2">
-            <Button className="btn--start" onClick={() => setStartAsync(!btnCrossroadStart) /*toggleBtn("btnCrossroadStart", !btnCrossroadStart)*/} /*disabled={isFetching}*/>
+            <Button className="btn--start" onClick={setStartAsync} /*disabled={isFetching}*/>
               Start ({String(btnCrossroadStart)})
             </Button>
           
-            <Button className="btn--pause" onClick={() => setPauseAsync(!btnCrossroadPause) /*toggleBtn("btnCrossroadPause", !btnCrossroadPause)*/} /*disabled={isFetching}*/>
+            <Button className="btn--pause" onClick={setPauseAsync} /*disabled={isFetching}*/>
               Pause ({String(btnCrossroadPause)})
             </Button>
           
-            <Button className="btn--stop" onClick={() => setStopAsync(!btnCrossroadStop) /*toggleBtn("btnCrossroadStop", !btnCrossroadStop)*/} /*disabled={isFetching}*/>
+            <Button className="btn--stop" onClick={setStopAsync} /*disabled={isFetching}*/>
               Stop ({String(btnCrossroadStop)})
             </Button>  
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setCrossroadLightGreen1(!trafficLight1_green)}>
-              Crossroad green 1 ({String(trafficLight1_green)})
+            <Button onClick={setCrossroadLightNorthGreen}>
+              Crossroad North green ({String(trafficLightNorth_green)})
             </Button>
-            <Button onClick={() => setCrossroadLightYellow1(!trafficLight1_yellow)}>
-              Crossroad yellow 1 ({String(trafficLight1_yellow)})
+            <Button onClick={setCrossroadLightNorthYellow}>
+              Crossroad North yellow ({String(trafficLightNorth_yellow)})
             </Button>
-            <Button onClick={() => setCrossroadLightRed1(!trafficLight1_red)}>
-              Crossroad red 1 ({String(trafficLight1_red)})
-            </Button>
-          </div>
-
-          <div className="gap-2 mb-2">
-            <Button onClick={() => setCrossroadLightGreen2(!trafficLight2_green)}>
-              Crossroad green 2 ({String(trafficLight2_green)})
-            </Button>
-            <Button onClick={() => setCrossroadLightYellow2(!trafficLight2_yellow)}>
-              Crossroad yellow 2 ({String(trafficLight2_yellow)})
-            </Button>
-            <Button onClick={() => setCrossroadLightRed2(!trafficLight2_red)}>
-              Crossroad red 2 ({String(trafficLight2_red)})
+            <Button onClick={setCrossroadLightNorthRed}>
+              Crossroad North red ({String(trafficLightNorth_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen1(!pedestrian1_green)}>
-              Pedestrian green 1 ({String(pedestrian1_green)})
+            <Button onClick={setCrossroadLightSouthGreen}>
+              Crossroad South green ({String(trafficLightSouth_green)})
             </Button>
-            <Button onClick={() => setPedestrianLightRed1(!pedestrian1_red)}>
-              Pedestrian red 1 ({String(pedestrian1_red)})
+            <Button onClick={setCrossroadLightSouthYellow}>
+              Crossroad South yellow ({String(trafficLightSouth_yellow)})
+            </Button>
+            <Button onClick={setCrossroadLightSouthRed}>
+              Crossroad South red ({String(trafficLightSouth_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen2(!pedestrian2_green)}>
-              Pedestrian green 2 ({String(pedestrian2_green)})
+            <Button onClick={setCrossroadLightWestGreen}>
+              Crossroad West green ({String(trafficLightWest_green)})
             </Button>
-            <Button onClick={() => setPedestrianLightRed2(!pedestrian2_red)}>
-              Pedestrian red 2 ({String(pedestrian2_red)})
+            <Button onClick={setCrossroadLightWestYellow}>
+              Crossroad West yellow ({String(trafficLightWest_yellow)})
+            </Button>
+            <Button onClick={setCrossroadLightWestRed}>
+              Crossroad West red ({String(trafficLightWest_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setCrossroadLightEastGreen}>
+              Crossroad East green ({String(trafficLightEast_green)})
+            </Button>
+            <Button onClick={setCrossroadLightEastYellow}>
+              Crossroad East yellow ({String(trafficLightEast_yellow)})
+            </Button>
+            <Button onClick={setCrossroadLightEastRed}>
+              Crossroad East red ({String(trafficLightEast_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianNorthGreen}>
+              Pedestrian North green ({String(pedestrianNorth_green)})
+            </Button>
+            <Button onClick={setPedestrianNorthRed}>
+              Pedestrian North red ({String(pedestrianNorth_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianSouthGreen}>
+              Pedestrian South green ({String(pedestrianSouth_green)})
+            </Button>
+            <Button onClick={setPedestrianSouthRed}>
+              Pedestrian South red ({String(pedestrianSouth_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianWestGreen}>
+              Pedestrian West green ({String(pedestrianWest_green)})
+            </Button>
+            <Button onClick={setPedestrianWestRed}>
+              Pedestrian West red ({String(pedestrianWest_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianEastGreen}>
+              Pedestrian East green ({String(pedestrianEast_green)})
+            </Button>
+            <Button onClick={setPedestrianEastRed}>
+              Pedestrian East red ({String(pedestrianEast_red)})
             </Button>
           </div>
         </Col>
@@ -391,28 +521,48 @@ function CrossroadPage({ setAside }) {
 
     useEffect(() => {
     if (
-      d?.trafficLight1_green === undefined &&
-      d?.trafficLight1_yellow === undefined &&
-      d?.trafficLight1_red === undefined &&
-      d?.trafficLight2_green === undefined &&
-      d?.trafficLight2_yellow === undefined &&
-      d?.trafficLight2_red === undefined &&
-      d?.pedestrian1_green === undefined &&
-      d?.pedestrian1_red === undefined &&
-      d?.pedestrian2_green === undefined &&
-      d?.pedestrian2_red === undefined
+      d?.trafficLightNorth_green === undefined &&
+      d?.trafficLightNorth_yellow === undefined &&
+      d?.trafficLightNorth_red === undefined &&
+      d?.trafficLightSouth_green === undefined &&
+      d?.trafficLightSouth_yellow === undefined &&
+      d?.trafficLightSouth_red === undefined &&
+      d?.trafficLightWest_green === undefined &&
+      d?.trafficLightWest_yellow === undefined &&
+      d?.trafficLightWest_red === undefined &&
+      d?.trafficLightEast_green === undefined &&
+      d?.trafficLightEast_yellow === undefined &&
+      d?.trafficLightEast_red === undefined &&
+      d?.pedestrianNorth_green === undefined &&
+      d?.pedestrianNorth_red === undefined &&
+      d?.pedestrianSouth_green === undefined &&
+      d?.pedestrianSouth_red === undefined &&
+      d?.pedestrianWest_green === undefined &&
+      d?.pedestrianWest_red === undefined &&
+      d?.pedestrianEast_green === undefined &&
+      d?.pedestrianEast_red === undefined
     ) {
       saveSection({
-        trafficLight1_green: 'false',
-        trafficLight1_yellow: 'false',
-        trafficLight1_red: 'false',
-        trafficLight2_green: 'false',
-        trafficLight2_yellow: 'false',
-        trafficLight2_red: 'false',
-        pedestrian1_green: 'false',
-        pedestrian1_red: 'false',
-        pedestrian2_green: 'false',
-        pedestrian2_red: 'false',
+        trafficLightNorth_green: 'false',
+        trafficLightNorth_yellow: 'false',
+        trafficLightNorth_red: 'false',
+        trafficLightSouth_green: 'false',
+        trafficLightSouth_yellow: 'false',
+        trafficLightSouth_red: 'false',
+        trafficLightWest_green: 'false',
+        trafficLightWest_yellow: 'false',
+        trafficLightWest_red: 'false',
+        trafficLightEast_green: 'false',
+        trafficLightEast_yellow: 'false',
+        trafficLightEast_red: 'false',
+        pedestrianNorth_green: 'false',
+        pedestrianNorth_red: 'false',
+        pedestrianSouth_green: 'false',
+        pedestrianSouth_red: 'false',
+        pedestrianWest_green: 'false',
+        pedestrianWest_red: 'false',
+        pedestrianEast_green: 'false',
+        pedestrianEast_red: 'false',
       });
     }
   }, [d, saveSection]);
@@ -448,59 +598,127 @@ function CrossroadPage({ setAside }) {
 
   const isNight = toBool(d?.crossroadType);
   const background = isNight
-    ? '/images/crossroad_night_blank.png'
-    : '/images/crossroad_day_blank.png';
+    ? '/images/crossroad/crossroad_night_blank.png'
+    : '/images/crossroad/crossroad_day_blank.png';
 
   useEffect(() => {
-    ['/images/crossroad_day_blank.png', '/images/crossroad_night_blank.png'].forEach(src => {
+    ['/images/crossroad/crossroad_day_blank.png', '/images/crossroad/crossroad_night_blank.png'].forEach(src => {
       const img = new Image();
       img.src = src;
     });
   }, []);
 
+  const CARN = {
+    green: d?.trafficLightNorth_green ?? false,
+    yellow: d?.trafficLightNorth_yellow ?? false,
+    red: d?.trafficLightNorth_red ?? false,
+  };
+
+  const CARS = {
+    green: d?.trafficLightSouth_green ?? false,
+    yellow: d?.trafficLightSouth_yellow ?? false,
+    red: d?.trafficLightSouth_red ?? false,
+  };
+
   const CARW = {
-    green: d?.trafficLight1_green ?? false,
-    yellow: d?.trafficLight1_yellow ?? false,
-    red: d?.trafficLight1_red ?? false,
+    green: d?.trafficLightWest_green ?? false,
+    yellow: d?.trafficLightWest_yellow ?? false,
+    red: d?.trafficLightWest_red ?? false,
   };
 
   const CARE = {
-    green: d?.trafficLight2_green ?? false,
-    yellow: d?.trafficLight2_yellow ?? false,
-    red: d?.trafficLight2_red ?? false,
+    green: d?.trafficLightEast_green ?? false,
+    yellow: d?.trafficLightEast_yellow ?? false,
+    red: d?.trafficLightEast_red ?? false,
   };
 
   const PEDN = {
-    green: d?.pedestrian1_green ?? false,
-    red: d?.pedestrian1_red ?? false,
+    green: d?.pedestrianNorth_green ?? false,
+    red: d?.pedestrianNorth_red ?? false,
   };
 
   const PEDS = {
-    green: d?.pedestrian2_green ?? false,
-    red: d?.pedestrian2_red ?? false,
+    green: d?.pedestrianSouth_green ?? false,
+    red: d?.pedestrianSouth_red ?? false,
+  };
+
+  const PEDW = {
+    green: d?.pedestrianWest_green ?? false,
+    red: d?.pedestrianWest_red ?? false,
+  };
+
+  const PEDE = {
+    green: d?.pedestrianEast_green ?? false,
+    red: d?.pedestrianEast_red ?? false,
   };
 
   const lights = [
-    // car – west (W) and east (E)
-    { id: 'car-W-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '37.6%', y: '77.6%' }, // W = 90° 
-    { id: 'car-W-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '41.5%', y: '77.6%' }, // W = 90° 
-    { id: 'car-W-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '45.4%', y: '77.6%' }, // W = 90° 
-    { id: 'car-E-green', kind: 'car', color: 'green', state: CARE,  dir: 270, x: '72%', y: '7.8%' }, // E = 270°
-    { id: 'car-E-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '68.1%', y: '7.8%' }, // E = 270° 
-    { id: 'car-E-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '64.2%', y: '7.8%' }, // E = 270° 
+    // car – West
+    { id: 'car-W-main-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '39.5%', y: '75.8%' },
+    { id: 'car-W-main-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '43.0%', y: '75.8%' },
+    { id: 'car-W-main-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '46.5%', y: '75.8%' },
 
-    // pedestrians – north (N) and south (S)
-    { id: 'ped-N-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '45.6%', y: '2.5%' }, // N = 180°  
-    { id: 'ped-N-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '45.6%', y: '9.5%' }, // N = 180° 
-    { id: 'ped-S-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '63.4%', y: '82.5%' }, // S = 0° 
-    { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
+    // car – East
+    { id: 'car-E-main-green', kind: 'car', color: 'green', state: CARE, dir: 270, x: '70.2%', y: '9.2%' },
+    { id: 'car-E-main-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '66.7%', y: '9.2%' },
+    { id: 'car-E-main-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '63.2%', y: '9.2%' },
+
+    // car – North
+    { id: 'car-N-main-green', kind: 'car', color: 'green', state: CARN, dir: 180, x: '55.0%', y: '27.0%' },
+    { id: 'car-N-main-yellow', kind: 'car', color: 'yellow', state: CARN, dir: 180, x: '55.0%', y: '23.4%' },
+    { id: 'car-N-main-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '55.0%', y: '19.8%' },
+
+    // car – South
+    { id: 'car-S-main-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '46.2%', y: '67.0%' },
+    { id: 'car-S-main-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '46.2%', y: '70.6%' },
+    { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '46.2%', y: '74.2%' },
+
+    // car – doplňkové sloupky (zrcadlené)
+    { id: 'car-W-mirror-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '27.2%', y: '63.8%' },
+    { id: 'car-W-mirror-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '30.7%', y: '63.8%' },
+    { id: 'car-W-mirror-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '34.2%', y: '63.8%' },
+    { id: 'car-E-mirror-green', kind: 'car', color: 'green', state: CARE, dir: 270, x: '82.5%', y: '21.2%' },
+    { id: 'car-E-mirror-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '79.0%', y: '21.2%' },
+    { id: 'car-E-mirror-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '75.5%', y: '21.2%' },
+    { id: 'car-N-mirror-green', kind: 'car', color: 'green', state: CARN, dir: 180, x: '64.0%', y: '39.5%' },
+    { id: 'car-N-mirror-yellow', kind: 'car', color: 'yellow', state: CARN, dir: 180, x: '64.0%', y: '35.9%' },
+    { id: 'car-N-mirror-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '64.0%', y: '32.3%' },
+    { id: 'car-S-mirror-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '37.2%', y: '55.0%' },
+    { id: 'car-S-mirror-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '37.2%', y: '58.6%' },
+    { id: 'car-S-mirror-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.2%', y: '62.2%' },
+
+    // pedestrians – hlavní (N/S)
+    { id: 'ped-N-main-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '47.0%', y: '4.8%' },
+    { id: 'ped-N-main-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '47.0%', y: '11.0%' },
+    { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '62.3%', y: '80.8%' },
+    { id: 'ped-S-main-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '62.3%', y: '74.6%' },
+
+    // pedestrians – W/E
+    { id: 'ped-W-main-green', kind: 'ped', color: 'green', state: PEDW, dir: 90, x: '6.0%', y: '54.2%' },
+    { id: 'ped-W-main-red', kind: 'ped', color: 'red', state: PEDW, dir: 90, x: '10.8%', y: '54.2%' },
+    { id: 'ped-E-main-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '89.2%', y: '29.5%' },
+    { id: 'ped-E-main-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '94.0%', y: '29.5%' },
+
+    // pedestrians – doplňkové (zrcadlené)
+    { id: 'ped-N-mirror-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '58.4%', y: '16.8%' },
+    { id: 'ped-N-mirror-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '58.4%', y: '23.0%' },
+    { id: 'ped-S-mirror-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '50.9%', y: '68.2%' },
+    { id: 'ped-S-mirror-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '50.9%', y: '62.0%' },
+    { id: 'ped-W-mirror-green', kind: 'ped', color: 'green', state: PEDW, dir: 90, x: '17.6%', y: '43.0%' },
+    { id: 'ped-W-mirror-red', kind: 'ped', color: 'red', state: PEDW, dir: 90, x: '22.4%', y: '43.0%' },
+    { id: 'ped-E-mirror-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '77.6%', y: '41.0%' },
+    { id: 'ped-E-mirror-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '82.4%', y: '41.0%' },
   ];
 
-  const btnPed1 = toBool(d?.btnCrosswalk1);
-  const btnPed2 = toBool(d?.btnCrosswalk2);
+  const btnPedN = toBool(d?.btnWestCrosswalk1);
+  const btnPedS = toBool(d?.btnWestCrosswalk2);
+  const btnPedW = toBool(d?.btnEastCrosswalk1);
+  const btnPedE = toBool(d?.btnEastCrosswalk2);
 
-  const togglePedN = () => saveSection({ btnCrosswalk1: !btnPed1 });
-  const togglePedS = () => saveSection({ btnCrosswalk2: !btnPed2 });
+  const togglePedN = () => saveSection({ btnWestCrosswalk1: !btnPedN });
+  const togglePedS = () => saveSection({ btnWestCrosswalk2: !btnPedS });
+  const togglePedW = () => saveSection({ btnEastCrosswalk1: !btnPedW });
+  const togglePedE = () => saveSection({ btnEastCrosswalk2: !btnPedE });
 
   return (
     <Row className="crossroadpage">
@@ -508,7 +726,20 @@ function CrossroadPage({ setAside }) {
         
         <div className="mt-3">
           {/*<Picture name={names[idx]} ext={ext} folder={folder} />*/}
-          <CrossroadCanvas background = {background} lights = {lights} pedControls = {{ btnPedN: btnPed1, btnPedS: btnPed2, onNorth: togglePedN, onSouth: togglePedS }} /> 
+          <CrossroadCanvas
+            background={background}
+            lights={lights}
+            pedControls={{
+              btnPedN,
+              btnPedS,
+              btnPedW,
+              btnPedE,
+              onNorth: togglePedN,
+              onSouth: togglePedS,
+              onWest: togglePedW,
+              onEast: togglePedE
+            }}
+          /> 
         </div>
         
         {/*}

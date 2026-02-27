@@ -6,9 +6,9 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background-size: cover;
-  background-position: center;
-  /*background-repeat: no-repeat;*/
+  background-size: auto 100%;
+  background-position: left;
+  background-repeat: no-repeat;
   overflow: hidden; 
 }
 
@@ -19,7 +19,7 @@
   pointer-events: none; 
 }
 
-.light--uniform { width: 4%; } 
+.crossroad .light--uniform { width: 2.7%; } 
 
 .crossroadlight {
   position: absolute;
@@ -120,7 +120,38 @@
   rotate: 180deg;
 }
 
+.ped-btn--north-2 {
+  left: 76%;
+  top: 6%;
+  rotate: 180deg;
+}
+
 .ped-btn--south { 
   left: 65.5%; 
   top: 95%; 
+}
+
+.ped-btn--south-2 {
+  left: 46%;
+  top: 95%;
+}
+
+.ped-btn--west {
+  left: 2.5%;
+  top: 54%;
+}
+
+.ped-btn--west-2 {
+  left: 14%;
+  top: 45%;
+}
+
+.ped-btn--east {
+  left: 97.5%;
+  top: 30%;
+}
+
+.ped-btn--east-2 {
+  left: 88%;
+  top: 39%;
 }

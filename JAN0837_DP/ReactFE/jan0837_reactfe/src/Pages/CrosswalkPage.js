@@ -47,7 +47,7 @@ const toBool = (v) => {
 
 const names = ['crosswalk_basic', 'crosswalk_day', 'crosswalk_night', 'crosswalk_ped_green_1920x1080_169', 'crosswalk_vehicle_yellow_1920x1080_169', 'crosswalk_vehicle_green_1920x1080_169', 'crosswalk_ped_green_800x600_43', 'crosswalk_vehicle_yellow_800x600_43', 'crosswalk_vehicle_green_800x600_43'];
 const ext = 'png';         
-const folder = 'images'; 
+const folder = 'images/crosswalk'; 
 
 const LIGHT_SOURCES = {
   car: {
@@ -99,40 +99,40 @@ function pickCarSrc({ green, yellow, red }, dir = 0) {
   const r = toBool(red);
   const y = toBool(yellow);
   const g = toBool(green);
-  if (r) return `/images/${LIGHT_SOURCES.car['red' + d]}`;
-  if (y) return `/images/${LIGHT_SOURCES.car['yellow' + d]}`;
-  if (g) return `/images/${LIGHT_SOURCES.car['green' + d]}`;
-  return `/images/${LIGHT_SOURCES.car['blank' + d]}`;
+  if (r) return `/images/headlights/${LIGHT_SOURCES.car['red' + d]}`;
+  if (y) return `/images/headlights/${LIGHT_SOURCES.car['yellow' + d]}`;
+  if (g) return `/images/headlights/${LIGHT_SOURCES.car['green' + d]}`;
+  return `/images/headlights/${LIGHT_SOURCES.car['blank' + d]}`;
 }
 
 function pickPedRedSrc(red, dir = 0) {
   const d = String(dir);
   const r = toBool(red);
   return r
-    ? `/images/${LIGHT_SOURCES.ped['red' + d]}`
-    : `/images/${LIGHT_SOURCES.ped['redblank' + d]}`;
+    ? `/images/headlights/${LIGHT_SOURCES.ped['red' + d]}`
+    : `/images/headlights/${LIGHT_SOURCES.ped['redblank' + d]}`;
 }
 
 function pickPedGreenSrc(green, dir = 0) {
   const d = String(dir);
   const g = toBool(green);
   return g
-    ? `/images/${LIGHT_SOURCES.ped['green' + d]}`
-    : `/images/${LIGHT_SOURCES.ped['greenblank' + d]}`;
+    ? `/images/headlights/${LIGHT_SOURCES.ped['green' + d]}`
+    : `/images/headlights/${LIGHT_SOURCES.ped['greenblank' + d]}`;
 }
 
 function pickCarLensSrc(color, state, dir = 0) {
   const d = String(dir);
   const on = toBool(state?.[color]); // green, yellow, red
   const key = on ? `${color}${d}` : `blank${d}`;
-  return `/images/${LIGHT_SOURCES.car[key]}`;
+  return `/images/headlights/${LIGHT_SOURCES.car[key]}`;
 }
 
 function pickPedLensSrc(color, state, dir = 0) {
   const d = String(dir);
   const on = toBool(state?.[color]); // green, red
   const key = on ? `${color}${d}` : `${color}blank${d}`;
-  return `/images/${LIGHT_SOURCES.ped[key]}`;
+  return `/images/headlights/${LIGHT_SOURCES.ped[key]}`;
 }
 
 function PedLens({ color, state, dir=0, x, y, alt }) {
@@ -252,16 +252,46 @@ function CrosswalkParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const setPauseAsync = () => saveSection({ btnCrosswalkPause: !btnCrosswalkPause });
   const setStopAsync  = () => saveSection({ btnCrosswalkStop: !btnCrosswalkStop });
 
-  const setCrosswalkLightGreen1 = () => saveSection({ trafficLight1_green_crosswalk: !trafficLight1_green });
-  const setCrosswalkLightYellow1 = () => saveSection({ trafficLight1_yellow_crosswalk: !trafficLight1_yellow });
-  const setCrosswalkLightRed1 = () => saveSection({ trafficLight1_red_crosswalk: !trafficLight1_red });
-  const setCrosswalkLightGreen2 = () => saveSection({ trafficLight2_green_crosswalk: !trafficLight2_green });
-  const setCrosswalkLightYellow2 = () => saveSection({ trafficLight2_yellow_crosswalk: !trafficLight2_yellow });
-  const setCrosswalkLightRed2 = () => saveSection({ trafficLight2_red_crosswalk: !trafficLight2_red });
-  const setPedestrianLightGreen1 = () => saveSection({ pedestrian1_green_crosswalk: !pedestrian1_green });
-  const setPedestrianLightRed1 = () => saveSection({ pedestrian1_red_crosswalk: !pedestrian1_red });
-  const setPedestrianLightGreen2 = () => saveSection({ pedestrian2_green_crosswalk: !pedestrian2_green });
-  const setPedestrianLightRed2 = () => saveSection({ pedestrian2_red_crosswalk: !pedestrian2_red });
+  const setCrosswalkLightGreen1 = () => {
+    const value = !trafficLight1_green;
+    saveSection({ trafficLight1_green_crosswalk: value });
+  };
+  const setCrosswalkLightYellow1 = () => {
+    const value = !trafficLight1_yellow;
+    saveSection({ trafficLight1_yellow_crosswalk: value });
+  };
+  const setCrosswalkLightRed1 = () => {
+    const value = !trafficLight1_red;
+    saveSection({ trafficLight1_red_crosswalk: value });
+  };
+  const setCrosswalkLightGreen2 = () => {
+    const value = !trafficLight2_green;
+    saveSection({ trafficLight2_green_crosswalk: value });
+  };
+  const setCrosswalkLightYellow2 = () => {
+    const value = !trafficLight2_yellow;
+    saveSection({ trafficLight2_yellow_crosswalk: value });
+  };
+  const setCrosswalkLightRed2 = () => {
+    const value = !trafficLight2_red;
+    saveSection({ trafficLight2_red_crosswalk: value });
+  };
+  const setPedestrianLightGreen1 = () => {
+    const value = !pedestrian1_green;
+    saveSection({ pedestrian1_green_crosswalk: value });
+  };
+  const setPedestrianLightRed1 = () => {
+    const value = !pedestrian1_red;
+    saveSection({ pedestrian1_red_crosswalk: value });
+  };
+  const setPedestrianLightGreen2 = () => {
+    const value = !pedestrian2_green;
+    saveSection({ pedestrian2_green_crosswalk: value });
+  };
+  const setPedestrianLightRed2 = () => {
+    const value = !pedestrian2_red;
+    saveSection({ pedestrian2_red_crosswalk: value });
+  };
 
   const toggleCrosswalkType = async () => {
     try {
@@ -317,57 +347,57 @@ function CrosswalkParamsSidebar({names, idx, onPrev, onNext, onJump,})
       <div>
         <Col>
           <div className="gap-2 mb-2">
-            <Button className="btn--start" onClick={() => setStartAsync(!btnCrosswalkStart) /*toggleBtn("btnCrosswalkStart", !btnCrosswalkStart)*/} /*disabled={isFetching}*/>
+            <Button className="btn--start" onClick={setStartAsync} /*disabled={isFetching}*/>
               Start ({String(btnCrosswalkStart)})
             </Button>
           
-            <Button className="btn--pause" onClick={() => setPauseAsync(!btnCrosswalkPause) /*toggleBtn("btnCrosswalkPause", !btnCrosswalkPause)*/} /*disabled={isFetching}*/>
+            <Button className="btn--pause" onClick={setPauseAsync} /*disabled={isFetching}*/>
               Pause ({String(btnCrosswalkPause)})
             </Button>
           
-            <Button className="btn--stop" onClick={() => setStopAsync(!btnCrosswalkStop) /*toggleBtn("btnCrosswalkStop", !btnCrosswalkStop)*/} /*disabled={isFetching}*/>
+            <Button className="btn--stop" onClick={setStopAsync} /*disabled={isFetching}*/>
               Stop ({String(btnCrosswalkStop)})
             </Button>  
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setCrosswalkLightGreen1(!trafficLight1_green)}>
+            <Button onClick={setCrosswalkLightGreen1}>
               Crosswalk green 1 ({String(trafficLight1_green)})
             </Button>
-            <Button onClick={() => setCrosswalkLightYellow1(!trafficLight1_yellow)}>
+            <Button onClick={setCrosswalkLightYellow1}>
               Crosswalk yellow 1 ({String(trafficLight1_yellow)})
             </Button>
-            <Button onClick={() => setCrosswalkLightRed1(!trafficLight1_red)}>
+            <Button onClick={setCrosswalkLightRed1}>
               Crosswalk red 1 ({String(trafficLight1_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setCrosswalkLightGreen2(!trafficLight2_green)}>
+            <Button onClick={setCrosswalkLightGreen2}>
               Crosswalk green 2 ({String(trafficLight2_green)})
             </Button>
-            <Button onClick={() => setCrosswalkLightYellow2(!trafficLight2_yellow)}>
+            <Button onClick={setCrosswalkLightYellow2}>
               Crosswalk yellow 2 ({String(trafficLight2_yellow)})
             </Button>
-            <Button onClick={() => setCrosswalkLightRed2(!trafficLight2_red)}>
+            <Button onClick={setCrosswalkLightRed2}>
               Crosswalk red 2 ({String(trafficLight2_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen1(!pedestrian1_green)}>
+            <Button onClick={setPedestrianLightGreen1}>
               Pedestrian green 1 ({String(pedestrian1_green)})
             </Button>
-            <Button onClick={() => setPedestrianLightRed1(!pedestrian1_red)}>
+            <Button onClick={setPedestrianLightRed1}>
               Pedestrian red 1 ({String(pedestrian1_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={() => setPedestrianLightGreen2(!pedestrian2_green)}>
+            <Button onClick={setPedestrianLightGreen2}>
               Pedestrian green 2 ({String(pedestrian2_green)})
             </Button>
-            <Button onClick={() => setPedestrianLightRed2(!pedestrian2_red)}>
+            <Button onClick={setPedestrianLightRed2}>
               Pedestrian red 2 ({String(pedestrian2_red)})
             </Button>
           </div>
@@ -448,11 +478,11 @@ function CrosswalkPage({ setAside }) {
 
   const isNight = toBool(d?.crosswalkType);
   const background = isNight
-    ? '/images/crosswalk_night_blank.png'
-    : '/images/crosswalk_day_blank.png';
+    ? '/images/crosswalk/crosswalk_night_blank.png'
+    : '/images/crosswalk/crosswalk_day_blank.png';
 
   useEffect(() => {
-    ['/images/crosswalk_day_blank.png', '/images/crosswalk_night_blank.png'].forEach(src => {
+    ['/images/crosswalk/crosswalk_day_blank.png', '/images/crosswalk/crosswalk_night_blank.png'].forEach(src => {
       const img = new Image();
       img.src = src;
     });
@@ -499,8 +529,14 @@ function CrosswalkPage({ setAside }) {
   const btnPed1 = toBool(d?.btnCrosswalk1_crosswalk);
   const btnPed2 = toBool(d?.btnCrosswalk2_crosswalk);
 
-  const togglePedN = () => saveSection({ btnCrosswalk1_crosswalk: !btnPed1 });
-  const togglePedS = () => saveSection({ btnCrosswalk2_crosswalk: !btnPed2 });
+  const togglePedN = () => {
+    const value = !btnPed1;
+    saveSection({ btnCrosswalk1_crosswalk: value });
+  };
+  const togglePedS = () => {
+    const value = !btnPed2;
+    saveSection({ btnCrosswalk2_crosswalk: value });
+  };
 
   return (
     <Row className="crosswalkpage">

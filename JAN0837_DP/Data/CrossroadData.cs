@@ -22,21 +22,50 @@ namespace JAN0837_DP.Data
         public static string btnStart { get; set; } = "true"; // bool
         public static string btnPause { get; set; } = "false"; // bool
         public static string btnStop { get; set; } = "false"; // bool
-        public static string btnCrosswalk1 { get; set; } = "false"; // bool
-        public static string btnCrosswalk2 { get; set; } = "false"; // bool
+        public static string btnCrosswalk1 { get; set; } = "false"; // bool -> old 
+        public static string btnCrosswalk2 { get; set; } = "false"; // bool -> old
+
+        public static string btnWestCrosswalk1 { get; set; } = "false"; // bool 
+        public static string btnWestCrosswalk2 { get; set; } = "false"; // bool
+        public static string btnEastCrosswalk1 { get; set; } = "false"; // bool
+        public static string btnEastCrosswalk2 { get; set; } = "false"; // bool
 
         // outputs
-        public static string crossroadType { get; set; } = "false"; // bool
-        public static string trafficLight1_green { get; set; } = "false"; // bool
-        public static string trafficLight1_yellow { get; set; } = "false"; // bool
-        public static string trafficLight1_red { get; set; } = "false"; // bool
-        public static string trafficLight2_green { get; set; } = "false"; // bool
-        public static string trafficLight2_yellow { get;set; } = "false"; // bool
-        public static string trafficLight2_red { get;set; } = "false"; // bool
-        public static string pedestrian1_green { get; set; } = "false"; // bool
-        public static string pedestrian1_red { get; set; } = "false"; // bool
-        public static string pedestrian2_green { get; set; } = "false"; // bool
-        public static string pedestrian2_red { get; set; } = "false"; // bool
+        public static string trafficLightNorth_green { get; set; } = "false"; // bool
+        public static string trafficLightNorth_yellow { get; set; } = "false"; // bool
+        public static string trafficLightNorth_red { get; set; } = "false"; // bool
+        public static string trafficLightSouth_green { get; set; } = "false"; // bool
+        public static string trafficLightSouth_yellow { get; set; } = "false"; // bool
+        public static string trafficLightSouth_red { get; set; } = "false"; // bool
+        public static string trafficLightWest_green { get; set; } = "false"; // bool
+        public static string trafficLightWest_yellow { get; set; } = "false"; // bool
+        public static string trafficLightWest_red { get; set; } = "false"; // bool
+        public static string trafficLightEast_green { get; set; } = "false"; // bool
+        public static string trafficLightEast_yellow { get; set; } = "false"; // bool
+        public static string trafficLightEast_red { get; set; } = "false"; // bool
+        public static string pedestrianNorth_green { get; set; } = "false"; // bool
+        public static string pedestrianNorth_red { get; set; } = "false"; // bool
+        public static string pedestrianSouth_green { get; set; } = "false"; // bool
+        public static string pedestrianSouth_red { get; set; } = "false"; // bool
+        public static string pedestrianWest_green { get; set; } = "false"; // bool
+        public static string pedestrianWest_red { get; set; } = "false"; // bool
+        public static string pedestrianEast_green { get; set; } = "false"; // bool
+        public static string pedestrianEast_red { get; set; } = "false"; // bool
+
+
+
+        
+        public static string crossroadType { get; set; } = "false"; // bool -> old
+        public static string trafficLight1_green { get; set; } = "false"; // bool -> old
+        public static string trafficLight1_yellow { get; set; } = "false"; // bool -> old
+        public static string trafficLight1_red { get; set; } = "false"; // bool -> old
+        public static string trafficLight2_green { get; set; } = "false"; // bool -> old
+        public static string trafficLight2_yellow { get;set; } = "false"; // bool -> old
+        public static string trafficLight2_red { get;set; } = "false"; // bool -> old
+        public static string pedestrian1_green { get; set; } = "false"; // bool -> old
+        public static string pedestrian1_red { get; set; } = "false"; // bool -> old
+        public static string pedestrian2_green { get; set; } = "false"; // bool -> old
+        public static string pedestrian2_red { get; set; } = "false"; // bool -> old
 
         // thread safety 
         private static readonly object _lock = new();

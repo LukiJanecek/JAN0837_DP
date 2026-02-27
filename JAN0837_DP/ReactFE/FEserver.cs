@@ -35,6 +35,28 @@ namespace JAN0837_DP.ReactFE
                 // API middleware for data endpoints
                 app.Use(async (ctx, next) =>
                 {
+                    var reqPath = ctx.Request.Path.Value?.TrimEnd('/') ?? "";
+
+                    // ── Swagger UI ──
+                    if (reqPath.Equals("/api/swagger", StringComparison.OrdinalIgnoreCase) ||
+                        reqPath.Equals("/api/swagger/index.html", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var host = ctx.Request.Host.Value;
+                        var specUrl = $"http://{host}/api/swagger/openapi.json";
+                        ctx.Response.ContentType = "text/html; charset=utf-8";
+                        await ctx.Response.WriteAsync(SwaggerContent.GetSwaggerHtml(specUrl));
+                        return;
+                    }
+
+                    if (reqPath.Equals("/api/swagger/openapi.json", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var host = ctx.Request.Host.Value;
+                        ctx.Response.ContentType = "application/json; charset=utf-8";
+                        await ctx.Response.WriteAsync(SwaggerContent.GetOpenApiSpec(host));
+                        return;
+                    }
+
+                    // ── Data endpoints ──
                     if (ctx.Request.Path.Value.Equals("/api/data", StringComparison.OrdinalIgnoreCase))
                     {
                         if (ctx.Request.Method == "GET")

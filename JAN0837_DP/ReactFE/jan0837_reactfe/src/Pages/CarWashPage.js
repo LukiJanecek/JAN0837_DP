@@ -107,25 +107,121 @@ function CarWashParamsSidebar() {
   );
 }
 
-function CarWashPage() {
-  const { section: d } = useSectionData('CarWash');
+function CarWashCanvas({ d }) {
+  const b = (k) => toBool(d?.[k]);
+
+  const lightG = b('CarWashLight_green');
+  const lightY = b('CarWashLight_yellow');
+  const lightR = b('CarWashLight_red');
+
+  const door1Up = b('CarWashDoor1_Up');
+  const door1Down = b('CarWashDoor1_Down');
+  const door2Up = b('CarWashDoor2_Up');
+  const door2Down = b('CarWashDoor2_Down');
+
+  const brushes = b('CarWashBrushes');
+  const water = b('CarWashWater');
+  const wax = b('CarWashWax');
+  const dry = b('CarWashDry');
+  const soap = b('CarWashSoap');
+  const prewash = b('CarWashPrewash');
+
+  const carPresent = b('CarWashCarPosition');
+  const showerPos = b('CarWashShowerPosition');
+
+  const doorY1 = door1Down ? 220 : 40;
+  const doorY2 = door2Down ? 220 : 40;
 
   return (
-    <Row className="carwashpage">
-      <Col xs={12} lg={8}>
-        <div className="mt-3">
-          {/* TODO: CarWash visualisation placeholder */}
-          <div className="carwash-placeholder d-flex align-items-center justify-content-center"
-               style={{ width:'100%', aspectRatio:'16/9', background:'#e9ecef', borderRadius:8 }}>
-            <span className="text-muted fs-5">Car Wash – vizualizace</span>
-          </div>
-        </div>
-      </Col>
+    <div className="carwash-canvas" style={{ width: '100%', marginTop: 16 }}>
+      <svg viewBox="0 0 800 450" width="100%" style={{ borderRadius: 8, background: '#eef2f5' }}>
+        {/* floor */}
+        <rect x="0" y="300" width="800" height="150" fill="#cfd8dc" />
 
-      <Col lg={4}>
-        <CarWashParamsSidebar />
-      </Col>
-    </Row>
+        {/* entrance doors (left/right) */}
+        <rect x="40" y={doorY1} width="80" height="200" rx="8" fill="#7b8" stroke="#556" />
+        <rect x="680" y={doorY2} width="80" height="200" rx="8" fill="#7b8" stroke="#556" />
+
+        {/* car placeholder */}
+        {carPresent ? (
+          <g>
+            <rect x="300" y="220" width="200" height="80" rx="20" fill="#2b6fb3" />
+            <circle cx="350" cy="315" r="16" fill="#222" />
+            <circle cx="450" cy="315" r="16" fill="#222" />
+          </g>
+        ) : (
+          <g>
+            <rect x="300" y="240" width="200" height="60" rx="14" fill="#9fb8d6" opacity="0.6" />
+          </g>
+        )}
+
+        {/* brushes */}
+        <g transform="translate(200,160)">
+          <rect x="0" y="0" width="40" height="140" rx="6" fill={brushes ? '#ff6f61' : '#ddd'} />
+        </g>
+        <g transform="translate(560,160)">
+          <rect x="0" y="0" width="40" height="140" rx="6" fill={brushes ? '#ff6f61' : '#ddd'} />
+        </g>
+
+        {/* water jets */}
+        {water && (
+          <g stroke="#4fc3f7" strokeWidth="4" strokeLinecap="round" opacity="0.9">
+            <line x1="380" y1="200" x2="380" y2="260" />
+            <line x1="420" y1="200" x2="420" y2="260" />
+          </g>
+        )}
+
+        {/* soap / foam overlay */}
+        {soap && (
+          <g fill="#fff" opacity="0.7">
+            <ellipse cx="400" cy="260" rx="160" ry="30" />
+          </g>
+        )}
+
+        {/* shower position indicator */}
+        {showerPos && <circle cx="400" cy="190" r="8" fill="#1976d2" />}
+
+        {/* status lights */}
+        <g transform="translate(700,20)">
+          <circle cx="0" cy="0" r="12" fill={lightR ? '#d32f2f' : '#eee'} stroke="#333" />
+          <circle cx="0" cy="30" r="12" fill={lightY ? '#fbc02d' : '#eee'} stroke="#333" />
+          <circle cx="0" cy="60" r="12" fill={lightG ? '#388e3c' : '#eee'} stroke="#333" />
+        </g>
+
+        {/* labels */}
+        <text x="20" y="30" fontSize="18" fill="#333">Car Wash</text>
+
+        {/* small legend */}
+        <g transform="translate(20,340)" fontSize="12" fill="#333">
+          <text x="0" y="0">Prewash: {prewash ? 'ON' : 'OFF'}</text>
+          <text x="0" y="16">Soap: {soap ? 'ON' : 'OFF'}</text>
+          <text x="140" y="0">Wax: {wax ? 'ON' : 'OFF'}</text>
+          <text x="140" y="16">Dry: {dry ? 'ON' : 'OFF'}</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+function CarWashPage() {
+  const { section: d } = useSectionData?.('CarWash') ?? {};
+
+  return (
+    <div className="carwashpage">
+      <Row className="carwashpage">
+        <Col xs={12} lg={8}>
+          <div className="mt-3">
+            <CarWashCanvas d={d} />
+          </div>
+        </Col>
+
+        <Col lg={4}>
+          <CarWashParamsSidebar />
+        </Col>
+      </Row>
+
+      {/* Canvas is now rendered inside the left column */}
+    </div>
   );
 }
 

@@ -128,7 +128,7 @@ function RegulatorParamsSidebar() {
 
   return (
     <div>
-      <h3>Regulator – inputs</h3>
+      <h3>Parameters:</h3>
 
       <div className="gap-2 mb-3">
         <Button
@@ -189,7 +189,6 @@ function RegulatorParamsSidebar() {
         </Form.Group>
       </Form>
 
-      <h3>Regulator – outputs</h3>
       <div className="reg-output mb-3">
         <Badge bg="info" className="fs-6">
           U<sub>c</sub> = {Uc.toFixed(2)} V

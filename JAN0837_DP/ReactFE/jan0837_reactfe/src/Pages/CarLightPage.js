@@ -72,18 +72,14 @@ function CarLightParamsSidebar() {
   const { interval, setInterval } = useRefresh();
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CarLight');
 
-  // ── Inputs – buttons ──
+  // Inputs
   const btnStart    = toBool(d?.btnStart);
   const btnReset    = toBool(d?.btnReset);
   const markerLight = toBool(d?.markerLight);
   const brakeLight  = toBool(d?.brakeLight);
   const turnLight   = toBool(d?.turnLight);
-
-  // ── Inputs – block sensors ──
   const blockPos  = toBool(d?.blockSensorPosition);
   const blockConn = toBool(d?.blockSensorConnector);
-
-  // ── Inputs – numeric (local state for controlled inputs) ──
   const [localMarkerBps, setLocalMarkerBps] = useState('');
   const [localBrakeBps,  setLocalBrakeBps]  = useState('');
   const [localTurnBps,   setLocalTurnBps]   = useState('');
@@ -101,23 +97,38 @@ function CarLightParamsSidebar() {
   }, [d?.markerBlinksPerSec, d?.brakeBlinksPerSec, d?.turnBlinksPerSec,
       d?.sensorPositionDelay, d?.sensorConnectorDelay]);
 
-  // ── Outputs ──
-  const sensorPosition           = toBool(d?.sensorPosition);
+  // Outputs
+  const sensorPosition = toBool(d?.sensorPosition);
   const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
-  const done                     = toBool(d?.done);
+  const done  = toBool(d?.done);
 
-  const toggle = (key, cur) => saveSection({ [key]: !cur });
+  const toggle = async (key, cur) => {
+    try {
+      console.log(`toggle: ${key} = ${!cur}`);
+      await saveSection({ [key]: !cur });
+      console.log(`toggle: ${key} sent successfully`);
+    } catch (e) {
+      console.error(`toggle ${key} error:`, e);
+    }
+  };
 
-  const sendNum = (key, raw) => {
+  const sendNum = async (key, raw) => {
     const num = parseFloat(raw);
-    if (!isNaN(num)) saveSection({ [key]: num });
+    if (!isNaN(num)) {
+      try {
+        console.log(`sendNum: ${key} = ${num}`);
+        await saveSection({ [key]: num });
+        console.log(`sendNum: ${key} sent successfully`);
+      } catch (e) {
+        console.error(`sendNum ${key} error:`, e);
+      }
+    }
   };
 
   return (
     <div>
-      <h3>Car Light – vstupy</h3>
+      <h3>Parameters:</h3>
 
-      {/* Start / Reset */}
       <div className="gap-2 mb-2">
         <Button className="btn--start" onClick={() => toggle('btnStart', btnStart)}>
           Start ({String(btnStart)})
@@ -127,7 +138,6 @@ function CarLightParamsSidebar() {
         </Button>
       </div>
 
-      {/* Light toggles */}
       <div className="gap-2 mb-3">
         <Button variant={markerLight ? 'warning' : 'outline-warning'}
                 onClick={() => toggle('markerLight', markerLight)}>
@@ -143,8 +153,6 @@ function CarLightParamsSidebar() {
         </Button>
       </div>
 
-      {/* Blink config */}
-      <h5>Blikání (blinks/s)</h5>
       <Form>
         <Form.Group className="mb-2">
           <Form.Label>Marker blinks/s</Form.Label>
@@ -175,8 +183,6 @@ function CarLightParamsSidebar() {
         </Form.Group>
       </Form>
 
-      {/* Sensor delays */}
-      <h5>Simulace čidel</h5>
       <Form>
         <Form.Group className="mb-2">
           <Form.Label>Čidlo poloha – delay (s)</Form.Label>
@@ -198,19 +204,17 @@ function CarLightParamsSidebar() {
         </Form.Group>
       </Form>
 
-      {/* Block sensors – simulate faults */}
       <div className="gap-2 mb-3">
         <Button size="sm" variant={blockPos ? 'danger' : 'outline-secondary'}
                 onClick={() => toggle('blockSensorPosition', blockPos)}>
-          Blokovat čidlo poloha ({String(blockPos)})
+          Block sensor position ({String(blockPos)})
         </Button>
         <Button size="sm" variant={blockConn ? 'danger' : 'outline-secondary'}
                 onClick={() => toggle('blockSensorConnector', blockConn)}>
-          Blokovat čidlo konektor ({String(blockConn)})
+          Block sensor connector ({String(blockConn)})
         </Button>
       </div>
 
-      <h3>Car Light – výstupy</h3>
       <div className="gap-2 mb-2">
         <div>
           <strong>Sensor Position:</strong>{' '}

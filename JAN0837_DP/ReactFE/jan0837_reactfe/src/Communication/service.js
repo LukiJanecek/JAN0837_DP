@@ -55,6 +55,7 @@ export async function readState(signal) {
 }
 
 export async function writeState(patch, signal) {
+    console.log('[writeState] POST payload:', JSON.stringify(patch));
     const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,6 +63,7 @@ export async function writeState(patch, signal) {
         signal
     });
 
+    console.log('[writeState] Response status:', res.status);
     if (!res.ok) {
         const errorText = await res.text()
         console.error(`[POST Error:`, res.status, errorText)

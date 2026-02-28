@@ -96,7 +96,13 @@ export function useSectionData(sectionName) {
   const section = data?.[sectionName] ?? {};
 
   const saveSection = useMemo(
-    () => (patch) => saveData({ [sectionName]: patch }),
+    () => async (patch) => {
+      const payload = { [sectionName]: patch };
+      console.log('[saveSection] Sending:', JSON.stringify(payload));
+      const result = await saveData(payload);
+      console.log('[saveSection] Result:', result);
+      return result;
+    },
     [saveData, sectionName]
   );
 

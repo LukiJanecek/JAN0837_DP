@@ -104,7 +104,7 @@
   align-items: stretch;
 }
 
-.ped-btn {
+.crossroad .ped-btn {
   position: absolute;
   transform: translate(-50%, -50%);
   padding: 4px 8px;
@@ -114,45 +114,44 @@
   z-index: 5;
 }
 
-.ped-btn--north { 
+.crossroad .ped-btn--north { 
   left: 48%; 
   top: 0.01%; 
   rotate: 180deg;
 }
 
-.ped-btn--north-2 {
+.crossroad .ped-btn--north-2 {
   left: 76%;
   top: 6%;
   rotate: 180deg;
 }
 
-.ped-btn--south { 
-  left: 10%; 
-  top: 50%; 
-  rotate: 180deg;
+.crossroad .ped-btn--south { 
+  left: 13.5%; 
+  top: 85.5%; 
 }
 
-.ped-btn--south-2 {
-  left: 44%;
-  top: 85%;
+.crossroad .ped-btn--south-2 {
+  left: 45%;
+  top: 85.5%;
 }
 
-.ped-btn--west {
+.crossroad .ped-btn--west {
   left: 2.5%;
-  top: 68%;
+  top: 69%;
 }
 
-.ped-btn--west-2 {
+.crossroad .ped-btn--west-2 {
   left: 2.5%;
-  top: 18.5%;
+  top: 17%;
 }
 
-.ped-btn--east {
+.crossroad .ped-btn--east {
   left: 97.5%;
   top: 30%;
 }
 
-.ped-btn--east-2 {
+.crossroad .ped-btn--east-2 {
   left: 88%;
   top: 39%;
 }

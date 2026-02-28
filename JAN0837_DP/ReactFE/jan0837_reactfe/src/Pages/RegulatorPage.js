@@ -105,11 +105,25 @@ function RegulatorParamsSidebar() {
 
   const Uc = Number(d?.Uc ?? 0);
 
-  const toggleSwitch = () => saveSection({ switchstate: !switchstate });
+  const toggleSwitch = async () => {
+    try {
+      await saveSection({ switchstate: !switchstate });
+    } catch (e) {
+      console.error('toggleSwitch error:', e);
+    }
+  };
 
-  const sendField = (key, raw) => {
+  const sendField = async (key, raw) => {
     const num = parseFloat(raw);
-    if (!isNaN(num)) saveSection({ [key]: num });
+    if (!isNaN(num)) {
+      try {
+        console.log(`sendField: ${key} = ${num}`);
+        await saveSection({ [key]: num });
+        console.log(`sendField: ${key} sent successfully`);
+      } catch (e) {
+        console.error(`sendField ${key} error:`, e);
+      }
+    }
   };
 
   return (

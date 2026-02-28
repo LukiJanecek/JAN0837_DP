@@ -75,11 +75,13 @@ namespace JAN0837_DP.Communication
                                     // CrossroadData - Input
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     var msgCrossroadInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Input")
@@ -93,16 +95,26 @@ namespace JAN0837_DP.Communication
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     var msgCrossroadOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Output")
@@ -293,24 +305,36 @@ namespace JAN0837_DP.Communication
                                         start = CrossroadData.btnStart == "true",
                                         pause = CrossroadData.btnPause == "true",
                                         stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -473,27 +497,39 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -661,27 +697,39 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -849,27 +897,40 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
+
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -1040,27 +1101,39 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -1228,27 +1301,39 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        cw1 = CrossroadData.btnCrosswalk1 == "true",
-                                        cw2 = CrossroadData.btnCrosswalk2 == "true"
+                                        btnstart = CrossroadData.btnStart == "true",
+                                        btnpause = CrossroadData.btnPause == "true",
+                                        btnstop = CrossroadData.btnStop == "true",
+                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
-                                        tl1_green = CrossroadData.trafficLight1_green == "true",
-                                        tl1_yellow = CrossroadData.trafficLight1_yellow == "true",
-                                        tl1_red = CrossroadData.trafficLight1_red == "true",
-                                        tl2_green = CrossroadData.trafficLight2_green == "true",
-                                        tl2_yellow = CrossroadData.trafficLight2_yellow == "true",
-                                        tl2_red = CrossroadData.trafficLight2_red == "true",
-                                        ped1_green = CrossroadData.pedestrian1_green == "true",
-                                        ped1_red = CrossroadData.pedestrian1_red == "true",
-                                        ped2_green = CrossroadData.pedestrian2_green == "true",
-                                        ped2_red = CrossroadData.pedestrian2_red == "true"
+                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
+                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
+                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
+                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
+                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
+                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
+                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
+                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
+                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
+                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
+                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
+                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
+                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
+                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -1441,20 +1526,32 @@ namespace JAN0837_DP.Communication
                                     CrossroadData.btnStart = opcuaServer.ReadVariable("BtnCrossroadStart") ? "true" : "false";
                                     CrossroadData.btnPause = opcuaServer.ReadVariable("BtnCrossroadPause") ? "true" : "false";
                                     CrossroadData.btnStop = opcuaServer.ReadVariable("BtnCrossroadStop") ? "true" : "false";
-                                    CrossroadData.btnCrosswalk1 = opcuaServer.ReadVariable("BtnCrosswalk1") ? "true" : "false";
-                                    CrossroadData.btnCrosswalk2 = opcuaServer.ReadVariable("BtnCrosswalk2") ? "true" : "false";
+                                    CrossroadData.btnWestCrosswalk1 = opcuaServer.ReadVariable("BtnWestCrosswalk1") ? "true" : "false";
+                                    CrossroadData.btnWestCrosswalk2 = opcuaServer.ReadVariable("BtnWestCrosswalk2") ? "true" : "false";
+                                    CrossroadData.btnSouthCrosswalk1 = opcuaServer.ReadVariable("BtnSouthCrosswalk1") ? "true" : "false";
+                                    CrossroadData.btnSouthCrosswalk2 = opcuaServer.ReadVariable("BtnSouthCrosswalk2") ? "true" : "false";
 
                                     opcuaServer.UpdateBoolVariable("CrossroadType", CrossroadData.crossroadType == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Green", CrossroadData.trafficLight1_green == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Yellow", CrossroadData.trafficLight1_yellow == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight1_Red", CrossroadData.trafficLight1_red == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Green", CrossroadData.trafficLight2_green == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Yellow", CrossroadData.trafficLight2_yellow == "true");
-                                    opcuaServer.UpdateBoolVariable("TrafficLight2_Red", CrossroadData.trafficLight2_red == "true");
-                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Green", CrossroadData.pedestrian1_green == "true");
-                                    opcuaServer.UpdateBoolVariable("Pedestrian1_Red", CrossroadData.pedestrian1_red == "true");
-                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Green", CrossroadData.pedestrian2_green == "true");
-                                    opcuaServer.UpdateBoolVariable("Pedestrian2_Red", CrossroadData.pedestrian2_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightNorth_Green", CrossroadData.trafficLightNorth_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightNorth_Yellow", CrossroadData.trafficLightNorth_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightNorth_Red", CrossroadData.trafficLightNorth_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightSouth_Green", CrossroadData.trafficLightSouth_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightSouth_Yellow", CrossroadData.trafficLightSouth_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightSouth_Red", CrossroadData.trafficLightSouth_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightEast_Green", CrossroadData.trafficLightEast_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightEast_Yellow", CrossroadData.trafficLightEast_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightEast_Red", CrossroadData.trafficLightEast_red == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightWest_Green", CrossroadData.trafficLightWest_green == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightWest_Yellow", CrossroadData.trafficLightWest_yellow == "true");
+                                    opcuaServer.UpdateBoolVariable("TrafficLightWest_Red", CrossroadData.trafficLightWest_red == "true");
+                                    //opcuaServer.UpdateBoolVariable("PedestrianNorth_Green", CrossroadData.pedestrianNorth_green == "true");
+                                    //opcuaServer.UpdateBoolVariable("PedestrianNorth_Red", CrossroadData.pedestrianNorth_red == "true");
+                                    opcuaServer.UpdateBoolVariable("PedestrianSouth_Green", CrossroadData.pedestrianSouth_green == "true");
+                                    opcuaServer.UpdateBoolVariable("PedestrianSouth_Red", CrossroadData.pedestrianSouth_red == "true");
+                                    opcuaServer.UpdateBoolVariable("PedestrianWest_Green", CrossroadData.pedestrianWest_green == "true");
+                                    opcuaServer.UpdateBoolVariable("PedestrianWest_Red", CrossroadData.pedestrianWest_red == "true");
+                                    //opcuaServer.UpdateBoolVariable("PedestrianEast_Green", CrossroadData.pedestrianEast_green == "true");
+                                    //opcuaServer.UpdateBoolVariable("PedestrianEast_Red", CrossroadData.pedestrianEast_red == "true");
 
                                     // CrosswalkData
                                     CrosswalkData.btnStart = opcuaServer.ReadVariable("BtnCrosswalkStart_Crosswalk") ? "true" : "false";
@@ -1563,8 +1660,10 @@ namespace JAN0837_DP.Communication
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStart, CrossroadData.btnStart == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnPause, CrossroadData.btnPause == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStop, CrossroadData.btnStop == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnCrosswalk1, CrossroadData.btnCrosswalk1 == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnCrosswalk2, CrossroadData.btnCrosswalk2 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnWestCrosswalk1, CrossroadData.btnWestCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnWestCrosswalk2, CrossroadData.btnWestCrosswalk2 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnSouthCrosswalk1, CrossroadData.btnSouthCrosswalk1 == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnSouthCrosswalk2, CrossroadData.btnSouthCrosswalk2 == "true");
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1577,16 +1676,26 @@ namespace JAN0837_DP.Communication
 
                                     // Read output values from PLC 
                                     CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.crossroadType) ? "true" : "false";
-                                    CrossroadData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightGreen1) ? "true" : "false";
-                                    CrossroadData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightsYellow1) ? "true" : "false";
-                                    CrossroadData.trafficLight1_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightsRed1) ? "true" : "false";
-                                    CrossroadData.trafficLight2_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightGreen2) ? "true" : "false";
-                                    CrossroadData.trafficLight2_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightsYellow2) ? "true" : "false";
-                                    CrossroadData.trafficLight2_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightsRed2) ? "true" : "false";
-                                    CrossroadData.pedestrian1_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianLightGreen1) ? "true" : "false";
-                                    CrossroadData.pedestrian1_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianLightRed1) ? "true" : "false";
-                                    CrossroadData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianLightGreen2) ? "true" : "false";
-                                    CrossroadData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianLightRed2) ? "true" : "false";
+                                    CrossroadData.trafficLightNorth_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightNorth_green) ? "true" : "false";
+                                    CrossroadData.trafficLightNorth_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightNorth_yellow) ? "true" : "false";
+                                    CrossroadData.trafficLightNorth_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightNorth_red) ? "true" : "false";
+                                    CrossroadData.trafficLightSouth_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightSouth_green) ? "true" : "false";
+                                    CrossroadData.trafficLightSouth_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightSouth_yellow) ? "true" : "false";
+                                    CrossroadData.trafficLightSouth_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightSouth_red) ? "true" : "false";
+                                    CrossroadData.trafficLightEast_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightEast_green) ? "true" : "false";
+                                    CrossroadData.trafficLightEast_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightEast_yellow) ? "true" : "false";
+                                    CrossroadData.trafficLightEast_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightEast_red) ? "true" : "false";
+                                    CrossroadData.trafficLightWest_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightWest_green) ? "true" : "false";
+                                    CrossroadData.trafficLightWest_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightWest_yellow) ? "true" : "false";
+                                    CrossroadData.trafficLightWest_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightWest_red) ? "true" : "false";
+                                    // CrossroadData.pedestrianNorth_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianNorth_green) ? "true" : "false";
+                                    // CrossroadData.pedestrianNorth_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianNorth_red) ? "true" : "false";
+                                    CrossroadData.pedestrianSouth_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianSouth_green) ? "true" : "false";
+                                    CrossroadData.pedestrianSouth_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianSouth_red) ? "true" : "false";
+                                    CrossroadData.pedestrianWest_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianWest_green) ? "true" : "false";
+                                    CrossroadData.pedestrianWest_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianWest_red) ? "true" : "false";
+                                    // CrossroadData.pedestrianEast_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianEast_green) ? "true" : "false";
+                                    // CrossroadData.pedestrianEast_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianEast_red) ? "true" : "false";
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1782,13 +1891,15 @@ namespace JAN0837_DP.Communication
                                     // ═══════════════════════════════════════════════════════════
                                     
                                     // CrossroadData buttons: registers 0-4
-                                    bool[] crossroadButtons = new bool[5]
+                                    bool[] crossroadButtons = new bool[7]
                                     {
                                         _modbusServer.StrToBool(CrossroadData.btnStart),
                                         _modbusServer.StrToBool(CrossroadData.btnPause),
                                         _modbusServer.StrToBool(CrossroadData.btnStop),
-                                        _modbusServer.StrToBool(CrossroadData.btnCrosswalk1),
-                                        _modbusServer.StrToBool(CrossroadData.btnCrosswalk2)
+                                        _modbusServer.StrToBool(CrossroadData.btnWestCrosswalk1),
+                                        _modbusServer.StrToBool(CrossroadData.btnWestCrosswalk2),
+                                        _modbusServer.StrToBool(CrossroadData.btnSouthCrosswalk1),
+                                        _modbusServer.StrToBool(CrossroadData.btnSouthCrosswalk2)
                                     };
                                     _modbusServer.SetRegisters(0, crossroadButtons);
 
@@ -1847,16 +1958,26 @@ namespace JAN0837_DP.Communication
                                     if (crossroadLights != null && crossroadLights.Length >= 11)
                                     {
                                         CrossroadData.crossroadType = _modbusServer.BoolToStr(crossroadLights[0]);
-                                        CrossroadData.trafficLight1_green = _modbusServer.BoolToStr(crossroadLights[1]);
-                                        CrossroadData.trafficLight1_yellow = _modbusServer.BoolToStr(crossroadLights[2]);
-                                        CrossroadData.trafficLight1_red = _modbusServer.BoolToStr(crossroadLights[3]);
-                                        CrossroadData.trafficLight2_green = _modbusServer.BoolToStr(crossroadLights[4]);
-                                        CrossroadData.trafficLight2_yellow = _modbusServer.BoolToStr(crossroadLights[5]);
-                                        CrossroadData.trafficLight2_red = _modbusServer.BoolToStr(crossroadLights[6]);
-                                        CrossroadData.pedestrian1_green = _modbusServer.BoolToStr(crossroadLights[7]);
-                                        CrossroadData.pedestrian1_red = _modbusServer.BoolToStr(crossroadLights[8]);
-                                        CrossroadData.pedestrian2_green = _modbusServer.BoolToStr(crossroadLights[9]);
-                                        CrossroadData.pedestrian2_red = _modbusServer.BoolToStr(crossroadLights[10]);
+                                        CrossroadData.trafficLightNorth_green = _modbusServer.BoolToStr(crossroadLights[1]);
+                                        CrossroadData.trafficLightNorth_yellow = _modbusServer.BoolToStr(crossroadLights[2]);
+                                        CrossroadData.trafficLightNorth_red = _modbusServer.BoolToStr(crossroadLights[3]);
+                                        CrossroadData.trafficLightSouth_green = _modbusServer.BoolToStr(crossroadLights[4]);
+                                        CrossroadData.trafficLightSouth_yellow = _modbusServer.BoolToStr(crossroadLights[5]);
+                                        CrossroadData.trafficLightSouth_red = _modbusServer.BoolToStr(crossroadLights[6]);
+                                        CrossroadData.trafficLightEast_green = _modbusServer.BoolToStr(crossroadLights[7]);
+                                        CrossroadData.trafficLightEast_yellow = _modbusServer.BoolToStr(crossroadLights[8]);
+                                        CrossroadData.trafficLightEast_red = _modbusServer.BoolToStr(crossroadLights[9]);
+                                        CrossroadData.trafficLightWest_green = _modbusServer.BoolToStr(crossroadLights[10]);
+                                        CrossroadData.trafficLightWest_yellow = _modbusServer.BoolToStr(crossroadLights[11]);
+                                        CrossroadData.trafficLightWest_red = _modbusServer.BoolToStr(crossroadLights[12]);
+                                        // CrossroadData.pedestrianNorth_green = _modbusServer.BoolToStr(crossroadLights[13]);
+                                        // CrossroadData.pedestrianNorth_red = _modbusServer.BoolToStr(crossroadLights[14]);
+                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadLights[13]);
+                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadLights[14]);
+                                        CrossroadData.pedestrianWest_green = _modbusServer.BoolToStr(crossroadLights[15]);
+                                        CrossroadData.pedestrianWest_red = _modbusServer.BoolToStr(crossroadLights[16]);
+                                        // CrossroadData.pedestrianEast_green = _modbusServer.BoolToStr(crossroadLights[17]);4
+                                        // CrossroadData.pedestrianEast_red = _modbusServer.BoolToStr(crossroadLights[18]);
                                     }
 
                                     // CrosswalkData lights: registers 41-51 (11 values)
@@ -1959,14 +2080,24 @@ namespace JAN0837_DP.Communication
                                 buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrossroadStop;
                             }
                                 
-                            if (CrossroadData.btnCrosswalk1 == "true")
+                            if (CrossroadData.btnWestCrosswalk1 == "true")
                             {
-                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrosswalk1;
+                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnWestCrosswalk1;
                             }
                                 
-                            if (CrossroadData.btnCrosswalk2 == "true")
+                            if (CrossroadData.btnWestCrosswalk2 == "true")
                             {
-                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnCrosswalk2;
+                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnWestCrosswalk2;
+                            }
+
+                            if (CrossroadData.btnSouthCrosswalk1 == "true")
+                            {
+                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnSouthCrosswalk1;
+                            }
+
+                            if (CrossroadData.btnSouthCrosswalk2 == "true")
+                            {
+                                buttons |= (byte)comTCPIPClient.ButtonFlags.BtnSouthCrosswalk2;
                             }
 
                             byte[] outTelegram = new byte[] { buttons };
@@ -2012,16 +2143,22 @@ namespace JAN0837_DP.Communication
                                 }
 
                                 CrossroadData.crossroadType = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.crossroadType) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Red) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Pedestrian1_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Pedestrian1_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_green = ((inTelegram[1] & (byte)comTCPIPClient.LightFlagsByte1.Pedestrian2_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_red = ((inTelegram[1] & (byte)comTCPIPClient.LightFlagsByte1.Pedestrian2_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianSouth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianWest_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianSouth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianWest_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianWest_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianEast_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianWest_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianEast_Red) != 0) ? "true" : "false";
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
@@ -2063,17 +2200,23 @@ namespace JAN0837_DP.Communication
                                     break;
                                 }
 
-                                CrossroadData.crossroadType = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.crossroadType) != 0) ? "true" : "false";   
-                                CrossroadData.trafficLight1_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight1_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light1_Red) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Green) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Yellow) != 0) ? "true" : "false";
-                                CrossroadData.trafficLight2_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Light2_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Pedestrian1_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian1_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.Pedestrian1_Red) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_green = ((inTelegram[1] & (byte)comTCPIPClient.LightFlagsByte1.Pedestrian2_Green) != 0) ? "true" : "false";
-                                CrossroadData.pedestrian2_red = ((inTelegram[1] & (byte)comTCPIPClient.LightFlagsByte1.Pedestrian2_Red) != 0) ? "true" : "false";
+                                CrossroadData.crossroadType = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.crossroadType) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightNorth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightNorth_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightSouth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightSouth_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightWest_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightWest_Red) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Green) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_yellow = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Yellow) != 0) ? "true" : "false";
+                                CrossroadData.trafficLightEast_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.LightEast_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianSouth_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianWest_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianSouth_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianWest_Red) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianWest_green = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianEast_Green) != 0) ? "true" : "false";
+                                CrossroadData.pedestrianWest_red = ((inTelegram[0] & (byte)comTCPIPClient.LightFlagsByte0.PedestrianEast_Red) != 0) ? "true" : "false";
                             }
                             else
                             {
@@ -2090,74 +2233,81 @@ namespace JAN0837_DP.Communication
                             byte[] readBuffer = new byte[20]; // ? find out 
                             byte[] writeBuffer = new byte[20]; // ? find out 
 
-                            int read1 = _sharp7.readDB(activeDBnumber, CrossroadData.CrossroadReadBuffer, 0);
+                            int read1 = _sharp7.readDB(activeDBnumber, readBuffer, 0);
 
                             if (read1 == 0)
                             {                                
                                 // CrossroadData bytes 0-3
-                                CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 0, 0));
-                                CrossroadData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 0));
-                                CrossroadData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 1));
-                                CrossroadData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 2));
-                                CrossroadData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 3));
-                                CrossroadData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 4));
-                                CrossroadData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 5));
-                                CrossroadData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 6));
-                                CrossroadData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 2, 7));
-                                CrossroadData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 0));
-                                CrossroadData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 3, 1));
+                                CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 0, 0));
+                                CrossroadData.trafficLightNorth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 0));
+                                CrossroadData.trafficLightNorth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 1));
+                                CrossroadData.trafficLightNorth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 2));
+                                CrossroadData.trafficLightSouth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 3));
+                                CrossroadData.trafficLightSouth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 4));
+                                CrossroadData.trafficLightSouth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 5));
+                                CrossroadData.trafficLightWest_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 0));
+                                CrossroadData.trafficLightWest_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 1));
+                                CrossroadData.trafficLightWest_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 2));
+                                CrossroadData.trafficLightEast_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 3));
+                                CrossroadData.trafficLightEast_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 4));
+                                CrossroadData.trafficLightEast_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 5));
+
+                                CrossroadData.pedestrianSouth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 6));
+                                CrossroadData.pedestrianSouth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 7));
+                                CrossroadData.pedestrianWest_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 0));
+                                CrossroadData.pedestrianWest_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 1));
 
                                 // CrosswalkData bytes 4-7
-                                CrosswalkData.crosswalkType = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 4, 0));
-                                CrosswalkData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 0));
-                                CrosswalkData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 1));
-                                CrosswalkData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 2));
-                                CrosswalkData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 3));
-                                CrosswalkData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 4));
-                                CrosswalkData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 5));
-                                CrosswalkData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 6));
-                                CrosswalkData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 6, 7));
-                                CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 7, 0));
-                                CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 7, 1));
+                                CrosswalkData.crosswalkType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 4, 0));
+                                CrosswalkData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 0));
+                                CrosswalkData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 1));
+                                CrosswalkData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 2));
+                                CrosswalkData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 3));
+                                CrosswalkData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 4));
+                                CrosswalkData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 5));
+                                CrosswalkData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 6));
+                                CrosswalkData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 7));
+                                CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 0));
+                                CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 1));
 
                                 // RegulatorData bytes 8-9
                                 
 
                                 // CarWashData bytes 10-14
-                                CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 0));
-                                CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 1));
-                                CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 10, 2));
-                                CarWashData.Door1_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 0));
-                                CarWashData.Door1_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 1));
-                                CarWashData.Door2_Up = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 2));
-                                CarWashData.Door2_Down = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 3));
-                                CarWashData.ChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 4));
-                                CarWashData.ChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 5));
-                                CarWashData.ChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 6));
-                                CarWashData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 11, 7));
-                                CarWashData.Water = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 0));
-                                CarWashData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 1));
-                                CarWashData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 2));
-                                CarWashData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 3));
-                                CarWashData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 4));
-                                CarWashData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 12, 5));
-                                CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 0));
-                                CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 1));
-                                CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 13, 2));
+                                CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 0));
+                                CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 1));
+                                CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 2));
+                                CarWashData.Door1_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 0));
+                                CarWashData.Door1_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 1));
+                                CarWashData.Door2_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 2));
+                                CarWashData.Door2_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 3));
+                                CarWashData.ChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 4));
+                                CarWashData.ChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 5));
+                                CarWashData.ChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 6));
+                                CarWashData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 7));
+                                CarWashData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 0));
+                                CarWashData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 1));
+                                CarWashData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 2));
+                                CarWashData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 3));
+                                CarWashData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 4));
+                                CarWashData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 5));
+                                CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 0));
+                                CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 1));
+                                CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 2));
 
                                 // WashingMachineData bytes 15-17
-                                WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 0));
-                                WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 1));
-                                WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 2));
-                                WashingMachineData.DoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 3));
-                                WashingMachineData.Chemicals = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 4));
-                                WashingMachineData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 5));
-                                WashingMachineData.Water = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 6));
-                                WashingMachineData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 15, 7));
-                                WashingMachineData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 0));
-                                WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 1));
-                                WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 2));
-                                WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(CrossroadData.CrossroadReadBuffer, 16, 3));
+                                WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 0));
+                                WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 1));
+                                WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 2));
+                                WashingMachineData.DoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 3));
+                                WashingMachineData.Chemicals = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 4));
+                                WashingMachineData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 5));
+                                WashingMachineData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 6));
+                                WashingMachineData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 7));
+                                WashingMachineData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 0));
+                                WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 1));
+                                WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 2));
+                                WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 3));
 
                                 _ucCommunicationControl.SetStatus($"Sharp7: ReadDB OK - All data read from DB{activeDBnumber}");
                             }
@@ -2168,102 +2318,109 @@ namespace JAN0837_DP.Communication
                             }
 
                             // CrossroadData write inputs to byte 0, outputs to bytes 2-3
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnPause));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnCrosswalk1));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 0, 5, Convert.ToBoolean(CrossroadData.btnCrosswalk2));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnPause));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 4, Convert.ToBoolean(CrossroadData.btnWestCrosswalk1));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 5, Convert.ToBoolean(CrossroadData.btnWestCrosswalk2));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 6, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk1));
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 7, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk2));
 
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 0, Convert.ToBoolean(CrossroadData.trafficLight1_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 1, Convert.ToBoolean(CrossroadData.trafficLight1_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 2, Convert.ToBoolean(CrossroadData.trafficLight1_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 3, Convert.ToBoolean(CrossroadData.trafficLight2_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 4, Convert.ToBoolean(CrossroadData.trafficLight2_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 5, Convert.ToBoolean(CrossroadData.trafficLight2_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 6, Convert.ToBoolean(CrossroadData.pedestrian1_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 2, 7, Convert.ToBoolean(CrossroadData.pedestrian1_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 3, 0, Convert.ToBoolean(CrossroadData.pedestrian2_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 3, 1, Convert.ToBoolean(CrossroadData.pedestrian2_red));
-
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 0, Convert.ToBoolean(CrossroadData.trafficLightNorth_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 1, Convert.ToBoolean(CrossroadData.trafficLightNorth_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 2, Convert.ToBoolean(CrossroadData.trafficLightNorth_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 3, Convert.ToBoolean(CrossroadData.trafficLightSouth_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 4, Convert.ToBoolean(CrossroadData.trafficLightSouth_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 1, 5, Convert.ToBoolean(CrossroadData.trafficLightSouth_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 0, Convert.ToBoolean(CrossroadData.trafficLightWest_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 1, Convert.ToBoolean(CrossroadData.trafficLightWest_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 2, Convert.ToBoolean(CrossroadData.trafficLightWest_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 3, Convert.ToBoolean(CrossroadData.trafficLightEast_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 4, Convert.ToBoolean(CrossroadData.trafficLightEast_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 5, Convert.ToBoolean(CrossroadData.trafficLightEast_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 6, Convert.ToBoolean(CrossroadData.pedestrianSouth_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 2, 7, Convert.ToBoolean(CrossroadData.pedestrianSouth_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 3, 0, Convert.ToBoolean(CrossroadData.pedestrianWest_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 3, 1, Convert.ToBoolean(CrossroadData.pedestrianWest_red));
                             // CrosswalkData write to bytes 4-7
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 0, Convert.ToBoolean(CrosswalkData.crosswalkType));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 1, Convert.ToBoolean(CrosswalkData.btnStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 2, Convert.ToBoolean(CrosswalkData.btnPause));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 3, Convert.ToBoolean(CrosswalkData.btnStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 4, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 4, 5, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 0, Convert.ToBoolean(CrosswalkData.crosswalkType));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 1, Convert.ToBoolean(CrosswalkData.btnStart));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 2, Convert.ToBoolean(CrosswalkData.btnPause));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 3, Convert.ToBoolean(CrosswalkData.btnStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 4, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
+                            Sharp7.S7.SetBitAt(writeBuffer, 4, 5, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
 
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 0, Convert.ToBoolean(CrosswalkData.trafficLight1_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 1, Convert.ToBoolean(CrosswalkData.trafficLight1_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 2, Convert.ToBoolean(CrosswalkData.trafficLight1_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 3, Convert.ToBoolean(CrosswalkData.trafficLight2_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 4, Convert.ToBoolean(CrosswalkData.trafficLight2_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 5, Convert.ToBoolean(CrosswalkData.trafficLight2_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 6, Convert.ToBoolean(CrosswalkData.pedestrian1_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 6, 7, Convert.ToBoolean(CrosswalkData.pedestrian1_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 7, 0, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 7, 1, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 0, Convert.ToBoolean(CrosswalkData.trafficLight1_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 1, Convert.ToBoolean(CrosswalkData.trafficLight1_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 2, Convert.ToBoolean(CrosswalkData.trafficLight1_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 3, Convert.ToBoolean(CrosswalkData.trafficLight2_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 4, Convert.ToBoolean(CrosswalkData.trafficLight2_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 5, Convert.ToBoolean(CrosswalkData.trafficLight2_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 6, Convert.ToBoolean(CrosswalkData.pedestrian1_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 6, 7, Convert.ToBoolean(CrosswalkData.pedestrian1_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 7, 0, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 7, 1, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
                             // RegulatorData write to bytes 8-9
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 3, Convert.ToBoolean(RegulatorData.U));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Td));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 3, Convert.ToBoolean(RegulatorData.U));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Td));
 
                             // CarWashData write to bytes 10-14
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 3, Convert.ToBoolean(CarWashData.ErrorSystem));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarPosition));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 10, 5, Convert.ToBoolean(CarWashData.ShowerPosition));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 3, Convert.ToBoolean(CarWashData.ErrorSystem));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarPosition));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 5, Convert.ToBoolean(CarWashData.ShowerPosition));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 0, Convert.ToBoolean(CarWashData.Light_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 1, Convert.ToBoolean(CarWashData.Light_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 2, Convert.ToBoolean(CarWashData.Light_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 3, Convert.ToBoolean(CarWashData.Door1_Up));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 4, Convert.ToBoolean(CarWashData.Door1_Down));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 5, Convert.ToBoolean(CarWashData.Door2_Up));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 6, Convert.ToBoolean(CarWashData.Door2_Down));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 11, 7, Convert.ToBoolean(CarWashData.ChemicalsFront));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 0, Convert.ToBoolean(CarWashData.Light_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 1, Convert.ToBoolean(CarWashData.Light_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 2, Convert.ToBoolean(CarWashData.Light_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 3, Convert.ToBoolean(CarWashData.Door1_Up));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 4, Convert.ToBoolean(CarWashData.Door1_Down));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 5, Convert.ToBoolean(CarWashData.Door2_Up));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 6, Convert.ToBoolean(CarWashData.Door2_Down));
+                            Sharp7.S7.SetBitAt(writeBuffer, 11, 7, Convert.ToBoolean(CarWashData.ChemicalsFront));
                 
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 0, Convert.ToBoolean(CarWashData.ChemicalsSides));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 1, Convert.ToBoolean(CarWashData.ChemicalsBack));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 2, Convert.ToBoolean(CarWashData.Prewash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 3, Convert.ToBoolean(CarWashData.Water));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 4, Convert.ToBoolean(CarWashData.Wax));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 5, Convert.ToBoolean(CarWashData.Dry));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 6, Convert.ToBoolean(CarWashData.Brushes));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 12, 7, Convert.ToBoolean(CarWashData.Soap));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 0, Convert.ToBoolean(CarWashData.ChemicalsSides));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 1, Convert.ToBoolean(CarWashData.ChemicalsBack));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 2, Convert.ToBoolean(CarWashData.Prewash));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 3, Convert.ToBoolean(CarWashData.Water));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 4, Convert.ToBoolean(CarWashData.Wax));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 5, Convert.ToBoolean(CarWashData.Dry));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 6, Convert.ToBoolean(CarWashData.Brushes));
+                            Sharp7.S7.SetBitAt(writeBuffer, 12, 7, Convert.ToBoolean(CarWashData.Soap));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 0, Convert.ToBoolean(CarWashData.ActiveFoam));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
+                            Sharp7.S7.SetBitAt(writeBuffer, 13, 0, Convert.ToBoolean(CarWashData.ActiveFoam));
+                            Sharp7.S7.SetBitAt(writeBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
+                            Sharp7.S7.SetBitAt(writeBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
+                            Sharp7.S7.SetBitAt(writeBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
 
                             // WashingMachineData write to bytes 15-17
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.ErrorSystem));
+                            Sharp7.S7.SetBitAt(writeBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
+                            Sharp7.S7.SetBitAt(writeBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
+                            Sharp7.S7.SetBitAt(writeBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.ErrorSystem));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.Light_green));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.Light_yellow));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.Light_red));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.DoorClosed));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.Chemicals));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.Prewash));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.Water));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.Wax));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.Light_green));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.Light_yellow));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.Light_red));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.DoorClosed));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.Chemicals));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.Prewash));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.Water));
+                            Sharp7.S7.SetBitAt(writeBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.Wax));
                             
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.Dry));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
-                            Sharp7.S7.SetBitAt(CrossroadData.CrossroadWriteBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
+                            Sharp7.S7.SetBitAt(writeBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.Dry));
+                            Sharp7.S7.SetBitAt(writeBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
+                            Sharp7.S7.SetBitAt(writeBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
+                            Sharp7.S7.SetBitAt(writeBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
 
-                            int write1 = _sharp7.writeDB(activeDBnumber, CrossroadData.CrossroadWriteBuffer, 0);
+                            int write1 = _sharp7.writeDB(activeDBnumber, writeBuffer, 0);
 
                             if (write1 == 0)
                             {

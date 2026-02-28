@@ -19,7 +19,7 @@
   pointer-events: none; 
 }
 
-.crossroad .light--uniform { width: 2.7%; } 
+.crossroad .light--uniform { width: 2.3%; } 
 
 .crossroadlight {
   position: absolute;
@@ -127,23 +127,24 @@
 }
 
 .ped-btn--south { 
-  left: 65.5%; 
-  top: 95%; 
+  left: 10%; 
+  top: 50%; 
+  rotate: 180deg;
 }
 
 .ped-btn--south-2 {
-  left: 46%;
-  top: 95%;
+  left: 44%;
+  top: 85%;
 }
 
 .ped-btn--west {
   left: 2.5%;
-  top: 54%;
+  top: 68%;
 }
 
 .ped-btn--west-2 {
-  left: 14%;
-  top: 45%;
+  left: 2.5%;
+  top: 18.5%;
 }
 
 .ped-btn--east {

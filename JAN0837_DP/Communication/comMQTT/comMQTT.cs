@@ -229,16 +229,22 @@ namespace JAN0837_DP.Communication.comMQTT
                     if (dto is null) return;
 
                     CrossroadData.crossroadType = dto.crossroadType.ToString();
-                    CrossroadData.trafficLight1_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLight1_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLight1_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLight2_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLight2_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLight2_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrian1_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrian1_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrian2_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrian2_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightNorth_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightNorth_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightNorth_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightSouth_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightSouth_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightSouth_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightEast_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightEast_yellow = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightEast_red = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightWest_green = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightWest_yellow = ((dto.lightsMask >> 10) & 1) == 1 ? "true" : "false";
+                    CrossroadData.trafficLightWest_red = ((dto.lightsMask >> 11) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianSouth_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianSouth_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
                 }
                 catch (Exception ex)
                 {

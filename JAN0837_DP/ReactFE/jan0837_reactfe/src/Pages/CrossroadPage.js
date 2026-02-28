@@ -24,8 +24,8 @@ import { useData, useSectionData } from '../Communication/DataProvider';
  *   btnCrossroadStop     Bool – stop crossroad
  *   btnWestCrosswalk1    Bool – pedestrian button N
  *   btnWestCrosswalk2    Bool – pedestrian button S
- *   btnEastCrosswalk1    Bool – pedestrian button W
- *   btnEastCrosswalk2    Bool – pedestrian button E
+ *   btnSouthCrosswalk1    Bool – pedestrian button W
+ *   btnSouthCrosswalk2    Bool – pedestrian button E
  *
  * OUTPUTS (PLC → FE):
  *   crossroadType               Bool – night / day
@@ -41,14 +41,14 @@ import { useData, useSectionData } from '../Communication/DataProvider';
  *   trafficLightEast_green      Bool
  *   trafficLightEast_yellow     Bool
  *   trafficLightEast_red        Bool
- *   pedestrianNorth_green       Bool
- *   pedestrianNorth_red         Bool
+ *   pedestrianNorth_green       Bool -> not now
+ *   pedestrianNorth_red         Bool -> not now
  *   pedestrianSouth_green       Bool
  *   pedestrianSouth_red         Bool
  *   pedestrianWest_green        Bool
  *   pedestrianWest_red          Bool
- *   pedestrianEast_green        Bool
- *   pedestrianEast_red          Bool
+ *   pedestrianEast_green        Bool -> not now
+ *   pedestrianEast_red          Bool -> not now 
  */
 
 const toBool = (v) => {
@@ -212,6 +212,7 @@ function CrossroadCanvas({ background, lights, pedControls }) {
       )}
 
       <>
+        {/* 
         <button
           type="button"
           className="ped-btn ped-btn--north btn btn-sm btn-light"
@@ -229,6 +230,7 @@ function CrossroadCanvas({ background, lights, pedControls }) {
         >
           N {pedControls.btnPedN ? '🟢' : '⚪'}
         </button>
+        */}
 
         <button
           type="button"
@@ -266,6 +268,7 @@ function CrossroadCanvas({ background, lights, pedControls }) {
           W {pedControls.btnPedW ? '🟢' : '⚪'}
         </button>
 
+        {/* 
         <button
           type="button"
           className="ped-btn ped-btn--east btn btn-sm btn-light"
@@ -283,6 +286,7 @@ function CrossroadCanvas({ background, lights, pedControls }) {
         >
           E {pedControls.btnPedE ? '🟢' : '⚪'}
         </button>
+        */}
       </>
     </div>
   );
@@ -297,9 +301,9 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
   const crossroadType = toBool(d?.crossroadType);
 
-  const btnCrossroadStart = toBool(d?.btnCrossroadStart);
-  const btnCrossroadPause = toBool(d?.btnCrossroadPause);
-  const btnCrossroadStop = toBool(d?.btnCrossroadStop);
+  const btnStart = toBool(d?.btnStart);
+  const btnPause = toBool(d?.btnPause);
+  const btnStop = toBool(d?.btnStop);
 
   const trafficLightNorth_green = toBool(d?.trafficLightNorth_green);
   const trafficLightNorth_yellow = toBool(d?.trafficLightNorth_yellow);
@@ -314,42 +318,138 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const trafficLightEast_yellow = toBool(d?.trafficLightEast_yellow);
   const trafficLightEast_red = toBool(d?.trafficLightEast_red);
 
-  const pedestrianNorth_green = toBool(d?.pedestrianNorth_green);
-  const pedestrianNorth_red = toBool(d?.pedestrianNorth_red);
+  //const pedestrianNorth_green = toBool(d?.pedestrianNorth_green);
+  //const pedestrianNorth_red = toBool(d?.pedestrianNorth_red);
   const pedestrianSouth_green = toBool(d?.pedestrianSouth_green);
   const pedestrianSouth_red = toBool(d?.pedestrianSouth_red);
   const pedestrianWest_green = toBool(d?.pedestrianWest_green);
   const pedestrianWest_red = toBool(d?.pedestrianWest_red);
-  const pedestrianEast_green = toBool(d?.pedestrianEast_green);
-  const pedestrianEast_red = toBool(d?.pedestrianEast_red);
+  //const pedestrianEast_green = toBool(d?.pedestrianEast_green);
+  //const pedestrianEast_red = toBool(d?.pedestrianEast_red);
 
-  const setCrossroadType = () => saveSection({ crossroadType: !crossroadType });
+  const setCrossroadType = async () => {
+    try {
+      await saveSection({ crossroadType: !toBool(d?.crossroadType) });
+    } catch (e) { console.error('setCrossroadType error:', e); }
+  };
 
-  const setStartAsync = () => saveSection({ btnCrossroadStart: !btnCrossroadStart });
-  const setPauseAsync = () => saveSection({ btnCrossroadPause: !btnCrossroadPause });
-  const setStopAsync  = () => saveSection({ btnCrossroadStop: !btnCrossroadStop });
+  const setStartAsync = async () => {
+    try {
+      await saveSection({ btnStart: !toBool(d?.btnStart) });
+    } catch (e) { console.error('setStartAsync error:', e); }
+  };
+  const setPauseAsync = async () => {
+    try {
+      await saveSection({ btnPause: !toBool(d?.btnPause) });
+    } catch (e) { console.error('setPauseAsync error:', e); }
+  };
+  const setStopAsync = async () => {
+    try {
+      await saveSection({ btnStop: !toBool(d?.btnStop) });
+    } catch (e) { console.error('setStopAsync error:', e); }
+  };
 
-  const setCrossroadLightNorthGreen = () => saveSection({ trafficLightNorth_green: !trafficLightNorth_green });
-  const setCrossroadLightNorthYellow = () => saveSection({ trafficLightNorth_yellow: !trafficLightNorth_yellow });
-  const setCrossroadLightNorthRed = () => saveSection({ trafficLightNorth_red: !trafficLightNorth_red });
-  const setCrossroadLightSouthGreen = () => saveSection({ trafficLightSouth_green: !trafficLightSouth_green });
-  const setCrossroadLightSouthYellow = () => saveSection({ trafficLightSouth_yellow: !trafficLightSouth_yellow });
-  const setCrossroadLightSouthRed = () => saveSection({ trafficLightSouth_red: !trafficLightSouth_red });
-  const setCrossroadLightWestGreen = () => saveSection({ trafficLightWest_green: !trafficLightWest_green });
-  const setCrossroadLightWestYellow = () => saveSection({ trafficLightWest_yellow: !trafficLightWest_yellow });
-  const setCrossroadLightWestRed = () => saveSection({ trafficLightWest_red: !trafficLightWest_red });
-  const setCrossroadLightEastGreen = () => saveSection({ trafficLightEast_green: !trafficLightEast_green });
-  const setCrossroadLightEastYellow = () => saveSection({ trafficLightEast_yellow: !trafficLightEast_yellow });
-  const setCrossroadLightEastRed = () => saveSection({ trafficLightEast_red: !trafficLightEast_red });
+  const setCrossroadLightNorthGreen = async () => {
+    try {
+      await saveSection({ trafficLightNorth_green: !toBool(d?.trafficLightNorth_green) });
+    } catch (e) { console.error('setCrossroadLightNorthGreen error:', e); }
+  };
+  const setCrossroadLightNorthYellow = async () => {
+    try {
+      await saveSection({ trafficLightNorth_yellow: !toBool(d?.trafficLightNorth_yellow) });
+    } catch (e) { console.error('setCrossroadLightNorthYellow error:', e); }
+  };
+  const setCrossroadLightNorthRed = async () => {
+    try {
+      await saveSection({ trafficLightNorth_red: !toBool(d?.trafficLightNorth_red) });
+    } catch (e) { console.error('setCrossroadLightNorthRed error:', e); }
+  };
+  const setCrossroadLightSouthGreen = async () => {
+    try {
+      await saveSection({ trafficLightSouth_green: !toBool(d?.trafficLightSouth_green) });
+    } catch (e) { console.error('setCrossroadLightSouthGreen error:', e); }
+  };
+  const setCrossroadLightSouthYellow = async () => {
+    try {
+      await saveSection({ trafficLightSouth_yellow: !toBool(d?.trafficLightSouth_yellow) });
+    } catch (e) { console.error('setCrossroadLightSouthYellow error:', e); }
+  };
+  const setCrossroadLightSouthRed = async () => {
+    try {
+      await saveSection({ trafficLightSouth_red: !toBool(d?.trafficLightSouth_red) });
+    } catch (e) { console.error('setCrossroadLightSouthRed error:', e); }
+  };
+  const setCrossroadLightWestGreen = async () => {
+    try {
+      await saveSection({ trafficLightWest_green: !toBool(d?.trafficLightWest_green) });
+    } catch (e) { console.error('setCrossroadLightWestGreen error:', e); }
+  };
+  const setCrossroadLightWestYellow = async () => {
+    try {
+      await saveSection({ trafficLightWest_yellow: !toBool(d?.trafficLightWest_yellow) });
+    } catch (e) { console.error('setCrossroadLightWestYellow error:', e); }
+  };
+  const setCrossroadLightWestRed = async () => {
+    try {
+      await saveSection({ trafficLightWest_red: !toBool(d?.trafficLightWest_red) });
+    } catch (e) { console.error('setCrossroadLightWestRed error:', e); }
+  };
+  const setCrossroadLightEastGreen = async () => {
+    try {
+      await saveSection({ trafficLightEast_green: !toBool(d?.trafficLightEast_green) });
+    } catch (e) { console.error('setCrossroadLightEastGreen error:', e); }
+  };
+  const setCrossroadLightEastYellow = async () => {
+    try {
+      await saveSection({ trafficLightEast_yellow: !toBool(d?.trafficLightEast_yellow) });
+    } catch (e) { console.error('setCrossroadLightEastYellow error:', e); }
+  };
+  const setCrossroadLightEastRed = async () => {
+    try {
+      await saveSection({ trafficLightEast_red: !toBool(d?.trafficLightEast_red) });
+    } catch (e) { console.error('setCrossroadLightEastRed error:', e); }
+  };
 
-  const setPedestrianNorthGreen = () => saveSection({ pedestrianNorth_green: !pedestrianNorth_green });
-  const setPedestrianNorthRed = () => saveSection({ pedestrianNorth_red: !pedestrianNorth_red });
-  const setPedestrianSouthGreen = () => saveSection({ pedestrianSouth_green: !pedestrianSouth_green });
-  const setPedestrianSouthRed = () => saveSection({ pedestrianSouth_red: !pedestrianSouth_red });
-  const setPedestrianWestGreen = () => saveSection({ pedestrianWest_green: !pedestrianWest_green });
-  const setPedestrianWestRed = () => saveSection({ pedestrianWest_red: !pedestrianWest_red });
-  const setPedestrianEastGreen = () => saveSection({ pedestrianEast_green: !pedestrianEast_green });
-  const setPedestrianEastRed = () => saveSection({ pedestrianEast_red: !pedestrianEast_red });
+  const setPedestrianNorthGreen = async () => {
+    try {
+      await saveSection({ pedestrianNorth_green: !toBool(d?.pedestrianNorth_green) });
+    } catch (e) { console.error('setPedestrianNorthGreen error:', e); }
+  };
+  const setPedestrianNorthRed = async () => {
+    try {
+      await saveSection({ pedestrianNorth_red: !toBool(d?.pedestrianNorth_red) });
+    } catch (e) { console.error('setPedestrianNorthRed error:', e); }
+  };
+  const setPedestrianSouthGreen = async () => {
+    try {
+      await saveSection({ pedestrianSouth_green: !toBool(d?.pedestrianSouth_green) });
+    } catch (e) { console.error('setPedestrianSouthGreen error:', e); }
+  };
+  const setPedestrianSouthRed = async () => {
+    try {
+      await saveSection({ pedestrianSouth_red: !toBool(d?.pedestrianSouth_red) });
+    } catch (e) { console.error('setPedestrianSouthRed error:', e); }
+  };
+  const setPedestrianWestGreen = async () => {
+    try {
+      await saveSection({ pedestrianWest_green: !toBool(d?.pedestrianWest_green) });
+    } catch (e) { console.error('setPedestrianWestGreen error:', e); }
+  };
+  const setPedestrianWestRed = async () => {
+    try {
+      await saveSection({ pedestrianWest_red: !toBool(d?.pedestrianWest_red) });
+    } catch (e) { console.error('setPedestrianWestRed error:', e); }
+  };
+  const setPedestrianEastGreen = async () => {
+    try {
+      await saveSection({ pedestrianEast_green: !toBool(d?.pedestrianEast_green) });
+    } catch (e) { console.error('setPedestrianEastGreen error:', e); }
+  };
+  const setPedestrianEastRed = async () => {
+    try {
+      await saveSection({ pedestrianEast_red: !toBool(d?.pedestrianEast_red) });
+    } catch (e) { console.error('setPedestrianEastRed error:', e); }
+  };
 
   const toggleCrossroadType = async () => {
     try {
@@ -397,7 +497,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       */}
       
       <div className="gap-2 mb-3">
-        <Button onClick={setCrossroadType}>
+        <Button onClick={toggleCrossroadType}>
           CrossroadType ({String(crossroadType)})
         </Button>
       </div>
@@ -405,16 +505,16 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       <div>
         <Col>
           <div className="gap-2 mb-2">
-            <Button className="btn--start" onClick={setStartAsync} /*disabled={isFetching}*/>
-              Start ({String(btnCrossroadStart)})
+            <Button className="btn--start" onClick={setStartAsync}>
+              Start ({String(btnStart)})
             </Button>
           
-            <Button className="btn--pause" onClick={setPauseAsync} /*disabled={isFetching}*/>
-              Pause ({String(btnCrossroadPause)})
+            <Button className="btn--pause" onClick={setPauseAsync}>
+              Pause ({String(btnPause)})
             </Button>
           
-            <Button className="btn--stop" onClick={setStopAsync} /*disabled={isFetching}*/>
-              Stop ({String(btnCrossroadStop)})
+            <Button className="btn--stop" onClick={setStopAsync}>
+              Stop ({String(btnStop)})
             </Button>  
           </div>
 
@@ -466,6 +566,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
             </Button>
           </div>
 
+          {/*}
           <div className="gap-2 mb-2">
             <Button onClick={setPedestrianNorthGreen}>
               Pedestrian North green ({String(pedestrianNorth_green)})
@@ -474,6 +575,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
               Pedestrian North red ({String(pedestrianNorth_red)})
             </Button>
           </div>
+          */}
 
           <div className="gap-2 mb-2">
             <Button onClick={setPedestrianSouthGreen}>
@@ -492,7 +594,8 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
               Pedestrian West red ({String(pedestrianWest_red)})
             </Button>
           </div>
-
+          
+          {/*}
           <div className="gap-2 mb-2">
             <Button onClick={setPedestrianEastGreen}>
               Pedestrian East green ({String(pedestrianEast_green)})
@@ -501,6 +604,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
               Pedestrian East red ({String(pedestrianEast_red)})
             </Button>
           </div>
+          */}
         </Col>
 
         {/*}
@@ -533,14 +637,14 @@ function CrossroadPage({ setAside }) {
       d?.trafficLightEast_green === undefined &&
       d?.trafficLightEast_yellow === undefined &&
       d?.trafficLightEast_red === undefined &&
-      d?.pedestrianNorth_green === undefined &&
-      d?.pedestrianNorth_red === undefined &&
+      //d?.pedestrianNorth_green === undefined &&
+      //d?.pedestrianNorth_red === undefined &&
       d?.pedestrianSouth_green === undefined &&
       d?.pedestrianSouth_red === undefined &&
       d?.pedestrianWest_green === undefined &&
-      d?.pedestrianWest_red === undefined &&
-      d?.pedestrianEast_green === undefined &&
-      d?.pedestrianEast_red === undefined
+      d?.pedestrianWest_red === undefined 
+      //d?.pedestrianEast_green === undefined &&
+      //d?.pedestrianEast_red === undefined
     ) {
       saveSection({
         trafficLightNorth_green: 'false',
@@ -555,14 +659,14 @@ function CrossroadPage({ setAside }) {
         trafficLightEast_green: 'false',
         trafficLightEast_yellow: 'false',
         trafficLightEast_red: 'false',
-        pedestrianNorth_green: 'false',
-        pedestrianNorth_red: 'false',
+        //pedestrianNorth_green: 'false',
+        //pedestrianNorth_red: 'false',
         pedestrianSouth_green: 'false',
         pedestrianSouth_red: 'false',
         pedestrianWest_green: 'false',
         pedestrianWest_red: 'false',
-        pedestrianEast_green: 'false',
-        pedestrianEast_red: 'false',
+        //pedestrianEast_green: 'false',
+        //pedestrianEast_red: 'false',
       });
     }
   }, [d, saveSection]);
@@ -654,60 +758,48 @@ function CrossroadPage({ setAside }) {
 
   const lights = [
     // car – West
-    { id: 'car-W-main-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '39.5%', y: '75.8%' },
-    { id: 'car-W-main-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '43.0%', y: '75.8%' },
-    { id: 'car-W-main-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '46.5%', y: '75.8%' },
+    { id: 'car-W-main-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '14%', y: '58.2%' },
+    { id: 'car-W-main-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '16.2%', y: '58.2%' },
+    { id: 'car-W-main-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '18.5%', y: '58.2%' },
 
     // car – East
-    { id: 'car-E-main-green', kind: 'car', color: 'green', state: CARE, dir: 270, x: '70.2%', y: '9.2%' },
-    { id: 'car-E-main-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '66.7%', y: '9.2%' },
-    { id: 'car-E-main-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '63.2%', y: '9.2%' },
+    { id: 'car-E-main-green', kind: 'car', color: 'green', state: CARE, dir: 270, x: '41.6%', y: '24.1%' },
+    { id: 'car-E-main-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '39.4%', y: '24.1%' },
+    { id: 'car-E-main-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '37.2%', y: '24.1%' },
 
     // car – North
-    { id: 'car-N-main-green', kind: 'car', color: 'green', state: CARN, dir: 180, x: '55.0%', y: '27.0%' },
-    { id: 'car-N-main-yellow', kind: 'car', color: 'yellow', state: CARN, dir: 180, x: '55.0%', y: '23.4%' },
-    { id: 'car-N-main-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '55.0%', y: '19.8%' },
+    { id: 'car-N-main-green', kind: 'car', color: 'green', state: CARN, dir: 180, x: '18.25%', y: '16.65%' },
+    { id: 'car-N-main-yellow', kind: 'car', color: 'yellow', state: CARN, dir: 180, x: '18.25%', y: '20.65%' },
+    { id: 'car-N-main-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '18.25%', y: '24.5%' },
 
     // car – South
-    { id: 'car-S-main-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '46.2%', y: '67.0%' },
-    { id: 'car-S-main-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '46.2%', y: '70.6%' },
-    { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '46.2%', y: '74.2%' },
+    { id: 'car-S-main-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '37.3%', y: '58.0%' },
+    { id: 'car-S-main-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '37.3%', y: '62%' },
+    { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.3%', y: '65.8%' },
 
-    // car – doplňkové sloupky (zrcadlené)
-    { id: 'car-W-mirror-green', kind: 'car', color: 'green', state: CARW, dir: 90, x: '27.2%', y: '63.8%' },
-    { id: 'car-W-mirror-yellow', kind: 'car', color: 'yellow', state: CARW, dir: 90, x: '30.7%', y: '63.8%' },
-    { id: 'car-W-mirror-red', kind: 'car', color: 'red', state: CARW, dir: 90, x: '34.2%', y: '63.8%' },
-    { id: 'car-E-mirror-green', kind: 'car', color: 'green', state: CARE, dir: 270, x: '82.5%', y: '21.2%' },
-    { id: 'car-E-mirror-yellow', kind: 'car', color: 'yellow', state: CARE, dir: 270, x: '79.0%', y: '21.2%' },
-    { id: 'car-E-mirror-red', kind: 'car', color: 'red', state: CARE, dir: 270, x: '75.5%', y: '21.2%' },
-    { id: 'car-N-mirror-green', kind: 'car', color: 'green', state: CARN, dir: 180, x: '64.0%', y: '39.5%' },
-    { id: 'car-N-mirror-yellow', kind: 'car', color: 'yellow', state: CARN, dir: 180, x: '64.0%', y: '35.9%' },
-    { id: 'car-N-mirror-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '64.0%', y: '32.3%' },
-    { id: 'car-S-mirror-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '37.2%', y: '55.0%' },
-    { id: 'car-S-mirror-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '37.2%', y: '58.6%' },
-    { id: 'car-S-mirror-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.2%', y: '62.2%' },
+    // pedestrians N
+    //{ id: 'ped-N-main-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '47.0%', y: '4.8%' },
+    //{ id: 'ped-N-main-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '47.0%', y: '11.0%' },
+    //{ id: 'ped-N-mirror-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '58.4%', y: '16.8%' },
+    //{ id: 'ped-N-mirror-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '58.4%', y: '23.0%' },
+    
+    // pedestrians S
+    { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS, dir: 90, x: '17%', y: '83%' },
+    { id: 'ped-S-main-red', kind: 'ped', color: 'red', state: PEDS, dir: 90, x: '19.3%', y: '83%' },
+    { id: 'ped-S-mirror-green', kind: 'ped', color: 'green', state: PEDS, dir: 270, x: '39.15%', y: '83%' },
+    { id: 'ped-S-mirror-red', kind: 'ped', color: 'red', state: PEDS, dir: 270, x: '36.9%', y: '83%' },
 
-    // pedestrians – hlavní (N/S)
-    { id: 'ped-N-main-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '47.0%', y: '4.8%' },
-    { id: 'ped-N-main-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '47.0%', y: '11.0%' },
-    { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '62.3%', y: '80.8%' },
-    { id: 'ped-S-main-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '62.3%', y: '74.6%' },
+    // pedestrians W
+    { id: 'ped-W-main-green', kind: 'ped', color: 'green', state: PEDW, dir: 0, x: '0.95%', y: '61%' },
+    { id: 'ped-W-main-red', kind: 'ped', color: 'red', state: PEDW, dir: 0, x: '0.95%', y: '57%' },
+    { id: 'ped-W-mirror-green', kind: 'ped', color: 'green', state: PEDW, dir: 180, x: '0.95%', y: '21.5%' },
+    { id: 'ped-W-mirror-red', kind: 'ped', color: 'red', state: PEDW, dir: 180, x: '0.95%', y: '25.5%' },
 
-    // pedestrians – W/E
-    { id: 'ped-W-main-green', kind: 'ped', color: 'green', state: PEDW, dir: 90, x: '6.0%', y: '54.2%' },
-    { id: 'ped-W-main-red', kind: 'ped', color: 'red', state: PEDW, dir: 90, x: '10.8%', y: '54.2%' },
-    { id: 'ped-E-main-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '89.2%', y: '29.5%' },
-    { id: 'ped-E-main-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '94.0%', y: '29.5%' },
-
-    // pedestrians – doplňkové (zrcadlené)
-    { id: 'ped-N-mirror-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '58.4%', y: '16.8%' },
-    { id: 'ped-N-mirror-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '58.4%', y: '23.0%' },
-    { id: 'ped-S-mirror-green', kind: 'ped', color: 'green', state: PEDS, dir: 0, x: '50.9%', y: '68.2%' },
-    { id: 'ped-S-mirror-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '50.9%', y: '62.0%' },
-    { id: 'ped-W-mirror-green', kind: 'ped', color: 'green', state: PEDW, dir: 90, x: '17.6%', y: '43.0%' },
-    { id: 'ped-W-mirror-red', kind: 'ped', color: 'red', state: PEDW, dir: 90, x: '22.4%', y: '43.0%' },
-    { id: 'ped-E-mirror-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '77.6%', y: '41.0%' },
-    { id: 'ped-E-mirror-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '82.4%', y: '41.0%' },
+    // pedestrians E
+    //{ id: 'ped-E-main-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '89.2%', y: '29.5%' },
+    //{ id: 'ped-E-main-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '94.0%', y: '29.5%' },
+    //{ id: 'ped-E-mirror-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '77.6%', y: '41.0%' },
+    //{ id: 'ped-E-mirror-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '82.4%', y: '41.0%' },
   ];
 
   const btnPedN = toBool(d?.btnWestCrosswalk1);

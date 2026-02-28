@@ -11,26 +11,23 @@ namespace JAN0837_DP.Data
 {
     public static class CrossroadData
     {
-        public const int CrossroadDBlength = 4;
-        public static byte[] CrossroadReadBuffer { get; set; } = new byte[CrossroadDBlength];
-        public static byte[] CrossroadWriteBuffer { get; set; } = new byte[CrossroadDBlength];
-
-        //public static string crossroadDay { get; set; } = "";
-        //public static string crossroadNight { get; set; } = "";
-
         // inputs 
         public static string btnStart { get; set; } = "true"; // bool
         public static string btnPause { get; set; } = "false"; // bool
         public static string btnStop { get; set; } = "false"; // bool
-        public static string btnCrosswalk1 { get; set; } = "false"; // bool -> old 
-        public static string btnCrosswalk2 { get; set; } = "false"; // bool -> old
-
+        //public static string btnCrosswalk1 { get; set; } = "false"; // bool -> old 
+        //public static string btnCrosswalk2 { get; set; } = "false"; // bool -> old
+        // public static string btnNorthCrosswalk1 { get; set; } = "false"; // bool
+        // public static string btnNorthCrosswalk2 { get; set; } = "false"; // bool
         public static string btnWestCrosswalk1 { get; set; } = "false"; // bool 
         public static string btnWestCrosswalk2 { get; set; } = "false"; // bool
-        public static string btnEastCrosswalk1 { get; set; } = "false"; // bool
-        public static string btnEastCrosswalk2 { get; set; } = "false"; // bool
+        // public static string btnEastCrosswalk1 { get; set; } = "false"; // bool
+        // public static string btnEastCrosswalk2 { get; set; } = "false"; // bool
+        public static string btnSouthCrosswalk1 { get; set; } = "false"; // bool
+        public static string btnSouthCrosswalk2 { get; set; } = "false"; // bool
 
         // outputs
+        public static string crossroadType { get; set; } = "false"; // bool 
         public static string trafficLightNorth_green { get; set; } = "false"; // bool
         public static string trafficLightNorth_yellow { get; set; } = "false"; // bool
         public static string trafficLightNorth_red { get; set; } = "false"; // bool
@@ -43,29 +40,14 @@ namespace JAN0837_DP.Data
         public static string trafficLightEast_green { get; set; } = "false"; // bool
         public static string trafficLightEast_yellow { get; set; } = "false"; // bool
         public static string trafficLightEast_red { get; set; } = "false"; // bool
-        public static string pedestrianNorth_green { get; set; } = "false"; // bool
-        public static string pedestrianNorth_red { get; set; } = "false"; // bool
+        //public static string pedestrianNorth_green { get; set; } = "false"; // bool
+        //public static string pedestrianNorth_red { get; set; } = "false"; // bool
         public static string pedestrianSouth_green { get; set; } = "false"; // bool
         public static string pedestrianSouth_red { get; set; } = "false"; // bool
         public static string pedestrianWest_green { get; set; } = "false"; // bool
         public static string pedestrianWest_red { get; set; } = "false"; // bool
-        public static string pedestrianEast_green { get; set; } = "false"; // bool
-        public static string pedestrianEast_red { get; set; } = "false"; // bool
-
-
-
-        
-        public static string crossroadType { get; set; } = "false"; // bool -> old
-        public static string trafficLight1_green { get; set; } = "false"; // bool -> old
-        public static string trafficLight1_yellow { get; set; } = "false"; // bool -> old
-        public static string trafficLight1_red { get; set; } = "false"; // bool -> old
-        public static string trafficLight2_green { get; set; } = "false"; // bool -> old
-        public static string trafficLight2_yellow { get;set; } = "false"; // bool -> old
-        public static string trafficLight2_red { get;set; } = "false"; // bool -> old
-        public static string pedestrian1_green { get; set; } = "false"; // bool -> old
-        public static string pedestrian1_red { get; set; } = "false"; // bool -> old
-        public static string pedestrian2_green { get; set; } = "false"; // bool -> old
-        public static string pedestrian2_red { get; set; } = "false"; // bool -> old
+        //public static string pedestrianEast_green { get; set; } = "false"; // bool
+        //public static string pedestrianEast_red { get; set; } = "false"; // bool
 
         // thread safety 
         private static readonly object _lock = new();
@@ -76,18 +58,30 @@ namespace JAN0837_DP.Data
             string btnStart,
             string btnPause,
             string btnStop,
-            string btnCrosswalk1,
-            string btnCrosswalk2,
-            string trafficLight1_green,
-            string trafficLight1_yellow,
-            string trafficLight1_red,
-            string trafficLight2_green,
-            string trafficLight2_yellow,
-            string trafficLight2_red,
-            string pedestrian1_green,
-            string pedestrian1_red,
-            string pedestrian2_green,
-            string pedestrian2_red
+            string btnWestCrosswalk1,
+            string btnWestCrosswalk2,
+            string btnSouthCrosswalk1,
+            string btnSouthCrosswalk2,
+            string trafficLightNorth_green,
+            string trafficLightNorth_yellow,
+            string trafficLightNorth_red,
+            string trafficLightSouth_green,
+            string trafficLightSouth_yellow,
+            string trafficLightSouth_red,
+            string trafficLightWest_green,
+            string trafficLightWest_yellow,
+            string trafficLightWest_red,
+            string trafficLightEast_green,
+            string trafficLightEast_yellow,
+            string trafficLightEast_red,
+            //string pedestrianNorth_green,
+            //string pedestrianNorth_red,
+            string pedestrianSouth_green,
+            string pedestrianSouth_red,
+            string pedestrianWest_green,
+            string pedestrianWest_red
+            //string pedestrianEast_green,
+            //string pedestrianEast_red
         );
 
         public static State Get()
@@ -99,18 +93,30 @@ namespace JAN0837_DP.Data
                     btnStart,
                     btnPause,
                     btnStop,
-                    btnCrosswalk1,
-                    btnCrosswalk2,
-                    trafficLight1_green,
-                    trafficLight1_yellow,
-                    trafficLight1_red,
-                    trafficLight2_green,
-                    trafficLight2_yellow,
-                    trafficLight2_red,
-                    pedestrian1_green,
-                    pedestrian1_red,
-                    pedestrian2_green,
-                    pedestrian2_red
+                    btnWestCrosswalk1,
+                    btnWestCrosswalk2,
+                    btnSouthCrosswalk1,
+                    btnSouthCrosswalk2,
+                    trafficLightNorth_green,
+                    trafficLightNorth_yellow,
+                    trafficLightNorth_red,
+                    trafficLightSouth_green,
+                    trafficLightSouth_yellow,
+                    trafficLightSouth_red,
+                    trafficLightWest_green,
+                    trafficLightWest_yellow,
+                    trafficLightWest_red,
+                    trafficLightEast_green,
+                    trafficLightEast_yellow,
+                    trafficLightEast_red,
+                    //pedestrianNorth_green,
+                    //pedestrianNorth_red,
+                    pedestrianSouth_green,
+                    pedestrianSouth_red,
+                    pedestrianWest_green,
+                    pedestrianWest_red
+                    //pedestrianEast_green,
+                    //pedestrianEast_red
                 );
             }
         }
@@ -119,27 +125,29 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                //if (s.btnCrossroadStart != null) btnCrossroadStart = s.btnCrossroadStart;
-                //if (s.btnCrossroadPause != null) btnCrossroadPause = s.btnCrossroadPause;
-                //if (s.btnCrossroadStop != null) btnCrossroadStop = s.btnCrossroadStop;
-
-                //if (s.btnCrosswalk1 != null) btnCrosswalk1 = s.btnCrosswalk1;
-                //if (s.btnCrosswalk2 != null) btnCrosswalk2 = s.btnCrosswalk2;
-
                 if (s.crossroadType != null) crossroadType = s.crossroadType;
 
-                if (s.trafficLight1_green != null) trafficLight1_green = s.trafficLight1_green;
-                if (s.trafficLight1_yellow != null) trafficLight1_yellow = s.trafficLight1_yellow;
-                if (s.trafficLight1_red != null) trafficLight1_red = s.trafficLight1_red;
+                if (s.trafficLightNorth_green != null) trafficLightNorth_green = s.trafficLightNorth_green;
+                if (s.trafficLightNorth_yellow != null) trafficLightNorth_yellow = s.trafficLightNorth_yellow;
+                if (s.trafficLightNorth_red != null) trafficLightNorth_red = s.trafficLightNorth_red;
+                if (s.trafficLightSouth_green != null) trafficLightSouth_green = s.trafficLightSouth_green;
+                if (s.trafficLightSouth_yellow != null) trafficLightSouth_yellow = s.trafficLightSouth_yellow;
+                if (s.trafficLightSouth_red != null) trafficLightSouth_red = s.trafficLightSouth_red;
+                if (s.trafficLightWest_green != null) trafficLightWest_green = s.trafficLightWest_green;
+                if (s.trafficLightWest_yellow != null) trafficLightWest_yellow = s.trafficLightWest_yellow;
+                if (s.trafficLightWest_red != null) trafficLightWest_red = s.trafficLightWest_red;
+                if (s.trafficLightEast_green != null) trafficLightEast_green = s.trafficLightEast_green;
+                if (s.trafficLightEast_yellow != null) trafficLightEast_yellow = s.trafficLightEast_yellow;
+                if (s.trafficLightEast_red != null) trafficLightEast_red = s.trafficLightEast_red;
 
-                if (s.trafficLight2_green != null) trafficLight2_green = s.trafficLight2_green;
-                if (s.trafficLight2_yellow != null) trafficLight2_yellow = s.trafficLight2_yellow;
-                if (s.trafficLight2_red != null) trafficLight2_red = s.trafficLight2_red;
-
-                if (s.pedestrian1_green != null) pedestrian1_green = s.pedestrian1_green;
-                if (s.pedestrian1_red != null) pedestrian1_red = s.pedestrian1_red;
-                if (s.pedestrian2_green != null) pedestrian2_green = s.pedestrian2_green;
-                if (s.pedestrian2_red != null) pedestrian2_red = s.pedestrian2_red;
+                //if (s.pedestrianNorth_green != null) pedestrianNorth_green = s.pedestrianNorth_green;
+                //if (s.pedestrianNorth_red != null) pedestrianNorth_red = s.pedestrianNorth_red;
+                if (s.pedestrianSouth_green != null) pedestrianSouth_green = s.pedestrianSouth_green;
+                if (s.pedestrianSouth_red != null) pedestrianSouth_red = s.pedestrianSouth_red;
+                if (s.pedestrianWest_green != null) pedestrianWest_green = s.pedestrianWest_green;
+                if (s.pedestrianWest_red != null) pedestrianWest_red = s.pedestrianWest_red;
+                //if (s.pedestrianEast_green != null) pedestrianEast_green = s.pedestrianEast_green;
+                //if (s.pedestrianEast_red != null) pedestrianEast_red = s.pedestrianEast_red;
             }
         }
 
@@ -182,11 +190,41 @@ namespace JAN0837_DP.Data
             public static string btnStart { get; set; } = "ns=4;i=15";        
             public static string btnPause { get; set; } = "ns=4;i=16";        
             public static string btnStop { get; set; } = "ns=4;i=17";        
-            public static string btnCrosswalk1 { get; set; } = "ns=4;i=18";  
-            public static string btnCrosswalk2 { get; set; } = "ns=4;i=19";   
+            //public static string btnCrosswalk1 { get; set; } = "ns=4;i=18";  
+            //public static string btnCrosswalk2 { get; set; } = "ns=4;i=19";   
+            //public static string btnNorthCrosswalk1 { get; set; } = "ns=4;i=26";
+            //public static string btnNorthCrosswalk2 { get; set; } = "ns=4;i=27";
+            public static string btnSouthCrosswalk1 { get; set; } = "ns=4;i=24";
+            public static string btnSouthCrosswalk2 { get; set; } = "ns=4;i=25";
+            public static string btnWestCrosswalk1 { get; set; } = "ns=4;i=20";
+            public static string btnWestCrosswalk2 { get; set; } = "ns=4;i=21";
+            //public static string btnEastCrosswalk1 { get; set; } = "ns=4;i=22";
+            //public static string btnEastCrosswalk2 { get; set; } = "ns=4;i=23";
 
             // Outputs
-            public static string crossroadType { get; set; } = "ns=4;i=33";          
+            public static string crossroadType { get; set; } = "ns=4;i=33";
+            public static string trafficLightNorth_green { get; set; } = "ns=4;i=34";
+            public static string trafficLightNorth_yellow { get; set; } = "ns=4;i=35";
+            public static string trafficLightNorth_red { get; set; } = "ns=4;i=36";
+            public static string trafficLightSouth_green { get; set; } = "ns=4;i=37";
+            public static string trafficLightSouth_yellow { get; set; } = "ns=4;i=38";
+            public static string trafficLightSouth_red { get; set; } = "ns=4;i=39";
+            public static string trafficLightWest_green { get; set; } = "ns=4;i=40";
+            public static string trafficLightWest_yellow { get; set; } = "ns=4;i=41";
+            public static string trafficLightWest_red { get; set; } = "ns=4;i=42";
+            public static string trafficLightEast_green { get; set; } = "ns=4;i=43";
+            public static string trafficLightEast_yellow { get; set; } = "ns=4;i=44";
+            public static string trafficLightEast_red { get; set; } = "ns=4;i=45";
+            //public static string pedestrianNorth_green { get; set; } = "ns=4;i=46";
+            //public static string pedestrianNorth_red { get; set; } = "ns=4;i=47";
+            public static string pedestrianSouth_green { get; set; } = "ns=4;i=48";
+            public static string pedestrianSouth_red { get; set; } = "ns=4;i=49";
+            public static string pedestrianWest_green { get; set; } = "ns=4;i=50";
+            public static string pedestrianWest_red { get; set; } = "ns=4;i=51";
+            //public static string pedestrianEast_green { get; set; } = "ns=4;i=52";
+            //public static string pedestrianEast_red { get; set; } = "ns=4;i=53";
+
+            /*
             public static string trafficLightGreen1 { get; set; } = "ns=4;i=34";   
             public static string trafficLightsYellow1 { get; set; } = "ns=4;i=35";   
             public static string trafficLightsRed1 { get; set; } = "ns=4;i=36";     
@@ -197,6 +235,7 @@ namespace JAN0837_DP.Data
             public static string pedestrianLightRed1 { get; set; } = "ns=4;i=41";    
             public static string pedestrianLightGreen2 { get; set; } = "ns=4;i=42"; 
             public static string pedestrianLightRed2 { get; set; } = "ns=4;i=43";  
+            */
         }
     }
 }

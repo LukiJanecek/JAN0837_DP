@@ -231,66 +231,92 @@ function CrosswalkParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
   const crosswalkType = toBool(d?.crosswalkType);
 
-  const btnCrosswalkStart = toBool(d?.btnCrosswalkStart);
-  const btnCrosswalkPause = toBool(d?.btnCrosswalkPause);
-  const btnCrosswalkStop = toBool(d?.btnCrosswalkStop);
+  const btnStart = toBool(d?.btnStart);
+  const btnPause = toBool(d?.btnPause);
+  const btnStop = toBool(d?.btnStop);
 
-  const trafficLight1_green = toBool(d?.trafficLight1_green_crosswalk);
-  const trafficLight1_yellow = toBool(d?.trafficLight1_yellow_crosswalk);
-  const trafficLight1_red = toBool(d?.trafficLight1_red_crosswalk); 
-  const trafficLight2_green = toBool(d?.trafficLight2_green_crosswalk);
-  const trafficLight2_yellow = toBool(d?.trafficLight2_yellow_crosswalk);
-  const trafficLight2_red = toBool(d?.trafficLight2_red_crosswalk); 
-  const pedestrian1_green = toBool(d?.pedestrian1_green_crosswalk);
-  const pedestrian1_red = toBool(d?.pedestrian1_red_crosswalk); 
-  const pedestrian2_green = toBool(d?.pedestrian2_green_crosswalk);
-  const pedestrian2_red = toBool(d?.pedestrian2_red_crosswalk);
+  const trafficLight1_green = toBool(d?.trafficLight1_green);
+  const trafficLight1_yellow = toBool(d?.trafficLight1_yellow);
+  const trafficLight1_red = toBool(d?.trafficLight1_red); 
+  const trafficLight2_green = toBool(d?.trafficLight2_green);
+  const trafficLight2_yellow = toBool(d?.trafficLight2_yellow);
+  const trafficLight2_red = toBool(d?.trafficLight2_red); 
+  const pedestrian1_green = toBool(d?.pedestrian1_green);
+  const pedestrian1_red = toBool(d?.pedestrian1_red); 
+  const pedestrian2_green = toBool(d?.pedestrian2_green);
+  const pedestrian2_red = toBool(d?.pedestrian2_red);
 
-  const setCrosswalkType = () => saveSection({ crosswalkType: !crosswalkType });
+  const setCrosswalkType = async () => {
+    try {
+      await saveSection({ crosswalkType: !toBool(d?.crosswalkType) });
+    } catch (e) { console.error('setCrosswalkType error:', e); }
+  };
 
-  const setStartAsync = () => saveSection({ btnCrosswalkStart: !btnCrosswalkStart });
-  const setPauseAsync = () => saveSection({ btnCrosswalkPause: !btnCrosswalkPause });
-  const setStopAsync  = () => saveSection({ btnCrosswalkStop: !btnCrosswalkStop });
+  const setStartAsync = async () => {
+    try {
+      await saveSection({ btnStart: !toBool(d?.btnStart) });
+    } catch (e) { console.error('setStartAsync error:', e); }
+  };
+  const setPauseAsync = async () => {
+    try {
+      await saveSection({ btnPause: !toBool(d?.btnPause) });
+    } catch (e) { console.error('setPauseAsync error:', e); }
+  };
+  const setStopAsync = async () => {
+    try {
+      await saveSection({ btnStop: !toBool(d?.btnStop) });
+    } catch (e) { console.error('setStopAsync error:', e); }
+  };
 
-  const setCrosswalkLightGreen1 = () => {
-    const value = !trafficLight1_green;
-    saveSection({ trafficLight1_green_crosswalk: value });
+  const setCrosswalkLightGreen1 = async () => {
+    try {
+      await saveSection({ trafficLight1_green: !toBool(d?.trafficLight1_green) });
+    } catch (e) { console.error('setCrosswalkLightGreen1 error:', e); }
   };
-  const setCrosswalkLightYellow1 = () => {
-    const value = !trafficLight1_yellow;
-    saveSection({ trafficLight1_yellow_crosswalk: value });
+  const setCrosswalkLightYellow1 = async () => {
+    try {
+      await saveSection({ trafficLight1_yellow: !toBool(d?.trafficLight1_yellow) });
+    } catch (e) { console.error('setCrosswalkLightYellow1 error:', e); }
   };
-  const setCrosswalkLightRed1 = () => {
-    const value = !trafficLight1_red;
-    saveSection({ trafficLight1_red_crosswalk: value });
+  const setCrosswalkLightRed1 = async () => {
+    try {
+      await saveSection({ trafficLight1_red: !toBool(d?.trafficLight1_red) });
+    } catch (e) { console.error('setCrosswalkLightRed1 error:', e); }
   };
-  const setCrosswalkLightGreen2 = () => {
-    const value = !trafficLight2_green;
-    saveSection({ trafficLight2_green_crosswalk: value });
+  const setCrosswalkLightGreen2 = async () => {
+    try {
+      await saveSection({ trafficLight2_green: !toBool(d?.trafficLight2_green) });
+    } catch (e) { console.error('setCrosswalkLightGreen2 error:', e); }
   };
-  const setCrosswalkLightYellow2 = () => {
-    const value = !trafficLight2_yellow;
-    saveSection({ trafficLight2_yellow_crosswalk: value });
+  const setCrosswalkLightYellow2 = async () => {
+    try {
+      await saveSection({ trafficLight2_yellow: !toBool(d?.trafficLight2_yellow) });
+    } catch (e) { console.error('setCrosswalkLightYellow2 error:', e); }
   };
-  const setCrosswalkLightRed2 = () => {
-    const value = !trafficLight2_red;
-    saveSection({ trafficLight2_red_crosswalk: value });
+  const setCrosswalkLightRed2 = async () => {
+    try {
+      await saveSection({ trafficLight2_red: !toBool(d?.trafficLight2_red) });
+    } catch (e) { console.error('setCrosswalkLightRed2 error:', e); }
   };
-  const setPedestrianLightGreen1 = () => {
-    const value = !pedestrian1_green;
-    saveSection({ pedestrian1_green_crosswalk: value });
+  const setPedestrianLightGreen1 = async () => {
+    try {
+      await saveSection({ pedestrian1_green: !toBool(d?.pedestrian1_green) });
+    } catch (e) { console.error('setPedestrianLightGreen1 error:', e); }
   };
-  const setPedestrianLightRed1 = () => {
-    const value = !pedestrian1_red;
-    saveSection({ pedestrian1_red_crosswalk: value });
+  const setPedestrianLightRed1 = async () => {
+    try {
+      await saveSection({ pedestrian1_red: !toBool(d?.pedestrian1_red) });
+    } catch (e) { console.error('setPedestrianLightRed1 error:', e); }
   };
-  const setPedestrianLightGreen2 = () => {
-    const value = !pedestrian2_green;
-    saveSection({ pedestrian2_green_crosswalk: value });
+  const setPedestrianLightGreen2 = async () => {
+    try {
+      await saveSection({ pedestrian2_green: !toBool(d?.pedestrian2_green) });
+    } catch (e) { console.error('setPedestrianLightGreen2 error:', e); }
   };
-  const setPedestrianLightRed2 = () => {
-    const value = !pedestrian2_red;
-    saveSection({ pedestrian2_red_crosswalk: value });
+  const setPedestrianLightRed2 = async () => {
+    try {
+      await saveSection({ pedestrian2_red: !toBool(d?.pedestrian2_red) });
+    } catch (e) { console.error('setPedestrianLightRed2 error:', e); }
   };
 
   const toggleCrosswalkType = async () => {
@@ -303,7 +329,7 @@ function CrosswalkParamsSidebar({names, idx, onPrev, onNext, onJump,})
 
       await saveSection({ crosswalkType: next });
 
-      setStatus(`ok ✔ (store now: ${String(toBool(d?.crosswalkType))})`);
+      setStatus(`ok (store now: ${String(toBool(d?.crosswalkType))})`);
     } catch (e) {
       console.error(e);
       setStatus(`error ✖ ${e?.message ?? e}`);
@@ -347,16 +373,16 @@ function CrosswalkParamsSidebar({names, idx, onPrev, onNext, onJump,})
       <div>
         <Col>
           <div className="gap-2 mb-2">
-            <Button className="btn--start" onClick={setStartAsync} /*disabled={isFetching}*/>
-              Start ({String(btnCrosswalkStart)})
+            <Button className="btn--start" onClick={setStartAsync}>
+              Start ({String(btnStart)})
             </Button>
           
-            <Button className="btn--pause" onClick={setPauseAsync} /*disabled={isFetching}*/>
-              Pause ({String(btnCrosswalkPause)})
+            <Button className="btn--pause" onClick={setPauseAsync}>
+              Pause ({String(btnPause)})
             </Button>
           
-            <Button className="btn--stop" onClick={setStopAsync} /*disabled={isFetching}*/>
-              Stop ({String(btnCrosswalkStop)})
+            <Button className="btn--stop" onClick={setStopAsync}>
+              Stop ({String(btnStop)})
             </Button>  
           </div>
 
@@ -421,28 +447,28 @@ function CrosswalkPage({ setAside }) {
 
     useEffect(() => {
     if (
-      d?.trafficLight1_green_crosswalk === undefined &&
-      d?.trafficLight1_yellow_crosswalk === undefined &&
-      d?.trafficLight1_red_crosswalk === undefined &&
-      d?.trafficLight2_green_crosswalk === undefined &&
-      d?.trafficLight2_yellow_crosswalk === undefined &&
-      d?.trafficLight2_red_crosswalk === undefined &&
-      d?.pedestrian1_green_crosswalk === undefined &&
-      d?.pedestrian1_red_crosswalk === undefined &&
-      d?.pedestrian2_green_crosswalk === undefined &&
-      d?.pedestrian2_red_crosswalk === undefined
+      d?.trafficLight1_green === undefined &&
+      d?.trafficLight1_yellow === undefined &&
+      d?.trafficLight1_red === undefined &&
+      d?.trafficLight2_green === undefined &&
+      d?.trafficLight2_yellow === undefined &&
+      d?.trafficLight2_red === undefined &&
+      d?.pedestrian1_green === undefined &&
+      d?.pedestrian1_red === undefined &&
+      d?.pedestrian2_green === undefined &&
+      d?.pedestrian2_red === undefined
     ) {
       saveSection({
-        trafficLight1_green_crosswalk: 'false',
-        trafficLight1_yellow_crosswalk: 'false',
-        trafficLight1_red_crosswalk: 'false',
-        trafficLight2_green_crosswalk: 'false',
-        trafficLight2_yellow_crosswalk: 'false',
-        trafficLight2_red_crosswalk: 'false',
-        pedestrian1_green_crosswalk: 'false',
-        pedestrian1_red_crosswalk: 'false',
-        pedestrian2_green_crosswalk: 'false',
-        pedestrian2_red_crosswalk: 'false',
+        trafficLight1_green: 'false',
+        trafficLight1_yellow: 'false',
+        trafficLight1_red: 'false',
+        trafficLight2_green: 'false',
+        trafficLight2_yellow: 'false',
+        trafficLight2_red: 'false',
+        pedestrian1_green: 'false',
+        pedestrian1_red: 'false',
+        pedestrian2_green: 'false',
+        pedestrian2_red: 'false',
       });
     }
   }, [d, saveSection]);
@@ -489,25 +515,25 @@ function CrosswalkPage({ setAside }) {
   }, []);
 
   const CARW = {
-    green: d?.trafficLight1_green_crosswalk ?? false,
-    yellow: d?.trafficLight1_yellow_crosswalk ?? false,
-    red: d?.trafficLight1_red_crosswalk ?? false,
+    green: d?.trafficLight1_green ?? false,
+    yellow: d?.trafficLight1_yellow ?? false,
+    red: d?.trafficLight1_red ?? false,
   };
 
   const CARE = {
-    green: d?.trafficLight2_green_crosswalk ?? false,
-    yellow: d?.trafficLight2_yellow_crosswalk ?? false,
-    red: d?.trafficLight2_red_crosswalk ?? false,
+    green: d?.trafficLight2_green ?? false,
+    yellow: d?.trafficLight2_yellow ?? false,
+    red: d?.trafficLight2_red ?? false,
   };
 
   const PEDN = {
-    green: d?.pedestrian1_green_crosswalk ?? false,
-    red: d?.pedestrian1_red_crosswalk ?? false,
+    green: d?.pedestrian1_green ?? false,
+    red: d?.pedestrian1_red ?? false,
   };
 
   const PEDS = {
-    green: d?.pedestrian2_green_crosswalk ?? false,
-    red: d?.pedestrian2_red_crosswalk ?? false,
+    green: d?.pedestrian2_green ?? false,
+    red: d?.pedestrian2_red ?? false,
   };
 
   const lights = [
@@ -526,16 +552,16 @@ function CrosswalkPage({ setAside }) {
     { id: 'ped-S-red', kind: 'ped', color: 'red', state: PEDS, dir: 0, x: '63.4%', y: '75.7%' }, // S = 0° 
   ];
 
-  const btnPed1 = toBool(d?.btnCrosswalk1_crosswalk);
-  const btnPed2 = toBool(d?.btnCrosswalk2_crosswalk);
+  const btnPed1 = toBool(d?.btnCrosswalk1);
+  const btnPed2 = toBool(d?.btnCrosswalk2);
 
   const togglePedN = () => {
     const value = !btnPed1;
-    saveSection({ btnCrosswalk1_crosswalk: value });
+    saveSection({ btnCrosswalk1: value });
   };
   const togglePedS = () => {
     const value = !btnPed2;
-    saveSection({ btnCrosswalk2_crosswalk: value });
+    saveSection({ btnCrosswalk2: value });
   };
 
   return (

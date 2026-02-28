@@ -61,14 +61,14 @@ function coerce(val, rule) {
     const r = typeof rule === 'string' ? { type: rule } : rule || {};
 
     switch (r.type) {
-        case 'boolean': return toBool(val, r.default ?? false);
-        case 'number':
-        case 'real':    return toNum(val,  r.default ?? 0);
-        case 'int':
-        case 'integer': return toInt(val,  r.default ?? 0);
-        case 'string':  return toStr(val,  r.default ?? '');
-        case 'date':    return toDate(val, r.default ?? null);
-        case 'enum':    return toEnum(val, r.values || [], r.default);
+        case 'boolean' : return toBool(val, r.default ?? false);
+        case 'number' :
+        case 'real': return toNum(val,  r.default ?? 0);
+        case 'int' :
+        case 'integer' : return toInt(val,  r.default ?? 0);
+        case 'string': return toStr(val,  r.default ?? '');
+        case 'date' : return toDate(val, r.default ?? null);
+        case 'enum' : return toEnum(val, r.values || [], r.default);
         case 'array': {
         const arr = Array.isArray(val) ? val : (r.default ?? []);
         const elemRule = r.element || { type: 'any' };

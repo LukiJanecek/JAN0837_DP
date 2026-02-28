@@ -25,8 +25,10 @@ namespace JAN0837_DP.Communication.comTCPIP
             BtnCrossroadStart = 1 << 0,
             BtnCrossroadPause = 1 << 1,
             BtnCrossroadStop = 1 << 2,
-            BtnCrosswalk1 = 1 << 3,
-            BtnCrosswalk2 = 1 << 4
+            BtnWestCrosswalk1 = 1 << 3,
+            BtnWestCrosswalk2 = 1 << 4,
+            BtnSouthCrosswalk1 = 1 << 5,
+            BtnSouthCrosswalk2 = 1 << 6
         }
 
         [Flags]
@@ -34,16 +36,22 @@ namespace JAN0837_DP.Communication.comTCPIP
         {
             None = 0,
             crossroadType = 1 << 0,
-            Light1_Green = 1 << 1,
-            Light1_Yellow = 1 << 2,
-            Light1_Red = 1 << 3,
-            Light2_Green = 1 << 4,
-            Light2_Yellow = 1 << 5,
-            Light2_Red = 1 << 6,
-            Pedestrian1_Green = 1 << 7,
-            Pedestrian1_Red = 2 << 0,
-            Pedestrian2_Green = 2 << 1,
-            Pedestrian2_Red = 2 << 2
+            LightNorth_Green = 1 << 1,
+            LightNorth_Yellow = 1 << 2,
+            LightNorth_Red = 1 << 3,
+            LightSouth_Green = 1 << 4,
+            LightSouth_Yellow = 1 << 5,
+            LightSouth_Red = 1 << 6,
+            LightWest_Green = 1 << 7,
+            LightWest_Yellow = 1 << 0,
+            LightWest_Red = 1 << 1,
+            LightEast_Green = 1 << 2,
+            LightEast_Yellow = 1 << 3,
+            LightEast_Red = 1 << 4,
+            PedestrianWest_Green = 1 << 7,
+            PedestrianWest_Red = 2 << 0,
+            PedestrianEast_Green = 2 << 1,
+            PedestrianEast_Red = 2 << 2
         }
 
         [Flags]

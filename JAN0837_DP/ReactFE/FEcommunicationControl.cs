@@ -161,6 +161,7 @@ namespace JAN0837_DP.ReactFE
         {
             switch (category)
             {
+                /*
                 case "TestData":
                     var testdata = TestData.AppState.Get();
                     switch (key)
@@ -173,6 +174,7 @@ namespace JAN0837_DP.ReactFE
                     }
                     TestData.AppState.Set(testdata);
                     break;
+                */
                 case "CrossroadData":
                     ApplyCrossroadUpdate(key, value);
                     break;
@@ -200,53 +202,90 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnCrossroadStart": 
+                    case "btnStart": 
                         CrossroadData.btnStart = value; 
                         break;
-                    case "btnCrossroadPause": 
+                    case "btnPause": 
                         CrossroadData.btnPause = value; 
                         break;
-                    case "btnCrossroadStop": 
+                    case "btnStop": 
                         CrossroadData.btnStop = value; 
                         break;
-                    case "btnCrosswalk1": 
-                        CrossroadData.btnCrosswalk1 = value; 
+                    case "btnWestCrosswalk1": 
+                        CrossroadData.btnWestCrosswalk1 = value; 
                         break;
-                    case "btnCrosswalk2": 
-                        CrossroadData.btnCrosswalk2 = value; 
+                    case "btnWestCrosswalk2": 
+                        CrossroadData.btnWestCrosswalk2 = value; 
                         break;
-                    case "crossroadType":
-                        CrossroadData.crossroadType = value;
+                    case "btnEastCrosswalk1": 
+                        CrossroadData.btnSouthCrosswalk1 = value; 
                         break;
-                    case "trafficLight1_green": 
-                        CrossroadData.trafficLight1_green = value; 
+                    case "btnEastCrosswalk2": 
+                        CrossroadData.btnSouthCrosswalk2 = value; 
                         break;
-                    case "trafficLight1_yellow": 
-                        CrossroadData.trafficLight1_yellow = value; 
+                    case "crossroadType": 
+                        CrossroadData.crossroadType = value; 
                         break;
-                    case "trafficLight1_red": 
-                        CrossroadData.trafficLight1_red = value; 
+                    case "trafficLightNorth_green": 
+                        CrossroadData.trafficLightNorth_green = value; 
                         break;
-                    case "trafficLight2_green": 
-                        CrossroadData.trafficLight2_green = value; 
+                    case "trafficLightNorth_yellow": 
+                        CrossroadData.trafficLightNorth_yellow = value; 
                         break;
-                    case "trafficLight2_yellow": 
-                        CrossroadData.trafficLight2_yellow = value; 
+                    case "trafficLightNorth_red": 
+                        CrossroadData.trafficLightNorth_red = value; 
                         break;
-                    case "trafficLight2_red": CrossroadData.trafficLight2_red = value; 
+                    case "trafficLightSouth_green": 
+                        CrossroadData.trafficLightSouth_green = value; 
                         break;
-                    case "pedestrian1_green": 
-                        CrossroadData.pedestrian1_green = value; 
+                    case "trafficLightSouth_yellow": 
+                        CrossroadData.trafficLightSouth_yellow = value; 
                         break;
-                    case "pedestrian1_red": 
-                        CrossroadData.pedestrian1_red = value; 
+                    case "trafficLightSouth_red": 
+                        CrossroadData.trafficLightSouth_red = value; 
                         break;
-                    case "pedestrian2_green": 
-                        CrossroadData.pedestrian2_green = value; 
+                    case "trafficLightWest_green": 
+                        CrossroadData.trafficLightWest_green = value; 
                         break;
-                    case "pedestrian2_red": 
-                        CrossroadData.pedestrian2_red = value; 
+                    case "trafficLightWest_yellow": 
+                        CrossroadData.trafficLightWest_yellow = value;
                         break;
+                    case "trafficLightWest_red": 
+                        CrossroadData.trafficLightWest_red = value; 
+                        break;
+                    case "trafficLightEast_green": 
+                        CrossroadData.trafficLightEast_green = value;
+                        break;
+                    case "trafficLightEast_yellow": 
+                        CrossroadData.trafficLightEast_yellow = value; 
+                        break;
+                    case "trafficLightEast_red": 
+                        CrossroadData.trafficLightEast_red = value; 
+                        break;
+                    /*
+                    case "pedestrianNorth_green": 
+                        CrossroadData.pedestrianNorth_green = value; 
+                        break;
+                    case "pedestrianNorth_red": 
+                        CrossroadData.pedestrianNorth_red = value; 
+                        break;
+                    */
+                    case "pedestrianSouth_green": CrossroadData.pedestrianSouth_green = value; 
+                        break;
+                    case "pedestrianSouth_red": CrossroadData.pedestrianSouth_red = value;
+                        break;
+                    case "pedestrianWest_green": CrossroadData.pedestrianWest_green = value; 
+                        break;
+                    case "pedestrianWest_red": CrossroadData.pedestrianWest_red = value; 
+                        break;
+                    /*
+                    case "pedestrianEast_green": 
+                        CrossroadData.pedestrianEast_green = value; 
+                        break;
+                    case "pedestrianEast_red": 
+                        CrossroadData.pedestrianEast_red = value; 
+                        break;
+                    */
                 }
             });
         }
@@ -516,7 +555,7 @@ namespace JAN0837_DP.ReactFE
                     case "sensorConnectorConnected":
                         CarLightData.sensorConnectorConnected = value;
                         break;
-                    case "done_carlight":
+                    case "done":
                         CarLightData.done = value;
                         break;
                 }
@@ -664,18 +703,30 @@ namespace JAN0837_DP.ReactFE
                             btnStart = crossroaddata.btnStart,
                             btnPause = crossroaddata.btnPause,
                             btnStop = crossroaddata.btnStop,
-                            btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                            btnCrosswalk2 = crossroaddata.btnCrosswalk2,
-                            trafficLight1_green = crossroaddata.trafficLight1_green,
-                            trafficLight1_yellow = crossroaddata.trafficLight1_yellow,
-                            trafficLight1_red = crossroaddata.trafficLight1_red,
-                            trafficLight2_green = crossroaddata.trafficLight2_green,
-                            trafficLight2_yellow = crossroaddata.trafficLight2_yellow,
-                            trafficLight2_red = crossroaddata.trafficLight2_red,
-                            pedestrian1_green = crossroaddata.pedestrian1_green,
-                            pedestrian1_red = crossroaddata.pedestrian1_red,
-                            pedestrian2_green = crossroaddata.pedestrian2_green,
-                            pedestrian2_red = crossroaddata.pedestrian2_red
+                            btnWestCrosswalk1 = crossroaddata.btnWestCrosswalk1,
+                            btnWestCrosswalk2 = crossroaddata.btnWestCrosswalk2,
+                            btnEastCrosswalk1 = crossroaddata.btnSouthCrosswalk1,
+                            btnEastCrosswalk2 = crossroaddata.btnSouthCrosswalk2,
+                            trafficLightNorth_green = crossroaddata.trafficLightNorth_green,
+                            trafficLightNorth_yellow = crossroaddata.trafficLightNorth_yellow,
+                            trafficLightNorth_red = crossroaddata.trafficLightNorth_red,
+                            trafficLightSouth_green = crossroaddata.trafficLightSouth_green,
+                            trafficLightSouth_yellow = crossroaddata.trafficLightSouth_yellow,
+                            trafficLightSouth_red = crossroaddata.trafficLightSouth_red,
+                            trafficLightWest_green = crossroaddata.trafficLightWest_green,
+                            trafficLightWest_yellow = crossroaddata.trafficLightWest_yellow,
+                            trafficLightWest_red = crossroaddata.trafficLightWest_red,
+                            trafficLightEast_green = crossroaddata.trafficLightEast_green,
+                            trafficLightEast_yellow = crossroaddata.trafficLightEast_yellow,
+                            trafficLightEast_red = crossroaddata.trafficLightEast_red,
+                            //pedestrianNorth_green = crossroaddata.pedestrianNorth_green,
+                            //pedestrianNorth_red = crossroaddata.pedestrianNorth_red,
+                            pedestrianSouth_green = crossroaddata.pedestrianSouth_green,
+                            pedestrianSouth_red = crossroaddata.pedestrianSouth_red,
+                            pedestrianWest_green = crossroaddata.pedestrianWest_green,
+                            pedestrianWest_red = crossroaddata.pedestrianWest_red,
+                            //pedestrianEast_green = crossroaddata.pedestrianEast_green,
+                            //pedestrianEast_red = crossroaddata.pedestrianEast_red
                         },
                         CrosswalkData = new
                         {
@@ -824,7 +875,7 @@ namespace JAN0837_DP.ReactFE
 
         public object GetCurrentState()
         {
-            var testdata = TestData.AppState.Get();
+            //var testdata = TestData.AppState.Get();
             var crossroaddata = CrossroadData.Get();
             var crosswalkdata = CrosswalkData.Get();
             var regulatordata = RegulatorData.Get();
@@ -834,20 +885,24 @@ namespace JAN0837_DP.ReactFE
 
             return new
             {
+                /*
                 TestData = new
                 {
                     text = testdata.text,
                     number = testdata.number,
                     toggle = testdata.toggle
                 },
+                */
                 CrossroadData = new
                 {
                     crossroadType = crossroaddata.crossroadType,
-                    btnCrossroadStart = crossroaddata.btnStart,
-                    btnCrossroadPause = crossroaddata.btnPause,
-                    btnCrossroadStop = crossroaddata.btnStop,
-                    btnCrosswalk1 = crossroaddata.btnCrosswalk1,
-                    btnCrosswalk2 = crossroaddata.btnCrosswalk2
+                    btnStart = crossroaddata.btnStart,
+                    btnPause = crossroaddata.btnPause,
+                    btnStop = crossroaddata.btnStop,
+                    btnWestCrosswalk1 = crossroaddata.btnWestCrosswalk1,
+                    btnWestCrosswalk2 = crossroaddata.btnWestCrosswalk2,
+                    btnSouthCrosswalk1 = crossroaddata.btnSouthCrosswalk1,
+                    btnSouthCrosswalk2 = crossroaddata.btnSouthCrosswalk2
                 },
                 CrosswalkData = new
                 {

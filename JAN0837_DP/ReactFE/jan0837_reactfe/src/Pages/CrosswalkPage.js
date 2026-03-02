@@ -15,30 +15,6 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData, useSectionData } from '../Communication/DataProvider.js';
 
-/*
- * ── CrosswalkData variable map ────────────────────
- *
- * INPUTS  (FE → PLC):
- *   btnCrosswalkStart              Bool – start crosswalk
- *   btnCrosswalkPause              Bool – pause crosswalk
- *   btnCrosswalkStop               Bool – stop crosswalk
- *   btnCrosswalk1_crosswalk        Bool – pedestrian button N
- *   btnCrosswalk2_crosswalk        Bool – pedestrian button S
- *
- * OUTPUTS (PLC → FE):
- *   crosswalkType                  Bool – night / day
- *   trafficLight1_green_crosswalk  Bool
- *   trafficLight1_yellow_crosswalk Bool
- *   trafficLight1_red_crosswalk    Bool
- *   trafficLight2_green_crosswalk  Bool
- *   trafficLight2_yellow_crosswalk Bool
- *   trafficLight2_red_crosswalk    Bool
- *   pedestrian1_green_crosswalk    Bool
- *   pedestrian1_red_crosswalk      Bool
- *   pedestrian2_green_crosswalk    Bool
- *   pedestrian2_red_crosswalk      Bool
- */
-
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
   const s = String(v ?? '').trim().toLowerCase();

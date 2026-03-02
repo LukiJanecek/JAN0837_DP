@@ -67,16 +67,22 @@ Regulator_Input_UDT_NAME = "Regulator_Input"
 
 Regulator_Input_UDT_FIELDS = [   
     ("switchstate", "Bool", "FALSE"),
-    ("R", "Real", "0.0"),
-    ("C", "Real", "0.0"),
-    ("U", "Real", "0.0"),
+    ("order", "Int", "1"),
+    ("R1", "Real", "0.0"),
+    ("R2", "Real", "0.0"),
+    ("C1", "Real", "0.0"),
+    ("C2", "Real", "0.0"),
+    ("Uin", "Real", "0.0"),
     ("Td", "Real", "0.0"),
+    ("Ts", "Real", "0.0"),
 ]
 
 Regulator_Output_UDT_NAME = "Regulator_Output"
 
 Regulator_Output_UDT_FIELDS = [
-    ("Uc", "Real", "0.0"),
+    ("Uc1", "Real", "0.0"),
+    ("Uc2", "Real", "0.0"),
+    ("PV", "Real", "0.0"),
 ]
 
 CarWash_Input_UDT_NAME = "CarWash_Input"

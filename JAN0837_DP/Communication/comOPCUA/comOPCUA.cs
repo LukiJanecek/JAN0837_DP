@@ -195,11 +195,11 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
         }
 
-        public void UpdateSringVariable(string variableName, string value)
+        public void UpdateStringVariable(string variableName, string value)
         {
             if (_server != null && running)
             {
-                _server.UpdateVariable(variableName, value);
+                _server.UpdateStringVariable(variableName, value);
             }
         }
 
@@ -207,7 +207,31 @@ namespace JAN0837_DP.Communication.comOPCUA
         {
             if (_server != null && running)
             {
-                _server.UpdateVariable(variableName, value);
+                _server.UpdateIntVariable(variableName, value);
+            }
+        }
+
+        public void UpdateFloatVariable(string variableName, float value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateFloatVariable(variableName, value);
+            }
+        }
+
+        public void UpdateDoubleVariable(string variableName, double value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateDoubleVariable(variableName, value);
+            }
+        }
+
+        public void UpdateRealVariable(string variableName, double value)
+        {
+            if (_server != null && running)
+            {
+                _server.UpdateDoubleVariable(variableName, value);
             }
         }
 
@@ -219,6 +243,16 @@ namespace JAN0837_DP.Communication.comOPCUA
                 return _server.ReadVariable(variableName);
             }
             return false;
+        }
+
+        public string ReadVariableAsString(string variableName)
+        {
+            if (_server != null && running)
+            {
+                var raw = _server.ReadVariableRaw(variableName);
+                return raw?.ToString() ?? string.Empty;
+            }
+            return string.Empty;
         }
     }
 
@@ -1117,19 +1151,34 @@ namespace JAN0837_DP.Communication.comOPCUA
             _nodeManager?.UpdateBoolVariable(variableName, value);
         }
 
-        public void UpdateVariable(string variableName, string value)
+        public void UpdateStringVariable(string variableName, string value)
         {
-            _nodeManager?.UpdateVariable(variableName, value);
+            _nodeManager?.UpdateStringVariable(variableName, value);
         }
 
-        public void UpdateVariable(string variableName, int value)
+        public void UpdateIntVariable(string variableName, int value)
         {
-            _nodeManager?.UpdateVariable(variableName, value);
+            _nodeManager?.UpdateIntVariable(variableName, value);
+        }
+
+        public void UpdateFloatVariable(string variableName, float value)
+        {
+            _nodeManager?.UpdateFloatVariable(variableName, value);
+        }
+
+        public void UpdateDoubleVariable(string variableName, double value)
+        {
+            _nodeManager?.UpdateDoubleVariable(variableName, value);
         }
 
         public bool ReadVariable(string variableName)
         {
             return _nodeManager?.ReadVariable(variableName) ?? false;
+        }
+
+        public object ReadVariableRaw(string variableName)
+        {
+            return _nodeManager?.ReadVariableRaw(variableName);
         }
     }
 
@@ -1207,7 +1256,7 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
         }
 
-        public void UpdateVariable(string variableName, string value)
+        public void UpdateStringVariable(string variableName, string value)
         {
             lock (Lock)
             {
@@ -1220,7 +1269,33 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
         }
 
-        public void UpdateVariable(string variableName, int value)
+        public void UpdateIntVariable(string variableName, int value)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+            }
+        }
+
+        public void UpdateFloatVariable(string variableName, float value)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+            }
+        }
+
+        public void UpdateDoubleVariable(string variableName, double value)
         {
             lock (Lock)
             {
@@ -1243,6 +1318,18 @@ namespace JAN0837_DP.Communication.comOPCUA
                 }
             }
             return false;
+        }
+
+        public object ReadVariableRaw(string variableName)
+        {
+            lock (Lock)
+            {
+                if (_variables.TryGetValue(variableName, out var variable))
+                {
+                    return variable.Value;
+                }
+            }
+            return null;
         }
     }
 }

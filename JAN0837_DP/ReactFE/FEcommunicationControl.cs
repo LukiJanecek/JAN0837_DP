@@ -357,20 +357,38 @@ namespace JAN0837_DP.ReactFE
                     case "switchstate": 
                         RegulatorData.switchstate = value; 
                         break;
-                    case "R": 
-                        RegulatorData.R = value; 
+                    case "order": 
+                        RegulatorData.order = value; 
                         break;
-                    case "C": 
-                        RegulatorData.C = value; 
+                    case "R1": 
+                        RegulatorData.R1 = value; 
                         break;
-                    case "U": 
-                        RegulatorData.U = value; 
+                    case "R2":
+                        RegulatorData.R2 = value;
+                        break;
+                    case "C1": 
+                        RegulatorData.C1 = value; 
+                        break;
+                    case "C2":
+                        RegulatorData.C2 = value;
+                        break;
+                    case "Uin": 
+                        RegulatorData.Uin = value; 
                         break;
                     case "Td": 
                         RegulatorData.Td = value; 
                         break;
-                    case "Uc":
-                        RegulatorData.Uc = value;
+                    case "Ts": 
+                        RegulatorData.Ts = value; 
+                        break;
+                    case "Uc1":
+                        RegulatorData.Uc1 = value;
+                        break;
+                    case "Uc2":
+                        RegulatorData.Uc2 = value;
+                        break;
+                    case "PV":
+                        RegulatorData.PV = value;
                         break;
                 }
             });
@@ -681,7 +699,7 @@ namespace JAN0837_DP.ReactFE
                 // ── Data endpoints ──
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
-                    var testdata = TestData.AppState.Get();
+                    //var testdata = TestData.AppState.Get();
                     var crossroaddata = CrossroadData.Get();
                     var crosswalkdata = CrosswalkData.Get();
                     var regulatordata = RegulatorData.Get();
@@ -691,18 +709,20 @@ namespace JAN0837_DP.ReactFE
 
                     WriteJSON(resp, new
                     {
+                        /*
                         TestData = new
                         {
                             number = testdata.number,
                             text = testdata.text,
                             toggle = testdata.toggle
                         },
+                        */
                         CrossroadData = new
                         {
-                            crossroadType = crossroaddata.crossroadType,
                             btnStart = crossroaddata.btnStart,
                             btnPause = crossroaddata.btnPause,
                             btnStop = crossroaddata.btnStop,
+                            crossroadType = crossroaddata.crossroadType,
                             btnWestCrosswalk1 = crossroaddata.btnWestCrosswalk1,
                             btnWestCrosswalk2 = crossroaddata.btnWestCrosswalk2,
                             btnEastCrosswalk1 = crossroaddata.btnSouthCrosswalk1,
@@ -730,10 +750,10 @@ namespace JAN0837_DP.ReactFE
                         },
                         CrosswalkData = new
                         {
-                            crosswalkType = crosswalkdata.crosswalkType,
                             btnStart = crosswalkdata.btnStart,
                             btnPause = crosswalkdata.btnPause,
                             btnStop = crosswalkdata.btnStop,
+                            crosswalkType = crosswalkdata.crosswalkType,
                             btnCrosswalk1 = crosswalkdata.btnCrosswalk1,
                             btnCrosswalk2 = crosswalkdata.btnCrosswalk2,
                             trafficLight1_green = crosswalkdata.trafficLight1_green,
@@ -750,11 +770,17 @@ namespace JAN0837_DP.ReactFE
                         RegulatorData = new
                         {
                             switchstate = regulatordata.switchstate,
-                            R = regulatordata.R,
-                            C = regulatordata.C,
-                            U = regulatordata.U,
+                            order = regulatordata.order,
+                            R1 = regulatordata.R1,
+                            R2 = regulatordata.R2,
+                            C1 = regulatordata.C1,
+                            C2 = regulatordata.C2,
+                            Uin = regulatordata.Uin,
                             Td = regulatordata.Td,
-                            Uc = regulatordata.Uc
+                            Ts = regulatordata.Ts,
+                            Uc1 = regulatordata.Uc1,
+                            Uc2 = regulatordata.Uc2,
+                            PV = regulatordata.PV
                         },
                         CarWash = new
                         {
@@ -895,7 +921,7 @@ namespace JAN0837_DP.ReactFE
                 */
                 CrossroadData = new
                 {
-                    crossroadType = crossroaddata.crossroadType,
+                    //crossroadType = crossroaddata.crossroadType,
                     btnStart = crossroaddata.btnStart,
                     btnPause = crossroaddata.btnPause,
                     btnStop = crossroaddata.btnStop,
@@ -906,7 +932,7 @@ namespace JAN0837_DP.ReactFE
                 },
                 CrosswalkData = new
                 {
-                    crosswalkType = crosswalkdata.crosswalkType,
+                    //crosswalkType = crosswalkdata.crosswalkType,
                     btnStart = crosswalkdata.btnStart,
                     btnPause = crosswalkdata.btnPause,
                     btnStop = crosswalkdata.btnStop,
@@ -915,11 +941,14 @@ namespace JAN0837_DP.ReactFE
                 },
                 RegulatorData = new
                 {
-                    switchstate_regulator = regulatordata.switchstate,
-                    R = regulatordata.R,
-                    C = regulatordata.C,
-                    U = regulatordata.U,
-                    Td = regulatordata.Td
+                    switchstate = regulatordata.switchstate,
+                    R1 = regulatordata.R1,
+                    R2 = regulatordata.R2,
+                    C1 = regulatordata.C1,
+                    C2 = regulatordata.C2,
+                    Uin = regulatordata.Uin,
+                    Td = regulatordata.Td,
+                    Ts = regulatordata.Ts
                 },
                 CarWash = new
                 {

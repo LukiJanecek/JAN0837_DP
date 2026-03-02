@@ -8,42 +8,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData, useSectionData } from '../Communication/DataProvider.js';
 
-/*
- * ── CarWash variable map ─────────────────────────
- *
- * INPUTS  (FE → PLC):
- *   btnCarWashEmergencyStop  Bool
- *   btnStartCarWash          Bool
- *   btnStopCarWash           Bool
- *   CarWashErrorSystem       Bool
- *   CarWashCarPosition       Bool
- *   CarWashShowerPosition    Bool
- *   CarWashMode              Int
- *
- * OUTPUTS (PLC → FE):
- *   CarWashLight_green       Bool
- *   CarWashLight_yellow      Bool
- *   CarWashLight_red         Bool
- *   CarWashDoor1_Up          Bool
- *   CarWashDoor1_Down        Bool
- *   CarWashDoor2_Up          Bool
- *   CarWashDoor2_Down        Bool
- *   CarWashChemicalsFront    Bool
- *   CarWashChemicalsSides    Bool
- *   CarWashChemicalsBack     Bool
- *   CarWashPrewash           Bool
- *   CarWashWater             Bool
- *   CarWashWax               Bool
- *   CarWashDry               Bool
- *   CarWashBrushes           Bool
- *   CarWashSoap              Bool
- *   CarWashActiveFoam        Bool
- *   CarWashTimeDoorMovement  Int
- *   CarWashMEMDoor           Bool
- *   CarWashMEMDoorTrig       Bool
- *   CarWashMEMDoorClosingtrig Bool
- */
-
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
   const s = String(v ?? '').trim().toLowerCase();
@@ -54,20 +18,20 @@ function CarWashParamsSidebar() {
   const { interval, setInterval } = useRefresh();
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CarWash');
 
-  const btnEmergencyStop = toBool(d?.btnCarWashEmergencyStop);
-  const btnStart = toBool(d?.btnStartCarWash);
-  const btnStop = toBool(d?.btnStopCarWash);
-  const errorSystem = toBool(d?.CarWashErrorSystem);
-  const carPosition = toBool(d?.CarWashCarPosition);
-  const showerPosition = toBool(d?.CarWashShowerPosition);
-  const mode = String(d?.CarWashMode ?? '');
-  const lightGreen = toBool(d?.CarWashLight_green);
-  const lightYellow = toBool(d?.CarWashLight_yellow);
-  const lightRed = toBool(d?.CarWashLight_red);
+  const btnEmergencyStop = toBool(d?.btnEmergencyStop);
+  const btnStart = toBool(d?.btnStart);
+  const btnStop = toBool(d?.btnStop);
+  const errorSystem = toBool(d?.ErrorSystem);
+  const carPosition = toBool(d?.CarPosition);
+  const showerPosition = toBool(d?.ShowerPosition);
+  const mode = String(d?.Mode ?? '');
+  const lightGreen = toBool(d?.Light_green);
+  const lightYellow = toBool(d?.Light_yellow);
+  const lightRed = toBool(d?.Light_red);
 
-  const setEmergencyStop = () => saveSection({ btnCarWashEmergencyStop: !btnEmergencyStop });
-  const setStartAsync = () => saveSection({ btnStartCarWash: !btnStart });
-  const setStopAsync = () => saveSection({ btnStopCarWash: !btnStop });
+  const setEmergencyStop = () => saveSection({ btnEmergencyStop: !btnEmergencyStop });
+  const setStartAsync = () => saveSection({ btnStart: !btnStart });
+  const setStopAsync = () => saveSection({ btnStop: !btnStop });
 
   return (
     <div>
@@ -110,24 +74,24 @@ function CarWashParamsSidebar() {
 function CarWashCanvas({ d }) {
   const b = (k) => toBool(d?.[k]);
 
-  const lightG = b('CarWashLight_green');
-  const lightY = b('CarWashLight_yellow');
-  const lightR = b('CarWashLight_red');
+  const lightG = b('Light_green');
+  const lightY = b('Light_yellow');
+  const lightR = b('Light_red');
 
-  const door1Up = b('CarWashDoor1_Up');
-  const door1Down = b('CarWashDoor1_Down');
-  const door2Up = b('CarWashDoor2_Up');
-  const door2Down = b('CarWashDoor2_Down');
+  const door1Up = b('Door1_Up');
+  const door1Down = b('Door1_Down');
+  const door2Up = b('Door2_Up');
+  const door2Down = b('Door2_Down');
 
-  const brushes = b('CarWashBrushes');
-  const water = b('CarWashWater');
-  const wax = b('CarWashWax');
-  const dry = b('CarWashDry');
-  const soap = b('CarWashSoap');
-  const prewash = b('CarWashPrewash');
+  const brushes = b('Brushes');
+  const water = b('Water');
+  const wax = b('Wax');
+  const dry = b('Dry');
+  const soap = b('Soap');
+  const prewash = b('Prewash');
 
-  const carPresent = b('CarWashCarPosition');
-  const showerPos = b('CarWashShowerPosition');
+  const carPosition = b('CarPosition');
+  const showerPosition = b('ShowerPosition');
 
   const doorY1 = door1Down ? 220 : 40;
   const doorY2 = door2Down ? 220 : 40;
@@ -143,7 +107,7 @@ function CarWashCanvas({ d }) {
         <rect x="680" y={doorY2} width="80" height="200" rx="8" fill="#7b8" stroke="#556" />
 
         {/* car placeholder */}
-        {carPresent ? (
+        {carPosition ? (
           <g>
             <rect x="300" y="220" width="200" height="80" rx="20" fill="#2b6fb3" />
             <circle cx="350" cy="315" r="16" fill="#222" />
@@ -179,7 +143,7 @@ function CarWashCanvas({ d }) {
         )}
 
         {/* shower position indicator */}
-        {showerPos && <circle cx="400" cy="190" r="8" fill="#1976d2" />}
+        {showerPosition && <circle cx="400" cy="190" r="8" fill="#1976d2" />}
 
         {/* status lights */}
         <g transform="translate(700,20)">

@@ -14,29 +14,6 @@ const toBool = (v) => {
   return s === 'true' || s === '1' || s === 'on';
 };
 
-/*
- * ── CarLight variable map ──────────────────────────────
- *
- * INPUTS  (FE → PLC):
- *   btnStart               Bool   – start test sequence
- *   btnReset               Bool   – reset test
- *   markerLight            Bool   – marker light on/off
- *   brakeLight             Bool   – brake light on/off
- *   turnLight              Bool   – turn signal on/off
- *   markerBlinksPerSec     Real   – blinks/s for marker
- *   brakeBlinksPerSec      Real   – blinks/s for brake
- *   turnBlinksPerSec       Real   – blinks/s for turn
- *   sensorPositionDelay    Real   – delay (s) before sensorPosition → TRUE
- *   sensorConnectorDelay   Real   – delay (s) before sensorConnector → TRUE
- *   blockSensorPosition    Bool   – block position sensor (simulate fault)
- *   blockSensorConnector   Bool   – block connector sensor (simulate fault)
- *
- * OUTPUTS (PLC → FE):
- *   sensorPosition              Bool – position sensor state
- *   sensorConnectorConnected    Bool – connector sensor state
- *   done                        Bool – sequence completed correctly
- */
-
 function CarLightCanvas({ d }) {
   const marker = toBool(d?.markerLight);
   const brake  = toBool(d?.brakeLight);
@@ -185,7 +162,7 @@ function CarLightParamsSidebar() {
 
       <Form>
         <Form.Group className="mb-2">
-          <Form.Label>Čidlo poloha – delay (s)</Form.Label>
+          <Form.Label>Sensor position – delay (s)</Form.Label>
           <Form.Control type="number" step="any" min="0"
             value={localPosDelay}
             onChange={e => setLocalPosDelay(e.target.value)}
@@ -194,7 +171,7 @@ function CarLightParamsSidebar() {
           />
         </Form.Group>
         <Form.Group className="mb-2">
-          <Form.Label>Čidlo konektor – delay (s)</Form.Label>
+          <Form.Label>Sensor connector – delay (s)</Form.Label>
           <Form.Control type="number" step="any" min="0"
             value={localConnDelay}
             onChange={e => setLocalConnDelay(e.target.value)}

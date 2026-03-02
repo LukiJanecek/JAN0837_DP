@@ -273,6 +273,9 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         public bool StrToBool(string s)
             => string.Equals(s, "true", StringComparison.OrdinalIgnoreCase);
 
+        public int StrToInt(string s)
+            => int.TryParse(s, out int result) ? result : 0;
+
         public string BoolToStr(bool b)
             => b ? "true" : "false";
         

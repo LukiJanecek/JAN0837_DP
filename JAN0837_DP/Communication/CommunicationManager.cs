@@ -168,10 +168,14 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     var msgRegulatorInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Input")
@@ -369,10 +373,14 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Regulator/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
@@ -564,10 +572,14 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Input")
@@ -764,14 +776,32 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Input")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
+
+                                    var regultorOutput = new
+                                    {
+                                        Uc1 = RegulatorData.Uc1,
+                                        Uc2 = RegulatorData.Uc2, 
+                                        PV = RegulatorData.PV
+                                    };
+
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Regulator/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regultorOutput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
@@ -934,7 +964,7 @@ namespace JAN0837_DP.Communication
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
-                                    // Crosswalk Input/Output
+                                    // Crosswalk Input/Output 
                                     var crosswalkInput = new
                                     {
                                         start = CrosswalkData.btnStart == "true",
@@ -964,15 +994,28 @@ namespace JAN0837_DP.Communication
                                     // Regulator Input/Output
                                     var regulatorInput = new
                                     {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        sswitchstate = RegulatorData.switchstate == "true",
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Regulator/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+
+                                    var regulatorOutput = new
+                                    {
+                                        Uc1 = RegulatorData.Uc1,
+                                        Uc2 = RegulatorData.Uc2,
+                                        PV = RegulatorData.PV
+                                    };
+
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
+                                        .WithTopic("JAN0837/Regulator/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorOutput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
@@ -1168,10 +1211,14 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Input")
@@ -1368,10 +1415,14 @@ namespace JAN0837_DP.Communication
                                     var regulatorInput = new
                                     {
                                         switchstate = RegulatorData.switchstate == "true",
-                                        R = RegulatorData.R,
-                                        C = RegulatorData.C,
-                                        U = RegulatorData.U,
-                                        Td = RegulatorData.Td
+                                        order = RegulatorData.order,
+                                        R1 = RegulatorData.R1,
+                                        R2 = RegulatorData.R2,
+                                        C1 = RegulatorData.C1,
+                                        C2 = RegulatorData.C2,
+                                        Uin = RegulatorData.Uin,
+                                        Td = RegulatorData.Td,
+                                        Ts = RegulatorData.Ts
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Input")
@@ -1572,12 +1623,20 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("Pedestrian2_Green_Crosswalk", CrosswalkData.pedestrian2_green == "true");
                                     opcuaServer.UpdateBoolVariable("Pedestrian2_Red_Crosswalk", CrosswalkData.pedestrian2_red == "true");
 
-                                    // RegulatorData (read inputs FROM OPC UA server)
+                                    // RegulatorData 
                                     RegulatorData.switchstate = opcuaServer.ReadVariable("Switchstate") ? "true" : "false";
-                                    RegulatorData.R = opcuaServer.ReadVariable("R").ToString();
-                                    RegulatorData.C = opcuaServer.ReadVariable("C").ToString();
-                                    RegulatorData.U = opcuaServer.ReadVariable("U").ToString();
-                                    RegulatorData.Td = opcuaServer.ReadVariable("Td").ToString();
+                                    RegulatorData.order = opcuaServer.ReadVariableAsString("Order");
+                                    RegulatorData.R1 = opcuaServer.ReadVariableAsString("R1");
+                                    RegulatorData.R2 = opcuaServer.ReadVariableAsString("R2");
+                                    RegulatorData.C1 = opcuaServer.ReadVariableAsString("C1");
+                                    RegulatorData.C2 = opcuaServer.ReadVariableAsString("C2");
+                                    RegulatorData.Uin = opcuaServer.ReadVariableAsString("Uin");
+                                    RegulatorData.Td = opcuaServer.ReadVariableAsString("Td");
+                                    RegulatorData.Ts = opcuaServer.ReadVariableAsString("Ts");
+
+                                    opcuaServer.UpdateRealVariable("Uc1", double.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1Val) ? uc1Val : 0.0);
+                                    opcuaServer.UpdateRealVariable("Uc2", double.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2Val) ? uc2Val : 0.0);
+                                    opcuaServer.UpdateRealVariable("PV", double.TryParse(RegulatorData.PV, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var pvVal) ? pvVal : 0.0);
 
                                     // CarWash
                                     CarWashData.btnEmergencyStop = opcuaServer.ReadVariable("BtnCarWashEmergencyStop") ? "true" : "false";
@@ -1605,7 +1664,7 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("Brushes", CarWashData.Brushes == "true");
                                     opcuaServer.UpdateBoolVariable("Soap", CarWashData.Soap == "true");
                                     opcuaServer.UpdateBoolVariable("ActiveFoam", CarWashData.ActiveFoam == "true");
-                                    opcuaServer.UpdateSringVariable("TimeDoorMovement", CarWashData.TimeDoorMovement);
+                                    opcuaServer.UpdateStringVariable("TimeDoorMovement", CarWashData.TimeDoorMovement);
                                     opcuaServer.UpdateBoolVariable("MEMDoor", CarWashData.MEMDoor == "true");
                                     opcuaServer.UpdateBoolVariable("MEMDoorTrig", CarWashData.MEMDoorTrig == "true");
                                     opcuaServer.UpdateBoolVariable("MEMDoorClosingtrig", CarWashData.MEMDoorClosingtrig == "true");
@@ -1748,9 +1807,12 @@ namespace JAN0837_DP.Communication
                                     // RegulatorData
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R, RegulatorData.R);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C, RegulatorData.C);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.U, RegulatorData.U);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, int.Parse(RegulatorData.order));
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, RegulatorData.R1);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, RegulatorData.R2);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, RegulatorData.C1);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, RegulatorData.C2);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uin, RegulatorData.Uin);
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1762,9 +1824,11 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     // read output values from PLC 
+                                    RegulatorData.Uc1 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1).ToString();
+                                    RegulatorData.Uc2 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2).ToString();
+                                    RegulatorData.PV = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.PV).ToString();
 
                                     // If session became invalid during writes, skip reads this cycle
-                                    /*
                                     if (!opcuaClient.connected)
                                     {
                                         _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");
@@ -1772,7 +1836,6 @@ namespace JAN0837_DP.Communication
                                         await Task.Delay(1000, token);
                                         continue;
                                     }
-                                    */
 
                                     // CarWashData
                                     // Write input values to PLC
@@ -1891,7 +1954,7 @@ namespace JAN0837_DP.Communication
                                     // ═══════════════════════════════════════════════════════════
                                     
                                     // CrossroadData buttons: registers 0-4
-                                    bool[] crossroadButtons = new bool[7]
+                                    bool[] crossroadInputs = new bool[7]
                                     {
                                         _modbusServer.StrToBool(CrossroadData.btnStart),
                                         _modbusServer.StrToBool(CrossroadData.btnPause),
@@ -1901,10 +1964,10 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(CrossroadData.btnSouthCrosswalk1),
                                         _modbusServer.StrToBool(CrossroadData.btnSouthCrosswalk2)
                                     };
-                                    _modbusServer.SetRegisters(0, crossroadButtons);
+                                    _modbusServer.SetRegisters(0, crossroadInputs);
 
                                     // CrosswalkData buttons: registers 5-9
-                                    bool[] crosswalkButtons = new bool[5]
+                                    bool[] crosswalkInputs = new bool[5]
                                     {
                                         _modbusServer.StrToBool(CrosswalkData.btnStart),
                                         _modbusServer.StrToBool(CrosswalkData.btnPause),
@@ -1912,16 +1975,20 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(CrosswalkData.btnCrosswalk1),
                                         _modbusServer.StrToBool(CrosswalkData.btnCrosswalk2)
                                     };
-                                    _modbusServer.SetRegisters(5, crosswalkButtons);
+                                    _modbusServer.SetRegisters(5, crosswalkInputs);
 
                                     // RegulatorData inputs: registers 10-14 (switchstate + R,C,U,Td as bool for simplicity)
-                                    bool[] regulatorInputs = new bool[5]
+                                    bool[] regulatorInputs = new bool[9] // TO DO -> not only bool
                                     {
                                         _modbusServer.StrToBool(RegulatorData.switchstate),
-                                        !string.IsNullOrEmpty(RegulatorData.R),
-                                        !string.IsNullOrEmpty(RegulatorData.C),
-                                        !string.IsNullOrEmpty(RegulatorData.U),
-                                        !string.IsNullOrEmpty(RegulatorData.Td)
+                                        _modbusServer.StrToInt(RegulatorData.order) != 0,
+                                        _modbusServer.StrToBool(RegulatorData.R1),
+                                        _modbusServer.StrToBool(RegulatorData.R2),
+                                        _modbusServer.StrToBool(RegulatorData.C1),
+                                        _modbusServer.StrToBool(RegulatorData.C2),
+                                        _modbusServer.StrToBool(RegulatorData.Uin),
+                                        _modbusServer.StrToBool(RegulatorData.Td),
+                                        _modbusServer.StrToBool(RegulatorData.Ts)
                                     };
                                     _modbusServer.SetRegisters(10, regulatorInputs);
 
@@ -1934,7 +2001,7 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(CarWashData.ErrorSystem),
                                         _modbusServer.StrToBool(CarWashData.CarPosition),
                                         _modbusServer.StrToBool(CarWashData.ShowerPosition),
-                                        !string.IsNullOrEmpty(CarWashData.Mode)
+                                        _modbusServer.StrToInt(CarWashData.Mode) != 0
                                     };
                                     _modbusServer.SetRegisters(15, carwashInputs);
 
@@ -1945,7 +2012,7 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(WashingMachineData.btnStart),
                                         _modbusServer.StrToBool(WashingMachineData.btnStop),
                                         _modbusServer.StrToBool(WashingMachineData.ErrorSystem),
-                                        !string.IsNullOrEmpty(WashingMachineData.Mode)
+                                        _modbusServer.StrToBool(WashingMachineData.Mode)
                                     };
                                     _modbusServer.SetRegisters(22, washingmachineInputs);
 
@@ -1954,50 +2021,57 @@ namespace JAN0837_DP.Communication
                                     // ═══════════════════════════════════════════════════════════
 
                                     // CrossroadData lights: registers 30-40 (11 values)
-                                    bool[] crossroadLights = _modbusServer.GetRegisters(30, 11);
-                                    if (crossroadLights != null && crossroadLights.Length >= 11)
+                                    bool[] crossroadOutputs = _modbusServer.GetRegisters(30, 11);
+                                    if (crossroadOutputs != null && crossroadOutputs.Length >= 11)
                                     {
-                                        CrossroadData.crossroadType = _modbusServer.BoolToStr(crossroadLights[0]);
-                                        CrossroadData.trafficLightNorth_green = _modbusServer.BoolToStr(crossroadLights[1]);
-                                        CrossroadData.trafficLightNorth_yellow = _modbusServer.BoolToStr(crossroadLights[2]);
-                                        CrossroadData.trafficLightNorth_red = _modbusServer.BoolToStr(crossroadLights[3]);
-                                        CrossroadData.trafficLightSouth_green = _modbusServer.BoolToStr(crossroadLights[4]);
-                                        CrossroadData.trafficLightSouth_yellow = _modbusServer.BoolToStr(crossroadLights[5]);
-                                        CrossroadData.trafficLightSouth_red = _modbusServer.BoolToStr(crossroadLights[6]);
-                                        CrossroadData.trafficLightEast_green = _modbusServer.BoolToStr(crossroadLights[7]);
-                                        CrossroadData.trafficLightEast_yellow = _modbusServer.BoolToStr(crossroadLights[8]);
-                                        CrossroadData.trafficLightEast_red = _modbusServer.BoolToStr(crossroadLights[9]);
-                                        CrossroadData.trafficLightWest_green = _modbusServer.BoolToStr(crossroadLights[10]);
-                                        CrossroadData.trafficLightWest_yellow = _modbusServer.BoolToStr(crossroadLights[11]);
-                                        CrossroadData.trafficLightWest_red = _modbusServer.BoolToStr(crossroadLights[12]);
-                                        // CrossroadData.pedestrianNorth_green = _modbusServer.BoolToStr(crossroadLights[13]);
-                                        // CrossroadData.pedestrianNorth_red = _modbusServer.BoolToStr(crossroadLights[14]);
-                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadLights[13]);
-                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadLights[14]);
-                                        CrossroadData.pedestrianWest_green = _modbusServer.BoolToStr(crossroadLights[15]);
-                                        CrossroadData.pedestrianWest_red = _modbusServer.BoolToStr(crossroadLights[16]);
-                                        // CrossroadData.pedestrianEast_green = _modbusServer.BoolToStr(crossroadLights[17]);4
-                                        // CrossroadData.pedestrianEast_red = _modbusServer.BoolToStr(crossroadLights[18]);
+                                        CrossroadData.crossroadType = _modbusServer.BoolToStr(crossroadOutputs[0]);
+                                        CrossroadData.trafficLightNorth_green = _modbusServer.BoolToStr(crossroadOutputs[1]);
+                                        CrossroadData.trafficLightNorth_yellow = _modbusServer.BoolToStr(crossroadOutputs[2]);
+                                        CrossroadData.trafficLightNorth_red = _modbusServer.BoolToStr(crossroadOutputs[3]);
+                                        CrossroadData.trafficLightSouth_green = _modbusServer.BoolToStr(crossroadOutputs[4]);
+                                        CrossroadData.trafficLightSouth_yellow = _modbusServer.BoolToStr(crossroadOutputs[5]);
+                                        CrossroadData.trafficLightSouth_red = _modbusServer.BoolToStr(crossroadOutputs[6]);
+                                        CrossroadData.trafficLightEast_green = _modbusServer.BoolToStr(crossroadOutputs[7]);
+                                        CrossroadData.trafficLightEast_yellow = _modbusServer.BoolToStr(crossroadOutputs[8]);
+                                        CrossroadData.trafficLightEast_red = _modbusServer.BoolToStr(crossroadOutputs[9]);
+                                        CrossroadData.trafficLightWest_green = _modbusServer.BoolToStr(crossroadOutputs[10]);
+                                        CrossroadData.trafficLightWest_yellow = _modbusServer.BoolToStr(crossroadOutputs[11]);
+                                        CrossroadData.trafficLightWest_red = _modbusServer.BoolToStr(crossroadOutputs[12]);
+                                        // CrossroadData.pedestrianNorth_green = _modbusServer.BoolToStr(crossroadLOutputs[13]);
+                                        // CrossroadData.pedestrianNorth_red = _modbusServer.BoolToStr(crossroadOutputs[14]);
+                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadOutputs[13]);
+                                        CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadOutputs[14]);
+                                        CrossroadData.pedestrianWest_green = _modbusServer.BoolToStr(crossroadOutputs[15]);
+                                        CrossroadData.pedestrianWest_red = _modbusServer.BoolToStr(crossroadOutputs[16]);
+                                        // CrossroadData.pedestrianEast_green = _modbusServer.BoolToStr(crossroadOutputs[17]);4
+                                        // CrossroadData.pedestrianEast_red = _modbusServer.BoolToStr(crossroadOutputs[18]);
                                     }
 
                                     // CrosswalkData lights: registers 41-51 (11 values)
-                                    bool[] crosswalkLights = _modbusServer.GetRegisters(41, 11);
-                                    if (crosswalkLights != null && crosswalkLights.Length >= 11)
+                                    bool[] crosswalkOutputs = _modbusServer.GetRegisters(41, 11);
+                                    if (crosswalkOutputs != null && crosswalkOutputs.Length >= 11)
                                     {
-                                        CrosswalkData.crosswalkType = _modbusServer.BoolToStr(crosswalkLights[0]);
-                                        CrosswalkData.trafficLight1_green = _modbusServer.BoolToStr(crosswalkLights[1]);
-                                        CrosswalkData.trafficLight1_yellow = _modbusServer.BoolToStr(crosswalkLights[2]);
-                                        CrosswalkData.trafficLight1_red = _modbusServer.BoolToStr(crosswalkLights[3]);
-                                        CrosswalkData.trafficLight2_green = _modbusServer.BoolToStr(crosswalkLights[4]);
-                                        CrosswalkData.trafficLight2_yellow = _modbusServer.BoolToStr(crosswalkLights[5]);
-                                        CrosswalkData.trafficLight2_red = _modbusServer.BoolToStr(crosswalkLights[6]);
-                                        CrosswalkData.pedestrian1_green = _modbusServer.BoolToStr(crosswalkLights[7]);
-                                        CrosswalkData.pedestrian1_red = _modbusServer.BoolToStr(crosswalkLights[8]);
-                                        CrosswalkData.pedestrian2_green = _modbusServer.BoolToStr(crosswalkLights[9]);
-                                        CrosswalkData.pedestrian2_red = _modbusServer.BoolToStr(crosswalkLights[10]);
+                                        CrosswalkData.crosswalkType = _modbusServer.BoolToStr(crosswalkOutputs[0]);
+                                        CrosswalkData.trafficLight1_green = _modbusServer.BoolToStr(crosswalkOutputs[1]);
+                                        CrosswalkData.trafficLight1_yellow = _modbusServer.BoolToStr(crosswalkOutputs[2]);
+                                        CrosswalkData.trafficLight1_red = _modbusServer.BoolToStr(crosswalkOutputs[3]);
+                                        CrosswalkData.trafficLight2_green = _modbusServer.BoolToStr(crosswalkOutputs[4]);
+                                        CrosswalkData.trafficLight2_yellow = _modbusServer.BoolToStr(crosswalkOutputs[5]);
+                                        CrosswalkData.trafficLight2_red = _modbusServer.BoolToStr(crosswalkOutputs[6]);
+                                        CrosswalkData.pedestrian1_green = _modbusServer.BoolToStr(crosswalkOutputs[7]);
+                                        CrosswalkData.pedestrian1_red = _modbusServer.BoolToStr(crosswalkOutputs[8]);
+                                        CrosswalkData.pedestrian2_green = _modbusServer.BoolToStr(crosswalkOutputs[9]);
+                                        CrosswalkData.pedestrian2_red = _modbusServer.BoolToStr(crosswalkOutputs[10]);
                                     }
 
                                     // RegulatorData
+                                    bool[] regulaotOutputs = _modbusServer.GetRegisters(51, 9);
+                                    if (regulaotOutputs != null && regulaotOutputs.Length >= 9)
+                                    {
+                                        RegulatorData.Uc1 = _modbusServer.IntToStr(regulaotOutputs[0]);
+                                        RegulatorData.Uc2 = _modbusServer.IntToStr(regulaotOutputs[1]);
+                                        RegulatorData.PV = _modbusServer.IntToStr(regulaotOutputs[2]);
+                                    }
 
                                     // CarWashData outputs: registers 52-72 (21 values)
                                     bool[] carwashOutputs = _modbusServer.GetRegisters(52, 21);
@@ -2364,10 +2438,18 @@ namespace JAN0837_DP.Communication
 
                             // RegulatorData write to bytes 8-9
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 3, Convert.ToBoolean(RegulatorData.U));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToInt64(RegulatorData.order) != 0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R1));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R2));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C1));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C2));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 3, Convert.ToBoolean(RegulatorData.Uin));
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Td));
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Ts));
+
+                            Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc1) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc2) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 9, 1, Convert.ToDouble(RegulatorData.PV) != 0.0);
 
                             // CarWashData write to bytes 10-14
                             Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));

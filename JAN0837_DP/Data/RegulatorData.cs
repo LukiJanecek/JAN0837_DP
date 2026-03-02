@@ -10,15 +10,21 @@ namespace JAN0837_DP.Data
 {
     public static class RegulatorData
     {
-        // Inputs (written TO PLC)
+        // Inputs 
         public static string switchstate { get; set; } = "false"; // Bool
-        public static string R { get; set; } = "0.0"; // Real
-        public static string C { get; set; } = "0.0"; // Real
-        public static string U { get; set; } = "0.0"; // Real
-        public static string Td { get; set; } = "0.0"; // Real
+        public static string order { get; set; } = "1"; // int
+        public static string R1 { get; set; } = "0.0"; // Real
+        public static string R2 { get; set; } = "0.0"; // Real
+        public static string C1 { get; set; } = "0.0"; // Real
+        public static string C2 { get; set; } = "0.0"; // Real
+        public static string Uin { get; set; } = "0.0"; // Real
+        public static string Td { get; set; } = "0.0"; // Real -> dopravni zpozceni                                                   
+        public static string Ts { get; set; } = "0.1"; // Vzorkovací čas simulace (sekundy)
 
-        // Outputs (read FROM PLC)
-        public static string Uc { get; set; } = "0.0"; // Real
+        // Outputs 
+        public static string Uc1 { get; set; } = "0.0"; // Real
+        public static string Uc2 { get; set; } = "0.0"; // Real
+        public static string PV { get; set; } = "0.0"; // Real 
 
         // Thread safety 
         private static readonly object _lock = new();
@@ -26,11 +32,17 @@ namespace JAN0837_DP.Data
         // Snapshot
         public readonly record struct State(
             string switchstate,
-            string R,
-            string C,
-            string U,
+            string order,
+            string R1,
+            string R2,
+            string C1,
+            string C2,
+            string Uin,
             string Td,
-            string Uc
+            string Ts,
+            string Uc1,
+            string Uc2,
+            string PV
         );
 
         public static State Get()
@@ -39,11 +51,17 @@ namespace JAN0837_DP.Data
             {
                 return new State(
                     switchstate,
-                    R,
-                    C,
-                    U,
+                    order,
+                    R1,
+                    R2,
+                    C1,
+                    C2,
+                    Uin,
                     Td,
-                    Uc
+                    Ts,
+                    Uc1,
+                    Uc2,
+                    PV
                 );
             }
         }
@@ -58,7 +76,9 @@ namespace JAN0837_DP.Data
                 //if (s.U != null) U = s.U;
                 //if (s.Td != null) Td = s.Td;
 
-                if (s.Uc != null) Uc = s.Uc;
+                if (s.Uc1 != null) Uc1 = s.Uc1;
+                if (s.Uc2 != null) Uc2 = s.Uc2;
+                if (s.PV != null) PV = s.PV;
             }
         }
 
@@ -72,13 +92,19 @@ namespace JAN0837_DP.Data
         {
             // Inputs
             public static string switchstate { get; set; } = "ns=4;i=?";
-            public static string R { get; set; } = "ns=4;i=?";
-            public static string C { get; set; } = "ns=4;i=?";
-            public static string U { get; set; } = "ns=4;i=?";
+            public static string order { get; set; } = "ns=4;i=?";
+            public static string R1 { get; set; } = "ns=4;i=?";
+            public static string R2 { get; set; } = "ns=4;i=?";
+            public static string C1 { get; set; } = "ns=4;i=?";
+            public static string C2 { get; set; } = "ns=4;i=?";
+            public static string Uin { get; set; } = "ns=4;i=?";
             public static string Td { get; set; } = "ns=4;i=?";
+            public static string Ts { get; set; } = "ns=4;i=?";
 
             // Outputs 
-            public static string Uc { get; set; } = "ns=4;i=?";
+            public static string Uc1 { get; set; } = "ns=4;i=?";
+            public static string Uc2 { get; set; } = "ns=4;i=?";
+            public static string PV { get; set; } = "ns=4;i=?";
         }
     }
 }

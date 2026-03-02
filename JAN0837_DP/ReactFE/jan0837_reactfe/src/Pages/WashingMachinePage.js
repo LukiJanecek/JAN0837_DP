@@ -15,30 +15,6 @@ import ResponsiveImage from '../Components/ResponsiveImage.js';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData, useSectionData } from '../Communication/DataProvider.js';
 
-/*
- * ── WashingMachine variable map ──────────────────
- *
- * INPUTS  (FE → PLC):
- *   btnWashingMachineEmergencyStop  Bool
- *   btnStartWashingMachine          Bool
- *   btnStopWashingMachine           Bool
- *   WashingMachineErrorSystem       Bool
- *   WashingMachineMode              Int
- *
- * OUTPUTS (PLC → FE):
- *   WashingMachineLight_green       Bool
- *   WashingMachineLight_yellow      Bool
- *   WashingMachineLight_red         Bool
- *   WashingMachineDoorClosed        Bool
- *   WashingMachineChemicals         Bool
- *   WashingMachinePrewash           Bool
- *   WashingMachineWater             Bool
- *   WashingMachineDry               Bool
- *   WashingMachineBrushes           Bool
- *   WashingMachineSoap              Bool
- *   WashingMachineActiveFoam        Bool
- */
-
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
   const s = String(v ?? '').trim().toLowerCase();

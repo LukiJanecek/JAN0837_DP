@@ -88,136 +88,42 @@ def main():
     print("=" * 60)
     
     try:
-        # Create UDT with custom fields - DEFAULT
-        #print(f"[NOTE] Creating UDT '{params.DEFAULT_UDT_NAME}'...")
-        #fc.create_or_replace_udt(
-        #    plc_sw,
-        #    params.DEFAULT_UDT_NAME,
-        #    fields=params.DEFAULT_UDT_FIELDS,
-        #)
-        #print(f"[OK] UDT '{params.DEFAULT_UDT_NAME}' created successfully")
-        
-        # Create DB using the UDT - DEFAULT
-        #print(f"[NOTE] Creating Data Block '{params.DEFAULT_DB_NAME}' using UDT...")
-        #fc.create_or_replace_simple_db(
-        #    plc_sw,
-        #    params.DEFAULT_DB_NAME,
-        #    udt_type=params.DEFAULT_UDT_NAME,
-        #    optimized=params.DEFAULT_DB_OPTIMIZED,
-        #)
-        #print(f"[OK] Data Block '{params.DEFAULT_DB_NAME}' created successfully")
+        exercise_udts = [
+            ("crossroad", params.Crossroad_Input_UDT_NAME, params.Crossroad_Input_UDT_FIELDS, params.Crossroad_Output_UDT_NAME, params.Crossroad_Output_UDT_FIELDS),
+            ("crosswalk", params.Crosswalk_Input_UDT_NAME, params.Crosswalk_Input_UDT_FIELDS, params.Crosswalk_Output_UDT_NAME, params.Crosswalk_Output_UDT_FIELDS),
+            ("regulator", params.Regulator_Input_UDT_NAME, params.Regulator_Input_UDT_FIELDS, params.Regulator_Output_UDT_NAME, params.Regulator_Output_UDT_FIELDS),
+            ("carwash", params.CarWash_Input_UDT_NAME, params.CarWash_Input_UDT_FIELDS, params.CarWash_Output_UDT_NAME, params.CarWash_Output_UDT_FIELDS),
+            ("washingmachine", params.WashingMachine_Input_UDT_NAME, params.WashingMachine_Input_UDT_FIELDS, params.WashingMachine_Output_UDT_NAME, params.WashingMachine_Output_UDT_FIELDS),
+            ("carlight", params.CarLight_Input_UDT_NAME, params.CarLight_Input_UDT_FIELDS, params.CarLight_Output_UDT_NAME, params.CarLight_Output_UDT_FIELDS),
+        ]
 
-        # Crossroad PLC data type 
-        print(f"[NOTE] Creating UDT '{params.Crossroad_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Crossroad_Input_UDT_NAME,
-            fields=params.Crossroad_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Crossroad_Input_UDT_NAME}' created successfully")
+        db_udt_vars = []
 
-        print(f"[NOTE] Creating UDT '{params.Crossroad_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Crossroad_Output_UDT_NAME,
-            fields=params.Crossroad_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Crossroad_Output_UDT_NAME}' created successfully")
+        for prefix, input_udt_name, input_udt_fields, output_udt_name, output_udt_fields in exercise_udts:
+            print(f"[NOTE] Creating UDT '{input_udt_name}'...")
+            fc.create_or_replace_udt(
+                plc_sw,
+                input_udt_name,
+                fields=input_udt_fields,
+            )
+            print(f"[OK] UDT '{input_udt_name}' created successfully")
 
-        # Crosswalk PLC data type 
-        print(f"[NOTE] Creating UDT '{params.Crosswalk_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Crosswalk_Input_UDT_NAME,
-            fields=params.Crosswalk_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Crosswalk_Input_UDT_NAME}' created successfully")
+            print(f"[NOTE] Creating UDT '{output_udt_name}'...")
+            fc.create_or_replace_udt(
+                plc_sw,
+                output_udt_name,
+                fields=output_udt_fields,
+            )
+            print(f"[OK] UDT '{output_udt_name}' created successfully")
 
-        print(f"[NOTE] Creating UDT '{params.Crosswalk_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Crosswalk_Output_UDT_NAME,
-            fields=params.Crosswalk_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Crosswalk_Output_UDT_NAME}' created successfully")
+            db_udt_vars.append((f"{prefix}_input", input_udt_name))
+            db_udt_vars.append((f"{prefix}_output", output_udt_name))
 
-        # Regulator PLC data type
-        print(f"[NOTE] Creating UDT '{params.Regulator_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Regulator_Input_UDT_NAME,
-            fields=params.Regulator_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Regulator_Input_UDT_NAME}' created successfully")
-
-        print(f"[NOTE] Creating UDT '{params.Regulator_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.Regulator_Output_UDT_NAME,
-            fields=params.Regulator_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.Regulator_Output_UDT_NAME}' created successfully")
-
-        # CarWash PLC data type
-        print(f"[NOTE] Creating UDT '{params.CarWash_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.CarWash_Input_UDT_NAME,
-            fields=params.CarWash_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.CarWash_Input_UDT_NAME}' created successfully")
-
-        print(f"[NOTE] Creating UDT '{params.CarWash_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.CarWash_Output_UDT_NAME,
-            fields=params.CarWash_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.CarWash_Output_UDT_NAME}' created successfully")
-
-        # WashingMachine PLC data type
-        print(f"[NOTE] Creating UDT '{params.WashingMachine_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.WashingMachine_Input_UDT_NAME,
-            fields=params.WashingMachine_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.WashingMachine_Input_UDT_NAME}' created successfully")
-
-        print(f"[NOTE] Creating UDT '{params.WashingMachine_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.WashingMachine_Output_UDT_NAME,
-            fields=params.WashingMachine_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.WashingMachine_Output_UDT_NAME}' created successfully")
-
-        # CarLight PLC data type
-        print(f"[NOTE] Creating UDT '{params.CarLight_Input_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.CarLight_Input_UDT_NAME,
-            fields=params.CarLight_Input_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.CarLight_Input_UDT_NAME}' created successfully")
-
-        print(f"[NOTE] Creating UDT '{params.CarLight_Output_UDT_NAME}'...")
-        fc.create_or_replace_udt(
-            plc_sw,
-            params.CarLight_Output_UDT_NAME,
-            fields=params.CarLight_Output_UDT_FIELDS,
-        )
-        print(f"[OK] UDT '{params.CarLight_Output_UDT_NAME}' created successfully")
-
-        # Create DB with both UDTs
-        print(f"[NOTE] Creating Data Block '{params.DEFAULT_DB_NAME}' with input and output UDTs...")
+        print(f"[NOTE] Creating Data Block '{params.DEFAULT_DB_NAME}' with all exercise input/output UDTs...")
         fc.create_or_replace_db_with_multiple_udts(
             plc_sw,
             params.DEFAULT_DB_NAME,
-            udt_vars=[
-                ("input", params.CarLight_Input_UDT_NAME),
-                ("output", params.CarLight_Output_UDT_NAME),
-            ],
+            udt_vars=db_udt_vars,
             optimized=params.DEFAULT_DB_OPTIMIZED,
         )
         print(f"[OK] Data Block '{params.DEFAULT_DB_NAME}' created successfully")

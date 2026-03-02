@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Row, Col, Button, Form, Badge } from 'react-bootstrap';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 import '../App.css';
 import './RegulatorPage.css';
@@ -9,27 +9,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useRefresh } from '../Communication/RefreshContext.js';
 import { useData, useSectionData } from '../Communication/DataProvider.js';
 
-/*
- * ── RegulatorData variable map ───────────────────
- *
- * INPUTS  (FE → PLC):
- *   switchstate   Bool – spínač (on/off)
- *   R             Real – odpor (Ω)
- *   C             Real – kapacita (F)
- *   U             Real – napětí (V)
- *   Td            Real – časová konstanta (s)
- *
- * OUTPUTS (PLC → FE):
- *   Uc            Real – napětí na kondenzátoru (V)
- */
-
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
   const s = String(v ?? '').trim().toLowerCase();
   return s === 'true' || s === '1' || s === 'on';
 };
 
-/* ── RC circuit diagram (image only, no overlays) ────── */
 function RegulatorCanvas({ background }) {
   return (
     <div className="regulator-img-wrap">
@@ -38,20 +23,28 @@ function RegulatorCanvas({ background }) {
   );
 }
 
-/* ── Uc chart with rolling history ───────────────────── */
 const MAX_POINTS = 200;
 
-function UcChart({ Uc }) {
+function UcChart({ Uc1, Uc2, PV, order }) {
   const [history, setHistory] = useState([]);
   const startRef = useRef(Date.now());
+  const isSecondOrder = order === 2;
 
   useEffect(() => {
     setHistory(prev => {
       const t = ((Date.now() - startRef.current) / 1000).toFixed(1);
-      const next = [...prev, { t: Number(t), Uc: Number(Uc) }];
+      const point = { 
+        t: Number(t), 
+        Uc1: Number(Uc1),
+        PV: Number(PV)
+      };
+      if (isSecondOrder) {
+        point.Uc2 = Number(Uc2);
+      }
+      const next = [...prev, point];
       return next.length > MAX_POINTS ? next.slice(next.length - MAX_POINTS) : next;
     });
-  }, [Uc]);
+  }, [Uc1, Uc2, PV, isSecondOrder]);
 
   const clearHistory = () => {
     setHistory([]);
@@ -61,8 +54,8 @@ function UcChart({ Uc }) {
   return (
     <div className="uc-chart-wrap">
       <div className="d-flex align-items-center justify-content-between mb-2">
-        <h5 className="mb-0">U<sub>c</sub> v čase</h5>
-        <Button size="sm" variant="outline-secondary" onClick={clearHistory}>Reset graf</Button>
+        <h5 className="mb-0">{isSecondOrder ? 'Uc₁, Uc₂, PV' : 'Uc, PV'} in time</h5>
+        <Button size="sm" variant="outline-secondary" onClick={clearHistory}>Reset chart/graph</Button>
       </div>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={history}>
@@ -74,10 +67,15 @@ function UcChart({ Uc }) {
             domain={['dataMin', 'dataMax']}
           />
           <YAxis
-            label={{ value: 'Uc (V)', angle: -90, position: 'insideLeft' }}
+            label={{ value: 'U (V)', angle: -90, position: 'insideLeft' }}
           />
-          <Tooltip formatter={(v) => [Number(v).toFixed(3) + ' V', 'Uc']} />
-          <Line type="monotone" dataKey="Uc" stroke="#0d6efd" dot={false} isAnimationActive={false} />
+          <Tooltip formatter={(v, name) => [Number(v).toFixed(3) + ' V', name]} />
+          <Legend />
+          <Line type="monotone" dataKey="Uc1" stroke="#0d6efd" dot={false} isAnimationActive={false} name={isSecondOrder ? "Uc₁" : "Uc"} />
+          {isSecondOrder && (
+            <Line type="monotone" dataKey="Uc2" stroke="#6c757d" dot={false} isAnimationActive={false} name="Uc₂" />
+          )}
+          <Line type="monotone" dataKey="PV" stroke="#198754" dot={false} isAnimationActive={false} name="PV" />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -89,21 +87,35 @@ function RegulatorParamsSidebar() {
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('RegulatorData');
 
   const switchstate = toBool(d?.switchstate);
-  const [localR,  setLocalR]  = useState('');
-  const [localC,  setLocalC]  = useState('');
-  const [localU,  setLocalU]  = useState('');
-  const [localTd, setLocalTd] = useState('');
+  const order = Number(d?.order ?? 1); // 1 = 1. řád, 2 = 2. řád
+  const isSecondOrder = order === 2;
+
+  const [localR1,  setLocalR1]  = useState('');
+  const [localR2,  setLocalR2]  = useState('');
+  const [localC1,  setLocalC1]  = useState('');
+  const [localC2,  setLocalC2]  = useState('');
+  const [localUin, setLocalUin] = useState('');
+  const [localTd,  setLocalTd]  = useState('');
+  const [localTs,  setLocalTs]  = useState('');
+  
+  // Track which field is currently being edited to prevent server overwrite
+  const editingRef = useRef(null);
 
   useEffect(() => {
     if (d) {
-      setLocalR(String(d.R  ?? 0));
-      setLocalC(String(d.C  ?? 0));
-      setLocalU(String(d.U  ?? 0));
-      setLocalTd(String(d.Td ?? 0));
+      if (editingRef.current !== 'R1') setLocalR1(String(d.R1  ?? 0));
+      if (editingRef.current !== 'R2') setLocalR2(String(d.R2  ?? 0));
+      if (editingRef.current !== 'C1') setLocalC1(String(d.C1  ?? 0));
+      if (editingRef.current !== 'C2') setLocalC2(String(d.C2  ?? 0));
+      if (editingRef.current !== 'Uin') setLocalUin(String(d.Uin ?? 0));
+      if (editingRef.current !== 'Td') setLocalTd(String(d.Td ?? 0));
+      if (editingRef.current !== 'Ts') setLocalTs(String(d.Ts ?? 0));
     }
-  }, [d?.R, d?.C, d?.U, d?.Td]);
+  }, [d?.R1, d?.R2, d?.C1, d?.C2, d?.Uin, d?.Td, d?.Ts]);
 
-  const Uc = Number(d?.Uc ?? 0);
+  const Uc1 = Number(d?.Uc1 ?? 0);
+  const Uc2 = Number(d?.Uc2 ?? 0);
+  const PV  = Number(d?.PV ?? 0);
 
   const toggleSwitch = async () => {
     try {
@@ -113,8 +125,8 @@ function RegulatorParamsSidebar() {
     }
   };
 
-  const sendField = async (key, raw) => {
-    const num = parseFloat(raw);
+  const sendField = async (key, raw, isInt = false) => {
+    const num = isInt ? parseInt(raw, 10) : parseFloat(raw);
     if (!isNaN(num)) {
       try {
         console.log(`sendField: ${key} = ${num}`);
@@ -124,74 +136,145 @@ function RegulatorParamsSidebar() {
         console.error(`sendField ${key} error:`, e);
       }
     }
+    // Clear editing lock after send completes
+    editingRef.current = null;
+  };
+
+  const handleFocus = (key) => {
+    editingRef.current = key;
+  };
+
+  const handleBlur = (key, value, isInt = false) => {
+    sendField(key, value, isInt);
   };
 
   return (
     <div>
       <h3>Parameters:</h3>
 
-      <div className="gap-2 mb-3">
+      <div className="d-flex gap-2 mb-3">
         <Button
           className={switchstate ? 'btn--stop' : 'btn--start'}
           onClick={toggleSwitch}
         >
-          Spínač: {switchstate ? 'ON' : 'OFF'}
+          Switch: {switchstate ? 'ON' : 'OFF'}
+        </Button>
+        <Button
+          variant="outline-primary"
+          onClick={() => saveSection({ order: isSecondOrder ? 1 : 2 })}
+        >
+          Order: {isSecondOrder ? '2nd (RC-RC)' : '1st (RC)'}
         </Button>
       </div>
 
       <Form>
         <Form.Group className="mb-2">
-          <Form.Label>R (Ω)</Form.Label>
+          <Form.Label>{isSecondOrder ? 'R₁' : 'R'} (Ω)</Form.Label>
           <Form.Control
             type="number"
             step="any"
-            value={localR}
-            onChange={e => setLocalR(e.target.value)}
-            onBlur={() => sendField('R', localR)}
-            onKeyDown={e => e.key === 'Enter' && sendField('R', localR)}
+            value={localR1}
+            onChange={e => setLocalR1(e.target.value)}
+            onFocus={() => handleFocus('R1')}
+            onBlur={() => handleBlur('R1', localR1)}
+            onKeyDown={e => e.key === 'Enter' && sendField('R1', localR1)}
           />
         </Form.Group>
 
+        {isSecondOrder && (
+          <Form.Group className="mb-2">
+            <Form.Label>R₂ (Ω)</Form.Label>
+            <Form.Control
+              type="number"
+              step="any"
+              value={localR2}
+              onChange={e => setLocalR2(e.target.value)}
+              onFocus={() => handleFocus('R2')}
+              onBlur={() => handleBlur('R2', localR2)}
+              onKeyDown={e => e.key === 'Enter' && sendField('R2', localR2)}
+            />
+          </Form.Group>
+        )}
+
         <Form.Group className="mb-2">
-          <Form.Label>C (uF)</Form.Label>
+          <Form.Label>{isSecondOrder ? 'C₁' : 'C'} (µF)</Form.Label>
           <Form.Control
             type="number"
             step="any"
-            value={localC}
-            onChange={e => setLocalC(e.target.value)}
-            onBlur={() => sendField('C', localC)}
-            onKeyDown={e => e.key === 'Enter' && sendField('C', localC)}
+            value={localC1}
+            onChange={e => setLocalC1(e.target.value)}
+            onFocus={() => handleFocus('C1')}
+            onBlur={() => handleBlur('C1', localC1)}
+            onKeyDown={e => e.key === 'Enter' && sendField('C1', localC1)}
           />
         </Form.Group>
+
+        {isSecondOrder && (
+          <Form.Group className="mb-2">
+            <Form.Label>C₂ (µF)</Form.Label>
+            <Form.Control
+              type="number"
+              step="any"
+              value={localC2}
+              onChange={e => setLocalC2(e.target.value)}
+              onFocus={() => handleFocus('C2')}
+              onBlur={() => handleBlur('C2', localC2)}
+              onKeyDown={e => e.key === 'Enter' && sendField('C2', localC2)}
+            />
+          </Form.Group>
+        )}
 
         <Form.Group className="mb-2">
           <Form.Label>U<sub>in</sub> (V)</Form.Label>
           <Form.Control
             type="number"
             step="any"
-            value={localU}
-            onChange={e => setLocalU(e.target.value)}
-            onBlur={() => sendField('U', localU)}
-            onKeyDown={e => e.key === 'Enter' && sendField('U', localU)}
+            value={localUin}
+            onChange={e => setLocalUin(e.target.value)}
+            onFocus={() => handleFocus('Uin')}
+            onBlur={() => handleBlur('Uin', localUin)}
+            onKeyDown={e => e.key === 'Enter' && sendField('Uin', localUin)}
           />
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>T<sub>d</sub> (s)</Form.Label>
+        <Form.Group className="mb-2">
+          <Form.Label>T<sub>d</sub> (s) – transport delay</Form.Label>
           <Form.Control
             type="number"
             step="any"
             value={localTd}
             onChange={e => setLocalTd(e.target.value)}
-            onBlur={() => sendField('Td', localTd)}
+            onFocus={() => handleFocus('Td')}
+            onBlur={() => handleBlur('Td', localTd)}
             onKeyDown={e => e.key === 'Enter' && sendField('Td', localTd)}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>T<sub>s</sub> (s) – sampling time</Form.Label>
+          <Form.Control
+            type="number"
+            step="any"
+            value={localTs}
+            onChange={e => setLocalTs(e.target.value)}
+            onFocus={() => handleFocus('Ts')}
+            onBlur={() => handleBlur('Ts', localTs)}
+            onKeyDown={e => e.key === 'Enter' && sendField('Ts', localTs)}
           />
         </Form.Group>
       </Form>
 
       <div className="reg-output mb-3">
-        <Badge bg="info" className="fs-6">
-          U<sub>c</sub> = {Uc.toFixed(2)} V
+        <Badge bg="info" className="fs-6 me-2">
+          U<sub>{isSecondOrder ? 'c1' : 'c'}</sub> = {Uc1.toFixed(2)} V
+        </Badge>
+        {isSecondOrder && (
+          <Badge bg="info" className="fs-6 me-2">
+            U<sub>c2</sub> = {Uc2.toFixed(2)} V
+          </Badge>
+        )}
+        <Badge bg="success" className="fs-6">
+          PV = {PV.toFixed(2)} V
         </Badge>
       </div>
 
@@ -204,16 +287,30 @@ function RegulatorParamsSidebar() {
 
 function RegulatorPage() {
   const { section: d } = useSectionData('RegulatorData');
-  const Uc = Number(d?.Uc ?? 0);
+  
+  const switchstate = toBool(d?.switchstate);
+  const order = Number(d?.order ?? 1); // 1 = 1. řád, 2 = 2. řád
+  const isSecondOrder = order === 2;
+  
+  const Uc1 = Number(d?.Uc1 ?? 0);
+  const Uc2 = Number(d?.Uc2 ?? 0);
+  const PV  = Number(d?.PV ?? 0);
 
-  const background = '/images/regulator/regulator_RC.PNG';
+  // Dynamický výběr obrázku podle řádu a stavu spínače
+  const getBackgroundImage = () => {
+    const circuitType = isSecondOrder ? 'RCRC' : 'RC';
+    const switchState = switchstate ? 'closed' : 'open';
+    return `/images/regulator/regulator_${circuitType}_${switchState}.PNG`;
+  };
+
+  const background = getBackgroundImage();
 
   return (
     <Row className="regulatorpage">
       <Col xs={12} lg={8}>
         <div className="mt-3">
           <RegulatorCanvas background={background} />
-          <UcChart Uc={Uc} />
+          <UcChart Uc1={Uc1} Uc2={Uc2} PV={PV} order={order} />
         </div>
       </Col>
 

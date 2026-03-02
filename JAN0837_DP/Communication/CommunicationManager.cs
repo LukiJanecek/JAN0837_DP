@@ -936,7 +936,12 @@ namespace JAN0837_DP.Communication
                                         btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
 
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crossroadOutput = new
                                     {
@@ -962,7 +967,12 @@ namespace JAN0837_DP.Communication
                                         //pedE_green = CrossroadData.pedestrianEast_green == "true",
                                         //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Crosswalk Input/Output 
                                     var crosswalkInput = new
@@ -973,7 +983,12 @@ namespace JAN0837_DP.Communication
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crosswalkOutput = new
                                     {
@@ -989,7 +1004,12 @@ namespace JAN0837_DP.Communication
                                         ped2_green = CrosswalkData.pedestrian2_green == "true",
                                         ped2_red = CrosswalkData.pedestrian2_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Regulator Input/Output
                                     var regulatorInput = new
@@ -1004,7 +1024,12 @@ namespace JAN0837_DP.Communication
                                         Td = RegulatorData.Td,
                                         Ts = RegulatorData.Ts
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Regulator/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Regulator/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var regulatorOutput = new
                                     {
@@ -1152,7 +1177,12 @@ namespace JAN0837_DP.Communication
                                         btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
                                         btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crossroadOutput = new
                                     {
@@ -1178,7 +1208,12 @@ namespace JAN0837_DP.Communication
                                         //pedE_green = CrossroadData.pedestrianEast_green == "true",
                                         //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
@@ -1189,7 +1224,12 @@ namespace JAN0837_DP.Communication
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crosswalkOutput = new
                                     {
@@ -1205,7 +1245,12 @@ namespace JAN0837_DP.Communication
                                         ped2_green = CrosswalkData.pedestrian2_green == "true",
                                         ped2_red = CrosswalkData.pedestrian2_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Regulator Input/Output
                                     var regulatorInput = new
@@ -1356,7 +1401,12 @@ namespace JAN0837_DP.Communication
                                         btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
                                         btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crossroadOutput = new
                                     {
@@ -1382,7 +1432,12 @@ namespace JAN0837_DP.Communication
                                         //pedE_green = CrossroadData.pedestrianEast_green == "true",
                                         //pedE_red = CrossroadData.pedestrianEast_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crossroad/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Crosswalk Input/Output
                                     var crosswalkInput = new
@@ -1393,7 +1448,12 @@ namespace JAN0837_DP.Communication
                                         cw1 = CrosswalkData.btnCrosswalk1 == "true",
                                         cw2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     var crosswalkOutput = new
                                     {
@@ -1409,7 +1469,12 @@ namespace JAN0837_DP.Communication
                                         ped2_green = CrosswalkData.pedestrian2_green == "true",
                                         ped2_red = CrosswalkData.pedestrian2_red == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Crosswalk/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
 
                                     // Regulator Input/Output
                                     var regulatorInput = new

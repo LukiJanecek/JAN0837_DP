@@ -307,7 +307,6 @@ namespace JAN0837_DP.Communication.comMQTT
 
                     RegulatorData.Uc1 = dto.Uc2 ?? "0.0";
                     RegulatorData.Uc2 = dto.Uc2 ?? "0.0";
-                    RegulatorData.PV = dto.PV ?? "0.0";
                 }
                 catch (Exception ex)
                 {
@@ -325,6 +324,7 @@ namespace JAN0837_DP.Communication.comMQTT
                 public string mode { get; set; }
             }
 
+            /*
             public static void ApplyOutputJsonToCarWashData(string json)
             {
                 try
@@ -357,6 +357,7 @@ namespace JAN0837_DP.Communication.comMQTT
                     Logger.LogException(ex, "Failed to parse CarWash output JSON");
                 }
             }
+            */
         }
 
         public static class WashingMachineOutputMapper
@@ -367,6 +368,7 @@ namespace JAN0837_DP.Communication.comMQTT
                 public string mode { get; set; }
             }
 
+            /*
             public static void ApplyOutputJsonToWashingMachineData(string json)
             {
                 try
@@ -393,6 +395,7 @@ namespace JAN0837_DP.Communication.comMQTT
                     Logger.LogException(ex, "Failed to parse WashingMachine output JSON");
                 }
             }
+            */
         }
     }
 }

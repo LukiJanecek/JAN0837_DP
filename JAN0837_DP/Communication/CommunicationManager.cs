@@ -186,6 +186,7 @@ namespace JAN0837_DP.Communication
                                     await client.mqttClient.PublishAsync(msgRegulatorInput, token);
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -203,8 +204,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
+                                    */
 
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -235,8 +238,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-
+                                    */
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -252,8 +256,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-
+                                    */
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -276,7 +281,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
+                                    */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -385,6 +390,7 @@ namespace JAN0837_DP.Communication
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Regulator/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -402,8 +408,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
-
+                                    */
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -434,8 +441,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-
+                                    */
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -451,8 +459,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-
+                                    */
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -475,7 +484,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
+                                    */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -589,6 +598,7 @@ namespace JAN0837_DP.Communication
                                         .Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -606,8 +616,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
-
+                                    */
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -638,8 +649,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-
+                                    */
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -655,8 +667,9 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-
+                                    */
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -679,7 +692,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
+                                    */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -795,8 +808,7 @@ namespace JAN0837_DP.Communication
                                     var regultorOutput = new
                                     {
                                         Uc1 = RegulatorData.Uc1,
-                                        Uc2 = RegulatorData.Uc2, 
-                                        PV = RegulatorData.PV
+                                        Uc2 = RegulatorData.Uc2
                                     };
 
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
@@ -807,6 +819,7 @@ namespace JAN0837_DP.Communication
                                         .Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -824,8 +837,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
+                                    */
 
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -856,8 +871,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
+                                    */
 
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -873,8 +890,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
+                                    */
 
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -897,7 +916,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
+                                    */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -1035,7 +1054,6 @@ namespace JAN0837_DP.Communication
                                     {
                                         Uc1 = RegulatorData.Uc1,
                                         Uc2 = RegulatorData.Uc2,
-                                        PV = RegulatorData.PV
                                     };
 
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
@@ -1046,6 +1064,7 @@ namespace JAN0837_DP.Communication
                                         .Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -1063,8 +1082,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
+                                    */
 
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -1096,10 +1117,12 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
+                                    */
 
                                     // add carwash mems 
 
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -1115,8 +1138,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
+                                    */
 
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -1139,7 +1164,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-
+                                    */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -1273,6 +1298,7 @@ namespace JAN0837_DP.Communication
                                         .Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -1290,8 +1316,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
+                                    */
 
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -1322,8 +1350,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
+                                    */
 
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -1339,8 +1369,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
+                                    */
 
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -1363,6 +1395,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
+                                    */
 
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
@@ -1497,6 +1530,7 @@ namespace JAN0837_DP.Communication
                                         .Build());
 
                                     // CarWash - Input
+                                    /*
                                     var carwashInput = new
                                     {
                                         emergencyStop = CarWashData.btnEmergencyStop == "true",
@@ -1514,8 +1548,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
+                                    */
 
                                     // CarWash - Output
+                                    /*
                                     var carwashOutput = new
                                     {
                                         light_green = CarWashData.Light_green == "true",
@@ -1547,8 +1583,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
+                                    */
 
                                     // WashingMachine - Input
+                                    /*
                                     var washingmachineInput = new
                                     {
                                         emergencyStop = WashingMachineData.btnEmergencyStop == "true",
@@ -1564,8 +1602,10 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
+                                    */
 
                                     // WashingMachine - Output
+                                    /*
                                     var washingmachineOutput = new
                                     {
                                         light_green = WashingMachineData.Light_green == "true",
@@ -1588,6 +1628,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
+                                    */
 
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
@@ -1701,9 +1742,9 @@ namespace JAN0837_DP.Communication
 
                                     opcuaServer.UpdateRealVariable("Uc1", double.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1Val) ? uc1Val : 0.0);
                                     opcuaServer.UpdateRealVariable("Uc2", double.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2Val) ? uc2Val : 0.0);
-                                    opcuaServer.UpdateRealVariable("PV", double.TryParse(RegulatorData.PV, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var pvVal) ? pvVal : 0.0);
 
                                     // CarWash
+                                    /*
                                     CarWashData.btnEmergencyStop = opcuaServer.ReadVariable("BtnCarWashEmergencyStop") ? "true" : "false";
                                     CarWashData.btnStart = opcuaServer.ReadVariable("BtnStartCarWash") ? "true" : "false";
                                     CarWashData.btnStop = opcuaServer.ReadVariable("BtnStopCarWash") ? "true" : "false";
@@ -1733,8 +1774,10 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("MEMDoor", CarWashData.MEMDoor == "true");
                                     opcuaServer.UpdateBoolVariable("MEMDoorTrig", CarWashData.MEMDoorTrig == "true");
                                     opcuaServer.UpdateBoolVariable("MEMDoorClosingtrig", CarWashData.MEMDoorClosingtrig == "true");
+                                    */
 
                                     // WashingMachine
+                                    /*
                                     WashingMachineData.btnEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
                                     WashingMachineData.btnStart = opcuaServer.ReadVariable("BtnStartWashingMachine") ? "true" : "false";
                                     WashingMachineData.btnStop = opcuaServer.ReadVariable("BtnStopWashingMachine") ? "true" : "false";
@@ -1753,6 +1796,7 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.Brushes == "true");
                                     opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.Soap == "true");
                                     opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.ActiveFoam == "true");
+                                    */
 
                                     _ucCommunicationControl.SetStatus("OPC UA Server: Hosting all data for external clients");
                                 }
@@ -1891,7 +1935,6 @@ namespace JAN0837_DP.Communication
                                     // read output values from PLC 
                                     RegulatorData.Uc1 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1).ToString();
                                     RegulatorData.Uc2 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2).ToString();
-                                    RegulatorData.PV = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.PV).ToString();
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -1903,6 +1946,7 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     // CarWashData
+                                    /*
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnEmergencyStop, CarWashData.btnEmergencyStop == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarWashData.OpcUaNodeIds.btnStart, CarWashData.btnStart == "true");
@@ -1943,8 +1987,10 @@ namespace JAN0837_DP.Communication
                                     CarWashData.MEMDoor = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoor) ? "true" : "false";
                                     CarWashData.MEMDoorTrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoorTrig) ? "true" : "false";
                                     CarWashData.MEMDoorClosingtrig = opcuaClient.ReadOPCUABool(opcuaClient, CarWashData.OpcUaNodeIds.MEMDoorClosingtrig) ? "true" : "false";
+                                    */
 
                                     // WashingMachineData
+                                    /*
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnEmergencyStop, WashingMachineData.btnEmergencyStop == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, WashingMachineData.OpcUaNodeIds.btnStart, WashingMachineData.btnStart == "true");
@@ -1974,6 +2020,7 @@ namespace JAN0837_DP.Communication
                                     WashingMachineData.Brushes = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Brushes) ? "true" : "false";
                                     WashingMachineData.Soap = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.Soap) ? "true" : "false";
                                     WashingMachineData.ActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.ActiveFoam) ? "true" : "false";
+                                    */
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -2057,7 +2104,8 @@ namespace JAN0837_DP.Communication
                                     };
                                     _modbusServer.SetRegisters(10, regulatorInputs);
 
-                                    // CarWash inputs: registers 15-21
+                                    // CarWash inputs
+                                    /*
                                     bool[] carwashInputs = new bool[7]
                                     {
                                         _modbusServer.StrToBool(CarWashData.btnEmergencyStop),
@@ -2069,8 +2117,10 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToInt(CarWashData.Mode) != 0
                                     };
                                     _modbusServer.SetRegisters(15, carwashInputs);
+                                    */
 
-                                    // WashingMachine inputs: registers 22-26
+                                    // WashingMachine inputs
+                                    /*
                                     bool[] washingmachineInputs = new bool[5]
                                     {
                                         _modbusServer.StrToBool(WashingMachineData.btnEmergencyStop),
@@ -2080,6 +2130,7 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(WashingMachineData.Mode)
                                     };
                                     _modbusServer.SetRegisters(22, washingmachineInputs);
+                                    */
 
                                     // ═══════════════════════════════════════════════════════════
                                     // READ output values that slaves wrote to our holding registers
@@ -2135,10 +2186,10 @@ namespace JAN0837_DP.Communication
                                     {
                                         RegulatorData.Uc1 = _modbusServer.IntToStr(regulaotOutputs[0]);
                                         RegulatorData.Uc2 = _modbusServer.IntToStr(regulaotOutputs[1]);
-                                        RegulatorData.PV = _modbusServer.IntToStr(regulaotOutputs[2]);
                                     }
 
-                                    // CarWashData outputs: registers 52-72 (21 values)
+                                    // CarWashData outputs
+                                    /*
                                     bool[] carwashOutputs = _modbusServer.GetRegisters(52, 21);
                                     if (carwashOutputs != null && carwashOutputs.Length >= 21)
                                     {
@@ -2165,8 +2216,10 @@ namespace JAN0837_DP.Communication
                                         CarWashData.MEMDoorClosingtrig = _modbusServer.BoolToStr(carwashOutputs[19]);
                                         // carwashOutputs[20] reserved for CarWashTimeDoorMovement
                                     }
+                                    */
 
-                                    // WashingMachineData outputs: registers 73-84 (12 values)
+                                    // WashingMachineData outputs
+                                    /*
                                     bool[] washingmachineOutputs = _modbusServer.GetRegisters(73, 12);
                                     if (washingmachineOutputs != null && washingmachineOutputs.Length >= 12)
                                     {
@@ -2183,6 +2236,7 @@ namespace JAN0837_DP.Communication
                                         WashingMachineData.Soap = _modbusServer.BoolToStr(washingmachineOutputs[10]);
                                         WashingMachineData.ActiveFoam = _modbusServer.BoolToStr(washingmachineOutputs[11]);
                                     }
+                                    */
 
                                     _ucCommunicationControl.SetStatus("Modbus Client: All data synchronized");
                                 }
@@ -2200,6 +2254,7 @@ namespace JAN0837_DP.Communication
                             }
 
                             break;
+                        /*
                         case "TCPIP":
                             
                             byte buttons = 0;
@@ -2364,6 +2419,7 @@ namespace JAN0837_DP.Communication
                             }
 
                             break;
+                        */
                         case "RESTAPI":
                             _ucCommunicationControl.SetStatus($"This communication is already running in the project on http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/");
                             break;
@@ -2376,7 +2432,7 @@ namespace JAN0837_DP.Communication
 
                             if (read1 == 0)
                             {                                
-                                // CrossroadData bytes 0-3
+                                // CrossroadData 
                                 CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 0, 0));
                                 CrossroadData.trafficLightNorth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 0));
                                 CrossroadData.trafficLightNorth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 1));
@@ -2390,13 +2446,12 @@ namespace JAN0837_DP.Communication
                                 CrossroadData.trafficLightEast_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 3));
                                 CrossroadData.trafficLightEast_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 4));
                                 CrossroadData.trafficLightEast_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 5));
-
                                 CrossroadData.pedestrianSouth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 6));
                                 CrossroadData.pedestrianSouth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 2, 7));
                                 CrossroadData.pedestrianWest_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 0));
                                 CrossroadData.pedestrianWest_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 3, 1));
 
-                                // CrosswalkData bytes 4-7
+                                // CrosswalkData 
                                 CrosswalkData.crosswalkType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 4, 0));
                                 CrosswalkData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 0));
                                 CrosswalkData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 6, 1));
@@ -2409,10 +2464,12 @@ namespace JAN0837_DP.Communication
                                 CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 0));
                                 CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 1));
 
-                                // RegulatorData bytes 8-9
-                                
+                                // RegulatorData 
+                                RegulatorData.Uc1 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 8));
+                                RegulatorData.Uc2 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 10));
 
-                                // CarWashData bytes 10-14
+                                // CarWashData 
+                                /*
                                 CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 0));
                                 CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 1));
                                 CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 2));
@@ -2433,8 +2490,10 @@ namespace JAN0837_DP.Communication
                                 CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 0));
                                 CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 1));
                                 CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 2));
+                                */
 
-                                // WashingMachineData bytes 15-17
+                                // WashingMachineData
+                                /*
                                 WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 0));
                                 WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 1));
                                 WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 2));
@@ -2447,6 +2506,7 @@ namespace JAN0837_DP.Communication
                                 WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 1));
                                 WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 2));
                                 WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 3));
+                                */
 
                                 _ucCommunicationControl.SetStatus($"Sharp7: ReadDB OK - All data read from DB{activeDBnumber}");
                             }
@@ -2456,7 +2516,7 @@ namespace JAN0837_DP.Communication
                                 Logger.LogError($"Sharp7 ReadDB error: Return code {read1} while reading DB{activeDBnumber}.");
                             }
 
-                            // CrossroadData write inputs to byte 0, outputs to bytes 2-3
+                            // CrossroadData
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnPause));
@@ -2482,7 +2542,8 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 2, 7, Convert.ToBoolean(CrossroadData.pedestrianSouth_red));
                             Sharp7.S7.SetBitAt(writeBuffer, 3, 0, Convert.ToBoolean(CrossroadData.pedestrianWest_green));
                             Sharp7.S7.SetBitAt(writeBuffer, 3, 1, Convert.ToBoolean(CrossroadData.pedestrianWest_red));
-                            // CrosswalkData write to bytes 4-7
+                            
+                            // CrosswalkData 
                             Sharp7.S7.SetBitAt(writeBuffer, 4, 0, Convert.ToBoolean(CrosswalkData.crosswalkType));
                             Sharp7.S7.SetBitAt(writeBuffer, 4, 1, Convert.ToBoolean(CrosswalkData.btnStart));
                             Sharp7.S7.SetBitAt(writeBuffer, 4, 2, Convert.ToBoolean(CrosswalkData.btnPause));
@@ -2501,7 +2562,7 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 0, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 1, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
-                            // RegulatorData write to bytes 8-9
+                            // RegulatorData 
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToInt64(RegulatorData.order) != 0);
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R1));
@@ -2514,9 +2575,10 @@ namespace JAN0837_DP.Communication
 
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc1) != 0.0);
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc2) != 0.0);
-                            Sharp7.S7.SetBitAt(writeBuffer, 9, 1, Convert.ToDouble(RegulatorData.PV) != 0.0);
 
-                            // CarWashData write to bytes 10-14
+
+                            // CarWashData 
+                            /*
                             Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
                             Sharp7.S7.SetBitAt(writeBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
                             Sharp7.S7.SetBitAt(writeBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
@@ -2546,8 +2608,9 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
                             Sharp7.S7.SetBitAt(writeBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
                             Sharp7.S7.SetBitAt(writeBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
-
-                            // WashingMachineData write to bytes 15-17
+                            */
+                            // WashingMachineData 
+                            /*
                             Sharp7.S7.SetBitAt(writeBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
                             Sharp7.S7.SetBitAt(writeBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
                             Sharp7.S7.SetBitAt(writeBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
@@ -2566,7 +2629,7 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
                             Sharp7.S7.SetBitAt(writeBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
                             Sharp7.S7.SetBitAt(writeBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
-
+                            */
                             int write1 = _sharp7.writeDB(activeDBnumber, writeBuffer, 0);
 
                             if (write1 == 0)

@@ -19,7 +19,7 @@ namespace JAN0837_DP.Data
         //public static string btnCrosswalk2 { get; set; } = "false"; // bool -> old
         // public static string btnNorthCrosswalk1 { get; set; } = "false"; // bool
         // public static string btnNorthCrosswalk2 { get; set; } = "false"; // bool
-        public static string btnWestCrosswalk1 { get; set; } = "false"; // bool 
+        public static string btnWestCrosswalk1 { get; set; } = "false"; // bool     
         public static string btnWestCrosswalk2 { get; set; } = "false"; // bool
         // public static string btnEastCrosswalk1 { get; set; } = "false"; // bool
         // public static string btnEastCrosswalk2 { get; set; } = "false"; // bool
@@ -40,14 +40,14 @@ namespace JAN0837_DP.Data
         public static string trafficLightEast_green { get; set; } = "false"; // bool
         public static string trafficLightEast_yellow { get; set; } = "false"; // bool
         public static string trafficLightEast_red { get; set; } = "false"; // bool
-        //public static string pedestrianNorth_green { get; set; } = "false"; // bool
-        //public static string pedestrianNorth_red { get; set; } = "false"; // bool
         public static string pedestrianSouth_green { get; set; } = "false"; // bool
         public static string pedestrianSouth_red { get; set; } = "false"; // bool
         public static string pedestrianWest_green { get; set; } = "false"; // bool
         public static string pedestrianWest_red { get; set; } = "false"; // bool
         //public static string pedestrianEast_green { get; set; } = "false"; // bool
         //public static string pedestrianEast_red { get; set; } = "false"; // bool
+        //public static string pedestrianNorth_green { get; set; } = "false"; // bool
+        //public static string pedestrianNorth_red { get; set; } = "false"; // bool
 
         // thread safety 
         private static readonly object _lock = new();

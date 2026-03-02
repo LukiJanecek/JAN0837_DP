@@ -36,9 +36,11 @@ function SideNavigationBar() {
            Washing Machine
         </Nav.Link>
         */}
+        {/*
         <Nav.Link as={NavLink} to="/carwash">
            Car Wash
         </Nav.Link>
+        */}
         <Nav.Link as={NavLink} to="/carlight">
            Car Light
         </Nav.Link>

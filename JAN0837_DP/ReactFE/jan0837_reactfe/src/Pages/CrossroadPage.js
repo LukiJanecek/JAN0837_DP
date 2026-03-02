@@ -235,37 +235,37 @@ function CrossroadCanvas({ background, lights, pedControls }) {
         <button
           type="button"
           className="ped-btn ped-btn--south btn btn-sm btn-light"
-          onClick={pedControls.onSouth}
+          onClick={pedControls.onSouth1}
           aria-label="Toggle pedestrian South"
         >
-          S {pedControls.btnPedS ? '🟢' : '⚪'}
+          S {pedControls.btnPedS1 ? '🟢' : '⚪'}
         </button>
 
         <button
           type="button"
           className="ped-btn ped-btn--south-2 btn btn-sm btn-light"
-          onClick={pedControls.onSouth}
+          onClick={pedControls.onSouth2}
           aria-label="Toggle pedestrian South second"
         >
-          S {pedControls.btnPedS ? '🟢' : '⚪'}
+          S {pedControls.btnPedS2 ? '🟢' : '⚪'}
         </button>
 
         <button
           type="button"
           className="ped-btn ped-btn--west btn btn-sm btn-light"
-          onClick={pedControls.onWest}
+          onClick={pedControls.onWest1}
           aria-label="Toggle pedestrian West"
         >
-          W {pedControls.btnPedW ? '🟢' : '⚪'}
+          W {pedControls.btnPedW1 ? '🟢' : '⚪'}
         </button>
 
         <button
           type="button"
           className="ped-btn ped-btn--west-2 btn btn-sm btn-light"
-          onClick={pedControls.onWest}
+          onClick={pedControls.onWest2}
           aria-label="Toggle pedestrian West second"
         >
-          W {pedControls.btnPedW ? '🟢' : '⚪'}
+          W {pedControls.btnPedW2 ? '🟢' : '⚪'}
         </button>
 
         {/* 
@@ -802,15 +802,15 @@ function CrossroadPage({ setAside }) {
     //{ id: 'ped-E-mirror-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '82.4%', y: '41.0%' },
   ];
 
-  const btnPedN = toBool(d?.btnWestCrosswalk1);
-  const btnPedS = toBool(d?.btnWestCrosswalk2);
-  const btnPedW = toBool(d?.btnEastCrosswalk1);
-  const btnPedE = toBool(d?.btnEastCrosswalk2);
+  const btnPedS1 = toBool(d?.btnWestCrosswalk1);
+  const btnPedS2 = toBool(d?.btnWestCrosswalk2);
+  const btnPedW1 = toBool(d?.btnSouthCrosswalk1);
+  const btnPedW2 = toBool(d?.btnSouthCrosswalk2);
 
-  const togglePedN = () => saveSection({ btnWestCrosswalk1: !btnPedN });
-  const togglePedS = () => saveSection({ btnWestCrosswalk2: !btnPedS });
-  const togglePedW = () => saveSection({ btnEastCrosswalk1: !btnPedW });
-  const togglePedE = () => saveSection({ btnEastCrosswalk2: !btnPedE });
+  const togglePedS1 = () => saveSection({ btnWestCrosswalk1: !btnPedS1 });
+  const togglePedS2 = () => saveSection({ btnWestCrosswalk2: !btnPedS2 });
+  const togglePedW1 = () => saveSection({ btnSouthCrosswalk1: !btnPedW1 });
+  const togglePedW2 = () => saveSection({ btnSouthCrosswalk2: !btnPedW2 });
 
   return (
     <Row className="crossroadpage">
@@ -822,14 +822,14 @@ function CrossroadPage({ setAside }) {
             background={background}
             lights={lights}
             pedControls={{
-              btnPedN,
-              btnPedS,
-              btnPedW,
-              btnPedE,
-              onNorth: togglePedN,
-              onSouth: togglePedS,
-              onWest: togglePedW,
-              onEast: togglePedE
+              btnPedS1,
+              btnPedS2,
+              btnPedW1,
+              btnPedW2,
+              onSouth1: togglePedS1,
+              onSouth2: togglePedS2,
+              onWest1: togglePedW1,
+              onWest2: togglePedW2
             }}
           /> 
         </div>

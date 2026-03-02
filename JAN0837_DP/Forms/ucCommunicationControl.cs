@@ -694,16 +694,20 @@ namespace JAN0837_DP.Forms
                                     // zpracování outputu z PLC -> RegulatorData
                                     MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(text);
                                 }
+                                /*
                                 else if (topic == "JAN0837/CarWash/Output")
                                 {
                                     // zpracování outputu z PLC -> CarWashData
                                     MQTTClient.CarWashOutputMapper.ApplyOutputJsonToCarWashData(text);
                                 }
+                                */
+                                /*
                                 else if (topic == "JAN0837/WashingMachine/Output")
                                 {
                                     // zpracování outputu z PLC -> WashingMachineData
                                     MQTTClient.WashingMachineOutputMapper.ApplyOutputJsonToWashingMachineData(text);
                                 }
+
                             };
 
                             // set topics to subscribe from start

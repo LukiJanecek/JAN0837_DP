@@ -181,8 +181,8 @@ def main():
             ("crossroad", params.Crossroad_Input_UDT_NAME, params.Crossroad_Input_UDT_FIELDS, params.Crossroad_Output_UDT_NAME, params.Crossroad_Output_UDT_FIELDS),
             ("crosswalk", params.Crosswalk_Input_UDT_NAME, params.Crosswalk_Input_UDT_FIELDS, params.Crosswalk_Output_UDT_NAME, params.Crosswalk_Output_UDT_FIELDS),
             ("regulator", params.Regulator_Input_UDT_NAME, params.Regulator_Input_UDT_FIELDS, params.Regulator_Output_UDT_NAME, params.Regulator_Output_UDT_FIELDS),
-            ("carwash", params.CarWash_Input_UDT_NAME, params.CarWash_Input_UDT_FIELDS, params.CarWash_Output_UDT_NAME, params.CarWash_Output_UDT_FIELDS),
-            ("washingmachine", params.WashingMachine_Input_UDT_NAME, params.WashingMachine_Input_UDT_FIELDS, params.WashingMachine_Output_UDT_NAME, params.WashingMachine_Output_UDT_FIELDS),
+            #("carwash", params.CarWash_Input_UDT_NAME, params.CarWash_Input_UDT_FIELDS, params.CarWash_Output_UDT_NAME, params.CarWash_Output_UDT_FIELDS),
+            #("washingmachine", params.WashingMachine_Input_UDT_NAME, params.WashingMachine_Input_UDT_FIELDS, params.WashingMachine_Output_UDT_NAME, params.WashingMachine_Output_UDT_FIELDS),
             ("carlight", params.CarLight_Input_UDT_NAME, params.CarLight_Input_UDT_FIELDS, params.CarLight_Output_UDT_NAME, params.CarLight_Output_UDT_FIELDS),
         ]
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace JAN0837_DP.Data
 {
+    /*
     public static class CarWashData
     {
         //inputs
@@ -195,4 +196,5 @@ namespace JAN0837_DP.Data
             public static string MEMDoorClosingtrig { get; set; } = "ns=4;i=?"; // bool
         }
     }
+    */
 }

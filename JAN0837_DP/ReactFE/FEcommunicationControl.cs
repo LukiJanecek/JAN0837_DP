@@ -184,12 +184,16 @@ namespace JAN0837_DP.ReactFE
                 case "RegulatorData":
                     ApplyRegulatorUpdate(key, value);
                     break;
+                /*
                 case "CarWash":
                     ApplyCarWashUpdate(key, value);
                     break;
+                */
+                /*
                 case "WashingMachine":
                     ApplyWashingMachineUpdate(key, value);
                     break;
+                */
                 case "CarLight":
                     ApplyCarLightUpdate(key, value);
                     break;
@@ -387,13 +391,10 @@ namespace JAN0837_DP.ReactFE
                     case "Uc2":
                         RegulatorData.Uc2 = value;
                         break;
-                    case "PV":
-                        RegulatorData.PV = value;
-                        break;
                 }
             });
         }
-
+        /*
         private static void ApplyCarWashUpdate(string key, string value)
         {
             CarWashData.Update(() =>
@@ -487,7 +488,8 @@ namespace JAN0837_DP.ReactFE
                 }
             });
         }
-
+        */
+        /*
         private static void ApplyWashingMachineUpdate(string key, string value)
         {
             WashingMachineData.Update(() =>
@@ -545,6 +547,7 @@ namespace JAN0837_DP.ReactFE
                 }
             });
         }
+        */
 
         private static void ApplyCarLightUpdate(string key, string value)
         {
@@ -573,8 +576,8 @@ namespace JAN0837_DP.ReactFE
                     case "sensorConnectorConnected":
                         CarLightData.sensorConnectorConnected = value;
                         break;
-                    case "done":
-                        CarLightData.done = value;
+                    case "result":
+                        CarLightData.result = value;
                         break;
                 }
             });
@@ -703,8 +706,8 @@ namespace JAN0837_DP.ReactFE
                     var crossroaddata = CrossroadData.Get();
                     var crosswalkdata = CrosswalkData.Get();
                     var regulatordata = RegulatorData.Get();
-                    var carwashdata = CarWashData.Get();
-                    var washingmachinedata = WashingMachineData.Get();
+                    //var carwashdata = CarWashData.Get();
+                    //var washingmachinedata = WashingMachineData.Get();
                     var carlightdata = CarLightData.Get();
 
                     WriteJSON(resp, new
@@ -779,9 +782,9 @@ namespace JAN0837_DP.ReactFE
                             Td = regulatordata.Td,
                             Ts = regulatordata.Ts,
                             Uc1 = regulatordata.Uc1,
-                            Uc2 = regulatordata.Uc2,
-                            PV = regulatordata.PV
+                            Uc2 = regulatordata.Uc2
                         },
+                        /*
                         CarWash = new
                         {
                             btnEmergencyStop = carwashdata.btnEmergencyStop,
@@ -813,6 +816,8 @@ namespace JAN0837_DP.ReactFE
                             MEMDoorTrig = carwashdata.MEMDoorTrig,
                             MEMDoorClosingtrig = carwashdata.MEMDoorClosingtrig
                         },
+                        */
+                        /*
                         WashingMachine = new
                         {
                             btnEmergencyStop = washingmachinedata.btnEmergencyStop,
@@ -832,6 +837,7 @@ namespace JAN0837_DP.ReactFE
                             Soap = washingmachinedata.Soap,
                             ActiveFoam = washingmachinedata.ActiveFoam
                         },
+                        */
                         CarLight = new
                         {
                             btnStart = carlightdata.btnStart,
@@ -841,7 +847,7 @@ namespace JAN0837_DP.ReactFE
                             turnLight = carlightdata.turnLight,
                             sensorPosition = carlightdata.sensorPosition,
                             sensorConnectorConnected = carlightdata.sensorConnectorConnected,
-                            done = carlightdata.done
+                            result = carlightdata.result
                         }
                     });
                     return;
@@ -905,8 +911,8 @@ namespace JAN0837_DP.ReactFE
             var crossroaddata = CrossroadData.Get();
             var crosswalkdata = CrosswalkData.Get();
             var regulatordata = RegulatorData.Get();
-            var carwashdata = CarWashData.Get();
-            var washingmachinedata = WashingMachineData.Get();
+            //var carwashdata = CarWashData.Get();
+            //var washingmachinedata = WashingMachineData.Get();
             var carlightdata = CarLightData.Get();
 
             return new
@@ -950,6 +956,7 @@ namespace JAN0837_DP.ReactFE
                     Td = regulatordata.Td,
                     Ts = regulatordata.Ts
                 },
+                /*
                 CarWash = new
                 {
                     btnEmergencyStop = carwashdata.btnEmergencyStop,
@@ -960,6 +967,8 @@ namespace JAN0837_DP.ReactFE
                     ShowerPosition = carwashdata.ShowerPosition,
                     Mode = carwashdata.Mode
                 },
+                */
+                /*
                 WashingMachine = new
                 {
                     btnEmergencyStop = washingmachinedata.btnEmergencyStop,
@@ -968,6 +977,7 @@ namespace JAN0837_DP.ReactFE
                     ErrorSystem = washingmachinedata.ErrorSystem,
                     Mode = washingmachinedata.Mode
                 },
+                */
                 CarLight = new
                 {
                     btnStart_carlight = carlightdata.btnStart,

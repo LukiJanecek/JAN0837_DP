@@ -8,6 +8,7 @@ using System.Web;
 
 namespace JAN0837_DP.Data
 {
+    /*
     public static class WashingMachineData
     {
         //inputs
@@ -134,4 +135,5 @@ namespace JAN0837_DP.Data
             public static string ActiveFoam { get; set; } = "ns=4;i=?"; // bool
         }
     }
+    */
 }

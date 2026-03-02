@@ -80,7 +80,6 @@ export const STATE_SCHEMA = {
     // outputs
     Uc1 : { type: 'real', default: 0.0 },
     Uc2 : { type: 'real', default: 0.0 },
-    PV : { type: 'real', default: 0.0 },
   }},
 
   // CarLight 
@@ -105,6 +104,7 @@ export const STATE_SCHEMA = {
   }},
 
   // CarWash 
+  /*
   CarWash: { type: 'object', shape: {
     // inputs
     btnEmergencyStop : { type: 'boolean', default: false },
@@ -137,8 +137,10 @@ export const STATE_SCHEMA = {
     MEMDoorTrig : { type: 'boolean', default: false },
     MEMDoorClosingtrig : { type: 'boolean', default: false },
   }},
+  */
 
   // WashingMachine
+  /*
   WashingMachine: { type: 'object', shape: {
     // inputs 
     btnEmergencyStop : { type: 'boolean', default: false },
@@ -159,6 +161,7 @@ export const STATE_SCHEMA = {
     Soap : { type: 'boolean', default: false },
     ActiveFoam : { type: 'boolean', default: false },
   }},
+  */
 
   // catch-all for unknown sections
   '*': { type: 'any' }

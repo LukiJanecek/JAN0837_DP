@@ -18,7 +18,7 @@ namespace JAN0837_DP.Data
         // Outputs 
         public static string sensorPosition { get; set; } = "false";
         public static string sensorConnectorConnected { get; set; } = "false";
-        public static string done { get; set; } = "false";
+        public static string result { get; set; } = "false";
 
         // Thread safety
         private static readonly object _lock = new();
@@ -32,7 +32,7 @@ namespace JAN0837_DP.Data
             string turnLight,
             string sensorPosition,
             string sensorConnectorConnected,
-            string done
+            string result
         );
 
         public static State Get()
@@ -47,7 +47,7 @@ namespace JAN0837_DP.Data
                     turnLight,
                     sensorPosition,
                     sensorConnectorConnected,
-                    done
+                    result
                 );
             }
         }
@@ -66,7 +66,7 @@ namespace JAN0837_DP.Data
                 if (s.sensorPosition != null) sensorPosition = s.sensorPosition;
                 if (s.sensorConnectorConnected != null) sensorConnectorConnected = s.sensorConnectorConnected;
 
-                if (s.done != null) done = s.done;
+                if (s.result != null) result = s.result;
             }
         }
 
@@ -88,7 +88,7 @@ namespace JAN0837_DP.Data
             // Outputs
             public static string sensorPosition { get; set; } = "ns=4;i=?";
             public static string sensorConnectorConnected { get; set; } = "ns=4;i=?";
-            public static string done { get; set; } = "ns=4;i=?";
+            public static string result { get; set; } = "ns=4;i=?";
         }
     }
 }

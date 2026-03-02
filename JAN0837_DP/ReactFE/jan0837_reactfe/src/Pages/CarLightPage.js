@@ -15,25 +15,26 @@ const toBool = (v) => {
 };
 
 function CarLightCanvas({ d }) {
-  const marker = toBool(d?.markerLight);
-  const brake  = toBool(d?.brakeLight);
-  const turn   = toBool(d?.turnLight);
+  const errorActive = toBool(d?.error) || toBool(d?.err);
+  const marker = toBool(d?.markerLight) && !errorActive;
+  const brake  = toBool(d?.brakeLight) && !errorActive;
+  const turn   = toBool(d?.turnLight) && !errorActive;
   const done   = toBool(d?.done);
 
   return (
     <div className="carlight-canvas">
-      <div className="carlight-row">
-        <div className={`carlight-bulb carlight-bulb--marker ${marker ? 'on' : ''}`}>
-          <i className="bi bi-lightbulb-fill" />
-          <span>Marker</span>
-        </div>
-        <div className={`carlight-bulb carlight-bulb--brake ${brake ? 'on' : ''}`}>
-          <i className="bi bi-exclamation-triangle-fill" />
-          <span>Brake</span>
-        </div>
-        <div className={`carlight-bulb carlight-bulb--turn ${turn ? 'on' : ''}`}>
+      <div className="carlight-headlamp">
+        <div className={`carlight-cell carlight-cell--turn ${turn ? 'on' : ''}`}>
           <i className="bi bi-arrow-left-right" />
-          <span>Turn</span>
+          <span>Blinkr</span>
+        </div>
+        <div className={`carlight-cell carlight-cell--brake ${brake ? 'on' : ''}`}>
+          <i className="bi bi-sun-fill" />
+          <span>Dálkové</span>
+        </div>
+        <div className={`carlight-cell carlight-cell--marker ${marker ? 'on' : ''}`}>
+          <i className="bi bi-lightbulb-fill" />
+          <span>Obrysové</span>
         </div>
       </div>
       {done && (
@@ -47,7 +48,7 @@ function CarLightCanvas({ d }) {
 
 function CarLightParamsSidebar() {
   const { interval, setInterval } = useRefresh();
-  const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('CarLight');
+  const { section: d, saveSection, data, error: fetchError, isFetching, refresh } = useSectionData('CarLight');
 
   // Inputs
   const btnStart    = toBool(d?.btnStart);
@@ -55,29 +56,46 @@ function CarLightParamsSidebar() {
   const markerLight = toBool(d?.markerLight);
   const brakeLight  = toBool(d?.brakeLight);
   const turnLight   = toBool(d?.turnLight);
-  const blockPos  = toBool(d?.blockSensorPosition);
-  const blockConn = toBool(d?.blockSensorConnector);
+  const errorState = toBool(d?.error) || toBool(d?.err);
   const [localMarkerBps, setLocalMarkerBps] = useState('');
   const [localBrakeBps,  setLocalBrakeBps]  = useState('');
   const [localTurnBps,   setLocalTurnBps]   = useState('');
-  const [localPosDelay,  setLocalPosDelay]  = useState('');
-  const [localConnDelay, setLocalConnDelay] = useState('');
+  const [localMarkerDelta, setLocalMarkerDelta] = useState('');
+  const [localBrakeDelta,  setLocalBrakeDelta]  = useState('');
+  const [localTurnDelta,   setLocalTurnDelta]   = useState('');
 
   useEffect(() => {
     if (d) {
       setLocalMarkerBps(String(d.markerBlinksPerSec ?? 0));
       setLocalBrakeBps(String(d.brakeBlinksPerSec ?? 0));
       setLocalTurnBps(String(d.turnBlinksPerSec ?? 0));
-      setLocalPosDelay(String(d.sensorPositionDelay ?? 3));
-      setLocalConnDelay(String(d.sensorConnectorDelay ?? 4));
+      setLocalMarkerDelta(String(d.markerTimeDelta ?? 0));
+      setLocalBrakeDelta(String(d.brakeTimeDelta ?? 0));
+      setLocalTurnDelta(String(d.turnTimeDelta ?? 0));
     }
   }, [d?.markerBlinksPerSec, d?.brakeBlinksPerSec, d?.turnBlinksPerSec,
-      d?.sensorPositionDelay, d?.sensorConnectorDelay]);
+      d?.markerTimeDelta, d?.brakeTimeDelta, d?.turnTimeDelta]);
+
+  const connectorConnected = markerLight || brakeLight || turnLight;
+  const sensorLight = (markerLight || brakeLight || turnLight) && !errorState;
 
   // Outputs
-  const sensorPosition = toBool(d?.sensorPosition);
-  const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
+  const sensorPosition = sensorLight;
+  const sensorConnectorConnected = connectorConnected;
   const done  = toBool(d?.done);
+
+  useEffect(() => {
+    const updates = {};
+    if (toBool(d?.sensorConnectorConnected) !== connectorConnected) {
+      updates.sensorConnectorConnected = connectorConnected;
+    }
+    if (toBool(d?.sensorPosition) !== sensorLight) {
+      updates.sensorPosition = sensorLight;
+    }
+    if (Object.keys(updates).length > 0) {
+      saveSection(updates);
+    }
+  }, [d?.sensorConnectorConnected, d?.sensorPosition, connectorConnected, sensorLight, saveSection]);
 
   const toggle = async (key, cur) => {
     try {
@@ -102,6 +120,26 @@ function CarLightParamsSidebar() {
     }
   };
 
+  const sendReset = async () => {
+    try {
+      await saveSection({
+        btnReset: true,
+        markerLight: false,
+        brakeLight: false,
+        turnLight: false,
+        error: false,
+        err: false,
+        sensorConnectorConnected: false,
+        sensorPosition: false,
+      });
+      setTimeout(() => {
+        saveSection({ btnReset: false });
+      }, 150);
+    } catch (e) {
+      console.error('sendReset error:', e);
+    }
+  };
+
   return (
     <div>
       <h3>Parameters:</h3>
@@ -110,7 +148,7 @@ function CarLightParamsSidebar() {
         <Button className="btn--start" onClick={() => toggle('btnStart', btnStart)}>
           Start ({String(btnStart)})
         </Button>
-        <Button className="btn--stop" onClick={() => toggle('btnReset', btnReset)}>
+        <Button className="btn--stop" onClick={sendReset}>
           Reset ({String(btnReset)})
         </Button>
       </div>
@@ -118,21 +156,31 @@ function CarLightParamsSidebar() {
       <div className="gap-2 mb-3">
         <Button variant={markerLight ? 'warning' : 'outline-warning'}
                 onClick={() => toggle('markerLight', markerLight)}>
-          Marker Light ({String(markerLight)})
+          Obrysové ({String(markerLight)})
         </Button>
-        <Button variant={brakeLight ? 'danger' : 'outline-danger'}
+        <Button variant={brakeLight ? 'primary' : 'outline-primary'}
                 onClick={() => toggle('brakeLight', brakeLight)}>
-          Brake Light ({String(brakeLight)})
+          Dálkové ({String(brakeLight)})
         </Button>
         <Button variant={turnLight ? 'info' : 'outline-info'}
                 onClick={() => toggle('turnLight', turnLight)}>
-          Turn Light ({String(turnLight)})
+          Blinkr ({String(turnLight)})
         </Button>
       </div>
 
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="carlight-error"
+          label={`Error (${String(errorState)})`}
+          checked={errorState}
+          onChange={e => saveSection({ error: e.target.checked, err: e.target.checked })}
+        />
+      </Form.Group>
+
       <Form>
         <Form.Group className="mb-2">
-          <Form.Label>Marker blinks/s</Form.Label>
+          <Form.Label>Obrysové – frekvence (Hz)</Form.Label>
           <Form.Control type="number" step="any" min="0"
             value={localMarkerBps}
             onChange={e => setLocalMarkerBps(e.target.value)}
@@ -141,7 +189,7 @@ function CarLightParamsSidebar() {
           />
         </Form.Group>
         <Form.Group className="mb-2">
-          <Form.Label>Brake blinks/s</Form.Label>
+          <Form.Label>Dálkové – frekvence (Hz)</Form.Label>
           <Form.Control type="number" step="any" min="0"
             value={localBrakeBps}
             onChange={e => setLocalBrakeBps(e.target.value)}
@@ -150,7 +198,7 @@ function CarLightParamsSidebar() {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Turn blinks/s</Form.Label>
+          <Form.Label>Blinkr – frekvence (Hz)</Form.Label>
           <Form.Control type="number" step="any" min="0"
             value={localTurnBps}
             onChange={e => setLocalTurnBps(e.target.value)}
@@ -162,44 +210,46 @@ function CarLightParamsSidebar() {
 
       <Form>
         <Form.Group className="mb-2">
-          <Form.Label>Sensor position – delay (s)</Form.Label>
+          <Form.Label>Obrysové – časová delta (s)</Form.Label>
           <Form.Control type="number" step="any" min="0"
-            value={localPosDelay}
-            onChange={e => setLocalPosDelay(e.target.value)}
-            onBlur={() => sendNum('sensorPositionDelay', localPosDelay)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('sensorPositionDelay', localPosDelay)}
+            value={localMarkerDelta}
+            onChange={e => setLocalMarkerDelta(e.target.value)}
+            onBlur={() => sendNum('markerTimeDelta', localMarkerDelta)}
+            onKeyDown={e => e.key === 'Enter' && sendNum('markerTimeDelta', localMarkerDelta)}
           />
         </Form.Group>
         <Form.Group className="mb-2">
-          <Form.Label>Sensor connector – delay (s)</Form.Label>
+          <Form.Label>Dálkové – časová delta (s)</Form.Label>
           <Form.Control type="number" step="any" min="0"
-            value={localConnDelay}
-            onChange={e => setLocalConnDelay(e.target.value)}
-            onBlur={() => sendNum('sensorConnectorDelay', localConnDelay)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('sensorConnectorDelay', localConnDelay)}
+            value={localBrakeDelta}
+            onChange={e => setLocalBrakeDelta(e.target.value)}
+            onBlur={() => sendNum('brakeTimeDelta', localBrakeDelta)}
+            onKeyDown={e => e.key === 'Enter' && sendNum('brakeTimeDelta', localBrakeDelta)}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Blinkr – časová delta (s)</Form.Label>
+          <Form.Control type="number" step="any" min="0"
+            value={localTurnDelta}
+            onChange={e => setLocalTurnDelta(e.target.value)}
+            onBlur={() => sendNum('turnTimeDelta', localTurnDelta)}
+            onKeyDown={e => e.key === 'Enter' && sendNum('turnTimeDelta', localTurnDelta)}
           />
         </Form.Group>
       </Form>
 
-      <div className="gap-2 mb-3">
-        <Button size="sm" variant={blockPos ? 'danger' : 'outline-secondary'}
-                onClick={() => toggle('blockSensorPosition', blockPos)}>
-          Block sensor position ({String(blockPos)})
-        </Button>
-        <Button size="sm" variant={blockConn ? 'danger' : 'outline-secondary'}
-                onClick={() => toggle('blockSensorConnector', blockConn)}>
-          Block sensor connector ({String(blockConn)})
-        </Button>
-      </div>
-
       <div className="gap-2 mb-2">
         <div>
-          <strong>Sensor Position:</strong>{' '}
+          <strong>Čidlo světla:</strong>{' '}
           <Badge bg={sensorPosition ? 'success' : 'secondary'}>{String(sensorPosition)}</Badge>
         </div>
         <div>
-          <strong>Connector Connected:</strong>{' '}
+          <strong>Čidlo konektoru:</strong>{' '}
           <Badge bg={sensorConnectorConnected ? 'success' : 'secondary'}>{String(sensorConnectorConnected)}</Badge>
+        </div>
+        <div>
+          <strong>Error:</strong>{' '}
+          <Badge bg={errorState ? 'danger' : 'secondary'}>{String(errorState)}</Badge>
         </div>
         <div>
           <strong>Done:</strong>{' '}

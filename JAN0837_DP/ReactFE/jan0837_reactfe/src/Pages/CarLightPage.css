@@ -13,53 +13,70 @@
   justify-content: center;
 }
 
-.carlight-row {
+.carlight-headlamp {
   display: flex;
-  gap: 3rem;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.carlight-bulb {
+.carlight-cell {
+  width: clamp(110px, 16vw, 170px);
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #555;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  color: #6c757d;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+  transition: color 0.25s ease, text-shadow 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.carlight-bulb i {
-  font-size: 3rem;
+.carlight-cell i {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
   transition: color 0.3s ease, filter 0.3s ease;
 }
 
 /* marker – yellow */
-.carlight-bulb--marker.on {
+.carlight-cell--marker.on {
   color: #ffc107;
+  border-color: rgba(255,193,7,.65);
+  box-shadow: inset 0 0 16px rgba(255,193,7,.18), 0 0 12px rgba(255,193,7,.25);
   text-shadow: 0 0 12px rgba(255,193,7,.6);
 }
-.carlight-bulb--marker.on i {
+.carlight-cell--marker.on i {
   color: #ffc107;
   filter: drop-shadow(0 0 10px #ffc107);
 }
 
-/* brake – red */
-.carlight-bulb--brake.on {
-  color: #dc3545;
-  text-shadow: 0 0 12px rgba(220,53,69,.6);
+/* brake – white/blue */
+.carlight-cell--brake.on {
+  color: #dce7ff;
+  border-color: rgba(220,231,255,.75);
+  box-shadow: inset 0 0 16px rgba(220,231,255,.2), 0 0 12px rgba(220,231,255,.3);
+  text-shadow: 0 0 12px rgba(220,231,255,.7);
 }
-.carlight-bulb--brake.on i {
-  color: #dc3545;
-  filter: drop-shadow(0 0 10px #dc3545);
+.carlight-cell--brake.on i {
+  color: #dce7ff;
+  filter: drop-shadow(0 0 10px #dce7ff);
 }
 
 /* turn – cyan / info */
-.carlight-bulb--turn.on {
+.carlight-cell--turn.on {
   color: #0dcaf0;
+  border-color: rgba(13,202,240,.65);
+  box-shadow: inset 0 0 16px rgba(13,202,240,.18), 0 0 12px rgba(13,202,240,.25);
   text-shadow: 0 0 12px rgba(13,202,240,.6);
 }
-.carlight-bulb--turn.on i {
+.carlight-cell--turn.on i {
   color: #0dcaf0;
   filter: drop-shadow(0 0 10px #0dcaf0);
 }

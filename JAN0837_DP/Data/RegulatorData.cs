@@ -11,6 +11,7 @@ namespace JAN0837_DP.Data
     public static class RegulatorData
     {
         // Inputs 
+        public static string btnReset { get; set; } = "false"; // Bool
         public static string switchstate { get; set; } = "false"; // Bool
         public static string order { get; set; } = "1"; // int
         public static string R1 { get; set; } = "0.0"; // Real
@@ -18,13 +19,12 @@ namespace JAN0837_DP.Data
         public static string C1 { get; set; } = "0.0"; // Real
         public static string C2 { get; set; } = "0.0"; // Real
         public static string Uin { get; set; } = "0.0"; // Real
-        public static string Td { get; set; } = "0.0"; // Real -> dopravni zpozceni                                                   
-        public static string Ts { get; set; } = "0.1"; // Vzorkovací čas simulace (sekundy)
+        public static string Td { get; set; } = "0.0"; // Real -> transport delay                                                  
+        public static string Ts { get; set; } = "0.1"; // sampling time
 
         // Outputs 
         public static string Uc1 { get; set; } = "0.0"; // Real
         public static string Uc2 { get; set; } = "0.0"; // Real
-        public static string PV { get; set; } = "0.0"; // Real 
 
         // Thread safety 
         private static readonly object _lock = new();
@@ -41,8 +41,7 @@ namespace JAN0837_DP.Data
             string Td,
             string Ts,
             string Uc1,
-            string Uc2,
-            string PV
+            string Uc2
         );
 
         public static State Get()
@@ -60,8 +59,7 @@ namespace JAN0837_DP.Data
                     Td,
                     Ts,
                     Uc1,
-                    Uc2,
-                    PV
+                    Uc2
                 );
             }
         }
@@ -78,7 +76,6 @@ namespace JAN0837_DP.Data
 
                 if (s.Uc1 != null) Uc1 = s.Uc1;
                 if (s.Uc2 != null) Uc2 = s.Uc2;
-                if (s.PV != null) PV = s.PV;
             }
         }
 
@@ -104,7 +101,6 @@ namespace JAN0837_DP.Data
             // Outputs 
             public static string Uc1 { get; set; } = "ns=4;i=?";
             public static string Uc2 { get; set; } = "ns=4;i=?";
-            public static string PV { get; set; } = "ns=4;i=?";
         }
     }
 }

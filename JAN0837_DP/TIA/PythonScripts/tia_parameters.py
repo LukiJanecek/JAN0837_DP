@@ -17,24 +17,32 @@ Crossroad_Input_UDT_FIELDS = [
     ("btnStart", "Bool", "FALSE"),
     ("btnPause", "Bool", "FALSE"),
     ("btnStop", "Bool", "FALSE"),
-    ("btnCrosswalk1", "Bool", "FALSE"),
-    ("btnCrosswalk2", "Bool", "FALSE")
+    ("btnWestCrosswalk1", "Bool", "FALSE"),
+    ("btnWestCrosswalk2", "Bool", "FALSE"),
+    ("btnEastCrosswalk1", "Bool", "FALSE"),
+    ("btnEastCrosswalk2", "Bool", "FALSE")
 ]
 
 Crossroad_Output_UDT_NAME = "Crossroad_Output"
 
 Crossroad_Output_UDT_FIELDS = [
     ("crossroadType", "Bool", "FALSE"),
-    ("trafficLightGreen1", "Bool", "FALSE"),
-    ("trafficLightsYellow1", "Bool", "FALSE"),
-    ("trafficLightsRed1", "Bool", "FALSE"),
-    ("trafficLightGreen2", "Bool", "FALSE"),
-    ("trafficLightsYellow2", "Bool", "FALSE"),
-    ("trafficLightsRed2", "Bool", "FALSE"),
-    ("pedestrianLightGreen1", "Bool", "FALSE"),
-    ("pedestrianLightRed1", "Bool", "FALSE"),
-    ("pedestrianLightGreen2", "Bool", "FALSE"),
-    ("pedestrianLightRed2", "Bool", "FALSE")
+    ("trafficLightNorth_green", "Bool", "FALSE"),
+    ("trafficLightNorth_yellow", "Bool", "FALSE"),
+    ("trafficLightNorth_red", "Bool", "FALSE"),
+    ("trafficLightSouth_green", "Bool", "FALSE"),
+    ("trafficLightSouth_yellow", "Bool", "FALSE"),
+    ("trafficLightSouth_red", "Bool", "FALSE"),
+    ("trafficLightWest_green", "Bool", "FALSE"),
+    ("trafficLightWest_yellow", "Bool", "FALSE"),
+    ("trafficLightWest_red", "Bool", "FALSE"),
+    ("trafficLightEast_green", "Bool", "FALSE"),
+    ("trafficLightEast_yellow", "Bool", "FALSE"),
+    ("trafficLightEast_red", "Bool", "FALSE"),
+    ("pedestrianSouth_green", "Bool", "FALSE"),
+    ("pedestrianSouth_red", "Bool", "FALSE"),
+    ("pedestrianWest_green", "Bool", "FALSE"),
+    ("pedestrianWest_red", "Bool", "FALSE")
 ]
 
 Crosswalk_Input_UDT_NAME = "Crosswalk_Input"
@@ -66,13 +74,15 @@ Crosswalk_Output_UDT_FIELDS = [
 Regulator_Input_UDT_NAME = "Regulator_Input"
 
 Regulator_Input_UDT_FIELDS = [   
+    ("btnReset", "Bool", "FALSE"),
     ("switchstate", "Bool", "FALSE"),
     ("order", "Int", "1"),
     ("R1", "Real", "0.0"),
     ("R2", "Real", "0.0"),
     ("C1", "Real", "0.0"),
-    ("C2", "Real", "0.0"),
-    ("Uin", "Real", "0.0"),
+    ("C2", "Real", "0.0"),    
+    ("Uc1", "Real", "0.0"),
+    ("Uc2", "Real", "0.0"),
     ("Td", "Real", "0.0"),
     ("Ts", "Real", "0.0"),
 ]
@@ -80,9 +90,28 @@ Regulator_Input_UDT_FIELDS = [
 Regulator_Output_UDT_NAME = "Regulator_Output"
 
 Regulator_Output_UDT_FIELDS = [
-    ("Uc1", "Real", "0.0"),
-    ("Uc2", "Real", "0.0"),
-    ("PV", "Real", "0.0"),
+
+    ("Uin", "Real", "0.0"),
+]
+
+CarLight_Input_UDT_NAME = "CarLight_Input"
+
+CarLight_Input_UDT_FIELDS = [
+    ("btnStart", "Bool", "FALSE"),
+    ("btnReset", "Bool", "FALSE"),
+    ("error", "Bool", "FALSE"),
+    ("sensorLight", "Bool", "FALSE"),
+    ("sensorConnectorConnected", "Bool", "FALSE"),
+    ("lowBeamLight", "Bool", "FALSE"),
+    ("highBeamLight", "Bool", "FALSE"),
+    ("turnLight", "Bool", "FALSE"),
+]
+
+CarLight_Output_UDT_NAME = "CarLight_Output"
+
+CarLight_Output_UDT_FIELDS = [
+    
+    ("result", "Bool", "FALSE"),
 ]
 
 CarWash_Input_UDT_NAME = "CarWash_Input"
@@ -146,24 +175,6 @@ WashingMachine_Output_UDT_FIELDS = [
     ("Brushes", "Bool", "FALSE"),
     ("Soap", "Bool", "FALSE"),
     ("ActiveFoam", "Bool", "FALSE"),
-]
-
-CarLight_Input_UDT_NAME = "CarLight_Input"
-
-CarLight_Input_UDT_FIELDS = [
-    ("btnStart", "Bool", "FALSE"),
-    ("btnReset", "Bool", "FALSE"),
-    ("markerLight", "Bool", "FALSE"),
-    ("brakeLight", "Bool", "FALSE"),
-    ("turnLight", "Bool", "FALSE"),
-]
-
-CarLight_Output_UDT_NAME = "CarLight_Output"
-
-CarLight_Output_UDT_FIELDS = [
-    ("sensorPosition", "Bool", "FALSE"),
-    ("sensorConnectorConnected", "Bool", "FALSE"),
-    ("done", "Bool", "FALSE"),
 ]
 
 DEFAULT_DB_NAME = "DB_ProcessData"

@@ -555,26 +555,26 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
-                    case "btnStart":
-                        CarLightData.btnStart = value;
-                        break;
                     case "btnReset":
                         CarLightData.btnReset = value;
                         break;
-                    case "markerLight":
-                        CarLightData.markerLight = value;
+                    case "error":
+                        CarLightData.error = value;
                         break;
-                    case "brakeLight":
-                        CarLightData.brakeLight = value;
-                        break;
-                    case "turnLight":
-                        CarLightData.turnLight = value;
-                        break;
-                    case "sensorPosition":
-                        CarLightData.sensorPosition = value;
+                    case "sensorLight":
+                        CarLightData.sensorLight = value;
                         break;
                     case "sensorConnectorConnected":
                         CarLightData.sensorConnectorConnected = value;
+                        break;
+                    case "lowBeamLight":
+                        CarLightData.lowBeamLight = value;
+                        break;
+                    case "highBeamLight":
+                        CarLightData.highBeamLight = value;
+                        break;
+                    case "turnLight":
+                        CarLightData.turnLight = value;
                         break;
                     case "result":
                         CarLightData.result = value;
@@ -699,7 +699,7 @@ namespace JAN0837_DP.ReactFE
                     return;
                 }
 
-                // ── Data endpoints ──
+                // ── Data endpoints --  
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
                     //var testdata = TestData.AppState.Get();
@@ -709,7 +709,8 @@ namespace JAN0837_DP.ReactFE
                     //var carwashdata = CarWashData.Get();
                     //var washingmachinedata = WashingMachineData.Get();
                     var carlightdata = CarLightData.Get();
-
+                    
+                    // all data (inputs & outputs)
                     WriteJSON(resp, new
                     {
                         /*
@@ -772,17 +773,18 @@ namespace JAN0837_DP.ReactFE
                         },
                         RegulatorData = new
                         {
+                            btnReset = regulatordata.btnReset,
                             switchstate = regulatordata.switchstate,
                             order = regulatordata.order,
                             R1 = regulatordata.R1,
                             R2 = regulatordata.R2,
                             C1 = regulatordata.C1,
                             C2 = regulatordata.C2,
-                            Uin = regulatordata.Uin,
+                            Uc1 = regulatordata.Uc1,
+                            Uc2 = regulatordata.Uc2,
                             Td = regulatordata.Td,
                             Ts = regulatordata.Ts,
-                            Uc1 = regulatordata.Uc1,
-                            Uc2 = regulatordata.Uc2
+                            Uin = regulatordata.Uin
                         },
                         /*
                         CarWash = new
@@ -840,13 +842,13 @@ namespace JAN0837_DP.ReactFE
                         */
                         CarLight = new
                         {
-                            btnStart = carlightdata.btnStart,
                             btnReset = carlightdata.btnReset,
-                            markerLight = carlightdata.markerLight,
-                            brakeLight = carlightdata.brakeLight,
-                            turnLight = carlightdata.turnLight,
-                            sensorPosition = carlightdata.sensorPosition,
+                            error = carlightdata.error,
+                            sensorLight = carlightdata.sensorLight,
                             sensorConnectorConnected = carlightdata.sensorConnectorConnected,
+                            lowBeamLight = carlightdata.lowBeamLight,
+                            highBeamLight = carlightdata.highBeamLight,
+                            turnLight = carlightdata.turnLight,
                             result = carlightdata.result
                         }
                     });
@@ -915,6 +917,7 @@ namespace JAN0837_DP.ReactFE
             //var washingmachinedata = WashingMachineData.Get();
             var carlightdata = CarLightData.Get();
 
+            // Only Inputs 
             return new
             {
                 /*
@@ -947,12 +950,15 @@ namespace JAN0837_DP.ReactFE
                 },
                 RegulatorData = new
                 {
+                    btnReset = regulatordata.btnReset,
                     switchstate = regulatordata.switchstate,
+                    order = regulatordata.order,
                     R1 = regulatordata.R1,
                     R2 = regulatordata.R2,
                     C1 = regulatordata.C1,
                     C2 = regulatordata.C2,
-                    Uin = regulatordata.Uin,
+                    Uc1 = regulatordata.Uc1,
+                    Uc2 = regulatordata.Uc2,
                     Td = regulatordata.Td,
                     Ts = regulatordata.Ts
                 },
@@ -980,10 +986,12 @@ namespace JAN0837_DP.ReactFE
                 */
                 CarLight = new
                 {
-                    btnStart_carlight = carlightdata.btnStart,
-                    btnReset_carlight = carlightdata.btnReset,
-                    markerLight = carlightdata.markerLight,
-                    brakeLight = carlightdata.brakeLight,
+                    btnReset = carlightdata.btnReset,
+                    error = carlightdata.error,
+                    sensorLight = carlightdata.sensorLight,
+                    sensorConnectorConnected = carlightdata.sensorConnectorConnected,
+                    lowBeamLight = carlightdata.lowBeamLight,
+                    highBeamLight = carlightdata.highBeamLight,
                     turnLight = carlightdata.turnLight
                 }
             };

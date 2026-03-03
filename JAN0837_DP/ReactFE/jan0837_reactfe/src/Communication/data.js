@@ -68,18 +68,19 @@ export const STATE_SCHEMA = {
   // Regulator
   RegulatorData: { type: 'object', shape: {
     // inputs
+    btnReset : { type: 'boolean', default: false },
     switchstate : { type: 'boolean', default: false },
     order : { type: 'integer', default: 1 },
     R1 : { type: 'real', default: 0.0 },
     R2 : { type: 'real', default: 0.0 },
     C1 : { type: 'real', default: 0.0 },
     C2 : { type: 'real', default: 0.0 },
-    Uin : { type: 'real', default: 0.0 },
+    Uc1 : { type: 'real', default: 0.0 },
+    Uc2 : { type: 'real', default: 0.0 },
     Td : { type: 'real', default: 0.0 }, // transport delay
     Ts : { type: 'real', default: 0.0 }, // sampling time
     // outputs
-    Uc1 : { type: 'real', default: 0.0 },
-    Uc2 : { type: 'real', default: 0.0 },
+    Uin : { type: 'real', default: 0.0 },
   }},
 
   // CarLight 
@@ -95,11 +96,10 @@ export const STATE_SCHEMA = {
     turnBlinksPerSec : { type: 'real', default: 0.0 },
     sensorPositionDelay : { type: 'real', default: 3.0 },
     sensorConnectorDelay : { type: 'real', default: 4.0 },
-    blockSensorPosition : { type: 'boolean', default: false },
-    blockSensorConnector : { type: 'boolean', default: false },
-    // outputs
+    error : { type: 'boolean', default: false },
     sensorPosition : { type: 'boolean', default: false },
     sensorConnectorConnected : { type: 'boolean', default: false },
+    // outputs
     done : { type: 'boolean', default: false },
   }},
 

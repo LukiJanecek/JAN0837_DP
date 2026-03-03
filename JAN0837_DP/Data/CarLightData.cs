@@ -9,15 +9,16 @@ namespace JAN0837_DP.Data
     public static class CarLightData
     {
         // Inputs 
-        public static string btnStart { get; set; } = "false";
         public static string btnReset { get; set; } = "false";
-        public static string markerLight { get; set; } = "false";
-        public static string brakeLight { get; set; } = "false";
+        public static string error { get; set; } = "false";
+        public static string sensorLight { get; set; } = "false";
+        public static string sensorConnectorConnected { get; set; } = "false";
+        public static string lowBeamLight { get; set; } = "false";
+        public static string highBeamLight { get; set; } = "false";
         public static string turnLight { get; set; } = "false";
 
         // Outputs 
-        public static string sensorPosition { get; set; } = "false";
-        public static string sensorConnectorConnected { get; set; } = "false";
+        
         public static string result { get; set; } = "false";
 
         // Thread safety
@@ -25,13 +26,13 @@ namespace JAN0837_DP.Data
 
         // Snapshot
         public readonly record struct State(
-            string btnStart,
             string btnReset,
-            string markerLight,
-            string brakeLight,
-            string turnLight,
-            string sensorPosition,
+            string error,
+            string lowBeamLight,
+            string highBeamLight,
+            string sensorLight,
             string sensorConnectorConnected,
+            string turnLight,
             string result
         );
 
@@ -40,13 +41,13 @@ namespace JAN0837_DP.Data
             lock (_lock)
             {
                 return new State(
-                    btnStart,
                     btnReset,
-                    markerLight,
-                    brakeLight,
-                    turnLight,
-                    sensorPosition,
+                    error,
+                    sensorLight,
                     sensorConnectorConnected,
+                    lowBeamLight,
+                    highBeamLight,
+                    turnLight,
                     result
                 );
             }
@@ -56,16 +57,6 @@ namespace JAN0837_DP.Data
         {
             lock (_lock)
             {
-                //if (s.btnStart != null) btnStart = s.btnStart;
-                //if (s.btnReset != null) btnReset = s.btnReset;
-
-                //if (s.markerLight != null) markerLight = s.markerLight;
-                //if (s.brakeLight != null) brakeLight = s.brakeLight;
-                //if (s.turnLight != null) turnLight = s.turnLight;
-
-                if (s.sensorPosition != null) sensorPosition = s.sensorPosition;
-                if (s.sensorConnectorConnected != null) sensorConnectorConnected = s.sensorConnectorConnected;
-
                 if (s.result != null) result = s.result;
             }
         }
@@ -79,15 +70,15 @@ namespace JAN0837_DP.Data
         public static class OpcUaNodeIds
         {
             // Inputs
-            public static string btnStart { get; set; } = "ns=4;i=?";
             public static string btnReset { get; set; } = "ns=4;i=?";
-            public static string markerLight { get; set; } = "ns=4;i=?";
-            public static string brakeLight { get; set; } = "ns=4;i=?";
+            public static string error { get; set; } = "ns=4;i=?";
+            public static string sensorLight { get; set; } = "ns=4;i=?";
+            public static string sensorConnectorConnected { get; set; } = "ns=4;i=?";
+            public static string lowBeamLight { get; set; } = "ns=4;i=?";
+            public static string highBeamLight { get; set; } = "ns=4;i=?";
             public static string turnLight { get; set; } = "ns=4;i=?";
 
             // Outputs
-            public static string sensorPosition { get; set; } = "ns=4;i=?";
-            public static string sensorConnectorConnected { get; set; } = "ns=4;i=?";
             public static string result { get; set; } = "ns=4;i=?";
         }
     }

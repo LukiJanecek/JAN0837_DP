@@ -107,14 +107,10 @@ namespace JAN0837_DP.Communication
                                         tlE_green = CrossroadData.trafficLightWest_green == "true",
                                         tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
                                         tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
                                         pedW_green = CrossroadData.pedestrianWest_green == "true",
                                         pedW_red = CrossroadData.pedestrianWest_red == "true",
                                         pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true"
                                     };
                                     var msgCrossroadOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Output")
@@ -167,6 +163,7 @@ namespace JAN0837_DP.Communication
                                     // RegulatorData - Input
                                     var regulatorInput = new
                                     {
+                                        btnReset = RegulatorData.btnReset == "true",
                                         switchstate = RegulatorData.switchstate == "true",
                                         order = RegulatorData.order,
                                         R1 = RegulatorData.R1,
@@ -184,6 +181,14 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgRegulatorInput, token);
+
+                                    // RegulatorData - Output 
+
+                                    PlantModel.ComputePlantStep();
+
+                                    // CarLight - Input // TO DO 
+                                    // CarLight - Output // TO DO 
+
 
                                     // CarWash - Input
                                     /*
@@ -319,642 +324,6 @@ namespace JAN0837_DP.Communication
                                         btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
                                         btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
-                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
-                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
-                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
-                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
-                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
-                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
-                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
-                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        order = RegulatorData.order,
-                                        R1 = RegulatorData.R1,
-                                        R2 = RegulatorData.R2,
-                                        C1 = RegulatorData.C1,
-                                        C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
-                                        Td = RegulatorData.Td,
-                                        Ts = RegulatorData.Ts
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Regulator/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // CarWash - Input
-                                    /*
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
-                                        start = CarWashData.btnStart == "true",
-                                        stop = CarWashData.btnStop == "true",
-                                        errorSystem = CarWashData.ErrorSystem == "true",
-                                        carPosition = CarWashData.CarPosition == "true",
-                                        showerPosition = CarWashData.ShowerPosition == "true",
-                                        mode = CarWashData.Mode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-                                    */
-                                    // CarWash - Output
-                                    /*
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.Light_green == "true",
-                                        light_yellow = CarWashData.Light_yellow == "true",
-                                        light_red = CarWashData.Light_red == "true",
-                                        door1_up = CarWashData.Door1_Up == "true",
-                                        door1_down = CarWashData.Door1_Down == "true",
-                                        door2_up = CarWashData.Door2_Up == "true",
-                                        door2_down = CarWashData.Door2_Down == "true",
-                                        chemicals_front = CarWashData.ChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
-                                        chemicals_back = CarWashData.ChemicalsBack == "true",
-                                        prewash = CarWashData.Prewash == "true",
-                                        water = CarWashData.Water == "true",
-                                        wax = CarWashData.Wax == "true",
-                                        dry = CarWashData.Dry == "true",
-                                        brushes = CarWashData.Brushes == "true",
-                                        soap = CarWashData.Soap == "true",
-                                        activeFoam = CarWashData.ActiveFoam == "true",
-                                        memDoor = CarWashData.MEMDoor == "true",
-                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-                                    */
-                                    // WashingMachine - Input
-                                    /*
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
-                                        start = WashingMachineData.btnStart == "true",
-                                        stop = WashingMachineData.btnStop == "true",
-                                        errorSystem = WashingMachineData.ErrorSystem == "true",
-                                        mode = WashingMachineData.Mode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-                                    */
-                                    // WashingMachine - Output
-                                    /*
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.Light_green == "true",
-                                        light_yellow = WashingMachineData.Light_yellow == "true",
-                                        light_red = WashingMachineData.Light_red == "true",
-                                        doorClosed = WashingMachineData.DoorClosed == "true",
-                                        chemicals = WashingMachineData.Chemicals == "true",
-                                        prewash = WashingMachineData.Prewash == "true",
-                                        water = WashingMachineData.Water == "true",
-                                        wax = WashingMachineData.Wax == "true",
-                                        dry = WashingMachineData.Dry == "true",
-                                        brushes = WashingMachineData.Brushes == "true",
-                                        soap = WashingMachineData.Soap == "true",
-                                        activeFoam = WashingMachineData.ActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-                                    */
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
-                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
-                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
-                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
-                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
-                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
-                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
-                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
-                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        order = RegulatorData.order,
-                                        R1 = RegulatorData.R1,
-                                        R2 = RegulatorData.R2,
-                                        C1 = RegulatorData.C1,
-                                        C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
-                                        Td = RegulatorData.Td,
-                                        Ts = RegulatorData.Ts
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // CarWash - Input
-                                    /*
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
-                                        start = CarWashData.btnStart == "true",
-                                        stop = CarWashData.btnStop == "true",
-                                        errorSystem = CarWashData.ErrorSystem == "true",
-                                        carPosition = CarWashData.CarPosition == "true",
-                                        showerPosition = CarWashData.ShowerPosition == "true",
-                                        mode = CarWashData.Mode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-                                    */
-                                    // CarWash - Output
-                                    /*
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.Light_green == "true",
-                                        light_yellow = CarWashData.Light_yellow == "true",
-                                        light_red = CarWashData.Light_red == "true",
-                                        door1_up = CarWashData.Door1_Up == "true",
-                                        door1_down = CarWashData.Door1_Down == "true",
-                                        door2_up = CarWashData.Door2_Up == "true",
-                                        door2_down = CarWashData.Door2_Down == "true",
-                                        chemicals_front = CarWashData.ChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
-                                        chemicals_back = CarWashData.ChemicalsBack == "true",
-                                        prewash = CarWashData.Prewash == "true",
-                                        water = CarWashData.Water == "true",
-                                        wax = CarWashData.Wax == "true",
-                                        dry = CarWashData.Dry == "true",
-                                        brushes = CarWashData.Brushes == "true",
-                                        soap = CarWashData.Soap == "true",
-                                        activeFoam = CarWashData.ActiveFoam == "true",
-                                        memDoor = CarWashData.MEMDoor == "true",
-                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-                                    */
-                                    // WashingMachine - Input
-                                    /*
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
-                                        start = WashingMachineData.btnStart == "true",
-                                        stop = WashingMachineData.btnStop == "true",
-                                        errorSystem = WashingMachineData.ErrorSystem == "true",
-                                        mode = WashingMachineData.Mode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-                                    */
-                                    // WashingMachine - Output
-                                    /*
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.Light_green == "true",
-                                        light_yellow = WashingMachineData.Light_yellow == "true",
-                                        light_red = WashingMachineData.Light_red == "true",
-                                        doorClosed = WashingMachineData.DoorClosed == "true",
-                                        chemicals = WashingMachineData.Chemicals == "true",
-                                        prewash = WashingMachineData.Prewash == "true",
-                                        water = WashingMachineData.Water == "true",
-                                        wax = WashingMachineData.Wax == "true",
-                                        dry = WashingMachineData.Dry == "true",
-                                        brushes = WashingMachineData.Brushes == "true",
-                                        soap = WashingMachineData.Soap == "true",
-                                        activeFoam = WashingMachineData.ActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-                                    */
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
-                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
-                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
-                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
-                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
-                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
-                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
-                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
-                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Input").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder().WithTopic("JAN0837/Crosswalk/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput)).WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce).WithRetainFlag(true).Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        order = RegulatorData.order,
-                                        R1 = RegulatorData.R1,
-                                        R2 = RegulatorData.R2,
-                                        C1 = RegulatorData.C1,
-                                        C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
-                                        Td = RegulatorData.Td,
-                                        Ts = RegulatorData.Ts
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    var regultorOutput = new
-                                    {
-                                        Uc1 = RegulatorData.Uc1,
-                                        Uc2 = RegulatorData.Uc2
-                                    };
-
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regultorOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // CarWash - Input
-                                    /*
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
-                                        start = CarWashData.btnStart == "true",
-                                        stop = CarWashData.btnStop == "true",
-                                        errorSystem = CarWashData.ErrorSystem == "true",
-                                        carPosition = CarWashData.CarPosition == "true",
-                                        showerPosition = CarWashData.ShowerPosition == "true",
-                                        mode = CarWashData.Mode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-                                    */
-
-                                    // CarWash - Output
-                                    /*
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.Light_green == "true",
-                                        light_yellow = CarWashData.Light_yellow == "true",
-                                        light_red = CarWashData.Light_red == "true",
-                                        door1_up = CarWashData.Door1_Up == "true",
-                                        door1_down = CarWashData.Door1_Down == "true",
-                                        door2_up = CarWashData.Door2_Up == "true",
-                                        door2_down = CarWashData.Door2_Down == "true",
-                                        chemicals_front = CarWashData.ChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
-                                        chemicals_back = CarWashData.ChemicalsBack == "true",
-                                        prewash = CarWashData.Prewash == "true",
-                                        water = CarWashData.Water == "true",
-                                        wax = CarWashData.Wax == "true",
-                                        dry = CarWashData.Dry == "true",
-                                        brushes = CarWashData.Brushes == "true",
-                                        soap = CarWashData.Soap == "true",
-                                        activeFoam = CarWashData.ActiveFoam == "true",
-                                        memDoor = CarWashData.MEMDoor == "true",
-                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-                                    */
-
-                                    // WashingMachine - Input
-                                    /*
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
-                                        start = WashingMachineData.btnStart == "true",
-                                        stop = WashingMachineData.btnStop == "true",
-                                        errorSystem = WashingMachineData.ErrorSystem == "true",
-                                        mode = WashingMachineData.Mode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-                                    */
-
-                                    // WashingMachine - Output
-                                    /*
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.Light_green == "true",
-                                        light_yellow = WashingMachineData.Light_yellow == "true",
-                                        light_red = WashingMachineData.Light_red == "true",
-                                        doorClosed = WashingMachineData.DoorClosed == "true",
-                                        chemicals = WashingMachineData.Chemicals == "true",
-                                        prewash = WashingMachineData.Prewash == "true",
-                                        water = WashingMachineData.Water == "true",
-                                        wax = WashingMachineData.Wax == "true",
-                                        dry = WashingMachineData.Dry == "true",
-                                        brushes = WashingMachineData.Brushes == "true",
-                                        soap = WashingMachineData.Soap == "true",
-                                        activeFoam = WashingMachineData.ActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-                                    */
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
-
-                                    };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Input")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
@@ -977,23 +346,18 @@ namespace JAN0837_DP.Communication
                                         tlE_green = CrossroadData.trafficLightWest_green == "true",
                                         tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
                                         tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
                                         pedW_green = CrossroadData.pedestrianWest_green == "true",
                                         pedW_red = CrossroadData.pedestrianWest_red == "true",
                                         pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
+                                        pedS_red = CrossroadData.pedestrianSouth_red == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crossroad/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
+                                        .WithTopic("JAN0837/Crossroad/Output").WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
 
-                                    // Crosswalk Input/Output 
+                                    // Crosswalk Input/Output
                                     var crosswalkInput = new
                                     {
                                         start = CrosswalkData.btnStart == "true",
@@ -1006,8 +370,7 @@ namespace JAN0837_DP.Communication
                                         .WithTopic("JAN0837/Crosswalk/Input")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
+                                        .WithRetainFlag(true).Build());
 
                                     var crosswalkOutput = new
                                     {
@@ -1033,13 +396,15 @@ namespace JAN0837_DP.Communication
                                     // Regulator Input/Output
                                     var regulatorInput = new
                                     {
-                                        sswitchstate = RegulatorData.switchstate == "true",
+                                        btnReset = RegulatorData.btnReset == "true",
+                                        switchstate = RegulatorData.switchstate == "true",
                                         order = RegulatorData.order,
                                         R1 = RegulatorData.R1,
                                         R2 = RegulatorData.R2,
                                         C1 = RegulatorData.C1,
                                         C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
+                                        Uc1 = RegulatorData.Uc1,
+                                        Uc2 = RegulatorData.Uc2,
                                         Td = RegulatorData.Td,
                                         Ts = RegulatorData.Ts
                                     };
@@ -1052,251 +417,20 @@ namespace JAN0837_DP.Communication
 
                                     var regulatorOutput = new
                                     {
-                                        Uc1 = RegulatorData.Uc1,
-                                        Uc2 = RegulatorData.Uc2,
+                                        Uin = RegulatorData.Uin
                                     };
 
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // CarWash - Input
-                                    /*
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
-                                        start = CarWashData.btnStart == "true",
-                                        stop = CarWashData.btnStop == "true",
-                                        errorSystem = CarWashData.ErrorSystem == "true",
-                                        carPosition = CarWashData.CarPosition == "true",
-                                        showerPosition = CarWashData.ShowerPosition == "true",
-                                        mode = CarWashData.Mode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-                                    */
-
-                                    // CarWash - Output
-                                    /*
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.Light_green == "true",
-                                        light_yellow = CarWashData.Light_yellow == "true",
-                                        light_red = CarWashData.Light_red == "true",
-                                        door1_up = CarWashData.Door1_Up == "true",
-                                        door1_down = CarWashData.Door1_Down == "true",
-                                        door2_up = CarWashData.Door2_Up == "true",
-                                        door2_down = CarWashData.Door2_Down == "true",
-                                        chemicals_front = CarWashData.ChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
-                                        chemicals_back = CarWashData.ChemicalsBack == "true",
-                                        prewash = CarWashData.Prewash == "true",
-                                        water = CarWashData.Water == "true",
-                                        wax = CarWashData.Wax == "true",
-                                        dry = CarWashData.Dry == "true",
-                                        brushes = CarWashData.Brushes == "true",
-                                        soap = CarWashData.Soap == "true",
-                                        activeFoam = CarWashData.ActiveFoam == "true",
-                                        timeDoorMovement = CarWashData.TimeDoorMovement,
-                                        memDoor = CarWashData.MEMDoor == "true",
-                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-                                    */
-
-                                    // add carwash mems 
-
-                                    // WashingMachine - Input
-                                    /*
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
-                                        start = WashingMachineData.btnStart == "true",
-                                        stop = WashingMachineData.btnStop == "true",
-                                        errorSystem = WashingMachineData.ErrorSystem == "true",
-                                        mode = WashingMachineData.Mode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-                                    */
-
-                                    // WashingMachine - Output
-                                    /*
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.Light_green == "true",
-                                        light_yellow = WashingMachineData.Light_yellow == "true",
-                                        light_red = WashingMachineData.Light_red == "true",
-                                        doorClosed = WashingMachineData.DoorClosed == "true",
-                                        chemicals = WashingMachineData.Chemicals == "true",
-                                        prewash = WashingMachineData.Prewash == "true",
-                                        water = WashingMachineData.Water == "true",
-                                        wax = WashingMachineData.Wax == "true",
-                                        dry = WashingMachineData.Dry == "true",
-                                        brushes = WashingMachineData.Brushes == "true",
-                                        soap = WashingMachineData.Soap == "true",
-                                        activeFoam = WashingMachineData.ActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-                                    */
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crossroad/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
-                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
-                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
-                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
-                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
-                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
-                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
-                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
-                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crossroad/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crosswalk/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crosswalk/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        order = RegulatorData.order,
-                                        R1 = RegulatorData.R1,
-                                        R2 = RegulatorData.R2,
-                                        C1 = RegulatorData.C1,
-                                        C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
-                                        Td = RegulatorData.Td,
-                                        Ts = RegulatorData.Ts
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
 
+                                    PlantModel.ComputePlantStep();
+
+                                    // CarLight Input/Output // TO DO 
+
                                     // CarWash - Input
                                     /*
                                     var carwashInput = new
@@ -1317,7 +451,6 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashInput, token);
                                     */
-
                                     // CarWash - Output
                                     /*
                                     var carwashOutput = new
@@ -1351,7 +484,6 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarwashOutput, token);
                                     */
-
                                     // WashingMachine - Input
                                     /*
                                     var washingmachineInput = new
@@ -1370,7 +502,6 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
                                     */
-
                                     // WashingMachine - Output
                                     /*
                                     var washingmachineOutput = new
@@ -1396,240 +527,6 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
                                     */
-
-                                    _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
-                                }
-                                catch (OperationCanceledException) 
-                                { 
-                                    Logger.LogException(new OperationCanceledException("MQTT publish operation was canceled."), "MQTT publish error: ");
-                                    throw;
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ucCommunicationControl.SetStatus($"Exception error MQTT: {ex}");
-                                    Logger.LogException(ex, "Exception error MQTT: ");
-                                    await Task.Delay(500, token);
-                                    continue;
-                                }
-                            }
-                            else if (internalVariables.checkBoxSlave == true)
-                            {
-                                if (client == null || client.mqttClient == null || !client.mqttClient.IsConnected)
-                                {
-                                    await Task.Delay(200, token);
-                                    continue; // NE break
-                                }
-
-                                // Slave publishes same structure to separate topics
-                                try
-                                {
-                                    // Crossroad Input/Output
-                                    var crossroadInput = new
-                                    {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crossroad/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    var crossroadOutput = new
-                                    {
-                                        type = CrossroadData.crossroadType == "true",
-                                        tlN_green = CrossroadData.trafficLightNorth_green == "true",
-                                        tnN_yellow = CrossroadData.trafficLightNorth_yellow == "true",
-                                        tlN_red = CrossroadData.trafficLightNorth_red == "true",
-                                        tlS_green = CrossroadData.trafficLightSouth_green == "true",
-                                        tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
-                                        tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
-                                        //pedN_green = CrossroadData.pedestrianNorth_green == "true",
-                                        //pedN_red = CrossroadData.pedestrianNorth_red == "true",
-                                        pedW_green = CrossroadData.pedestrianWest_green == "true",
-                                        pedW_red = CrossroadData.pedestrianWest_red == "true",
-                                        pedS_green = CrossroadData.pedestrianSouth_green == "true",
-                                        pedS_red = CrossroadData.pedestrianSouth_red == "true",
-                                        //pedE_green = CrossroadData.pedestrianEast_green == "true",
-                                        //pedE_red = CrossroadData.pedestrianEast_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crossroad/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crossroadOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // Crosswalk Input/Output
-                                    var crosswalkInput = new
-                                    {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crosswalk/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    var crosswalkOutput = new
-                                    {
-                                        type = CrosswalkData.crosswalkType == "true",
-                                        tl1_green = CrosswalkData.trafficLight1_green == "true",
-                                        tl1_yellow = CrosswalkData.trafficLight1_yellow == "true",
-                                        tl1_red = CrosswalkData.trafficLight1_red == "true",
-                                        tl2_green = CrosswalkData.trafficLight2_green == "true",
-                                        tl2_yellow = CrosswalkData.trafficLight2_yellow == "true",
-                                        tl2_red = CrosswalkData.trafficLight2_red == "true",
-                                        ped1_green = CrosswalkData.pedestrian1_green == "true",
-                                        ped1_red = CrosswalkData.pedestrian1_red == "true",
-                                        ped2_green = CrosswalkData.pedestrian2_green == "true",
-                                        ped2_red = CrosswalkData.pedestrian2_red == "true"
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Crosswalk/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(crosswalkOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // Regulator Input/Output
-                                    var regulatorInput = new
-                                    {
-                                        switchstate = RegulatorData.switchstate == "true",
-                                        order = RegulatorData.order,
-                                        R1 = RegulatorData.R1,
-                                        R2 = RegulatorData.R2,
-                                        C1 = RegulatorData.C1,
-                                        C2 = RegulatorData.C2,
-                                        Uin = RegulatorData.Uin,
-                                        Td = RegulatorData.Td,
-                                        Ts = RegulatorData.Ts
-                                    };
-                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/Regulator/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build());
-
-                                    // CarWash - Input
-                                    /*
-                                    var carwashInput = new
-                                    {
-                                        emergencyStop = CarWashData.btnEmergencyStop == "true",
-                                        start = CarWashData.btnStart == "true",
-                                        stop = CarWashData.btnStop == "true",
-                                        errorSystem = CarWashData.ErrorSystem == "true",
-                                        carPosition = CarWashData.CarPosition == "true",
-                                        showerPosition = CarWashData.ShowerPosition == "true",
-                                        mode = CarWashData.Mode
-                                    };
-                                    var msgCarwashInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashInput, token);
-                                    */
-
-                                    // CarWash - Output
-                                    /*
-                                    var carwashOutput = new
-                                    {
-                                        light_green = CarWashData.Light_green == "true",
-                                        light_yellow = CarWashData.Light_yellow == "true",
-                                        light_red = CarWashData.Light_red == "true",
-                                        door1_up = CarWashData.Door1_Up == "true",
-                                        door1_down = CarWashData.Door1_Down == "true",
-                                        door2_up = CarWashData.Door2_Up == "true",
-                                        door2_down = CarWashData.Door2_Down == "true",
-                                        chemicals_front = CarWashData.ChemicalsFront == "true",
-                                        chemicals_sides = CarWashData.ChemicalsSides == "true",
-                                        chemicals_back = CarWashData.ChemicalsBack == "true",
-                                        prewash = CarWashData.Prewash == "true",
-                                        water = CarWashData.Water == "true",
-                                        wax = CarWashData.Wax == "true",
-                                        dry = CarWashData.Dry == "true",
-                                        brushes = CarWashData.Brushes == "true",
-                                        soap = CarWashData.Soap == "true",
-                                        activeFoam = CarWashData.ActiveFoam == "true",
-                                        timeDoorMovement = CarWashData.TimeDoorMovement,
-                                        memDoor = CarWashData.MEMDoor == "true",
-                                        memDoorTrig = CarWashData.MEMDoorTrig == "true",
-                                        memDoorClosingtrig = CarWashData.MEMDoorClosingtrig == "true"
-                                    };
-                                    var msgCarwashOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/CarWash/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carwashOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgCarwashOutput, token);
-                                    */
-
-                                    // WashingMachine - Input
-                                    /*
-                                    var washingmachineInput = new
-                                    {
-                                        emergencyStop = WashingMachineData.btnEmergencyStop == "true",
-                                        start = WashingMachineData.btnStart == "true",
-                                        stop = WashingMachineData.btnStop == "true",
-                                        errorSystem = WashingMachineData.ErrorSystem == "true",
-                                        mode = WashingMachineData.Mode
-                                    };
-                                    var msgWashingmachineInput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Input")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineInput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineInput, token);
-                                    */
-
-                                    // WashingMachine - Output
-                                    /*
-                                    var washingmachineOutput = new
-                                    {
-                                        light_green = WashingMachineData.Light_green == "true",
-                                        light_yellow = WashingMachineData.Light_yellow == "true",
-                                        light_red = WashingMachineData.Light_red == "true",
-                                        doorClosed = WashingMachineData.DoorClosed == "true",
-                                        chemicals = WashingMachineData.Chemicals == "true",
-                                        prewash = WashingMachineData.Prewash == "true",
-                                        water = WashingMachineData.Water == "true",
-                                        wax = WashingMachineData.Wax == "true",
-                                        dry = WashingMachineData.Dry == "true",
-                                        brushes = WashingMachineData.Brushes == "true",
-                                        soap = WashingMachineData.Soap == "true",
-                                        activeFoam = WashingMachineData.ActiveFoam == "true"
-                                    };
-                                    var msgWashingmachineOutput = new MQTTnet.MqttApplicationMessageBuilder()
-                                        .WithTopic("JAN0837/WashingMachine/Output")
-                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(washingmachineOutput))
-                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                                        .WithRetainFlag(true)
-                                        .Build();
-                                    await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
-                                    */
-
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
                                 }
                                 catch (OperationCanceledException) 
@@ -1657,18 +554,10 @@ namespace JAN0837_DP.Communication
 
                             if (internalVariables.checkBoxMaster == true)
                             {
-                                // ═══════════════════════════════════════════════════════════
-                                // SERVER MODE (like MQTT Broker)
-                                // ═══════════════════════════════════════════════════════════
-                                // Architecture (correct):
-                                //   - OPC UA Server = Data broker (stores variables)
-                                //   - Internal Client = Syncs CrossroadData ↔ Server
-                                //   - External Clients (PLC/SCADA) = Read/Write to server
-                                //
-                                // Current implementation uses direct server access for simplicity
-                                // TODO: Create internal client for proper separation
-                                // ═══════════════════════════════════════════════════════════
-                                
+                                _ucCommunicationControl.SetStatus($"OPC UA Server error: It is not implemented.");
+                                Logger.LogError("OPC UA Server selected but not implemented.:");
+                                break; 
+                                /*
                                 var opcuaServer = _ucCommunicationControl._opcuaServer;
 
                                 if (opcuaServer == null || !opcuaServer.running)
@@ -1776,28 +665,28 @@ namespace JAN0837_DP.Communication
                                     opcuaServer.UpdateBoolVariable("MEMDoorClosingtrig", CarWashData.MEMDoorClosingtrig == "true");
                                     */
 
-                                    // WashingMachine
-                                    /*
-                                    WashingMachineData.btnEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
-                                    WashingMachineData.btnStart = opcuaServer.ReadVariable("BtnStartWashingMachine") ? "true" : "false";
-                                    WashingMachineData.btnStop = opcuaServer.ReadVariable("BtnStopWashingMachine") ? "true" : "false";
-                                    WashingMachineData.ErrorSystem = opcuaServer.ReadVariable("WashingMachineErrorSystem") ? "true" : "false";
-                                    WashingMachineData.Mode = opcuaServer.ReadVariable("WashingMachineMode").ToString();
+                                // WashingMachine
+                                /*
+                                WashingMachineData.btnEmergencyStop = opcuaServer.ReadVariable("BtnWashingMachineEmergencyStop") ? "true" : "false";
+                                WashingMachineData.btnStart = opcuaServer.ReadVariable("BtnStartWashingMachine") ? "true" : "false";
+                                WashingMachineData.btnStop = opcuaServer.ReadVariable("BtnStopWashingMachine") ? "true" : "false";
+                                WashingMachineData.ErrorSystem = opcuaServer.ReadVariable("WashingMachineErrorSystem") ? "true" : "false";
+                                WashingMachineData.Mode = opcuaServer.ReadVariable("WashingMachineMode").ToString();
 
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Green", WashingMachineData.Light_green == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Yellow", WashingMachineData.Light_yellow == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineLight_Red", WashingMachineData.Light_red == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineDoorClosed", WashingMachineData.DoorClosed == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineChemicals", WashingMachineData.Chemicals == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachinePrewash", WashingMachineData.Prewash == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineWater", WashingMachineData.Water == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineWax", WashingMachineData.Wax == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineDry", WashingMachineData.Dry == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.Brushes == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.Soap == "true");
-                                    opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.ActiveFoam == "true");
-                                    */
-
+                                opcuaServer.UpdateBoolVariable("WashingMachineLight_Green", WashingMachineData.Light_green == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineLight_Yellow", WashingMachineData.Light_yellow == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineLight_Red", WashingMachineData.Light_red == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineDoorClosed", WashingMachineData.DoorClosed == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineChemicals", WashingMachineData.Chemicals == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachinePrewash", WashingMachineData.Prewash == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineWater", WashingMachineData.Water == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineWax", WashingMachineData.Wax == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineDry", WashingMachineData.Dry == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineBrushes", WashingMachineData.Brushes == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineSoap", WashingMachineData.Soap == "true");
+                                opcuaServer.UpdateBoolVariable("WashingMachineActiveFoam", WashingMachineData.ActiveFoam == "true");
+                                */
+                                /*
                                     _ucCommunicationControl.SetStatus("OPC UA Server: Hosting all data for external clients");
                                 }
                                 catch (Exception ex)
@@ -1806,7 +695,8 @@ namespace JAN0837_DP.Communication
                                     Logger.LogException(ex, "OPC UA Server error:");
                                     await Task.Delay(500, token);
                                     continue;
-                                }                                
+                                }   
+                                */
                             }
                             else if (internalVariables.checkBoxSlave == true)
                             {
@@ -1913,7 +803,7 @@ namespace JAN0837_DP.Communication
                                         continue;
                                     }
 
-                                    // RegulatorData
+                                    // RegulatorData // TO DO 
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, int.Parse(RegulatorData.order));
@@ -1944,6 +834,8 @@ namespace JAN0837_DP.Communication
                                         await Task.Delay(1000, token);
                                         continue;
                                     }
+
+                                    PlantModel.ComputePlantStep();
 
                                     // CarWashData
                                     /*
@@ -2065,8 +957,8 @@ namespace JAN0837_DP.Communication
                                     // WRITE input values to holding registers 
                                     // ═══════════════════════════════════════════════════════════
                                     
-                                    // CrossroadData buttons: registers 0-4
-                                    bool[] crossroadInputs = new bool[7]
+                                    // CrossroadData inputs: registers 0-4
+                                    bool[] crossroadInputs = new bool[7] // TO DO 
                                     {
                                         _modbusServer.StrToBool(CrossroadData.btnStart),
                                         _modbusServer.StrToBool(CrossroadData.btnPause),
@@ -2078,8 +970,8 @@ namespace JAN0837_DP.Communication
                                     };
                                     _modbusServer.SetRegisters(0, crossroadInputs);
 
-                                    // CrosswalkData buttons: registers 5-9
-                                    bool[] crosswalkInputs = new bool[5]
+                                    // CrosswalkData inputs: registers 5-9
+                                    bool[] crosswalkInputs = new bool[5] // TO DO 
                                     {
                                         _modbusServer.StrToBool(CrosswalkData.btnStart),
                                         _modbusServer.StrToBool(CrosswalkData.btnPause),
@@ -2089,7 +981,7 @@ namespace JAN0837_DP.Communication
                                     };
                                     _modbusServer.SetRegisters(5, crosswalkInputs);
 
-                                    // RegulatorData inputs: registers 10-14 (switchstate + R,C,U,Td as bool for simplicity)
+                                    // RegulatorData inputs // TO DO 
                                     bool[] regulatorInputs = new bool[9] // TO DO -> not only bool
                                     {
                                         _modbusServer.StrToBool(RegulatorData.switchstate),
@@ -2103,6 +995,10 @@ namespace JAN0837_DP.Communication
                                         _modbusServer.StrToBool(RegulatorData.Ts)
                                     };
                                     _modbusServer.SetRegisters(10, regulatorInputs);
+
+                                    PlantModel.ComputePlantStep();
+
+                                    // CarLight inputs // TO DO 
 
                                     // CarWash inputs
                                     /*
@@ -2136,8 +1032,8 @@ namespace JAN0837_DP.Communication
                                     // READ output values that slaves wrote to our holding registers
                                     // ═══════════════════════════════════════════════════════════
 
-                                    // CrossroadData lights: registers 30-40 (11 values)
-                                    bool[] crossroadOutputs = _modbusServer.GetRegisters(30, 11);
+                                    // CrossroadData Outputs: registers 30-40 (11 values)
+                                    bool[] crossroadOutputs = _modbusServer.GetRegisters(30, 11); // TO DO 
                                     if (crossroadOutputs != null && crossroadOutputs.Length >= 11)
                                     {
                                         CrossroadData.crossroadType = _modbusServer.BoolToStr(crossroadOutputs[0]);
@@ -2153,18 +1049,14 @@ namespace JAN0837_DP.Communication
                                         CrossroadData.trafficLightWest_green = _modbusServer.BoolToStr(crossroadOutputs[10]);
                                         CrossroadData.trafficLightWest_yellow = _modbusServer.BoolToStr(crossroadOutputs[11]);
                                         CrossroadData.trafficLightWest_red = _modbusServer.BoolToStr(crossroadOutputs[12]);
-                                        // CrossroadData.pedestrianNorth_green = _modbusServer.BoolToStr(crossroadLOutputs[13]);
-                                        // CrossroadData.pedestrianNorth_red = _modbusServer.BoolToStr(crossroadOutputs[14]);
                                         CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadOutputs[13]);
                                         CrossroadData.pedestrianSouth_green = _modbusServer.BoolToStr(crossroadOutputs[14]);
                                         CrossroadData.pedestrianWest_green = _modbusServer.BoolToStr(crossroadOutputs[15]);
                                         CrossroadData.pedestrianWest_red = _modbusServer.BoolToStr(crossroadOutputs[16]);
-                                        // CrossroadData.pedestrianEast_green = _modbusServer.BoolToStr(crossroadOutputs[17]);4
-                                        // CrossroadData.pedestrianEast_red = _modbusServer.BoolToStr(crossroadOutputs[18]);
                                     }
 
-                                    // CrosswalkData lights: registers 41-51 (11 values)
-                                    bool[] crosswalkOutputs = _modbusServer.GetRegisters(41, 11);
+                                    // CrosswalkData Outputs: registers 41-51 (11 values) // TO DO 
+                                    bool[] crosswalkOutputs = _modbusServer.GetRegisters(41, 11); // TO DO 
                                     if (crosswalkOutputs != null && crosswalkOutputs.Length >= 11)
                                     {
                                         CrosswalkData.crosswalkType = _modbusServer.BoolToStr(crosswalkOutputs[0]);
@@ -2180,13 +1072,17 @@ namespace JAN0837_DP.Communication
                                         CrosswalkData.pedestrian2_red = _modbusServer.BoolToStr(crosswalkOutputs[10]);
                                     }
 
-                                    // RegulatorData
-                                    bool[] regulaotOutputs = _modbusServer.GetRegisters(51, 9);
+                                    // RegulatorData Outputs // TO DO 
+                                    bool[] regulaotOutputs = _modbusServer.GetRegisters(51, 9); // TO DO 
                                     if (regulaotOutputs != null && regulaotOutputs.Length >= 9)
                                     {
                                         RegulatorData.Uc1 = _modbusServer.IntToStr(regulaotOutputs[0]);
                                         RegulatorData.Uc2 = _modbusServer.IntToStr(regulaotOutputs[1]);
                                     }
+
+                                    PlantModel.ComputePlantStep();
+
+                                    // CarLight Outputs // TO DO 
 
                                     // CarWashData outputs
                                     /*
@@ -2464,9 +1360,11 @@ namespace JAN0837_DP.Communication
                                 CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 0));
                                 CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 1));
 
-                                // RegulatorData 
+                                // RegulatorData // TO DO 
                                 RegulatorData.Uc1 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 8));
                                 RegulatorData.Uc2 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 10));
+
+                                // CarLight // TO DO 
 
                                 // CarWashData 
                                 /*
@@ -2516,6 +1414,8 @@ namespace JAN0837_DP.Communication
                                 Logger.LogError($"Sharp7 ReadDB error: Return code {read1} while reading DB{activeDBnumber}.");
                             }
 
+                            PlantModel.ComputePlantStep();
+
                             // CrossroadData
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
@@ -2562,7 +1462,7 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 0, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 1, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
-                            // RegulatorData 
+                            // RegulatorData // TO DO 
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToInt64(RegulatorData.order) != 0);
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R1));
@@ -2576,6 +1476,7 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc1) != 0.0);
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc2) != 0.0);
 
+                            // CarLight // TO DO 
 
                             // CarWashData 
                             /*
@@ -2649,6 +1550,7 @@ namespace JAN0837_DP.Communication
                             break;
                     }
 
+                    PlantModel.ComputePlantStep(); // calculating at the end or in the middle of read and write? 
                     await Task.Delay(50, token);
                 }
             }

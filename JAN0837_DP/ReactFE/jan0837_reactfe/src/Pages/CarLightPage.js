@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Button, Form, Badge } from 'react-bootstrap';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Row, Col, Form, Badge } from 'react-bootstrap';
 
 import '../App.css';
 import './CarLightPage.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import { useRefresh } from '../Communication/RefreshContext.js';
-import { useData, useSectionData } from '../Communication/DataProvider.js';
+import { useSectionData } from '../Communication/DataProvider.js';
 
 const toBool = (v) => {
   if (typeof v === 'boolean') return v;
@@ -15,11 +14,10 @@ const toBool = (v) => {
 };
 
 function CarLightCanvas({ d }) {
-  const errorActive = toBool(d?.error) || toBool(d?.err);
-  const marker = toBool(d?.markerLight) && !errorActive;
-  const brake  = toBool(d?.brakeLight) && !errorActive;
+  const errorActive = toBool(d?.error);
+  const marker = toBool(d?.lowBeamLight) && !errorActive;
+  const brake  = toBool(d?.highBeamLight) && !errorActive;
   const turn   = toBool(d?.turnLight) && !errorActive;
-  const done   = toBool(d?.done);
 
   return (
     <div className="carlight-canvas">
@@ -30,236 +28,219 @@ function CarLightCanvas({ d }) {
         </div>
         <div className={`carlight-cell carlight-cell--brake ${brake ? 'on' : ''}`}>
           <i className="bi bi-sun-fill" />
-          <span>Dálkové</span>
+          <span>High Beam</span>
         </div>
         <div className={`carlight-cell carlight-cell--marker ${marker ? 'on' : ''}`}>
           <i className="bi bi-lightbulb-fill" />
-          <span>Obrysové</span>
+          <span>Low Beam</span>
         </div>
       </div>
-      {done && (
-        <div className="carlight-done mt-3">
-          <Badge bg="success" className="fs-5 px-4 py-2">DONE ✔</Badge>
-        </div>
-      )}
     </div>
   );
 }
 
 function CarLightParamsSidebar() {
-  const { interval, setInterval } = useRefresh();
-  const { section: d, saveSection, data, error: fetchError, isFetching, refresh } = useSectionData('CarLight');
+  const { section: d, saveSection } = useSectionData('CarLight');
 
-  // Inputs
-  const btnStart    = toBool(d?.btnStart);
-  const btnReset    = toBool(d?.btnReset);
-  const markerLight = toBool(d?.markerLight);
-  const brakeLight  = toBool(d?.brakeLight);
+  const lowBeamLight = toBool(d?.lowBeamLight);
+  const highBeamLight = toBool(d?.highBeamLight);
   const turnLight   = toBool(d?.turnLight);
-  const errorState = toBool(d?.error) || toBool(d?.err);
-  const [localMarkerBps, setLocalMarkerBps] = useState('');
-  const [localBrakeBps,  setLocalBrakeBps]  = useState('');
-  const [localTurnBps,   setLocalTurnBps]   = useState('');
-  const [localMarkerDelta, setLocalMarkerDelta] = useState('');
-  const [localBrakeDelta,  setLocalBrakeDelta]  = useState('');
-  const [localTurnDelta,   setLocalTurnDelta]   = useState('');
+  const [manualError, setManualError] = useState(false);
+  const [cfg, setCfg] = useState({
+    aBps: '1',
+    bBps: '1',
+    cBps: '1',
+  });
+  const [mismatch, setMismatch] = useState({ A: false, B: false, C: false });
+  const prevSignalRef = useRef({ A: lowBeamLight, B: highBeamLight, C: turnLight });
+  const lastRiseRef = useRef({ A: null, B: null, C: null });
+
+  const numCfg = useMemo(() => {
+    const toNum = (v, fallback = 0) => {
+      const parsed = parseFloat(String(v ?? '').replace(',', '.'));
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+    };
+    const deltaFromBps = (bps) => (bps > 0 ? 1 / bps : 0);
+    return {
+      A: { bps: toNum(cfg.aBps, 1), delta: deltaFromBps(toNum(cfg.aBps, 1)) },
+      B: { bps: toNum(cfg.bBps, 1), delta: deltaFromBps(toNum(cfg.bBps, 1)) },
+      C: { bps: toNum(cfg.cBps, 1), delta: deltaFromBps(toNum(cfg.cBps, 1)) },
+    };
+  }, [cfg]);
+
+  const totalSumTime = useMemo(
+    () => numCfg.A.delta + numCfg.B.delta + numCfg.C.delta,
+    [numCfg]
+  );
+
+  const normalizeNonNegative = (value) => {
+    const normalized = String(value).replace(',', '.');
+    if (normalized === '' || normalized === '.') return normalized;
+    const parsed = parseFloat(normalized);
+    if (!Number.isFinite(parsed)) return '';
+    return String(Math.max(0, parsed));
+  };
 
   useEffect(() => {
-    if (d) {
-      setLocalMarkerBps(String(d.markerBlinksPerSec ?? 0));
-      setLocalBrakeBps(String(d.brakeBlinksPerSec ?? 0));
-      setLocalTurnBps(String(d.turnBlinksPerSec ?? 0));
-      setLocalMarkerDelta(String(d.markerTimeDelta ?? 0));
-      setLocalBrakeDelta(String(d.brakeTimeDelta ?? 0));
-      setLocalTurnDelta(String(d.turnTimeDelta ?? 0));
+    const now = Date.now() / 1000;
+    const signals = { A: lowBeamLight, B: highBeamLight, C: turnLight };
+    const nextMismatch = { ...mismatch };
+
+    ['A', 'B', 'C'].forEach((key) => {
+      const prev = prevSignalRef.current[key];
+      const current = signals[key];
+      if (!prev && current) {
+        const lastRise = lastRiseRef.current[key];
+        const expectedBps = numCfg[key].bps;
+        if (lastRise != null && expectedBps > 0) {
+          const expectedPeriod = 1 / expectedBps;
+          const actualPeriod = now - lastRise;
+          nextMismatch[key] = Math.abs(actualPeriod - expectedPeriod) > numCfg[key].delta;
+        }
+        lastRiseRef.current[key] = now;
+      }
+      prevSignalRef.current[key] = current;
+    });
+
+    if (
+      nextMismatch.A !== mismatch.A ||
+      nextMismatch.B !== mismatch.B ||
+      nextMismatch.C !== mismatch.C
+    ) {
+      setMismatch(nextMismatch);
     }
-  }, [d?.markerBlinksPerSec, d?.brakeBlinksPerSec, d?.turnBlinksPerSec,
-      d?.markerTimeDelta, d?.brakeTimeDelta, d?.turnTimeDelta]);
+  }, [lowBeamLight, highBeamLight, turnLight, numCfg, mismatch]);
 
-  const connectorConnected = markerLight || brakeLight || turnLight;
-  const sensorLight = (markerLight || brakeLight || turnLight) && !errorState;
-
-  // Outputs
-  const sensorPosition = sensorLight;
-  const sensorConnectorConnected = connectorConnected;
-  const done  = toBool(d?.done);
+  const autoError = mismatch.A || mismatch.B || mismatch.C;
+  const errorState = manualError || autoError;
+  const sensorLight = (lowBeamLight || highBeamLight || turnLight) && !errorState;
+  const sensorConnectorConnected = lowBeamLight || highBeamLight || turnLight;
 
   useEffect(() => {
     const updates = {};
-    if (toBool(d?.sensorConnectorConnected) !== connectorConnected) {
-      updates.sensorConnectorConnected = connectorConnected;
+    if (toBool(d?.sensorLight) !== sensorLight) {
+      updates.sensorLight = sensorLight;
     }
-    if (toBool(d?.sensorPosition) !== sensorLight) {
-      updates.sensorPosition = sensorLight;
+    if (toBool(d?.sensorConnectorConnected) !== sensorConnectorConnected) {
+      updates.sensorConnectorConnected = sensorConnectorConnected;
+    }
+    if (toBool(d?.error) !== errorState) {
+      updates.error = errorState;
     }
     if (Object.keys(updates).length > 0) {
       saveSection(updates);
     }
-  }, [d?.sensorConnectorConnected, d?.sensorPosition, connectorConnected, sensorLight, saveSection]);
-
-  const toggle = async (key, cur) => {
-    try {
-      console.log(`toggle: ${key} = ${!cur}`);
-      await saveSection({ [key]: !cur });
-      console.log(`toggle: ${key} sent successfully`);
-    } catch (e) {
-      console.error(`toggle ${key} error:`, e);
-    }
-  };
-
-  const sendNum = async (key, raw) => {
-    const num = parseFloat(raw);
-    if (!isNaN(num)) {
-      try {
-        console.log(`sendNum: ${key} = ${num}`);
-        await saveSection({ [key]: num });
-        console.log(`sendNum: ${key} sent successfully`);
-      } catch (e) {
-        console.error(`sendNum ${key} error:`, e);
-      }
-    }
-  };
-
-  const sendReset = async () => {
-    try {
-      await saveSection({
-        btnReset: true,
-        markerLight: false,
-        brakeLight: false,
-        turnLight: false,
-        error: false,
-        err: false,
-        sensorConnectorConnected: false,
-        sensorPosition: false,
-      });
-      setTimeout(() => {
-        saveSection({ btnReset: false });
-      }, 150);
-    } catch (e) {
-      console.error('sendReset error:', e);
-    }
-  };
+  }, [d?.sensorLight, d?.sensorConnectorConnected, d?.error, sensorLight, sensorConnectorConnected, errorState, saveSection]);
 
   return (
     <div>
       <h3>Parameters:</h3>
 
-      <div className="gap-2 mb-2">
-        <Button className="btn--start" onClick={() => toggle('btnStart', btnStart)}>
-          Start ({String(btnStart)})
-        </Button>
-        <Button className="btn--stop" onClick={sendReset}>
-          Reset ({String(btnReset)})
-        </Button>
-      </div>
+      <Form>
+        <Row className="g-2 mb-2">
+          <Col xs={6}><strong>Blinks per second</strong></Col>
+          <Col xs={6}><strong>Delta seconds</strong></Col>
+        </Row>
 
-      <div className="gap-2 mb-3">
-        <Button variant={markerLight ? 'warning' : 'outline-warning'}
-                onClick={() => toggle('markerLight', markerLight)}>
-          Obrysové ({String(markerLight)})
-        </Button>
-        <Button variant={brakeLight ? 'primary' : 'outline-primary'}
-                onClick={() => toggle('brakeLight', brakeLight)}>
-          Dálkové ({String(brakeLight)})
-        </Button>
-        <Button variant={turnLight ? 'info' : 'outline-info'}
-                onClick={() => toggle('turnLight', turnLight)}>
-          Blinkr ({String(turnLight)})
-        </Button>
+        <div className="mb-2"><strong>A (Low Beam)</strong></div>
+        <Row className="g-2 mb-3">
+          <Col xs={6}>
+            <Form.Control
+              type="number"
+              step="any"
+              min="0"
+              value={cfg.aBps}
+              onChange={e => setCfg(prev => ({ ...prev, aBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="A - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.A.delta.toFixed(3)} s`}
+              placeholder="A - delta (s)"
+            />
+          </Col>
+        </Row>
+
+        <div className="mb-2"><strong>B (High Beam)</strong></div>
+        <Row className="g-2 mb-3">
+          <Col xs={6}>
+            <Form.Control
+              type="number"
+              step="any"
+              min="0"
+              value={cfg.bBps}
+              onChange={e => setCfg(prev => ({ ...prev, bBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="B - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.B.delta.toFixed(3)} s`}
+              placeholder="B - delta (s)"
+            />
+          </Col>
+        </Row>
+
+        <div className="mb-2"><strong>C (Turn)</strong></div>
+        <Row className="g-2 mb-3">
+          <Col xs={6}>
+            <Form.Control
+              type="number"
+              step="any"
+              min="0"
+              value={cfg.cBps}
+              onChange={e => setCfg(prev => ({ ...prev, cBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="C - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.C.delta.toFixed(3)} s`}
+              placeholder="C - delta (s)"
+            />
+          </Col>
+        </Row>
+      </Form>
+
+      <div className="mb-3">
+        <div className="mb-2"><strong>Time sum</strong></div>
+        <Row>
+          <Col xs={6}>Total: </Col>
+          <Col xs={6}>{totalSumTime.toFixed(5)} s</Col>
+        </Row>
       </div>
 
       <Form.Group className="mb-3">
         <Form.Check
           type="checkbox"
-          id="carlight-error"
-          label={`Error (${String(errorState)})`}
-          checked={errorState}
-          onChange={e => saveSection({ error: e.target.checked, err: e.target.checked })}
+          id="carlight-manual-error"
+          label={`Manual error (${String(manualError)})`}
+          checked={manualError}
+          onChange={e => setManualError(e.target.checked)}
         />
       </Form.Group>
 
-      <Form>
-        <Form.Group className="mb-2">
-          <Form.Label>Obrysové – frekvence (Hz)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localMarkerBps}
-            onChange={e => setLocalMarkerBps(e.target.value)}
-            onBlur={() => sendNum('markerBlinksPerSec', localMarkerBps)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('markerBlinksPerSec', localMarkerBps)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-2">
-          <Form.Label>Dálkové – frekvence (Hz)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localBrakeBps}
-            onChange={e => setLocalBrakeBps(e.target.value)}
-            onBlur={() => sendNum('brakeBlinksPerSec', localBrakeBps)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('brakeBlinksPerSec', localBrakeBps)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Blinkr – frekvence (Hz)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localTurnBps}
-            onChange={e => setLocalTurnBps(e.target.value)}
-            onBlur={() => sendNum('turnBlinksPerSec', localTurnBps)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('turnBlinksPerSec', localTurnBps)}
-          />
-        </Form.Group>
-      </Form>
-
-      <Form>
-        <Form.Group className="mb-2">
-          <Form.Label>Obrysové – časová delta (s)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localMarkerDelta}
-            onChange={e => setLocalMarkerDelta(e.target.value)}
-            onBlur={() => sendNum('markerTimeDelta', localMarkerDelta)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('markerTimeDelta', localMarkerDelta)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-2">
-          <Form.Label>Dálkové – časová delta (s)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localBrakeDelta}
-            onChange={e => setLocalBrakeDelta(e.target.value)}
-            onBlur={() => sendNum('brakeTimeDelta', localBrakeDelta)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('brakeTimeDelta', localBrakeDelta)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Blinkr – časová delta (s)</Form.Label>
-          <Form.Control type="number" step="any" min="0"
-            value={localTurnDelta}
-            onChange={e => setLocalTurnDelta(e.target.value)}
-            onBlur={() => sendNum('turnTimeDelta', localTurnDelta)}
-            onKeyDown={e => e.key === 'Enter' && sendNum('turnTimeDelta', localTurnDelta)}
-          />
-        </Form.Group>
-      </Form>
-
       <div className="gap-2 mb-2">
         <div>
-          <strong>Čidlo světla:</strong>{' '}
-          <Badge bg={sensorPosition ? 'success' : 'secondary'}>{String(sensorPosition)}</Badge>
+          <strong>Sensor light:</strong>{' '}
+          <Badge bg={sensorLight ? 'success' : 'secondary'}>{String(sensorLight)}</Badge>
         </div>
         <div>
-          <strong>Čidlo konektoru:</strong>{' '}
+          <strong>Sensor connector:</strong>{' '}
           <Badge bg={sensorConnectorConnected ? 'success' : 'secondary'}>{String(sensorConnectorConnected)}</Badge>
         </div>
         <div>
           <strong>Error:</strong>{' '}
           <Badge bg={errorState ? 'danger' : 'secondary'}>{String(errorState)}</Badge>
         </div>
-        <div>
-          <strong>Done:</strong>{' '}
-          <Badge bg={done ? 'success' : 'secondary'}>{String(done)}</Badge>
-        </div>
       </div>
-
-      <pre style={{ background: '#f6f8fa', padding: 8, borderRadius: 6, marginTop: 12 }}>
-        {JSON.stringify(data, null, 2)}
-      </pre>
     </div>
   );
 }

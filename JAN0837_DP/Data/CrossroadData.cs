@@ -54,7 +54,6 @@ namespace JAN0837_DP.Data
 
         // snapshot
         public readonly record struct State(
-            string crossroadType,
             string btnStart,
             string btnPause,
             string btnStop,
@@ -62,6 +61,7 @@ namespace JAN0837_DP.Data
             string btnWestCrosswalk2,
             string btnSouthCrosswalk1,
             string btnSouthCrosswalk2,
+            string crossroadType,
             string trafficLightNorth_green,
             string trafficLightNorth_yellow,
             string trafficLightNorth_red,
@@ -74,14 +74,10 @@ namespace JAN0837_DP.Data
             string trafficLightEast_green,
             string trafficLightEast_yellow,
             string trafficLightEast_red,
-            //string pedestrianNorth_green,
-            //string pedestrianNorth_red,
             string pedestrianSouth_green,
             string pedestrianSouth_red,
             string pedestrianWest_green,
             string pedestrianWest_red
-            //string pedestrianEast_green,
-            //string pedestrianEast_red
         );
 
         public static State Get()
@@ -89,7 +85,6 @@ namespace JAN0837_DP.Data
             lock (_lock)
             {
                 return new State(
-                    crossroadType,
                     btnStart,
                     btnPause,
                     btnStop,
@@ -97,6 +92,7 @@ namespace JAN0837_DP.Data
                     btnWestCrosswalk2,
                     btnSouthCrosswalk1,
                     btnSouthCrosswalk2,
+                    crossroadType,
                     trafficLightNorth_green,
                     trafficLightNorth_yellow,
                     trafficLightNorth_red,
@@ -109,14 +105,10 @@ namespace JAN0837_DP.Data
                     trafficLightEast_green,
                     trafficLightEast_yellow,
                     trafficLightEast_red,
-                    //pedestrianNorth_green,
-                    //pedestrianNorth_red,
                     pedestrianSouth_green,
                     pedestrianSouth_red,
                     pedestrianWest_green,
                     pedestrianWest_red
-                    //pedestrianEast_green,
-                    //pedestrianEast_red
                 );
             }
         }
@@ -140,14 +132,10 @@ namespace JAN0837_DP.Data
                 if (s.trafficLightEast_yellow != null) trafficLightEast_yellow = s.trafficLightEast_yellow;
                 if (s.trafficLightEast_red != null) trafficLightEast_red = s.trafficLightEast_red;
 
-                //if (s.pedestrianNorth_green != null) pedestrianNorth_green = s.pedestrianNorth_green;
-                //if (s.pedestrianNorth_red != null) pedestrianNorth_red = s.pedestrianNorth_red;
                 if (s.pedestrianSouth_green != null) pedestrianSouth_green = s.pedestrianSouth_green;
                 if (s.pedestrianSouth_red != null) pedestrianSouth_red = s.pedestrianSouth_red;
                 if (s.pedestrianWest_green != null) pedestrianWest_green = s.pedestrianWest_green;
                 if (s.pedestrianWest_red != null) pedestrianWest_red = s.pedestrianWest_red;
-                //if (s.pedestrianEast_green != null) pedestrianEast_green = s.pedestrianEast_green;
-                //if (s.pedestrianEast_red != null) pedestrianEast_red = s.pedestrianEast_red;
             }
         }
 
@@ -190,16 +178,12 @@ namespace JAN0837_DP.Data
             public static string btnStart { get; set; } = "ns=4;i=15";        
             public static string btnPause { get; set; } = "ns=4;i=16";        
             public static string btnStop { get; set; } = "ns=4;i=17";        
-            //public static string btnCrosswalk1 { get; set; } = "ns=4;i=18";  
-            //public static string btnCrosswalk2 { get; set; } = "ns=4;i=19";   
-            //public static string btnNorthCrosswalk1 { get; set; } = "ns=4;i=26";
-            //public static string btnNorthCrosswalk2 { get; set; } = "ns=4;i=27";
+
             public static string btnSouthCrosswalk1 { get; set; } = "ns=4;i=24";
             public static string btnSouthCrosswalk2 { get; set; } = "ns=4;i=25";
             public static string btnWestCrosswalk1 { get; set; } = "ns=4;i=20";
             public static string btnWestCrosswalk2 { get; set; } = "ns=4;i=21";
-            //public static string btnEastCrosswalk1 { get; set; } = "ns=4;i=22";
-            //public static string btnEastCrosswalk2 { get; set; } = "ns=4;i=23";
+
 
             // Outputs
             public static string crossroadType { get; set; } = "ns=4;i=33";
@@ -215,27 +199,11 @@ namespace JAN0837_DP.Data
             public static string trafficLightEast_green { get; set; } = "ns=4;i=43";
             public static string trafficLightEast_yellow { get; set; } = "ns=4;i=44";
             public static string trafficLightEast_red { get; set; } = "ns=4;i=45";
-            //public static string pedestrianNorth_green { get; set; } = "ns=4;i=46";
-            //public static string pedestrianNorth_red { get; set; } = "ns=4;i=47";
+
             public static string pedestrianSouth_green { get; set; } = "ns=4;i=48";
             public static string pedestrianSouth_red { get; set; } = "ns=4;i=49";
             public static string pedestrianWest_green { get; set; } = "ns=4;i=50";
             public static string pedestrianWest_red { get; set; } = "ns=4;i=51";
-            //public static string pedestrianEast_green { get; set; } = "ns=4;i=52";
-            //public static string pedestrianEast_red { get; set; } = "ns=4;i=53";
-
-            /*
-            public static string trafficLightGreen1 { get; set; } = "ns=4;i=34";   
-            public static string trafficLightsYellow1 { get; set; } = "ns=4;i=35";   
-            public static string trafficLightsRed1 { get; set; } = "ns=4;i=36";     
-            public static string trafficLightGreen2 { get; set; } = "ns=4;i=37";     
-            public static string trafficLightsYellow2 { get; set; } = "ns=4;i=38";   
-            public static string trafficLightsRed2 { get; set; } = "ns=4;i=39";      
-            public static string pedestrianLightGreen1 { get; set; } = "ns=4;i=40";  
-            public static string pedestrianLightRed1 { get; set; } = "ns=4;i=41";    
-            public static string pedestrianLightGreen2 { get; set; } = "ns=4;i=42"; 
-            public static string pedestrianLightRed2 { get; set; } = "ns=4;i=43";  
-            */
         }
     }
 }

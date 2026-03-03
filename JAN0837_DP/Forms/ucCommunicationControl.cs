@@ -707,7 +707,7 @@ namespace JAN0837_DP.Forms
                                     // zpracování outputu z PLC -> WashingMachineData
                                     MQTTClient.WashingMachineOutputMapper.ApplyOutputJsonToWashingMachineData(text);
                                 }
-
+                                */
                             };
 
                             // set topics to subscribe from start

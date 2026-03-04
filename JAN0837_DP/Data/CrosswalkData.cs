@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Opc.Ua;
+using Siemens.Engineering.HW;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -108,6 +110,65 @@ namespace JAN0837_DP.Data
         {
             if (updater is null) return;
             lock (_lock) updater();
+        }
+
+        public static class Sharp7Addresses
+        {
+            public static int address_btnStart = 38;
+            public static int bit_btnStart = 0;
+            public static int address_btnPause = 38;
+            public static int bit_btnPause = 1;
+            public static int address_btnStop = 38;
+            public static int bit_btnStop = 2;
+            public static int address_btnCrosswalk1 = 38;
+            public static int bit_btnCrosswalk1 = 3;
+            public static int address_btnCrosswalk2 = 38;
+            public static int bit_btnCrosswalk2 = 4;
+
+            public static int address_crosswalkType = 56;
+            public static int bit_crosswalkType = 0;
+            public static int address_trafficLight1_green = 56;
+            public static int bit_trafficLight1_green = 1;
+            public static int address_trafficLight1_yellow = 56;
+            public static int bit_trafficLight1_yellow = 2;
+            public static int address_trafficLight1_red = 56;
+            public static int bit_trafficLight1_red = 3;
+            public static int address_trafficLight2_green = 56;
+            public static int bit_trafficLight2_green = 4;
+            public static int address_trafficLight2_yellow = 56;
+            public static int bit_trafficLight2_yellow = 5;
+            public static int address_trafficLight2_red = 56;
+            public static int bit_trafficLight2_red = 6;
+
+            public static int address_pedestrian1_green = 56;
+            public static int bit_pedestrian1_green = 7;
+            public static int address_pedestrian1_red = 57;
+            public static int bit_pedestrian1_red = 0;
+            public static int address_pedestrian2_green = 57;
+            public static int bit_pedestrian2_green = 1;
+            public static int address_pedestrian2_red = 57;
+            public static int bit_pedestrian2_red = 2;
+        }
+
+        public static class ModbusBytes
+        {
+            public static int byte_btnStart = 0;
+            public static int byte_btnPause = 0;
+            public static int byte_btnStop = 0;
+            public static int byte_btnCrosswalk1 = 0;
+            public static int byte_btnCrosswalk2 = 0;
+
+            public static int byte_crosswalkType = 1;
+            public static int byte_trafficLight1_green = 2;
+            public static int byte_trafficLight1_yellow = 2;
+            public static int byte_trafficLight1_red = 2;
+            public static int byte_trafficLight2_green = 2;
+            public static int byte_trafficLight2_yellow = 2;
+            public static int byte_trafficLight2_red = 2;
+            public static int byte_pedestrian1_green = 3;
+            public static int byte_pedestrian1_red = 3;
+            public static int byte_pedestrian2_green = 3;
+            public static int byte_pedestrian2_red = 3;
         }
 
         public static class OpcUaNodeIds

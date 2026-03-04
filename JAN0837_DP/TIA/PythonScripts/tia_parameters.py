@@ -20,7 +20,11 @@ Crossroad_Input_UDT_FIELDS = [
     ("btnWestCrosswalk1", "Bool", "FALSE"),
     ("btnWestCrosswalk2", "Bool", "FALSE"),
     ("btnEastCrosswalk1", "Bool", "FALSE"),
-    ("btnEastCrosswalk2", "Bool", "FALSE")
+    ("btnEastCrosswalk2", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 Crossroad_Output_UDT_NAME = "Crossroad_Output"
@@ -42,7 +46,11 @@ Crossroad_Output_UDT_FIELDS = [
     ("pedestrianSouth_green", "Bool", "FALSE"),
     ("pedestrianSouth_red", "Bool", "FALSE"),
     ("pedestrianWest_green", "Bool", "FALSE"),
-    ("pedestrianWest_red", "Bool", "FALSE")
+    ("pedestrianWest_red", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 Crosswalk_Input_UDT_NAME = "Crosswalk_Input"
@@ -52,7 +60,11 @@ Crosswalk_Input_UDT_FIELDS = [
     ("btnPause", "Bool", "FALSE"),
     ("btnStop", "Bool", "FALSE"),
     ("btnCrosswalk1", "Bool", "FALSE"),
-    ("btnCrosswalk2", "Bool", "FALSE")
+    ("btnCrosswalk2", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 Crosswalk_Output_UDT_NAME = "Crosswalk_Output"
@@ -68,7 +80,11 @@ Crosswalk_Output_UDT_FIELDS = [
     ("pedestrianLightGreen1", "Bool", "FALSE"),
     ("pedestrianLightRed1", "Bool", "FALSE"),
     ("pedestrianLightGreen2", "Bool", "FALSE"),
-    ("pedestrianLightRed2", "Bool", "FALSE")
+    ("pedestrianLightRed2", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 Regulator_Input_UDT_NAME = "Regulator_Input"
@@ -85,6 +101,10 @@ Regulator_Input_UDT_FIELDS = [
     ("Uc2", "Real", "0.0"),
     ("Td", "Real", "0.0"),
     ("Ts", "Real", "0.0"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 Regulator_Output_UDT_NAME = "Regulator_Output"
@@ -92,12 +112,15 @@ Regulator_Output_UDT_NAME = "Regulator_Output"
 Regulator_Output_UDT_FIELDS = [
 
     ("Uin", "Real", "0.0"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 CarLight_Input_UDT_NAME = "CarLight_Input"
 
 CarLight_Input_UDT_FIELDS = [
-    ("btnStart", "Bool", "FALSE"),
     ("btnReset", "Bool", "FALSE"),
     ("error", "Bool", "FALSE"),
     ("sensorLight", "Bool", "FALSE"),
@@ -105,6 +128,10 @@ CarLight_Input_UDT_FIELDS = [
     ("lowBeamLight", "Bool", "FALSE"),
     ("highBeamLight", "Bool", "FALSE"),
     ("turnLight", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 CarLight_Output_UDT_NAME = "CarLight_Output"
@@ -112,6 +139,10 @@ CarLight_Output_UDT_NAME = "CarLight_Output"
 CarLight_Output_UDT_FIELDS = [
     
     ("result", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 CarWash_Input_UDT_NAME = "CarWash_Input"
@@ -124,6 +155,10 @@ CarWash_Input_UDT_FIELDS = [
     ("CarPosition", "Bool", "FALSE"),
     ("ShowerPosition", "Bool", "FALSE"),
     ("Mode", "Int", "0"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 CarWash_Output_UDT_NAME = "CarWash_Output"
@@ -149,6 +184,10 @@ CarWash_Output_UDT_FIELDS = [
     ("MEMDoor", "Bool", "FALSE"),
     ("MEMDoorMovement", "Bool", "FALSE"),
     ("MEMDoorClosingTrig", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 WashingMachine_Input_UDT_NAME = "WashingMachine_Input"
@@ -159,6 +198,10 @@ WashingMachine_Input_UDT_FIELDS = [
     ("btnStop", "Bool", "FALSE"),
     ("ErrorSystem", "Bool", "FALSE"),
     ("Mode", "Int", "0"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 WashingMachine_Output_UDT_NAME = "WashingMachine_Output"
@@ -175,6 +218,10 @@ WashingMachine_Output_UDT_FIELDS = [
     ("Brushes", "Bool", "FALSE"),
     ("Soap", "Bool", "FALSE"),
     ("ActiveFoam", "Bool", "FALSE"),
+    ("spare1", "DWord", "0"),
+    ("spare2", "DWord", "0"),
+    ("spare3", "DWord", "0"),
+    ("spare4", "DWord", "0")
 ]
 
 DEFAULT_DB_NAME = "DB_ProcessData"

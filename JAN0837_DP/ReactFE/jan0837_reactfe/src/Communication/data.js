@@ -33,14 +33,14 @@ export const STATE_SCHEMA = {
     trafficLightEast_green : { type: 'boolean', default: false },
     trafficLightEast_yellow : { type: 'boolean', default: false },
     trafficLightEast_red : { type: 'boolean', default: false },
-    pedestrianNorth_green : { type: 'boolean', default: false },
-    pedestrianNorth_red : { type: 'boolean', default: false },
     pedestrianSouth_green : { type: 'boolean', default: false },
     pedestrianSouth_red : { type: 'boolean', default: false },
     pedestrianWest_green : { type: 'boolean', default: false },
     pedestrianWest_red : { type: 'boolean', default: false },
-    pedestrianEast_green : { type: 'boolean', default: false },
-    pedestrianEast_red : { type: 'boolean', default: false },
+    //pedestrianNorth_green : { type: 'boolean', default: false },
+    //pedestrianNorth_red : { type: 'boolean', default: false },
+    //pedestrianEast_green : { type: 'boolean', default: false },
+    //pedestrianEast_red : { type: 'boolean', default: false },
   }},
 
   // Crosswalk 
@@ -86,21 +86,15 @@ export const STATE_SCHEMA = {
   // CarLight 
   CarLight: { type: 'object', shape: {
     // inputs
-    btnStart : { type: 'boolean', default: false },
     btnReset : { type: 'boolean', default: false },
-    markerLight : { type: 'boolean', default: false },
-    brakeLight : { type: 'boolean', default: false },
-    turnLight : { type: 'boolean', default: false },
-    markerBlinksPerSec : { type: 'real', default: 0.0 },
-    brakeBlinksPerSec : { type: 'real', default: 0.0 },
-    turnBlinksPerSec : { type: 'real', default: 0.0 },
-    sensorPositionDelay : { type: 'real', default: 3.0 },
-    sensorConnectorDelay : { type: 'real', default: 4.0 },
     error : { type: 'boolean', default: false },
-    sensorPosition : { type: 'boolean', default: false },
+    sensorLight : { type: 'boolean', default: false },
     sensorConnectorConnected : { type: 'boolean', default: false },
+    lowBeamLight : { type: 'boolean', default: false }, 
+    highBeamLight : { type: 'boolean', default: false }, 
+    turnLight : { type: 'boolean', default: false }, 
     // outputs
-    done : { type: 'boolean', default: false },
+    result : { type: 'boolean', default: false },
   }},
 
   // CarWash 

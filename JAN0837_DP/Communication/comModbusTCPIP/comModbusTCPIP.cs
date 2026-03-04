@@ -9,9 +9,32 @@ using System.Threading.Tasks;
 
 using System.IO.Ports;
 using JAN0837_DP.Log;
+using S7.Net.Types;
 
 namespace JAN0837_DP.Communication.comModbusTCPIP
 {
+    // Shared helpers for float ↔ Modbus register conversion
+    public static class ModbusHelper
+    {
+        // Float (32-bit) occupies 2 Modbus registers (big-endian word order)
+        public static void FloatToRegisters(float value, ushort[] registers, int offset)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            registers[offset] = (ushort)((bytes[3] << 8) | bytes[2]);     // high word
+            registers[offset + 1] = (ushort)((bytes[1] << 8) | bytes[0]); // low word
+        }
+
+        public static float RegistersToFloat(ushort[] registers, int offset)
+        {
+            byte[] bytes = new byte[4];
+            bytes[3] = (byte)(registers[offset] >> 8);
+            bytes[2] = (byte)(registers[offset] & 0xFF);
+            bytes[1] = (byte)(registers[offset + 1] >> 8);
+            bytes[0] = (byte)(registers[offset + 1] & 0xFF);
+            return BitConverter.ToSingle(bytes, 0);
+        }
+    }
+
     public class ModbusTCPIPimClient
     {
         public string ipAddress;
@@ -276,6 +299,12 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         public int StrToInt(string s)
             => int.TryParse(s, out int result) ? result : 0;
 
+        public float StrToFloat(string s)
+            => float.TryParse(s, out float result) ? result : 0.0f;
+
+        public string FloatToStr(float f)
+            => f.ToString();
+
         public string BoolToStr(bool b)
             => b ? "true" : "false";
         
@@ -432,6 +461,25 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             }
         }
 
+        public void SetRegisters(ushort startAddress, ushort[] values)
+        {
+            if (slave?.DataStore?.HoldingRegisters == null || values == null) return;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                ushort idx = (ushort)(startAddress + i);
+                if (idx < slave.DataStore.HoldingRegisters.Count)
+                {
+                    slave.DataStore.HoldingRegisters[idx] = values[i];
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong register address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong register address: {(startAddress + i)}");
+                }
+            }
+        }
+
         public bool[] GetRegisters(ushort startAddress, ushort count)
         {
             if (slave?.DataStore?.HoldingRegisters == null) return null;
@@ -454,5 +502,35 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 
             return result;
         }
+
+        public ushort[] GetRegistersRaw(ushort startAddress, ushort count)
+        {
+            if (slave?.DataStore?.HoldingRegisters == null) return null;
+
+            ushort[] result = new ushort[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                ushort idx = (ushort)(startAddress + i);
+                if (idx < slave.DataStore.HoldingRegisters.Count)
+                {
+                    result[i] = slave.DataStore.HoldingRegisters[idx];
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong register address: {(startAddress + i)}");
+                    Logger.LogError($"Wrong register address: {(startAddress + i)}");
+                }
+            }
+
+            return result;
+        }
+
+        // Delegates to shared ModbusHelper
+        public static void FloatToRegisters(float value, ushort[] registers, int offset)
+            => ModbusHelper.FloatToRegisters(value, registers, offset);
+
+        public static float RegistersToFloat(ushort[] registers, int offset)
+            => ModbusHelper.RegistersToFloat(registers, offset);
     }
 }

@@ -694,6 +694,16 @@ namespace JAN0837_DP.Forms
                                     // zpracování outputu z PLC -> RegulatorData
                                     MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(text);
                                 }
+                                else if (topic == "JAN0837/CarLight/Output")
+                                {
+                                    // zpracování outputu z PLC -> CarLightData
+                                    MQTTClient.CarLightOutputMapper.ApplyOutputJsonToCarLightData(text);
+                                }
+                                else
+                                {
+                                    // other topics
+                                    Logger.LogWarning($"There are other topics: {topic}");
+                                }
                                 /*
                                 else if (topic == "JAN0837/CarWash/Output")
                                 {
@@ -717,8 +727,9 @@ namespace JAN0837_DP.Forms
                                 "JAN0837/Crossroad/Output",
                                 "JAN0837/Crosswalk/Output",
                                 "JAN0837/Regulator/Output",
-                                "JAN0837/CarWash/Output",
-                                "JAN0837/WashingMachine/Output"
+                                "JAN0837/CarLight/Output",
+                                //"JAN0837/CarWash/Output",
+                                //"JAN0837/WashingMachine/Output"
                             };
                         }
 

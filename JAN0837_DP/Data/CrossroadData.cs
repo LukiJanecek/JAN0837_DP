@@ -172,6 +172,99 @@ namespace JAN0837_DP.Data
             }
         }
         */
+
+        public static class Sharp7Addresses
+        {
+            public static int address_btnStart = 38;
+            public static int bit_btnStart = 0;
+            public static int address_btnPause = 39;
+            public static int bit_btnPause = 0;
+            public static int address_btnStop = 40;
+            public static int bit_btnStop = 0;
+            public static int address_btnWestCrosswalk1 = 41;
+            public static int bit_btnWestCrosswalk1 = 0;
+            public static int address_btnWestCrosswalk2 = 42;
+            public static int bit_btnWestCrosswalk2 = 0;
+            public static int address_btnSouthCrosswalk1 = 43;
+            public static int bit_btnSouthCrosswalk1 = 0;
+            public static int address_btnSouthCrosswalk2 = 44;
+            public static int bit_btnSouthCrosswalk2 = 0;
+
+            public static int address_crossroadType = 50;
+            public static int bit_crossroadType = 0;
+
+            public static int address_trafficLightNorth_green = 51;
+            public static int bit_trafficLightNorth_green = 0;
+            public static int address_trafficLightNorth_yellow = 52;
+            public static int bit_trafficLightNorth_yellow = 0;
+            public static int address_trafficLightNorth_red = 53;
+            public static int bit_trafficLightNorth_red = 0;
+
+            public static int address_trafficLightSouth_green = 54;
+            public static int bit_trafficLightSouth_green = 0;
+            public static int address_trafficLightSouth_yellow = 55;
+            public static int bit_trafficLightSouth_yellow = 0;
+            public static int address_trafficLightSouth_red = 56;
+            public static int bit_trafficLightSouth_red = 0;
+
+            public static int address_trafficLightWest_green = 56;
+            public static int bit_trafficLightWest_green = 0;
+            public static int address_trafficLightWest_yellow = 57;
+            public static int bit_trafficLightWest_yellow = 0;
+            public static int address_trafficLightWest_red = 58;
+            public static int bit_trafficLightWest_red = 0;
+
+            public static int address_trafficLightEast_green = 59;
+            public static int bit_trafficLightEast_green = 0;
+            public static int address_trafficLightEast_yellow = 60;
+            public static int bit_trafficLightEast_yellow = 0;
+            public static int address_trafficLightEast_red = 61;
+            public static int bit_trafficLightEast_red = 0;
+
+            public static int address_pedestrianSouth_green = 62;
+            public static int bit_pedestrianSouth_green = 0;
+            public static int address_pedestrianSouth_red = 63;
+            public static int bit_pedestrianSouth_red = 0;
+            public static int address_pedestrianWest_green = 64;
+            public static int bit_pedestrianWest_green = 0;
+            public static int address_pedestrianWest_red = 65;
+            public static int bit_pedestrianWest_red = 0;
+        }
+
+        public static class ModbusBytes
+        {
+            public static int byte_btnStart = 0;
+            public static int byte_btnPause = 1;
+            public static int byte_btnStop = 2;
+            public static int byte_btnWestCrosswalk1 = 3;
+            public static int byte_btnWestCrosswalk2 = 4;
+            public static int byte_btnSouthCrosswalk1 = 5;
+            public static int byte_btnSouthCrosswalk2 = 6;
+
+            public static int byte_crossroadType = 10;  
+            public static int byte_trafficLightNorth_green = 11;
+            public static int byte_trafficLightNorth_yellow = 12;
+            public static int byte_trafficLightNorth_red = 13;
+
+            public static int byte_trafficLightSouth_green = 14;
+            public static int byte_trafficLightSouth_yellow = 15;
+            public static int byte_trafficLightSouth_red = 16;
+
+            public static int byte_trafficLightWest_green = 17;
+            public static int byte_trafficLightWest_yellow = 18;
+            public static int byte_trafficLightWest_red = 19;
+
+            public static int byte_trafficLightEast_green = 20;
+            public static int byte_trafficLightEast_yellow = 21;
+            public static int byte_trafficLightEast_red = 22;
+
+            public static int byte_pedestrianSouth_green = 23;
+            public static int byte_pedestrianSouth_red = 24;
+
+            public static int byte_pedestrianWest_green = 25;
+            public static int byte_pedestrianWest_red = 26;
+        }
+
         public static class OpcUaNodeIds
         {
             // Inputs

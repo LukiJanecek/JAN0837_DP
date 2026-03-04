@@ -24,7 +24,7 @@ function CarLightCanvas({ d }) {
       <div className="carlight-headlamp">
         <div className={`carlight-cell carlight-cell--turn ${turn ? 'on' : ''}`}>
           <i className="bi bi-arrow-left-right" />
-          <span>Blinkr</span>
+          <span>Turn</span>
         </div>
         <div className={`carlight-cell carlight-cell--brake ${brake ? 'on' : ''}`}>
           <i className="bi bi-sun-fill" />

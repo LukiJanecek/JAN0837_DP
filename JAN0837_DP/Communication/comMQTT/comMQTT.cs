@@ -293,9 +293,7 @@ namespace JAN0837_DP.Communication.comMQTT
         {
             private class OutputDto
             {
-                public string Uc1 { get; set; }
-                public string Uc2 { get; set; }
-                public string PV { get; set; }
+                public string Uin { get; set; }
             }
 
             public static void ApplyOutputJsonToRegulatorData(string json)
@@ -305,13 +303,34 @@ namespace JAN0837_DP.Communication.comMQTT
                     var dto = JsonSerializer.Deserialize<OutputDto>(json);
                     if (dto is null) return;
 
-                    RegulatorData.Uc1 = dto.Uc2 ?? "0.0";
-                    RegulatorData.Uc2 = dto.Uc2 ?? "0.0";
+                    RegulatorData.Uin = dto.Uin ?? "0.0";
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Regulator output JSON parse failed: {ex.Message}");
                     Logger.LogException(ex, "Failed to parse Regulator output JSON");
+                }
+            }
+        }
+
+        public static class CarLightOutputMapper
+        {
+            private class OutputDto
+            {
+                public bool result { get; set; }
+            }
+            public static void ApplyOutputJsonToCarLightData(string json)
+            {
+                try
+                {
+                    var dto = JsonSerializer.Deserialize<OutputDto>(json);
+                    if (dto is null) return;
+                    CarLightData.result = dto.result ? "true" : "false";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"CarLight output JSON parse failed: {ex.Message}");
+                    Logger.LogException(ex, "Failed to parse CarLight output JSON");
                 }
             }
         }

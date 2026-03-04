@@ -183,12 +183,49 @@ namespace JAN0837_DP.Communication
                                     await client.mqttClient.PublishAsync(msgRegulatorInput, token);
 
                                     // RegulatorData - Output 
+                                    var regulatorOutput = new
+                                    {
+                                        Uin = RegulatorData.Uin
+                                    };
+                                    
+                                    var msgRegulatorOutput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/Regulator/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight - Input // TO DO 
-                                    // CarLight - Output // TO DO 
+                                    // CarLight - Input 
+                                    var carlightInput = new
+                                    {
+                                        btnReset = CarLightData.btnReset == "true",
+                                        error = CarLightData.error == "true",
+                                        sensorLight = CarLightData.sensorLight == "true",
+                                        sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
+                                        lowBeamLight = CarLightData.lowBeamLight == "true",
+                                        highBeamLight = CarLightData.highBeamLight == "true",
+                                        turnLight = CarLightData.turnLight == "true"
+                                    };
+                                    var msagCarlightInput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarLight/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carlightInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
 
+                                    // CarLight - Output 
+                                    var carlightOutput = new
+                                    {
+                                        result = CarLightData.result == "true"
+                                    };
+                                    var msgCarlightOutput = new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarLight/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carlightOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build();
 
                                     // CarWash - Input
                                     /*
@@ -429,7 +466,37 @@ namespace JAN0837_DP.Communication
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight Input/Output // TO DO 
+                                    // CarLight Input/Output 
+                                    var carlightInput = new
+                                    {
+                                        btnReset = CarLightData.btnReset == "true",
+                                        error = CarLightData.error == "true",
+                                        sensorLight = CarLightData.sensorLight == "true",
+                                        sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
+                                        lowBeamLight = CarLightData.lowBeamLight == "true",
+                                        highBeamLight = CarLightData.highBeamLight == "true",
+                                        turnLight = CarLightData.turnLight == "true"
+                                    };
+
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarLight/Input")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carlightInput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
+
+                                    var carlightOutput = new
+                                    {
+                                        result = CarLightData.result == "true"
+                                    };
+
+                                    await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
+                                        .WithTopic("JAN0837/CarLight/Output")
+                                        .WithPayload(System.Text.Json.JsonSerializer.Serialize(carlightOutput))
+                                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                                        .WithRetainFlag(true)
+                                        .Build());
+
 
                                     // CarWash - Input
                                     /*
@@ -803,15 +870,19 @@ namespace JAN0837_DP.Communication
                                         continue;
                                     }
 
-                                    // RegulatorData // TO DO 
+                                    // RegulatorData 
                                     // Write input values to PLC
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.btnReset, RegulatorData.btnReset == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, int.Parse(RegulatorData.order));
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, RegulatorData.R1);
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, RegulatorData.R2);
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, RegulatorData.C1);
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, RegulatorData.C2);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uin, RegulatorData.Uin);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1, RegulatorData.Uc1);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2, RegulatorData.Uc2);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Td, RegulatorData.Td);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Ts, RegulatorData.Ts);
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -823,8 +894,7 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     // read output values from PLC 
-                                    RegulatorData.Uc1 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1).ToString();
-                                    RegulatorData.Uc2 = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2).ToString();
+                                    RegulatorData.Uin = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uin).ToString();
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -836,6 +906,37 @@ namespace JAN0837_DP.Communication
                                     }
 
                                     PlantModel.ComputePlantStep();
+
+                                    // CarLightData 
+                                    // Write input values to PLC
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.btnReset, CarLightData.btnReset == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.error, CarLightData.error == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorLight, CarLightData.sensorLight == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.lowBeamLight, CarLightData.lowBeamLight == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.highBeamLight, CarLightData.highBeamLight == "true");
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.turnLight, CarLightData.turnLight == "true");
+
+                                    // If session became invalid during writes, skip reads this cycle
+                                    if (!opcuaClient.connected)
+                                    {
+                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
+                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
+                                        await Task.Delay(1000, token);
+                                        continue;
+                                    }
+
+                                    // read output values from PLC 
+                                    CarLightData.result = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.result) ? "true" : "false";
+
+                                    // If session became invalid during writes, skip reads this cycle
+                                    if (!opcuaClient.connected)
+                                    {
+                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");
+                                        Logger.LogWarning("OPC UA Client: Session lost during read, waiting for reconnection...");
+                                        await Task.Delay(1000, token);
+                                        continue;
+                                    }
 
                                     // CarWashData
                                     /*
@@ -958,7 +1059,7 @@ namespace JAN0837_DP.Communication
                                     // ═══════════════════════════════════════════════════════════
                                     
                                     // CrossroadData inputs: registers 0-4
-                                    bool[] crossroadInputs = new bool[7] // TO DO 
+                                    bool[] crossroadInputs = new bool[7] 
                                     {
                                         _modbusServer.StrToBool(CrossroadData.btnStart),
                                         _modbusServer.StrToBool(CrossroadData.btnPause),
@@ -971,7 +1072,7 @@ namespace JAN0837_DP.Communication
                                     _modbusServer.SetRegisters(0, crossroadInputs);
 
                                     // CrosswalkData inputs: registers 5-9
-                                    bool[] crosswalkInputs = new bool[5] // TO DO 
+                                    bool[] crosswalkInputs = new bool[5] 
                                     {
                                         _modbusServer.StrToBool(CrosswalkData.btnStart),
                                         _modbusServer.StrToBool(CrosswalkData.btnPause),
@@ -981,24 +1082,35 @@ namespace JAN0837_DP.Communication
                                     };
                                     _modbusServer.SetRegisters(5, crosswalkInputs);
 
-                                    // RegulatorData inputs // TO DO 
-                                    bool[] regulatorInputs = new bool[9] // TO DO -> not only bool
-                                    {
-                                        _modbusServer.StrToBool(RegulatorData.switchstate),
-                                        _modbusServer.StrToInt(RegulatorData.order) != 0,
-                                        _modbusServer.StrToBool(RegulatorData.R1),
-                                        _modbusServer.StrToBool(RegulatorData.R2),
-                                        _modbusServer.StrToBool(RegulatorData.C1),
-                                        _modbusServer.StrToBool(RegulatorData.C2),
-                                        _modbusServer.StrToBool(RegulatorData.Uin),
-                                        _modbusServer.StrToBool(RegulatorData.Td),
-                                        _modbusServer.StrToBool(RegulatorData.Ts)
-                                    };
-                                    _modbusServer.SetRegisters(10, regulatorInputs);
+                                    // RegulatorData inputs: bool(1reg) + bool(1reg) + int(1reg) + 8×float(2reg each) = 19 registers
+                                    ushort[] regulatorRegisters = new ushort[19];
+                                    regulatorRegisters[0] = (ushort)(_modbusServer.StrToBool(RegulatorData.btnReset) ? 1 : 0);
+                                    regulatorRegisters[1] = (ushort)(_modbusServer.StrToBool(RegulatorData.switchstate) ? 1 : 0);
+                                    regulatorRegisters[2] = (ushort)_modbusServer.StrToInt(RegulatorData.order);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.R1), regulatorRegisters, 3);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.R2), regulatorRegisters, 5);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.C1), regulatorRegisters, 7);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.C2), regulatorRegisters, 9);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.Uc1), regulatorRegisters, 11);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.Uc2), regulatorRegisters, 13);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.Td), regulatorRegisters, 15);
+                                    ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.Ts), regulatorRegisters, 17);
+                                    _modbusServer.SetRegisters(10, regulatorRegisters);
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight inputs // TO DO 
+                                    // CarLight inputs 
+                                    bool[] carlightInputs = new bool[7]
+                                    {
+                                        _modbusServer.StrToBool(CarLightData.btnReset),
+                                        _modbusServer.StrToBool(CarLightData.error),
+                                        _modbusServer.StrToBool(CarLightData.sensorLight),
+                                        _modbusServer.StrToBool(CarLightData.sensorConnectorConnected),
+                                        _modbusServer.StrToBool(CarLightData.lowBeamLight),
+                                        _modbusServer.StrToBool(CarLightData.highBeamLight),
+                                        _modbusServer.StrToBool(CarLightData.turnLight)
+                                    };
+                                    _modbusServer.SetRegisters(29, carlightInputs);
 
                                     // CarWash inputs
                                     /*
@@ -1033,7 +1145,7 @@ namespace JAN0837_DP.Communication
                                     // ═══════════════════════════════════════════════════════════
 
                                     // CrossroadData Outputs: registers 30-40 (11 values)
-                                    bool[] crossroadOutputs = _modbusServer.GetRegisters(30, 11); // TO DO 
+                                    bool[] crossroadOutputs = _modbusServer.GetRegisters(30, 11);
                                     if (crossroadOutputs != null && crossroadOutputs.Length >= 11)
                                     {
                                         CrossroadData.crossroadType = _modbusServer.BoolToStr(crossroadOutputs[0]);
@@ -1055,8 +1167,8 @@ namespace JAN0837_DP.Communication
                                         CrossroadData.pedestrianWest_red = _modbusServer.BoolToStr(crossroadOutputs[16]);
                                     }
 
-                                    // CrosswalkData Outputs: registers 41-51 (11 values) // TO DO 
-                                    bool[] crosswalkOutputs = _modbusServer.GetRegisters(41, 11); // TO DO 
+                                    // CrosswalkData Outputs: registers 41-51 (11 values)  
+                                    bool[] crosswalkOutputs = _modbusServer.GetRegisters(41, 11); 
                                     if (crosswalkOutputs != null && crosswalkOutputs.Length >= 11)
                                     {
                                         CrosswalkData.crosswalkType = _modbusServer.BoolToStr(crosswalkOutputs[0]);
@@ -1072,17 +1184,21 @@ namespace JAN0837_DP.Communication
                                         CrosswalkData.pedestrian2_red = _modbusServer.BoolToStr(crosswalkOutputs[10]);
                                     }
 
-                                    // RegulatorData Outputs // TO DO 
-                                    bool[] regulaotOutputs = _modbusServer.GetRegisters(51, 9); // TO DO 
-                                    if (regulaotOutputs != null && regulaotOutputs.Length >= 9)
+                                    // RegulatorData Outputs: Uin is float (2 registers)
+                                    ushort[] regulatorOutputRegs = _modbusServer.GetRegistersRaw(51, 2);
+                                    if (regulatorOutputRegs != null && regulatorOutputRegs.Length >= 2)
                                     {
-                                        RegulatorData.Uc1 = _modbusServer.IntToStr(regulaotOutputs[0]);
-                                        RegulatorData.Uc2 = _modbusServer.IntToStr(regulaotOutputs[1]);
+                                        RegulatorData.Uin = ModbusHelper.RegistersToFloat(regulatorOutputRegs, 0).ToString(System.Globalization.CultureInfo.InvariantCulture);
                                     }
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight Outputs // TO DO 
+                                    // CarLight Outputs
+                                    bool[] carlightOutputRegs = _modbusServer.GetRegisters(53, 1); 
+                                    if (carlightOutputRegs != null && carlightOutputRegs.Length >= 1)
+                                    {
+                                        CarLightData.result = _modbusServer.BoolToStr(carlightOutputRegs[0]);
+                                    }
 
                                     // CarWashData outputs
                                     /*
@@ -1134,12 +1250,151 @@ namespace JAN0837_DP.Communication
                                     }
                                     */
 
+                                    _ucCommunicationControl.SetStatus("Modbus Server: All data synchronized");
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ucCommunicationControl.SetStatus($"Modbus Server exception error: {ex.Message}");
+                                    Logger.LogException(ex, "Modbus Server exception error:");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+                            }
+                            else if (internalVariables.checkBoxSlave == true)
+                            {
+                                var _modbusClient = _ucCommunicationControl._modbusClient;
+
+                                // Client (Slave) mode
+                                if (_modbusClient == null || !_modbusClient.ConnectToSlave())
+                                {
+                                    _ucCommunicationControl.SetStatus("Modbus Client: Not connected, waiting for connection...");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+
+                                try
+                                {
+                                    byte slaveId = 1;
+
+                                    // ═══════════════════════════════════════════════════════════
+                                    // WRITE input values to server's holding registers
+                                    // ═══════════════════════════════════════════════════════════
+
+                                    // CrossroadData inputs: registers 0-6
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 0, new bool[]
+                                    {
+                                        _modbusClient.StrToBool(CrossroadData.btnStart),
+                                        _modbusClient.StrToBool(CrossroadData.btnPause),
+                                        _modbusClient.StrToBool(CrossroadData.btnStop),
+                                        _modbusClient.StrToBool(CrossroadData.btnWestCrosswalk1),
+                                        _modbusClient.StrToBool(CrossroadData.btnWestCrosswalk2),
+                                        _modbusClient.StrToBool(CrossroadData.btnSouthCrosswalk1),
+                                        _modbusClient.StrToBool(CrossroadData.btnSouthCrosswalk2)
+                                    });
+
+                                    // CrosswalkData inputs: registers 7-11
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 7, new bool[]
+                                    {
+                                        _modbusClient.StrToBool(CrosswalkData.btnStart),
+                                        _modbusClient.StrToBool(CrosswalkData.btnPause),
+                                        _modbusClient.StrToBool(CrosswalkData.btnStop),
+                                        _modbusClient.StrToBool(CrosswalkData.btnCrosswalk1),
+                                        _modbusClient.StrToBool(CrosswalkData.btnCrosswalk2)
+                                    });
+
+                                    // RegulatorData inputs: registers 12-30 (bool+bool+int + 8×float)
+                                    ushort[] regulatorRegisters = new ushort[19];
+                                    regulatorRegisters[0] = (ushort)(_modbusClient.StrToBool(RegulatorData.btnReset) ? 1 : 0);
+                                    regulatorRegisters[1] = (ushort)(_modbusClient.StrToBool(RegulatorData.switchstate) ? 1 : 0);
+                                    regulatorRegisters[2] = (ushort)(int.TryParse(RegulatorData.order, out var ord) ? ord : 0);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r1) ? r1 : 0f, regulatorRegisters, 3);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r2) ? r2 : 0f, regulatorRegisters, 5);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c1) ? c1 : 0f, regulatorRegisters, 7);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c2) ? c2 : 0f, regulatorRegisters, 9);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1) ? uc1 : 0f, regulatorRegisters, 11);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2) ? uc2 : 0f, regulatorRegisters, 13);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var td) ? td : 0f, regulatorRegisters, 15);
+                                    ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var ts) ? ts : 0f, regulatorRegisters, 17);
+                                    _modbusClient.WriteMultipleRegisters(slaveId, 12, regulatorRegisters);
+
+                                    // CarLight inputs: registers 31-37
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 31, new bool[]
+                                    {
+                                        _modbusClient.StrToBool(CarLightData.btnReset),
+                                        _modbusClient.StrToBool(CarLightData.error),
+                                        _modbusClient.StrToBool(CarLightData.sensorLight),
+                                        _modbusClient.StrToBool(CarLightData.sensorConnectorConnected),
+                                        _modbusClient.StrToBool(CarLightData.lowBeamLight),
+                                        _modbusClient.StrToBool(CarLightData.highBeamLight),
+                                        _modbusClient.StrToBool(CarLightData.turnLight)
+                                    });
+
+                                    // ═══════════════════════════════════════════════════════════
+                                    // READ output values from server's holding registers
+                                    // ═══════════════════════════════════════════════════════════
+
+                                    // CrossroadData outputs: registers 40-56 (17 bools)
+                                    bool[] crossroadOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 40, 17);
+                                    if (crossroadOutputs != null && crossroadOutputs.Length >= 17)
+                                    {
+                                        CrossroadData.crossroadType = _modbusClient.BoolToStr(crossroadOutputs[0]);
+                                        CrossroadData.trafficLightNorth_green = _modbusClient.BoolToStr(crossroadOutputs[1]);
+                                        CrossroadData.trafficLightNorth_yellow = _modbusClient.BoolToStr(crossroadOutputs[2]);
+                                        CrossroadData.trafficLightNorth_red = _modbusClient.BoolToStr(crossroadOutputs[3]);
+                                        CrossroadData.trafficLightSouth_green = _modbusClient.BoolToStr(crossroadOutputs[4]);
+                                        CrossroadData.trafficLightSouth_yellow = _modbusClient.BoolToStr(crossroadOutputs[5]);
+                                        CrossroadData.trafficLightSouth_red = _modbusClient.BoolToStr(crossroadOutputs[6]);
+                                        CrossroadData.trafficLightEast_green = _modbusClient.BoolToStr(crossroadOutputs[7]);
+                                        CrossroadData.trafficLightEast_yellow = _modbusClient.BoolToStr(crossroadOutputs[8]);
+                                        CrossroadData.trafficLightEast_red = _modbusClient.BoolToStr(crossroadOutputs[9]);
+                                        CrossroadData.trafficLightWest_green = _modbusClient.BoolToStr(crossroadOutputs[10]);
+                                        CrossroadData.trafficLightWest_yellow = _modbusClient.BoolToStr(crossroadOutputs[11]);
+                                        CrossroadData.trafficLightWest_red = _modbusClient.BoolToStr(crossroadOutputs[12]);
+                                        CrossroadData.pedestrianSouth_green = _modbusClient.BoolToStr(crossroadOutputs[13]);
+                                        CrossroadData.pedestrianSouth_red = _modbusClient.BoolToStr(crossroadOutputs[14]);
+                                        CrossroadData.pedestrianWest_green = _modbusClient.BoolToStr(crossroadOutputs[15]);
+                                        CrossroadData.pedestrianWest_red = _modbusClient.BoolToStr(crossroadOutputs[16]);
+                                    }
+
+                                    // CrosswalkData outputs: registers 57-67 (11 bools)
+                                    bool[] crosswalkOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 57, 11);
+                                    if (crosswalkOutputs != null && crosswalkOutputs.Length >= 11)
+                                    {
+                                        CrosswalkData.crosswalkType = _modbusClient.BoolToStr(crosswalkOutputs[0]);
+                                        CrosswalkData.trafficLight1_green = _modbusClient.BoolToStr(crosswalkOutputs[1]);
+                                        CrosswalkData.trafficLight1_yellow = _modbusClient.BoolToStr(crosswalkOutputs[2]);
+                                        CrosswalkData.trafficLight1_red = _modbusClient.BoolToStr(crosswalkOutputs[3]);
+                                        CrosswalkData.trafficLight2_green = _modbusClient.BoolToStr(crosswalkOutputs[4]);
+                                        CrosswalkData.trafficLight2_yellow = _modbusClient.BoolToStr(crosswalkOutputs[5]);
+                                        CrosswalkData.trafficLight2_red = _modbusClient.BoolToStr(crosswalkOutputs[6]);
+                                        CrosswalkData.pedestrian1_green = _modbusClient.BoolToStr(crosswalkOutputs[7]);
+                                        CrosswalkData.pedestrian1_red = _modbusClient.BoolToStr(crosswalkOutputs[8]);
+                                        CrosswalkData.pedestrian2_green = _modbusClient.BoolToStr(crosswalkOutputs[9]);
+                                        CrosswalkData.pedestrian2_red = _modbusClient.BoolToStr(crosswalkOutputs[10]);
+                                    }
+
+                                    // RegulatorData outputs: Uin as float (2 registers at 68-69)
+                                    ushort[] regulatorOutputRegs = _modbusClient.ReadHoldingRegisters(slaveId, 68, 2);
+                                    if (regulatorOutputRegs != null && regulatorOutputRegs.Length >= 2)
+                                    {
+                                        RegulatorData.Uin = ModbusHelper.RegistersToFloat(regulatorOutputRegs, 0).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    }
+
+                                    PlantModel.ComputePlantStep();
+
+                                    // CarLight outputs: result (1 bool at register 70)
+                                    bool[] carlightOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 70, 1);
+                                    if (carlightOutputs != null && carlightOutputs.Length >= 1)
+                                    {
+                                        CarLightData.result = _modbusClient.BoolToStr(carlightOutputs[0]);
+                                    }
+
                                     _ucCommunicationControl.SetStatus("Modbus Client: All data synchronized");
                                 }
                                 catch (Exception ex)
                                 {
-                                    _ucCommunicationControl.SetStatus($"Modbus Client exception error: {ex.Message}");
-                                    Logger.LogException(ex, "Mobus Client exception error:");
+                                    _ucCommunicationControl.SetStatus($"Modbus Client mode error: {ex.Message}");
+                                    Logger.LogException(ex, "Modbus Client mode error:");
                                     await Task.Delay(500, token);
                                     continue;
                                 }
@@ -1360,11 +1615,11 @@ namespace JAN0837_DP.Communication
                                 CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 0));
                                 CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 7, 1));
 
-                                // RegulatorData // TO DO 
-                                RegulatorData.Uc1 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 8));
-                                RegulatorData.Uc2 = Convert.ToString(Sharp7.S7.GetIntAt(readBuffer, 10));
+                                // RegulatorData 
+                                RegulatorData.Uin = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 9, 0));
 
-                                // CarLight // TO DO 
+                                // CarLight 
+                                CarLightData.result = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 0));
 
                                 // CarWashData 
                                 /*
@@ -1417,7 +1672,6 @@ namespace JAN0837_DP.Communication
                             PlantModel.ComputePlantStep();
 
                             // CrossroadData
-                            Sharp7.S7.SetBitAt(writeBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 1, Convert.ToBoolean(CrossroadData.btnStart));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 2, Convert.ToBoolean(CrossroadData.btnPause));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 3, Convert.ToBoolean(CrossroadData.btnStop));
@@ -1426,6 +1680,7 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 6, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk1));
                             Sharp7.S7.SetBitAt(writeBuffer, 0, 7, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk2));
 
+                            Sharp7.S7.SetBitAt(writeBuffer, 0, 0, Convert.ToBoolean(CrossroadData.crossroadType));
                             Sharp7.S7.SetBitAt(writeBuffer, 1, 0, Convert.ToBoolean(CrossroadData.trafficLightNorth_green));
                             Sharp7.S7.SetBitAt(writeBuffer, 1, 1, Convert.ToBoolean(CrossroadData.trafficLightNorth_yellow));
                             Sharp7.S7.SetBitAt(writeBuffer, 1, 2, Convert.ToBoolean(CrossroadData.trafficLightNorth_red));
@@ -1462,21 +1717,33 @@ namespace JAN0837_DP.Communication
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 0, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
                             Sharp7.S7.SetBitAt(writeBuffer, 7, 1, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
-                            // RegulatorData // TO DO 
+                            // RegulatorData 
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.btnReset));
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToBoolean(RegulatorData.switchstate));
                             Sharp7.S7.SetBitAt(writeBuffer, 8, 0, Convert.ToInt64(RegulatorData.order) != 0);
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R1));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToBoolean(RegulatorData.R2));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C1));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToBoolean(RegulatorData.C2));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 3, Convert.ToBoolean(RegulatorData.Uin));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Td));
-                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToBoolean(RegulatorData.Ts));
-
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToDouble(RegulatorData.R1) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 1, Convert.ToDouble(RegulatorData.R2) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToDouble(RegulatorData.C1) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 2, Convert.ToDouble(RegulatorData.C2) != 0.0);
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc1) != 0.0);
                             Sharp7.S7.SetBitAt(writeBuffer, 9, 0, Convert.ToDouble(RegulatorData.Uc2) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToDouble(RegulatorData.Td) != 0.0);
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 4, Convert.ToDouble(RegulatorData.Ts) != 0.0);
 
-                            // CarLight // TO DO 
+                            Sharp7.S7.SetBitAt(writeBuffer, 8, 5, Convert.ToDouble(RegulatorData.Uin) != 0.0);
+
+                            PlantModel.ComputePlantStep();
+
+                            // CarLight 
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.btnReset));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.error));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.sensorLight));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.sensorConnectorConnected));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.lowBeamLight));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.highBeamLight));
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.turnLight));
+
+                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarLightData.result));
 
                             // CarWashData 
                             /*

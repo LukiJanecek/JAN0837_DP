@@ -266,30 +266,30 @@ namespace JAN0837_DP.ReactFE
                     case "trafficLightEast_red": 
                         CrossroadData.trafficLightEast_red = value; 
                         break;
-                    /*
-                    case "pedestrianNorth_green": 
-                        CrossroadData.pedestrianNorth_green = value; 
+                    case "pedestrianSouth1_green": 
+                        CrossroadData.pedestrianSouth1_green = value; 
                         break;
-                    case "pedestrianNorth_red": 
-                        CrossroadData.pedestrianNorth_red = value; 
+                    case "pedestrianSouth1_red": 
+                        CrossroadData.pedestrianSouth1_red = value;
                         break;
-                    */
-                    case "pedestrianSouth_green": CrossroadData.pedestrianSouth_green = value; 
+                    case "pedestrianSouth2_green":
+                        CrossroadData.pedestrianSouth2_green = value;
                         break;
-                    case "pedestrianSouth_red": CrossroadData.pedestrianSouth_red = value;
+                    case "pedestrianSouth2_red":
+                        CrossroadData.pedestrianSouth2_red = value;
                         break;
-                    case "pedestrianWest_green": CrossroadData.pedestrianWest_green = value; 
+                    case "pedestrianWest1_green": 
+                        CrossroadData.pedestrianWest1_green = value; 
                         break;
-                    case "pedestrianWest_red": CrossroadData.pedestrianWest_red = value; 
+                    case "pedestrianWest1_red": 
+                        CrossroadData.pedestrianWest1_red = value; 
                         break;
-                    /*
-                    case "pedestrianEast_green": 
-                        CrossroadData.pedestrianEast_green = value; 
+                    case "pedestrianWest2_green":
+                        CrossroadData.pedestrianWest2_green = value;
                         break;
-                    case "pedestrianEast_red": 
-                        CrossroadData.pedestrianEast_red = value; 
+                    case "pedestrianWest2_red":
+                        CrossroadData.pedestrianWest2_red = value;
                         break;
-                    */
                 }
             });
         }
@@ -394,6 +394,8 @@ namespace JAN0837_DP.ReactFE
                 }
             });
         }
+
+        #region CarWash & WashingMachine 
         /*
         private static void ApplyCarWashUpdate(string key, string value)
         {
@@ -548,6 +550,7 @@ namespace JAN0837_DP.ReactFE
             });
         }
         */
+        #endregion
 
         private static void ApplyCarLightUpdate(string key, string value)
         {
@@ -743,14 +746,14 @@ namespace JAN0837_DP.ReactFE
                             trafficLightEast_green = crossroaddata.trafficLightEast_green,
                             trafficLightEast_yellow = crossroaddata.trafficLightEast_yellow,
                             trafficLightEast_red = crossroaddata.trafficLightEast_red,
-                            //pedestrianNorth_green = crossroaddata.pedestrianNorth_green,
-                            //pedestrianNorth_red = crossroaddata.pedestrianNorth_red,
-                            pedestrianSouth_green = crossroaddata.pedestrianSouth_green,
-                            pedestrianSouth_red = crossroaddata.pedestrianSouth_red,
-                            pedestrianWest_green = crossroaddata.pedestrianWest_green,
-                            pedestrianWest_red = crossroaddata.pedestrianWest_red,
-                            //pedestrianEast_green = crossroaddata.pedestrianEast_green,
-                            //pedestrianEast_red = crossroaddata.pedestrianEast_red
+                            pedestrianSouth1_green = crossroaddata.pedestrianSouth1_green,
+                            pedestrianSouth1_red = crossroaddata.pedestrianSouth1_red,
+                            pedestrianSouth2_green = crossroaddata.pedestrianSouth2_green,
+                            pedestrianSouth2_red = crossroaddata.pedestrianSouth2_red,
+                            pedestrianWest1_green = crossroaddata.pedestrianWest1_green,
+                            pedestrianWest1_red = crossroaddata.pedestrianWest1_red,
+                            pedestrianWest2_green = crossroaddata.pedestrianWest2_green,
+                            pedestrianWest2_red = crossroaddata.pedestrianWest2_red,
                         },
                         CrosswalkData = new
                         {

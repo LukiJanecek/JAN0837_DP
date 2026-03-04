@@ -241,11 +241,15 @@ namespace JAN0837_DP.Communication.comMQTT
                     CrossroadData.trafficLightWest_green = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
                     CrossroadData.trafficLightWest_yellow = ((dto.lightsMask >> 10) & 1) == 1 ? "true" : "false";
                     CrossroadData.trafficLightWest_red = ((dto.lightsMask >> 11) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
-                }
+                    CrossroadData.pedestrianSouth1_green = ((dto.lightsMask >> 12) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianSouth1_red = ((dto.lightsMask >> 13) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianSouth2_green = ((dto.lightsMask >> 14) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianSouth2_red = ((dto.lightsMask >> 15) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest1_green = ((dto.lightsMask >> 16) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest1_red = ((dto.lightsMask >> 17) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest2_green = ((dto.lightsMask >> 18) & 1) == 1 ? "true" : "false";
+                    CrossroadData.pedestrianWest2_red = ((dto.lightsMask >> 19) & 1) == 1 ? "true" : "false";
+                }   
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Output JSON parse failed: {ex.Message}");

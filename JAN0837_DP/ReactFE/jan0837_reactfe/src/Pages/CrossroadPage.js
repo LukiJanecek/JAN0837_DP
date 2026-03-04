@@ -19,13 +19,13 @@ import { useData, useSectionData } from '../Communication/DataProvider';
  * ── CrossroadData variable map ────────────────────
  *
  * INPUTS  (FE → PLC):
- *   btnCrossroadStart    Bool – start crossroad
- *   btnCrossroadPause    Bool – pause crossroad
- *   btnCrossroadStop     Bool – stop crossroad
- *   btnWestCrosswalk1    Bool – pedestrian button N
- *   btnWestCrosswalk2    Bool – pedestrian button S
- *   btnSouthCrosswalk1    Bool – pedestrian button W
- *   btnSouthCrosswalk2    Bool – pedestrian button E
+ *   btnStart             Bool – start crossroad
+ *   btnPause             Bool – pause crossroad
+ *   btnStop              Bool – stop crossroad
+ *   btnSouthCrosswalk1   Bool – pedestrian button South #1
+ *   btnSouthCrosswalk2   Bool – pedestrian button South #2
+ *   btnWestCrosswalk1    Bool – pedestrian button West #1
+ *   btnWestCrosswalk2    Bool – pedestrian button West #2
  *
  * OUTPUTS (PLC → FE):
  *   crossroadType               Bool – night / day
@@ -41,14 +41,14 @@ import { useData, useSectionData } from '../Communication/DataProvider';
  *   trafficLightEast_green      Bool
  *   trafficLightEast_yellow     Bool
  *   trafficLightEast_red        Bool
- *   pedestrianNorth_green       Bool -> not now
- *   pedestrianNorth_red         Bool -> not now
- *   pedestrianSouth_green       Bool
- *   pedestrianSouth_red         Bool
- *   pedestrianWest_green        Bool
- *   pedestrianWest_red          Bool
- *   pedestrianEast_green        Bool -> not now
- *   pedestrianEast_red          Bool -> not now 
+ *   pedestrianSouth1_green       Bool
+ *   pedestrianSouth1_red         Bool
+ *   pedestrianSouth2_green       Bool
+ *   pedestrianSouth2_red         Bool
+ *   pedestrianWest1_green        Bool
+ *   pedestrianWest1_red          Bool
+ *   pedestrianWest2_green        Bool
+ *   pedestrianWest2_red          Bool
  */
 
 const toBool = (v) => {
@@ -212,25 +212,6 @@ function CrossroadCanvas({ background, lights, pedControls }) {
       )}
 
       <>
-        {/* 
-        <button
-          type="button"
-          className="ped-btn ped-btn--north btn btn-sm btn-light"
-          onClick={pedControls.onNorth}
-          aria-label="Toggle pedestrian North"
-        >
-          N {pedControls.btnPedN ? '🟢' : '⚪'}
-        </button>
-
-        <button
-          type="button"
-          className="ped-btn ped-btn--north-2 btn btn-sm btn-light"
-          onClick={pedControls.onNorth}
-          aria-label="Toggle pedestrian North second"
-        >
-          N {pedControls.btnPedN ? '🟢' : '⚪'}
-        </button>
-        */}
 
         <button
           type="button"
@@ -268,25 +249,6 @@ function CrossroadCanvas({ background, lights, pedControls }) {
           W {pedControls.btnPedW2 ? '🟢' : '⚪'}
         </button>
 
-        {/* 
-        <button
-          type="button"
-          className="ped-btn ped-btn--east btn btn-sm btn-light"
-          onClick={pedControls.onEast}
-          aria-label="Toggle pedestrian East"
-        >
-          E {pedControls.btnPedE ? '🟢' : '⚪'}
-        </button>
-
-        <button
-          type="button"
-          className="ped-btn ped-btn--east-2 btn btn-sm btn-light"
-          onClick={pedControls.onEast}
-          aria-label="Toggle pedestrian East second"
-        >
-          E {pedControls.btnPedE ? '🟢' : '⚪'}
-        </button>
-        */}
       </>
     </div>
   );
@@ -318,14 +280,14 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
   const trafficLightEast_yellow = toBool(d?.trafficLightEast_yellow);
   const trafficLightEast_red = toBool(d?.trafficLightEast_red);
 
-  //const pedestrianNorth_green = toBool(d?.pedestrianNorth_green);
-  //const pedestrianNorth_red = toBool(d?.pedestrianNorth_red);
-  const pedestrianSouth_green = toBool(d?.pedestrianSouth_green);
-  const pedestrianSouth_red = toBool(d?.pedestrianSouth_red);
-  const pedestrianWest_green = toBool(d?.pedestrianWest_green);
-  const pedestrianWest_red = toBool(d?.pedestrianWest_red);
-  //const pedestrianEast_green = toBool(d?.pedestrianEast_green);
-  //const pedestrianEast_red = toBool(d?.pedestrianEast_red);
+  const pedestrianSouth1_green = toBool(d?.pedestrianSouth1_green);
+  const pedestrianSouth1_red = toBool(d?.pedestrianSouth1_red);
+  const pedestrianSouth2_green = toBool(d?.pedestrianSouth2_green);
+  const pedestrianSouth2_red = toBool(d?.pedestrianSouth2_red);
+  const pedestrianWest1_green = toBool(d?.pedestrianWest1_green);
+  const pedestrianWest1_red = toBool(d?.pedestrianWest1_red);
+  const pedestrianWest2_green = toBool(d?.pedestrianWest2_green);
+  const pedestrianWest2_red = toBool(d?.pedestrianWest2_red);
 
   const setCrossroadType = async () => {
     try {
@@ -410,47 +372,46 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
     } catch (e) { console.error('setCrossroadLightEastRed error:', e); }
   };
 
-  const setPedestrianNorthGreen = async () => {
+  const setPedestrianSouth1Green = async () => {
     try {
-      await saveSection({ pedestrianNorth_green: !toBool(d?.pedestrianNorth_green) });
-    } catch (e) { console.error('setPedestrianNorthGreen error:', e); }
+      await saveSection({ pedestrianSouth1_green: !toBool(d?.pedestrianSouth1_green) });
+    } catch (e) { console.error('setPedestrianSouth1Green error:', e); }
   };
-  const setPedestrianNorthRed = async () => {
+  const setPedestrianSouth1Red = async () => {
     try {
-      await saveSection({ pedestrianNorth_red: !toBool(d?.pedestrianNorth_red) });
-    } catch (e) { console.error('setPedestrianNorthRed error:', e); }
+      await saveSection({ pedestrianSouth1_red: !toBool(d?.pedestrianSouth1_red) });
+    } catch (e) { console.error('setPedestrianSouth1Red error:', e); }
   };
-  const setPedestrianSouthGreen = async () => {
+  const setPedestrianSouth2Green = async () => {
     try {
-      await saveSection({ pedestrianSouth_green: !toBool(d?.pedestrianSouth_green) });
-    } catch (e) { console.error('setPedestrianSouthGreen error:', e); }
+      await saveSection({ pedestrianSouth2_green: !toBool(d?.pedestrianSouth2_green) });
+    } catch (e) { console.error('setPedestrianSouth2Green error:', e); }
   };
-  const setPedestrianSouthRed = async () => {
+  const setPedestrianSouth2Red = async () => {
     try {
-      await saveSection({ pedestrianSouth_red: !toBool(d?.pedestrianSouth_red) });
-    } catch (e) { console.error('setPedestrianSouthRed error:', e); }
+      await saveSection({ pedestrianSouth2_red: !toBool(d?.pedestrianSouth2_red) });
+    } catch (e) { console.error('setPedestrianSouth2Red error:', e); }
   };
-  const setPedestrianWestGreen = async () => {
+  const setPedestrianWest1Green = async () => {
     try {
-      await saveSection({ pedestrianWest_green: !toBool(d?.pedestrianWest_green) });
-    } catch (e) { console.error('setPedestrianWestGreen error:', e); }
+      await saveSection({ pedestrianWest1_green: !toBool(d?.pedestrianWest1_green) });
+    } catch (e) { console.error('setPedestrianWest1Green error:', e); }
   };
-  const setPedestrianWestRed = async () => {
+  const setPedestrianWest1Red = async () => {
     try {
-      await saveSection({ pedestrianWest_red: !toBool(d?.pedestrianWest_red) });
-    } catch (e) { console.error('setPedestrianWestRed error:', e); }
+      await saveSection({ pedestrianWest1_red: !toBool(d?.pedestrianWest1_red) });
+    } catch (e) { console.error('setPedestrianWest1Red error:', e); }
   };
-  const setPedestrianEastGreen = async () => {
+  const setPedestrianWest2Green = async () => {
     try {
-      await saveSection({ pedestrianEast_green: !toBool(d?.pedestrianEast_green) });
-    } catch (e) { console.error('setPedestrianEastGreen error:', e); }
+      await saveSection({ pedestrianWest2_green: !toBool(d?.pedestrianWest2_green) });
+    } catch (e) { console.error('setPedestrianWest2Green error:', e); }
   };
-  const setPedestrianEastRed = async () => {
+  const setPedestrianWest2Red = async () => {
     try {
-      await saveSection({ pedestrianEast_red: !toBool(d?.pedestrianEast_red) });
-    } catch (e) { console.error('setPedestrianEastRed error:', e); }
+      await saveSection({ pedestrianWest2_red: !toBool(d?.pedestrianWest2_red) });
+    } catch (e) { console.error('setPedestrianWest2Red error:', e); }
   };
-
   const toggleCrossroadType = async () => {
     try {
       const current = toBool(d?.crossroadType);
@@ -464,7 +425,7 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
       setStatus(`ok (store now: ${String(toBool(d?.crossroadType))})`);
     } catch (e) {
       console.error(e);
-      setStatus(`error ✖ ${e?.message ?? e}`);
+      setStatus(`error ${e?.message ?? e}`);
     }
   };
 
@@ -566,45 +527,42 @@ function CrossroadParamsSidebar({names, idx, onPrev, onNext, onJump,})
             </Button>
           </div>
 
-          {/*}
           <div className="gap-2 mb-2">
-            <Button onClick={setPedestrianNorthGreen}>
-              Pedestrian North green ({String(pedestrianNorth_green)})
+            <Button onClick={setPedestrianSouth1Green}>
+              Pedestrian South #1 green ({String(pedestrianSouth1_green)})
             </Button>
-            <Button onClick={setPedestrianNorthRed}>
-              Pedestrian North red ({String(pedestrianNorth_red)})
-            </Button>
-          </div>
-          */}
-
-          <div className="gap-2 mb-2">
-            <Button onClick={setPedestrianSouthGreen}>
-              Pedestrian South green ({String(pedestrianSouth_green)})
-            </Button>
-            <Button onClick={setPedestrianSouthRed}>
-              Pedestrian South red ({String(pedestrianSouth_red)})
+            <Button onClick={setPedestrianSouth1Red}>
+              Pedestrian South #1 red ({String(pedestrianSouth1_red)})
             </Button>
           </div>
 
           <div className="gap-2 mb-2">
-            <Button onClick={setPedestrianWestGreen}>
-              Pedestrian West green ({String(pedestrianWest_green)})
+            <Button onClick={setPedestrianSouth2Green}>
+              Pedestrian South #2 green ({String(pedestrianSouth2_green)})
             </Button>
-            <Button onClick={setPedestrianWestRed}>
-              Pedestrian West red ({String(pedestrianWest_red)})
+            <Button onClick={setPedestrianSouth2Red}>
+              Pedestrian South #2 red ({String(pedestrianSouth2_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianWest1Green}>
+              Pedestrian West #1 green ({String(pedestrianWest1_green)})
+            </Button>
+            <Button onClick={setPedestrianWest1Red}>
+              Pedestrian West #1 red ({String(pedestrianWest1_red)})
+            </Button>
+          </div>
+
+          <div className="gap-2 mb-2">
+            <Button onClick={setPedestrianWest2Green}>
+              Pedestrian West #2 green ({String(pedestrianWest2_green)})
+            </Button>
+            <Button onClick={setPedestrianWest2Red}>
+              Pedestrian West #2 red ({String(pedestrianWest2_red)})
             </Button>
           </div>
           
-          {/*}
-          <div className="gap-2 mb-2">
-            <Button onClick={setPedestrianEastGreen}>
-              Pedestrian East green ({String(pedestrianEast_green)})
-            </Button>
-            <Button onClick={setPedestrianEastRed}>
-              Pedestrian East red ({String(pedestrianEast_red)})
-            </Button>
-          </div>
-          */}
         </Col>
 
         {/*}
@@ -637,14 +595,14 @@ function CrossroadPage({ setAside }) {
       d?.trafficLightEast_green === undefined &&
       d?.trafficLightEast_yellow === undefined &&
       d?.trafficLightEast_red === undefined &&
-      //d?.pedestrianNorth_green === undefined &&
-      //d?.pedestrianNorth_red === undefined &&
-      d?.pedestrianSouth_green === undefined &&
-      d?.pedestrianSouth_red === undefined &&
-      d?.pedestrianWest_green === undefined &&
-      d?.pedestrianWest_red === undefined 
-      //d?.pedestrianEast_green === undefined &&
-      //d?.pedestrianEast_red === undefined
+      d?.pedestrianSouth1_green === undefined &&
+      d?.pedestrianSouth1_red === undefined &&
+      d?.pedestrianSouth2_green === undefined &&
+      d?.pedestrianSouth2_red === undefined &&
+      d?.pedestrianWest1_green === undefined &&
+      d?.pedestrianWest1_red === undefined &&
+      d?.pedestrianWest2_green === undefined &&
+      d?.pedestrianWest2_red === undefined 
     ) {
       saveSection({
         trafficLightNorth_green: 'false',
@@ -659,14 +617,14 @@ function CrossroadPage({ setAside }) {
         trafficLightEast_green: 'false',
         trafficLightEast_yellow: 'false',
         trafficLightEast_red: 'false',
-        //pedestrianNorth_green: 'false',
-        //pedestrianNorth_red: 'false',
-        pedestrianSouth_green: 'false',
-        pedestrianSouth_red: 'false',
-        pedestrianWest_green: 'false',
-        pedestrianWest_red: 'false',
-        //pedestrianEast_green: 'false',
-        //pedestrianEast_red: 'false',
+        pedestrianSouth1_green: 'false',
+        pedestrianSouth1_red: 'false',
+        pedestrianSouth2_green: 'false',
+        pedestrianSouth2_red: 'false',
+        pedestrianWest1_green: 'false',
+        pedestrianWest1_red: 'false',
+        pedestrianWest2_green: 'false',
+        pedestrianWest2_red: 'false',
       });
     }
   }, [d, saveSection]);
@@ -736,24 +694,24 @@ function CrossroadPage({ setAside }) {
     red: d?.trafficLightEast_red ?? false,
   };
 
-  const PEDN = {
-    green: d?.pedestrianNorth_green ?? false,
-    red: d?.pedestrianNorth_red ?? false,
+  const PEDS1 = {
+    green: d?.pedestrianSouth1_green ?? false,
+    red: d?.pedestrianSouth1_red ?? false,
   };
 
-  const PEDS = {
-    green: d?.pedestrianSouth_green ?? false,
-    red: d?.pedestrianSouth_red ?? false,
+  const PEDS2 = {
+    green: d?.pedestrianSouth2_green ?? false,
+    red: d?.pedestrianSouth2_red ?? false,
   };
 
-  const PEDW = {
-    green: d?.pedestrianWest_green ?? false,
-    red: d?.pedestrianWest_red ?? false,
+  const PEDW1 = {
+    green: d?.pedestrianWest1_green ?? false,
+    red: d?.pedestrianWest1_red ?? false,
   };
 
-  const PEDE = {
-    green: d?.pedestrianEast_green ?? false,
-    red: d?.pedestrianEast_red ?? false,
+  const PEDW2 = {
+    green: d?.pedestrianWest2_green ?? false,
+    red: d?.pedestrianWest2_red ?? false,
   };
 
   const lights = [
@@ -777,40 +735,29 @@ function CrossroadPage({ setAside }) {
     { id: 'car-S-main-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '37.3%', y: '62%' },
     { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.3%', y: '65.8%' },
 
-    // pedestrians N
-    //{ id: 'ped-N-main-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '47.0%', y: '4.8%' },
-    //{ id: 'ped-N-main-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '47.0%', y: '11.0%' },
-    //{ id: 'ped-N-mirror-green', kind: 'ped', color: 'green', state: PEDN, dir: 180, x: '58.4%', y: '16.8%' },
-    //{ id: 'ped-N-mirror-red', kind: 'ped', color: 'red', state: PEDN, dir: 180, x: '58.4%', y: '23.0%' },
-    
     // pedestrians S
-    { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS, dir: 90, x: '17%', y: '83%' },
-    { id: 'ped-S-main-red', kind: 'ped', color: 'red', state: PEDS, dir: 90, x: '19.3%', y: '83%' },
-    { id: 'ped-S-mirror-green', kind: 'ped', color: 'green', state: PEDS, dir: 270, x: '39.15%', y: '83%' },
-    { id: 'ped-S-mirror-red', kind: 'ped', color: 'red', state: PEDS, dir: 270, x: '36.9%', y: '83%' },
+    { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS1, dir: 90, x: '16.5%', y: '83%' },
+    { id: 'ped-S-main-red', kind: 'ped', color: 'red', state: PEDS1, dir: 90, x: '18.8%', y: '83%' },
+    { id: 'ped-S-mirror-green', kind: 'ped', color: 'green', state: PEDS2, dir: 270, x: '39.15%', y: '83%' },
+    { id: 'ped-S-mirror-red', kind: 'ped', color: 'red', state: PEDS2, dir: 270, x: '36.9%', y: '83%' },
 
     // pedestrians W
-    { id: 'ped-W-main-green', kind: 'ped', color: 'green', state: PEDW, dir: 0, x: '0.95%', y: '61%' },
-    { id: 'ped-W-main-red', kind: 'ped', color: 'red', state: PEDW, dir: 0, x: '0.95%', y: '57%' },
-    { id: 'ped-W-mirror-green', kind: 'ped', color: 'green', state: PEDW, dir: 180, x: '0.95%', y: '21.5%' },
-    { id: 'ped-W-mirror-red', kind: 'ped', color: 'red', state: PEDW, dir: 180, x: '0.95%', y: '25.5%' },
+    { id: 'ped-W-main-green', kind: 'ped', color: 'green', state: PEDW1, dir: 0, x: '0.95%', y: '61%' },
+    { id: 'ped-W-main-red', kind: 'ped', color: 'red', state: PEDW1, dir: 0, x: '0.95%', y: '57%' },
+    { id: 'ped-W-mirror-green', kind: 'ped', color: 'green', state: PEDW2, dir: 180, x: '0.95%', y: '21.5%' },
+    { id: 'ped-W-mirror-red', kind: 'ped', color: 'red', state: PEDW2, dir: 180, x: '0.95%', y: '25.5%' },
 
-    // pedestrians E
-    //{ id: 'ped-E-main-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '89.2%', y: '29.5%' },
-    //{ id: 'ped-E-main-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '94.0%', y: '29.5%' },
-    //{ id: 'ped-E-mirror-green', kind: 'ped', color: 'green', state: PEDE, dir: 270, x: '77.6%', y: '41.0%' },
-    //{ id: 'ped-E-mirror-red', kind: 'ped', color: 'red', state: PEDE, dir: 270, x: '82.4%', y: '41.0%' },
   ];
 
-  const btnPedS1 = toBool(d?.btnWestCrosswalk1);
-  const btnPedS2 = toBool(d?.btnWestCrosswalk2);
-  const btnPedW1 = toBool(d?.btnSouthCrosswalk1);
-  const btnPedW2 = toBool(d?.btnSouthCrosswalk2);
+  const btnPedS1 = toBool(d?.btnSouthCrosswalk1);
+  const btnPedS2 = toBool(d?.btnSouthCrosswalk2);
+  const btnPedW1 = toBool(d?.btnWestCrosswalk1);
+  const btnPedW2 = toBool(d?.btnWestCrosswalk2);
 
-  const togglePedS1 = () => saveSection({ btnWestCrosswalk1: !btnPedS1 });
-  const togglePedS2 = () => saveSection({ btnWestCrosswalk2: !btnPedS2 });
-  const togglePedW1 = () => saveSection({ btnSouthCrosswalk1: !btnPedW1 });
-  const togglePedW2 = () => saveSection({ btnSouthCrosswalk2: !btnPedW2 });
+  const togglePedS1 = () => saveSection({ btnSouthCrosswalk1: !btnPedS1 });
+  const togglePedS2 = () => saveSection({ btnSouthCrosswalk2: !btnPedS2 });
+  const togglePedW1 = () => saveSection({ btnWestCrosswalk1: !btnPedW1 });
+  const togglePedW2 = () => saveSection({ btnWestCrosswalk2: !btnPedW2 });
 
   return (
     <Row className="crossroadpage">

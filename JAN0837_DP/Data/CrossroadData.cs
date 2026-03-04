@@ -40,14 +40,14 @@ namespace JAN0837_DP.Data
         public static string trafficLightEast_green { get; set; } = "false"; // bool
         public static string trafficLightEast_yellow { get; set; } = "false"; // bool
         public static string trafficLightEast_red { get; set; } = "false"; // bool
-        public static string pedestrianSouth_green { get; set; } = "false"; // bool
-        public static string pedestrianSouth_red { get; set; } = "false"; // bool
-        public static string pedestrianWest_green { get; set; } = "false"; // bool
-        public static string pedestrianWest_red { get; set; } = "false"; // bool
-        //public static string pedestrianEast_green { get; set; } = "false"; // bool
-        //public static string pedestrianEast_red { get; set; } = "false"; // bool
-        //public static string pedestrianNorth_green { get; set; } = "false"; // bool
-        //public static string pedestrianNorth_red { get; set; } = "false"; // bool
+        public static string pedestrianSouth1_green { get; set; } = "false"; // bool
+        public static string pedestrianSouth1_red { get; set; } = "false"; // bool
+        public static string pedestrianSouth2_green { get; set; } = "false"; // bool
+        public static string pedestrianSouth2_red { get; set; } = "false"; // bool
+        public static string pedestrianWest1_green { get; set; } = "false"; // bool
+        public static string pedestrianWest1_red { get; set; } = "false"; // bool
+        public static string pedestrianWest2_green { get; set; } = "false"; // bool
+        public static string pedestrianWest2_red { get; set; } = "false"; // bool
 
         // thread safety 
         private static readonly object _lock = new();
@@ -74,10 +74,14 @@ namespace JAN0837_DP.Data
             string trafficLightEast_green,
             string trafficLightEast_yellow,
             string trafficLightEast_red,
-            string pedestrianSouth_green,
-            string pedestrianSouth_red,
-            string pedestrianWest_green,
-            string pedestrianWest_red
+            string pedestrianSouth1_green,
+            string pedestrianSouth1_red,
+            string pedestrianSouth2_green,
+            string pedestrianSouth2_red,
+            string pedestrianWest1_green,
+            string pedestrianWest1_red,
+            string pedestrianWest2_green,
+            string pedestrianWest2_red
         );
 
         public static State Get()
@@ -105,10 +109,14 @@ namespace JAN0837_DP.Data
                     trafficLightEast_green,
                     trafficLightEast_yellow,
                     trafficLightEast_red,
-                    pedestrianSouth_green,
-                    pedestrianSouth_red,
-                    pedestrianWest_green,
-                    pedestrianWest_red
+                    pedestrianSouth1_green,
+                    pedestrianSouth1_red,
+                    pedestrianSouth2_green,
+                    pedestrianSouth2_red,
+                    pedestrianWest1_green,
+                    pedestrianWest1_red,
+                    pedestrianWest2_green,
+                    pedestrianWest2_red
                 );
             }
         }
@@ -132,10 +140,14 @@ namespace JAN0837_DP.Data
                 if (s.trafficLightEast_yellow != null) trafficLightEast_yellow = s.trafficLightEast_yellow;
                 if (s.trafficLightEast_red != null) trafficLightEast_red = s.trafficLightEast_red;
 
-                if (s.pedestrianSouth_green != null) pedestrianSouth_green = s.pedestrianSouth_green;
-                if (s.pedestrianSouth_red != null) pedestrianSouth_red = s.pedestrianSouth_red;
-                if (s.pedestrianWest_green != null) pedestrianWest_green = s.pedestrianWest_green;
-                if (s.pedestrianWest_red != null) pedestrianWest_red = s.pedestrianWest_red;
+                if (s.pedestrianSouth1_green != null) pedestrianSouth1_green = s.pedestrianSouth1_green;
+                if (s.pedestrianSouth1_red != null) pedestrianSouth1_red = s.pedestrianSouth1_red;
+                if (s.pedestrianSouth2_green != null) pedestrianSouth2_green = s.pedestrianSouth2_green;
+                if (s.pedestrianSouth2_red != null) pedestrianSouth2_red = s.pedestrianSouth2_red;
+                if (s.pedestrianWest1_green != null) pedestrianWest1_green = s.pedestrianWest1_green;
+                if (s.pedestrianWest1_red != null) pedestrianWest1_red = s.pedestrianWest1_red;
+                if (s.pedestrianWest2_green != null) pedestrianWest2_green = s.pedestrianWest2_green;
+                if (s.pedestrianWest2_red != null) pedestrianWest2_red = s.pedestrianWest2_red;
             }
         }
 
@@ -221,14 +233,23 @@ namespace JAN0837_DP.Data
             public static int address_trafficLightEast_red = 61;
             public static int bit_trafficLightEast_red = 0;
 
-            public static int address_pedestrianSouth_green = 62;
-            public static int bit_pedestrianSouth_green = 0;
-            public static int address_pedestrianSouth_red = 63;
-            public static int bit_pedestrianSouth_red = 0;
-            public static int address_pedestrianWest_green = 64;
-            public static int bit_pedestrianWest_green = 0;
-            public static int address_pedestrianWest_red = 65;
-            public static int bit_pedestrianWest_red = 0;
+            public static int address_pedestrianSouth1_green = 62;
+            public static int bit_pedestrianSouth1_green = 0;
+            public static int address_pedestrianSouth1_red = 63;
+            public static int bit_pedestrianSouth1_red = 0;
+            public static int address_pedestrianSouth2_green = 64;
+            public static int bit_pedestrianSouth2_green = 0;
+            public static int address_pedestrianSouth2_red = 65;
+            public static int bit_pedestrianSouth2_red = 0;
+
+            public static int address_pedestrianWest1_green = 66;
+            public static int bit_pedestrianWest1_green = 0;
+            public static int address_pedestrianWest1_red = 67;
+            public static int bit_pedestrianWest1_red = 0;
+            public static int address_pedestrianWest2_green = 68;
+            public static int bit_pedestrianWest2_green = 0;
+            public static int address_pedestrianWest2_red = 69;
+            public static int bit_pedestrianWest2_red = 0;
         }
 
         public static class ModbusBytes
@@ -258,11 +279,15 @@ namespace JAN0837_DP.Data
             public static int byte_trafficLightEast_yellow = 21;
             public static int byte_trafficLightEast_red = 22;
 
-            public static int byte_pedestrianSouth_green = 23;
-            public static int byte_pedestrianSouth_red = 24;
+            public static int byte_pedestrianSouth1_green = 23;
+            public static int byte_pedestrianSouth1_red = 24;
+            public static int byte_pedestrianSouth2_green = 25;
+            public static int byte_pedestrianSouth2_red = 26;
 
-            public static int byte_pedestrianWest_green = 25;
-            public static int byte_pedestrianWest_red = 26;
+            public static int byte_pedestrianWest1_green = 27;
+            public static int byte_pedestrianWest1_red = 28;
+            public static int byte_pedestrianWest2_green = 29;
+            public static int byte_pedestrianWest2_red = 30;
         }
 
         public static class OpcUaNodeIds
@@ -293,10 +318,14 @@ namespace JAN0837_DP.Data
             public static string trafficLightEast_yellow { get; set; } = "ns=4;i=44";
             public static string trafficLightEast_red { get; set; } = "ns=4;i=45";
 
-            public static string pedestrianSouth_green { get; set; } = "ns=4;i=48";
-            public static string pedestrianSouth_red { get; set; } = "ns=4;i=49";
-            public static string pedestrianWest_green { get; set; } = "ns=4;i=50";
-            public static string pedestrianWest_red { get; set; } = "ns=4;i=51";
+            public static string pedestrianSouth1_green { get; set; } = "ns=4;i=48";
+            public static string pedestrianSouth1_red { get; set; } = "ns=4;i=49";
+            public static string pedestrianSouth2_green { get; set; } = "ns=4;i=48";
+            public static string pedestrianSouth2_red { get; set; } = "ns=4;i=49";
+            public static string pedestrianWest1_green { get; set; } = "ns=4;i=50";
+            public static string pedestrianWest1_red { get; set; } = "ns=4;i=51";
+            public static string pedestrianWest2_green { get; set; } = "ns=4;i=50";
+            public static string pedestrianWest2_red { get; set; } = "ns=4;i=51";
         }
     }
 }

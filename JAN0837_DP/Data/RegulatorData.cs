@@ -82,6 +82,51 @@ namespace JAN0837_DP.Data
             lock (_lock) updater();
         }
 
+        public static class Sharp7Addresses
+        {
+            public static int address_btnReset = 0;
+            public static int bit_btnReset = 0;
+            public static int address_switchstate = 0;
+            public static int bit_switchstate = 1;
+            public static int address_order = 0;
+            public static int bit_order = 1;
+            public static int address_R1 = 0;
+            public static int bit_R1 = 2;
+            public static int address_R2 = 0;
+            public static int bit_R2 = 3;
+            public static int address_C1 = 0;
+            public static int bit_C1 = 4;
+            public static int address_C2 = 0;
+            public static int bit_C2 = 5;
+            public static int address_Uc1 = 0;
+            public static int bit_Uc1 = 6;
+            public static int address_Uc2 = 0;
+            public static int bit_Uc2 = 7;
+            public static int address_Td = 1;
+            public static int bit_Td = 0;
+            public static int address_Ts = 1;
+            public static int bit_Ts = 0;
+
+            public static int address_Uin = 2;
+            public static int bit_Uin = 0;
+        }
+
+        public static class ModbusBytes
+        {
+            public static int byte_btnReset = 0;
+            public static int byte_switchstate = 1;
+            public static int byte_order = 2;
+            public static int byte_R1 = 3;
+            public static int byte_R2 = 4;
+            public static int byte_C1 = 5;
+            public static int byte_C2 = 6;
+            public static int byte_Uc1 = 7;
+            public static int byte_Uc2 = 8;
+            public static int byte_Td = 9;
+            public static int byte_Ts = 10;
+
+            public static int byte_Uin = 11;
+        }
         public static class OpcUaNodeIds
         {
             // Inputs
@@ -100,52 +145,6 @@ namespace JAN0837_DP.Data
             // Outputs 
             public static string Uin { get; set; } = "ns=4;i=?";
         }
-    }
-
-    public static class Sharp7Addresses
-    {
-        public static int address_btnReset = 0;
-        public static int bit_btnReset = 0;
-        public static int address_switchstate = 0;
-        public static int bit_switchstate = 1;  
-        public static int address_order = 0;
-        public static int bit_order = 1;
-        public static int address_R1 = 0;
-        public static int bit_R1 = 2;
-        public static int address_R2 = 0;
-        public static int bit_R2 = 3;
-        public static int address_C1 = 0;
-        public static int bit_C1 = 4;
-        public static int address_C2 = 0;
-        public static int bit_C2 = 5;
-        public static int address_Uc1 = 0;
-        public static int bit_Uc1 = 6;
-        public static int address_Uc2 = 0;
-        public static int bit_Uc2 = 7;
-        public static int address_Td = 1;
-        public static int bit_Td = 0;
-        public static int address_Ts = 1;
-        public static int bit_Ts = 0;
-
-        public static int address_Uin = 2;
-        public static int bit_Uin = 0;
-    }
-
-    public static class ModbusBytes
-    {
-        public static int byte_btnReset = 0;
-        public static int byte_btnSwitchState = 1;
-        public static int byte_order = 2;
-        public static int byte_R1 = 3;
-        public static int byte_R2 = 4;
-        public static int byte_C1 = 5;
-        public static int byte_C2 = 6;
-        public static int byte_Uc1 = 7;
-        public static int byte_Uc2 = 8;
-        public static int byte_Td = 9;
-        public static int byte_Ts = 10;
-
-        public static int byte_Uin = 11;
     }
 
     public static class PlantModel

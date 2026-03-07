@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Row, Col, Form, Badge } from 'react-bootstrap';
+import { Row, Col, Form, Badge, Button } from 'react-bootstrap';
 
 import '../App.css';
 import './CarLightPage.css';
@@ -40,8 +40,9 @@ function CarLightCanvas({ d }) {
 }
 
 function CarLightParamsSidebar() {
-  const { section: d, saveSection } = useSectionData('CarLight');
+  const { section: d, saveSection, data } = useSectionData('CarLight');
 
+  const btnReset = toBool(d?.btnReset);
   const lowBeamLight = toBool(d?.lowBeamLight);
   const highBeamLight = toBool(d?.highBeamLight);
   const turnLight   = toBool(d?.turnLight);
@@ -79,6 +80,14 @@ function CarLightParamsSidebar() {
     const parsed = parseFloat(normalized);
     if (!Number.isFinite(parsed)) return '';
     return String(Math.max(0, parsed));
+  };
+
+  const toggleReset = async () => {
+    try {
+      await saveSection({ btnReset: !btnReset });
+    } catch (e) {
+      console.error('toggleReset error:', e);
+    }
   };
 
   useEffect(() => {
@@ -135,6 +144,12 @@ function CarLightParamsSidebar() {
   return (
     <div>
       <h3>Parameters:</h3>
+
+      <div className="gap-2 mb-3">
+        <Button variant="outline-danger" onClick={toggleReset}>
+          Reset ({String(btnReset)})
+        </Button>
+      </div>
 
       <Form>
         <Row className="g-2 mb-2">
@@ -241,6 +256,10 @@ function CarLightParamsSidebar() {
           <Badge bg={errorState ? 'danger' : 'secondary'}>{String(errorState)}</Badge>
         </div>
       </div>
+
+      <pre style={{ background: '#f6f8fa', padding: 8, borderRadius: 6, marginTop: 12 }}>
+        {JSON.stringify(data, null, 2)}
+      </pre>
     </div>
   );
 }

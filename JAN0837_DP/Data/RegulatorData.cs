@@ -84,34 +84,34 @@ namespace JAN0837_DP.Data
 
         public static class Sharp7Addresses
         {
-            public static int address_btnReset = 0;
+            public static int address_btnReset = 74;
             public static int bit_btnReset = 0;
-            public static int address_switchstate = 0;
+            public static int address_switchstate = 74;
             public static int bit_switchstate = 1;
-            public static int address_order = 0;
-            public static int bit_order = 1;
-            public static int address_R1 = 0;
-            public static int bit_R1 = 2;
-            public static int address_R2 = 0;
-            public static int bit_R2 = 3;
-            public static int address_C1 = 0;
-            public static int bit_C1 = 4;
-            public static int address_C2 = 0;
-            public static int bit_C2 = 5;
-            public static int address_Uc1 = 0;
-            public static int bit_Uc1 = 6;
-            public static int address_Uc2 = 0;
-            public static int bit_Uc2 = 7;
-            public static int address_Td = 1;
+            public static int address_order = 76;
+            public static int bit_order = 0;
+            public static int address_R1 = 78;
+            public static int bit_R1 = 0;
+            public static int address_R2 = 82;
+            public static int bit_R2 = 0;
+            public static int address_C1 = 86;
+            public static int bit_C1 = 0;
+            public static int address_C2 = 90;
+            public static int bit_C2 = 0;
+            public static int address_Uc1 = 94;
+            public static int bit_Uc1 = 0;
+            public static int address_Uc2 = 98;
+            public static int bit_Uc2 = 0;
+            public static int address_Td = 102;
             public static int bit_Td = 0;
-            public static int address_Ts = 1;
+            public static int address_Ts = 106;
             public static int bit_Ts = 0;
 
-            public static int address_Uin = 2;
+            public static int address_Uin = 126;
             public static int bit_Uin = 0;
         }
 
-        public static class ModbusBytes
+        public static class ModbusBytes // I will not need this :( 
         {
             public static int byte_btnReset = 0;
             public static int byte_switchstate = 1;
@@ -130,20 +130,20 @@ namespace JAN0837_DP.Data
         public static class OpcUaNodeIds
         {
             // Inputs
-            public static string btnReset { get; set; } = "ns=4;i=?";
-            public static string switchstate { get; set; } = "ns=4;i=?";
-            public static string order { get; set; } = "ns=4;i=?";
-            public static string R1 { get; set; } = "ns=4;i=?";
-            public static string R2 { get; set; } = "ns=4;i=?";
-            public static string C1 { get; set; } = "ns=4;i=?";
-            public static string C2 { get; set; } = "ns=4;i=?";
-            public static string Uc1 { get; set; } = "ns=4;i=?";
-            public static string Uc2 { get; set; } = "ns=4;i=?";
-            public static string Td { get; set; } = "ns=4;i=?";
-            public static string Ts { get; set; } = "ns=4;i=?";
+            public static string btnReset { get; set; } = "ns=4;i=88";
+            public static string switchstate { get; set; } = "ns=4;i=89";
+            public static string order { get; set; } = "ns=4;i=90";
+            public static string R1 { get; set; } = "ns=4;i=91";
+            public static string R2 { get; set; } = "ns=4;i=92";
+            public static string C1 { get; set; } = "ns=4;i=93";
+            public static string C2 { get; set; } = "ns=4;i=94";
+            public static string Uc1 { get; set; } = "ns=4;i=95";
+            public static string Uc2 { get; set; } = "ns=4;i=96";
+            public static string Td { get; set; } = "ns=4;i=97";
+            public static string Ts { get; set; } = "ns=4;i=98";
 
             // Outputs 
-            public static string Uin { get; set; } = "ns=4;i=?";
+            public static string Uin { get; set; } = "ns=4;i=106";
         }
     }
 
@@ -160,6 +160,24 @@ namespace JAN0837_DP.Data
 
         private static string ToStr(double v)
             => v.ToString("0.#####", CultureInfo.InvariantCulture);
+        private static int ParseOrder(string s, int fallback = 1)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+                return fallback;
+
+            s = s.Trim();
+
+            if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var i))
+                return i;
+
+            if (double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var d))
+                return (int)Math.Round(d);
+
+            if (double.TryParse(s, NumberStyles.Float, CultureInfo.GetCultureInfo("cs-CZ"), out d))
+                return (int)Math.Round(d);
+
+            return fallback;
+        }
 
         public static void ComputePlantStep()
         {
@@ -170,8 +188,6 @@ namespace JAN0837_DP.Data
                 {
                     RegulatorData.Uc1 = "0.0";
                     RegulatorData.Uc2 = "0.0";
-
-                    // pokud chceš, aby reset byl "one-shot":
                     RegulatorData.btnReset = "false";
                     return;
                 }
@@ -179,11 +195,10 @@ namespace JAN0837_DP.Data
                 bool enable = ParseBool(RegulatorData.switchstate);
                 if (!enable)
                 {
-                    // simulace stojí -> drž poslední Uc1/Uc2
                     return;
                 }
 
-                int order = ParseInt(RegulatorData.order, 1);
+                int order = ParseOrder(RegulatorData.order, 1);
 
                 double Ts = ParseDouble(RegulatorData.Ts, 0.1);
                 if (Ts <= 0) return;
@@ -200,27 +215,29 @@ namespace JAN0837_DP.Data
                 double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);
                 double uc2 = ParseDouble(RegulatorData.Uc2, 0.0);
 
-                // Validace
+                // Validace 1st stage
                 if (R1 <= 0 || C1 <= 0) return;
-                if (order == 2 && (R2 <= 0 || C2 <= 0)) return;
 
                 // 1st stage (RC)
                 double a1 = Math.Exp(-Ts / (R1 * C1));
                 uc1 = a1 * uc1 + (1.0 - a1) * u;
 
-                if (order == 1)
+                // Check if 2nd order is valid
+                if (order == 2 && R2 > 0 && C2 > 0)
                 {
+                    // 2nd stage (cascade) input = uc1
+                    double a2 = Math.Exp(-Ts / (R2 * C2));
+                    uc2 = a2 * uc2 + (1.0 - a2) * uc1;
+
                     RegulatorData.Uc1 = ToStr(uc1);
-                    RegulatorData.Uc2 = "0.0"; // volitelně
-                    return;
+                    RegulatorData.Uc2 = ToStr(uc2);
                 }
-
-                // 2nd stage (cascade) input = uc1
-                double a2 = Math.Exp(-Ts / (R2 * C2));
-                uc2 = a2 * uc2 + (1.0 - a2) * uc1;
-
-                RegulatorData.Uc1 = ToStr(uc1);
-                RegulatorData.Uc2 = ToStr(uc2);
+                else
+                {
+                    // 1st order only (or 2nd order with invalid R2/C2)
+                    RegulatorData.Uc1 = ToStr(uc1);
+                    RegulatorData.Uc2 = "0.0";
+                }
             });
         }
     }

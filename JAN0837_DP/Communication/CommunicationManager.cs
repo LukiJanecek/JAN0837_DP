@@ -8,6 +8,7 @@ using JAN0837_DP.Data;
 using JAN0837_DP.Forms;
 using JAN0837_DP.Log;
 using Microsoft.AspNetCore.Connections.Features;
+using MQTTnet;
 using Newtonsoft.Json;
 using Opc.Ua;
 using S7.Net.Types;
@@ -101,12 +102,12 @@ namespace JAN0837_DP.Communication
                                         tlS_green = CrossroadData.trafficLightSouth_green == "true",
                                         tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
                                         tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        tlW_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightWest_red == "true",
+                                        tlE_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightEast_red == "true",
                                         pedW1_green = CrossroadData.pedestrianWest1_green == "true",
                                         pedW1_red = CrossroadData.pedestrianWest1_red == "true",
                                         pedW2_green = CrossroadData.pedestrianWest2_green == "true",
@@ -198,6 +199,7 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build();
+                                    await client.mqttClient.PublishAsync(msgRegulatorOutput, token);
 
                                     PlantModel.ComputePlantStep();
 
@@ -208,21 +210,23 @@ namespace JAN0837_DP.Communication
                                         error = CarLightData.error == "true",
                                         sensorLight = CarLightData.sensorLight == "true",
                                         sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
-                                        lowBeamLight = CarLightData.lowBeamLight == "true",
-                                        highBeamLight = CarLightData.highBeamLight == "true",
-                                        turnLight = CarLightData.turnLight == "true"
                                     };
+
                                     var msagCarlightInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarLight/Input")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(carlightInput))
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build();
+                                    await client.mqttClient.PublishAsync(msagCarlightInput, token);
 
                                     // CarLight - Output 
                                     var carlightOutput = new
                                     {
-                                        result = CarLightData.result == "true"
+                                        lowBeamLight = CarLightData.lowBeamLight == "true",
+                                        highBeamLight = CarLightData.highBeamLight == "true",
+                                        turnLight = CarLightData.turnLight == "true",
+                                        result = CarLightData.result == "true",
                                     };
                                     var msgCarlightOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/CarLight/Output")
@@ -230,6 +234,7 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build();
+                                    await client.mqttClient.PublishAsync(msgCarlightOutput, token);
 
                                     // CarWash - Input
                                     /*
@@ -381,12 +386,12 @@ namespace JAN0837_DP.Communication
                                         tlS_green = CrossroadData.trafficLightSouth_green == "true",
                                         tlS_yellow = CrossroadData.trafficLightSouth_yellow == "true",
                                         tlS_red = CrossroadData.trafficLightSouth_red == "true",
-                                        tlW_green = CrossroadData.trafficLightEast_green == "true",
-                                        tlW_yellow = CrossroadData.trafficLightEast_yellow == "true",
-                                        tlW_red = CrossroadData.trafficLightEast_red == "true",
-                                        tlE_green = CrossroadData.trafficLightWest_green == "true",
-                                        tlE_yellow = CrossroadData.trafficLightWest_yellow == "true",
-                                        tlE_red = CrossroadData.trafficLightWest_red == "true",
+                                        tlW_green = CrossroadData.trafficLightWest_green == "true",
+                                        tlW_yellow = CrossroadData.trafficLightWest_yellow == "true",
+                                        tlW_red = CrossroadData.trafficLightWest_red == "true",
+                                        tlE_green = CrossroadData.trafficLightEast_green == "true",
+                                        tlE_yellow = CrossroadData.trafficLightEast_yellow == "true",
+                                        tlE_red = CrossroadData.trafficLightEast_red == "true",
                                         pedW1_green = CrossroadData.pedestrianWest1_green == "true",
                                         pedW1_red = CrossroadData.pedestrianWest1_red == "true",
                                         pedS1_green = CrossroadData.pedestrianSouth1_green == "true",
@@ -481,9 +486,9 @@ namespace JAN0837_DP.Communication
                                         error = CarLightData.error == "true",
                                         sensorLight = CarLightData.sensorLight == "true",
                                         sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
-                                        lowBeamLight = CarLightData.lowBeamLight == "true",
-                                        highBeamLight = CarLightData.highBeamLight == "true",
-                                        turnLight = CarLightData.turnLight == "true"
+                                        //lowBeamLight = CarLightData.lowBeamLight == "true",
+                                        //highBeamLight = CarLightData.highBeamLight == "true",
+                                        //turnLight = CarLightData.turnLight == "true"
                                     };
 
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
@@ -886,15 +891,15 @@ namespace JAN0837_DP.Communication
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.btnReset, RegulatorData.btnReset == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, int.Parse(RegulatorData.order));
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, RegulatorData.R1);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, RegulatorData.R2);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, RegulatorData.C1);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, RegulatorData.C2);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1, RegulatorData.Uc1);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2, RegulatorData.Uc2);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Td, RegulatorData.Td);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Ts, RegulatorData.Ts);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, (short)(int.TryParse(RegulatorData.order, out var ordVal) ? ordVal : 0));
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r1Val) ? r1Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r2Val) ? r2Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c1Val) ? c1Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c2Val) ? c2Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1, float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1Val) ? uc1Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2Val) ? uc2Val : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tdVal) ? tdVal : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tsVal) ? tsVal : 0f);
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -925,9 +930,6 @@ namespace JAN0837_DP.Communication
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.error, CarLightData.error == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorLight, CarLightData.sensorLight == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.lowBeamLight, CarLightData.lowBeamLight == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.highBeamLight, CarLightData.highBeamLight == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.turnLight, CarLightData.turnLight == "true");
 
                                     // If session became invalid during writes, skip reads this cycle
                                     if (!opcuaClient.connected)
@@ -938,10 +940,14 @@ namespace JAN0837_DP.Communication
                                         continue;
                                     }
 
-                                    // read output values from PLC 
+                                    // Read output values from PLC 
+                                    CarLightData.btnReset = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.btnReset) ? "true" : "false";
+                                    CarLightData.lowBeamLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.lowBeamLight) ? "true" : "false";
+                                    CarLightData.highBeamLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.highBeamLight) ? "true" : "false";
+                                    CarLightData.turnLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.turnLight) ? "true" : "false";
                                     CarLightData.result = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.result) ? "true" : "false";
 
-                                    // If session became invalid during writes, skip reads this cycle
+                                    // If session became invalid during reads, skip rest this cycle
                                     if (!opcuaClient.connected)
                                     {
                                         _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");

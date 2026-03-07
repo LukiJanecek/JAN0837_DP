@@ -1036,12 +1036,14 @@ namespace JAN0837_DP.Forms
             }
             catch (OperationCanceledException)
             {
+                btnStartCommunicationThread.Enabled = true;
                 lblStatus.Text = "Communication start canceled.";
                 Logger.LogWarning("Communication start canceled by user.");
                 return;
             }
             catch (Exception ex)
             {
+                btnStartCommunicationThread.Enabled = true;
                 lblStatus.Text = $"Start failed: {ex.Message}";
                 Logger.LogException(ex, "Communication Start");
                 return;
@@ -1339,8 +1341,22 @@ namespace JAN0837_DP.Forms
             }
             else if (rbtnMQTT.Checked == true)
             {
-                // broker IP address 
-                txtBoxPara1.Text = "127.0.0.1";
+                if (internalVariables.checkBoxMaster)
+                {
+                    // host MQTT broker (server)
+                    txtBoxPara1.Text = internalVariables.LocalIP;
+                }
+                else if (internalVariables.checkBoxSlave)
+                {
+                    // broker IP address
+                    txtBoxPara1.Text = "192.168.1.251";
+                }
+                else
+                {
+                    // broker IP address
+                    txtBoxPara1.Text = "127.0.0.1";
+                }
+
                 // broker port
                 txtBoxPara2.Text = "1883";
             }

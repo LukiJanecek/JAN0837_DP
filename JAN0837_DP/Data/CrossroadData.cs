@@ -187,72 +187,72 @@ namespace JAN0837_DP.Data
 
         public static class Sharp7Addresses
         {
-            public static int address_btnStart = 38;
+            public static int address_btnStart = 0;
             public static int bit_btnStart = 0;
-            public static int address_btnPause = 39;
-            public static int bit_btnPause = 0;
-            public static int address_btnStop = 40;
-            public static int bit_btnStop = 0;
-            public static int address_btnWestCrosswalk1 = 41;
-            public static int bit_btnWestCrosswalk1 = 0;
-            public static int address_btnWestCrosswalk2 = 42;
-            public static int bit_btnWestCrosswalk2 = 0;
-            public static int address_btnSouthCrosswalk1 = 43;
-            public static int bit_btnSouthCrosswalk1 = 0;
-            public static int address_btnSouthCrosswalk2 = 44;
-            public static int bit_btnSouthCrosswalk2 = 0;
+            public static int address_btnPause = 0;
+            public static int bit_btnPause = 1;
+            public static int address_btnStop = 0;
+            public static int bit_btnStop = 2;
+            public static int address_btnWestCrosswalk1 = 0;
+            public static int bit_btnWestCrosswalk1 = 3;
+            public static int address_btnWestCrosswalk2 = 0;
+            public static int bit_btnWestCrosswalk2 = 4;
+            public static int address_btnSouthCrosswalk1 = 0;
+            public static int bit_btnSouthCrosswalk1 = 5;
+            public static int address_btnSouthCrosswalk2 = 0;
+            public static int bit_btnSouthCrosswalk2 = 6;
 
-            public static int address_crossroadType = 50;
+            public static int address_crossroadType = 18;
             public static int bit_crossroadType = 0;
 
-            public static int address_trafficLightNorth_green = 51;
-            public static int bit_trafficLightNorth_green = 0;
-            public static int address_trafficLightNorth_yellow = 52;
-            public static int bit_trafficLightNorth_yellow = 0;
-            public static int address_trafficLightNorth_red = 53;
-            public static int bit_trafficLightNorth_red = 0;
+            public static int address_trafficLightNorth_green = 18;
+            public static int bit_trafficLightNorth_green = 1;
+            public static int address_trafficLightNorth_yellow = 18;
+            public static int bit_trafficLightNorth_yellow = 2;
+            public static int address_trafficLightNorth_red = 18;
+            public static int bit_trafficLightNorth_red = 3;
 
-            public static int address_trafficLightSouth_green = 54;
-            public static int bit_trafficLightSouth_green = 0;
-            public static int address_trafficLightSouth_yellow = 55;
-            public static int bit_trafficLightSouth_yellow = 0;
-            public static int address_trafficLightSouth_red = 56;
-            public static int bit_trafficLightSouth_red = 0;
+            public static int address_trafficLightSouth_green = 18;
+            public static int bit_trafficLightSouth_green = 4;
+            public static int address_trafficLightSouth_yellow = 18;
+            public static int bit_trafficLightSouth_yellow = 5;
+            public static int address_trafficLightSouth_red = 18;
+            public static int bit_trafficLightSouth_red = 6;
 
-            public static int address_trafficLightWest_green = 56;
-            public static int bit_trafficLightWest_green = 0;
-            public static int address_trafficLightWest_yellow = 57;
+            public static int address_trafficLightWest_green = 18;
+            public static int bit_trafficLightWest_green = 7;
+            public static int address_trafficLightWest_yellow = 19;
             public static int bit_trafficLightWest_yellow = 0;
-            public static int address_trafficLightWest_red = 58;
-            public static int bit_trafficLightWest_red = 0;
+            public static int address_trafficLightWest_red = 19;
+            public static int bit_trafficLightWest_red = 1;
 
-            public static int address_trafficLightEast_green = 59;
-            public static int bit_trafficLightEast_green = 0;
-            public static int address_trafficLightEast_yellow = 60;
-            public static int bit_trafficLightEast_yellow = 0;
-            public static int address_trafficLightEast_red = 61;
-            public static int bit_trafficLightEast_red = 0;
+            public static int address_trafficLightEast_green = 19;
+            public static int bit_trafficLightEast_green = 2;
+            public static int address_trafficLightEast_yellow = 19;
+            public static int bit_trafficLightEast_yellow = 3;
+            public static int address_trafficLightEast_red = 19;
+            public static int bit_trafficLightEast_red = 4;
 
-            public static int address_pedestrianSouth1_green = 62;
-            public static int bit_pedestrianSouth1_green = 0;
-            public static int address_pedestrianSouth1_red = 63;
-            public static int bit_pedestrianSouth1_red = 0;
-            public static int address_pedestrianSouth2_green = 64;
-            public static int bit_pedestrianSouth2_green = 0;
-            public static int address_pedestrianSouth2_red = 65;
+            public static int address_pedestrianSouth1_green = 19;
+            public static int bit_pedestrianSouth1_green = 5;
+            public static int address_pedestrianSouth1_red = 19;
+            public static int bit_pedestrianSouth1_red = 6;
+            public static int address_pedestrianSouth2_green = 19;
+            public static int bit_pedestrianSouth2_green = 7;
+            public static int address_pedestrianSouth2_red = 20;
             public static int bit_pedestrianSouth2_red = 0;
 
-            public static int address_pedestrianWest1_green = 66;
-            public static int bit_pedestrianWest1_green = 0;
-            public static int address_pedestrianWest1_red = 67;
-            public static int bit_pedestrianWest1_red = 0;
-            public static int address_pedestrianWest2_green = 68;
-            public static int bit_pedestrianWest2_green = 0;
-            public static int address_pedestrianWest2_red = 69;
-            public static int bit_pedestrianWest2_red = 0;
+            public static int address_pedestrianWest1_green = 20;
+            public static int bit_pedestrianWest1_green = 1;
+            public static int address_pedestrianWest1_red = 20;
+            public static int bit_pedestrianWest1_red = 2;
+            public static int address_pedestrianWest2_green = 20;
+            public static int bit_pedestrianWest2_green = 3;
+            public static int address_pedestrianWest2_red = 20;
+            public static int bit_pedestrianWest2_red = 4;
         }
 
-        public static class ModbusBytes
+        public static class ModbusBytes // I will not need this :( 
         {
             public static int byte_btnStart = 0;
             public static int byte_btnPause = 1;
@@ -293,39 +293,39 @@ namespace JAN0837_DP.Data
         public static class OpcUaNodeIds
         {
             // Inputs
-            public static string btnStart { get; set; } = "ns=4;i=15";        
-            public static string btnPause { get; set; } = "ns=4;i=16";        
-            public static string btnStop { get; set; } = "ns=4;i=17";        
+            public static string btnStart { get; set; } = "ns=4;i=16";        
+            public static string btnPause { get; set; } = "ns=4;i=17";        
+            public static string btnStop { get; set; } = "ns=4;i=18";
 
-            public static string btnSouthCrosswalk1 { get; set; } = "ns=4;i=24";
-            public static string btnSouthCrosswalk2 { get; set; } = "ns=4;i=25";
-            public static string btnWestCrosswalk1 { get; set; } = "ns=4;i=20";
-            public static string btnWestCrosswalk2 { get; set; } = "ns=4;i=21";
+            public static string btnWestCrosswalk1 { get; set; } = "ns=4;i=19";
+            public static string btnWestCrosswalk2 { get; set; } = "ns=4;i=20";
+            public static string btnSouthCrosswalk1 { get; set; } = "ns=4;i=21";
+            public static string btnSouthCrosswalk2 { get; set; } = "ns=4;i=22";
 
 
             // Outputs
-            public static string crossroadType { get; set; } = "ns=4;i=33";
-            public static string trafficLightNorth_green { get; set; } = "ns=4;i=34";
-            public static string trafficLightNorth_yellow { get; set; } = "ns=4;i=35";
-            public static string trafficLightNorth_red { get; set; } = "ns=4;i=36";
-            public static string trafficLightSouth_green { get; set; } = "ns=4;i=37";
-            public static string trafficLightSouth_yellow { get; set; } = "ns=4;i=38";
-            public static string trafficLightSouth_red { get; set; } = "ns=4;i=39";
-            public static string trafficLightWest_green { get; set; } = "ns=4;i=40";
-            public static string trafficLightWest_yellow { get; set; } = "ns=4;i=41";
-            public static string trafficLightWest_red { get; set; } = "ns=4;i=42";
-            public static string trafficLightEast_green { get; set; } = "ns=4;i=43";
-            public static string trafficLightEast_yellow { get; set; } = "ns=4;i=44";
-            public static string trafficLightEast_red { get; set; } = "ns=4;i=45";
+            public static string crossroadType { get; set; } = "ns=4;i=30";
+            public static string trafficLightNorth_green { get; set; } = "ns=4;i=31";
+            public static string trafficLightNorth_yellow { get; set; } = "ns=4;i=32";
+            public static string trafficLightNorth_red { get; set; } = "ns=4;i=33";
+            public static string trafficLightSouth_green { get; set; } = "ns=4;i=34";
+            public static string trafficLightSouth_yellow { get; set; } = "ns=4;i=35";
+            public static string trafficLightSouth_red { get; set; } = "ns=4;i=36";
+            public static string trafficLightWest_green { get; set; } = "ns=4;i=37";
+            public static string trafficLightWest_yellow { get; set; } = "ns=4;i=38";
+            public static string trafficLightWest_red { get; set; } = "ns=4;i=39";
+            public static string trafficLightEast_green { get; set; } = "ns=4;i=40";
+            public static string trafficLightEast_yellow { get; set; } = "ns=4;i=41";
+            public static string trafficLightEast_red { get; set; } = "ns=4;i=42";
 
-            public static string pedestrianSouth1_green { get; set; } = "ns=4;i=48";
-            public static string pedestrianSouth1_red { get; set; } = "ns=4;i=49";
-            public static string pedestrianSouth2_green { get; set; } = "ns=4;i=48";
-            public static string pedestrianSouth2_red { get; set; } = "ns=4;i=49";
-            public static string pedestrianWest1_green { get; set; } = "ns=4;i=50";
-            public static string pedestrianWest1_red { get; set; } = "ns=4;i=51";
-            public static string pedestrianWest2_green { get; set; } = "ns=4;i=50";
-            public static string pedestrianWest2_red { get; set; } = "ns=4;i=51";
+            public static string pedestrianSouth1_green { get; set; } = "ns=4;i=43";
+            public static string pedestrianSouth1_red { get; set; } = "ns=4;i=44";
+            public static string pedestrianSouth2_green { get; set; } = "ns=4;i=45";
+            public static string pedestrianSouth2_red { get; set; } = "ns=4;i=46";
+            public static string pedestrianWest1_green { get; set; } = "ns=4;i=47";
+            public static string pedestrianWest1_red { get; set; } = "ns=4;i=48";
+            public static string pedestrianWest2_green { get; set; } = "ns=4;i=49";
+            public static string pedestrianWest2_red { get; set; } = "ns=4;i=50";
         }
     }
 }

@@ -150,7 +150,7 @@ namespace JAN0837_DP.Data
             public static int bit_pedestrian2_red = 2;
         }
 
-        public static class ModbusBytes
+        public static class ModbusBytes // I will not need this :( 
         {
             public static int byte_btnStart = 0;
             public static int byte_btnPause = 0;
@@ -174,24 +174,24 @@ namespace JAN0837_DP.Data
         public static class OpcUaNodeIds
         {
             // Inputs
-            public static string btnStart { get; set; } = "ns=4;i=?";
-            public static string btnPause { get; set; } = "ns=4;i=?";
-            public static string btnStop { get; set; } = "ns=4;i=?";
-            public static string btnCrosswalk1 { get; set; } = "ns=4;i=?";
-            public static string btnCrosswalk2 { get; set; } = "ns=4;i=?";
+            public static string btnStart { get; set; } = "ns=4;i=58";
+            public static string btnPause { get; set; } = "ns=4;i=59";
+            public static string btnStop { get; set; } = "ns=4;i=60";
+            public static string btnCrosswalk1 { get; set; } = "ns=4;i=61";
+            public static string btnCrosswalk2 { get; set; } = "ns=4;i=62";
 
             //Outputs
-            public static string crosswalkType { get; set; } = "ns=4;i=?";
-            public static string trafficLight1_green { get; set; } = "ns=4;i=?";
-            public static string trafficLight1_yellow { get; set; } = "ns=4;i=?";
-            public static string trafficLight1_red { get; set; } = "ns=4;i=?";
-            public static string trafficLight2_green { get; set; } = "ns=4;i=?";
-            public static string trafficLight2_yellow { get; set; } = "ns=4;i=?";
-            public static string trafficLight2_red { get; set; } = "ns=4;i=?";
-            public static string pedestrian1_green { get; set; } = "ns=4;i=?";
-            public static string pedestrian1_red { get; set; } = "ns=4;i=?";
-            public static string pedestrian2_green { get; set; } = "ns=4;i=?";
-            public static string pedestrian2_red { get; set; } = "ns=4;i=?";
+            public static string crosswalkType { get; set; } = "ns=4;i=70";
+            public static string trafficLight1_green { get; set; } = "ns=4;i=71";
+            public static string trafficLight1_yellow { get; set; } = "ns=4;i=72";
+            public static string trafficLight1_red { get; set; } = "ns=4;i=73";
+            public static string trafficLight2_green { get; set; } = "ns=4;i=74";
+            public static string trafficLight2_yellow { get; set; } = "ns=4;i=75";
+            public static string trafficLight2_red { get; set; } = "ns=4;i=76";
+            public static string pedestrian1_green { get; set; } = "ns=4;i=77";
+            public static string pedestrian1_red { get; set; } = "ns=4;i=78";
+            public static string pedestrian2_green { get; set; } = "ns=4;i=79";
+            public static string pedestrian2_red { get; set; } = "ns=4;i=80";
         }
     }
 }

@@ -4,6 +4,7 @@ using JAN0837_DP.Log;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
+using Siemens.Engineering.HW;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -321,6 +322,9 @@ namespace JAN0837_DP.Communication.comMQTT
         {
             private class OutputDto
             {
+                public bool lowBeamLight { get; set; }
+                public bool highBeamLight { get; set; }
+                public bool turnLight { get; set; }
                 public bool result { get; set; }
             }
             public static void ApplyOutputJsonToCarLightData(string json)
@@ -329,6 +333,9 @@ namespace JAN0837_DP.Communication.comMQTT
                 {
                     var dto = JsonSerializer.Deserialize<OutputDto>(json);
                     if (dto is null) return;
+                    CarLightData.lowBeamLight = dto.lowBeamLight ? "true" : "false";
+                    CarLightData.highBeamLight = dto.highBeamLight ? "true" : "false";
+                    CarLightData.turnLight = dto.turnLight ? "true" : "false";
                     CarLightData.result = dto.result ? "true" : "false";
                 }
                 catch (Exception ex)

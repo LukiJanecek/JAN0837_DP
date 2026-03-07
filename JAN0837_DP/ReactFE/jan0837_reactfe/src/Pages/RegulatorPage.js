@@ -86,6 +86,7 @@ function RegulatorParamsSidebar() {
   const { interval, setInterval } = useRefresh();
   const { section: d, saveSection, data, error, isFetching, refresh } = useSectionData('RegulatorData');
 
+  const btnReset = toBool(d?.btnReset);
   const switchstate = toBool(d?.switchstate);
   const order = Number(d?.order ?? 1); // 1 = 1. řád, 2 = 2. řád
   const isSecondOrder = order === 2;
@@ -125,6 +126,14 @@ function RegulatorParamsSidebar() {
     }
   };
 
+  const toggleReset = async () => {
+    try {
+      await saveSection({ btnReset: !btnReset });
+    } catch (e) {
+      console.error('toggleReset error:', e);
+    }
+  };
+
   const sendField = async (key, raw, isInt = false) => {
     const num = isInt ? parseInt(raw, 10) : parseFloat(raw);
     if (!isNaN(num)) {
@@ -153,6 +162,9 @@ function RegulatorParamsSidebar() {
       <h3>Parameters:</h3>
 
       <div className="d-flex gap-2 mb-3">
+        <Button variant="outline-danger" onClick={toggleReset}>
+          Reset ({String(btnReset)})
+        </Button>
         <Button
           className={switchstate ? 'btn--stop' : 'btn--start'}
           onClick={toggleSwitch}

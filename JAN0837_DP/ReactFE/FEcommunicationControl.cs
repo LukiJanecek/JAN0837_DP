@@ -221,10 +221,10 @@ namespace JAN0837_DP.ReactFE
                     case "btnWestCrosswalk2": 
                         CrossroadData.btnWestCrosswalk2 = value; 
                         break;
-                    case "btnEastCrosswalk1": 
+                    case "btnSouthCrosswalk1": 
                         CrossroadData.btnSouthCrosswalk1 = value; 
                         break;
-                    case "btnEastCrosswalk2": 
+                    case "btnSouthCrosswalk2": 
                         CrossroadData.btnSouthCrosswalk2 = value; 
                         break;
                     case "crossroadType": 
@@ -358,6 +358,9 @@ namespace JAN0837_DP.ReactFE
             {
                 switch (key)
                 {
+                    case "btnReset":
+                        RegulatorData.btnReset = value;
+                        break;
                     case "switchstate": 
                         RegulatorData.switchstate = value; 
                         break;
@@ -376,9 +379,6 @@ namespace JAN0837_DP.ReactFE
                     case "C2":
                         RegulatorData.C2 = value;
                         break;
-                    case "Uin": 
-                        RegulatorData.Uin = value; 
-                        break;
                     case "Td": 
                         RegulatorData.Td = value; 
                         break;
@@ -390,6 +390,9 @@ namespace JAN0837_DP.ReactFE
                         break;
                     case "Uc2":
                         RegulatorData.Uc2 = value;
+                        break;
+                    case "Uin":
+                        RegulatorData.Uin = value;
                         break;
                 }
             });
@@ -732,8 +735,8 @@ namespace JAN0837_DP.ReactFE
                             crossroadType = crossroaddata.crossroadType,
                             btnWestCrosswalk1 = crossroaddata.btnWestCrosswalk1,
                             btnWestCrosswalk2 = crossroaddata.btnWestCrosswalk2,
-                            btnEastCrosswalk1 = crossroaddata.btnSouthCrosswalk1,
-                            btnEastCrosswalk2 = crossroaddata.btnSouthCrosswalk2,
+                            btnSouthCrosswalk1 = crossroaddata.btnSouthCrosswalk1,
+                            btnSouthCrosswalk2 = crossroaddata.btnSouthCrosswalk2,
                             trafficLightNorth_green = crossroaddata.trafficLightNorth_green,
                             trafficLightNorth_yellow = crossroaddata.trafficLightNorth_yellow,
                             trafficLightNorth_red = crossroaddata.trafficLightNorth_red,
@@ -993,9 +996,9 @@ namespace JAN0837_DP.ReactFE
                     error = carlightdata.error,
                     sensorLight = carlightdata.sensorLight,
                     sensorConnectorConnected = carlightdata.sensorConnectorConnected,
-                    lowBeamLight = carlightdata.lowBeamLight,
-                    highBeamLight = carlightdata.highBeamLight,
-                    turnLight = carlightdata.turnLight
+                    //lowBeamLight = carlightdata.lowBeamLight,
+                    //highBeamLight = carlightdata.highBeamLight,
+                    //turnLight = carlightdata.turnLight
                 }
             };
         }

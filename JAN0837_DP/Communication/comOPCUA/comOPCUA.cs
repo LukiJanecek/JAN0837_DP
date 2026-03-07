@@ -591,17 +591,18 @@ namespace JAN0837_DP.Communication.comOPCUA
                 Console.WriteLine($"Attempting to reconnect to {_lastServerUrl}...");
 
                 // Clean up old session
-                if (clientSession != null)
+                var oldSession = clientSession;
+                clientSession = null;
+                if (oldSession != null)
                 {
                     try
                     {
-                        clientSession.KeepAlive -= ClientSession_KeepAlive;
-                        if (clientSession.Connected)
-                            await clientSession.CloseAsync();
-                        clientSession.Dispose();
+                        oldSession.KeepAlive -= ClientSession_KeepAlive;
+                        if (oldSession.Connected)
+                            await oldSession.CloseAsync();
+                        oldSession.Dispose();
                     }
                     catch { /* Ignore cleanup errors */ }
-                    clientSession = null;
                 }
 
                 connected = false;
@@ -643,10 +644,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Console.WriteLine($"Session became null, cannot write to {nodeId}");
+                    connected = false;
+                    return;
+                }
+
                 var nodeIdParsed = NodeId.Parse(nodeId);
 
                 // Optional: Pre-read to check node status (useful for debugging)
-                client.clientSession.Read(null, 0, TimestampsToReturn.Neither,
+                session.Read(null, 0, TimestampsToReturn.Neither,
                     new ReadValueIdCollection {
                         new ReadValueId {
                             NodeId = nodeIdParsed,
@@ -669,7 +679,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 };
 
                 var valuesToWrite = new WriteValueCollection { wv };
-                client.clientSession.Write(null, valuesToWrite, out StatusCodeCollection results, out _);
+                session.Write(null, valuesToWrite, out StatusCodeCollection results, out _);
 
                 if (results.Count != 1 || StatusCode.IsBad(results[0]))
                 {
@@ -720,10 +730,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return false;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Logger.LogWarning($"Session became null, cannot read from {nodeId}");
+                    connected = false;
+                    return false;
+                }
+
                 var id = NodeId.Parse(nodeId);
 
                 // Read value directly (single read instead of double)
-                DataValue value = client.clientSession.ReadValue(id);
+                DataValue value = session.ReadValue(id);
 
                 if (StatusCode.IsBad(value.StatusCode))
                 {
@@ -782,10 +801,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return string.Empty;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Logger.LogWarning($"Session became null, cannot read from {nodeId}");
+                    connected = false;
+                    return string.Empty;
+                }
+
                 var id = NodeId.Parse(nodeId);
 
                 // Read value directly (single read instead of double)
-                DataValue value = client.clientSession.ReadValue(id);
+                DataValue value = session.ReadValue(id);
 
                 if (StatusCode.IsBad(value.StatusCode))
                 {
@@ -844,10 +872,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return 0f;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Logger.LogWarning($"Session became null, cannot read from {nodeId}");
+                    connected = false;
+                    return 0f;
+                }
+
                 var id = NodeId.Parse(nodeId);
 
                 // Read value directly (single read instead of double)
-                DataValue value = client.clientSession.ReadValue(id);
+                DataValue value = session.ReadValue(id);
 
                 if (StatusCode.IsBad(value.StatusCode))
                 {
@@ -906,10 +943,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return 0d;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Logger.LogWarning($"Session became null, cannot read from {nodeId}");
+                    connected = false;
+                    return 0d;
+                }
+
                 var id = NodeId.Parse(nodeId);
 
                 // Read value directly (single read instead of double)
-                DataValue value = client.clientSession.ReadValue(id);
+                DataValue value = session.ReadValue(id);
 
                 if (StatusCode.IsBad(value.StatusCode))
                 {
@@ -968,10 +1014,19 @@ namespace JAN0837_DP.Communication.comOPCUA
                     return string.Empty;
                 }
 
+                // Capture session reference locally to prevent race condition
+                var session = client.clientSession;
+                if (session == null)
+                {
+                    Logger.LogWarning($"Session became null, cannot read from {nodeId}");
+                    connected = false;
+                    return string.Empty;
+                }
+
                 var id = NodeId.Parse(nodeId);
 
                 // Read value directly (single read instead of double)
-                DataValue value = client.clientSession.ReadValue(id);
+                DataValue value = session.ReadValue(id);
 
                 if (StatusCode.IsBad(value.StatusCode))
                 {
@@ -1022,26 +1077,27 @@ namespace JAN0837_DP.Communication.comOPCUA
         // Validate and restore session if needed
         private bool ValidateSession()
         {
-            if (clientSession == null)
+            var session = clientSession;
+            if (session == null)
             {
                 return false;
             }
 
-            if (!clientSession.Connected)
+            if (!session.Connected)
             {
                 connected = false;
                 return false;
             }
 
             // Check if KeepAlive is stopped and restart it
-            if (clientSession.KeepAliveStopped)
+            if (session.KeepAliveStopped)
             {
                 Console.WriteLine("KeepAlive stopped, restarting...");
                 try
                 {
                     // Restart keep-alive by setting the interval again
-                    clientSession.KeepAlive += ClientSession_KeepAlive;
-                    clientSession.KeepAliveInterval = 5000;
+                    session.KeepAlive += ClientSession_KeepAlive;
+                    session.KeepAliveInterval = 5000;
 
                     // The session will automatically start sending keep-alives
                     Console.WriteLine("KeepAlive restarted successfully");
@@ -1062,19 +1118,21 @@ namespace JAN0837_DP.Communication.comOPCUA
 
         public bool ReadBool(string nodeId)
         {
-            if (clientSession == null) throw new Exception("Not connected");
+            var session = clientSession;
+            if (session == null) throw new Exception("Not connected");
 
-            var dv = clientSession.ReadValue(NodeId.Parse(nodeId));
+            var dv = session.ReadValue(NodeId.Parse(nodeId));
 
             return Convert.ToBoolean(dv.Value);
         }
 
         public void WriteValue(string nodeId, object value)
         {
-            if (clientSession == null) throw new Exception("Not connected");
+            var session = clientSession;
+            if (session == null) throw new Exception("Not connected");
 
             var nid = NodeId.Parse(nodeId);
-            var current = clientSession.ReadValue(nid);
+            var current = session.ReadValue(nid);
 
             object typedValue = ChangeType(current, value);
 
@@ -1085,7 +1143,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 Value = new DataValue(new Variant(typedValue))
             };
 
-            clientSession.Write(null, new WriteValueCollection { wv }, out var results, out _);
+            session.Write(null, new WriteValueCollection { wv }, out var results, out _);
 
             if (StatusCode.IsBad(results[0]))
             {

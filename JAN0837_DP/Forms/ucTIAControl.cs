@@ -574,7 +574,7 @@ namespace JAN0837_DP.Forms
                 return;
             }
 
-            string projectName = txtBoxParam3.Text.Trim();
+            string projectName = txtBoxParam2.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(projectName))
             {

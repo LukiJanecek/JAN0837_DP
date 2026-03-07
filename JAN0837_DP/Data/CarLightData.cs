@@ -42,10 +42,10 @@ namespace JAN0837_DP.Data
                 return new State(
                     btnReset,
                     error,
-                    sensorLight,
-                    sensorConnectorConnected,
                     lowBeamLight,
                     highBeamLight,
+                    sensorLight,
+                    sensorConnectorConnected,
                     turnLight,
                     result
                 );
@@ -79,15 +79,15 @@ namespace JAN0837_DP.Data
             public static int bit_sensorLight = 2;
             public static int address_sensorConnectorConnected = 146;
             public static int bit_sensorConnectorConnected = 3;
-            public static int address_lowBeamLight = 146;
-            public static int bit_lowBeamLight = 4;
-            public static int address_highBeamLight = 146;
-            public static int bit_highBeamLight = 5;
-            public static int address_turnLight = 146;
-            public static int bit_turnLight = 6;
 
+            public static int address_lowBeamLight = 164;
+            public static int bit_lowBeamLight = 0;
+            public static int address_highBeamLight = 164;
+            public static int bit_highBeamLight = 1;
+            public static int address_turnLight = 164;
+            public static int bit_turnLight = 2;
             public static int address_result = 164;
-            public static int bit_result = 0;
+            public static int bit_result = 3;
         }
 
         public static class ModbusBytes // I will not need this :( 
@@ -110,11 +110,11 @@ namespace JAN0837_DP.Data
             public static string error { get; set; } = "ns=4;i=115";
             public static string sensorLight { get; set; } = "ns=4;i=116";
             public static string sensorConnectorConnected { get; set; } = "ns=4;i=117";
-            public static string lowBeamLight { get; set; } = "ns=4;i=118";
-            public static string highBeamLight { get; set; } = "ns=4;i=119";
-            public static string turnLight { get; set; } = "ns=4;i=120";
 
             // Outputs  
+            public static string lowBeamLight { get; set; } = "ns=4;i=125";
+            public static string highBeamLight { get; set; } = "ns=4;i=126";
+            public static string turnLight { get; set; } = "ns=4;i=127";
             public static string result { get; set; } = "ns=4;i=128";
         }
     }

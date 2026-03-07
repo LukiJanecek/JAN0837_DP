@@ -13,6 +13,8 @@ const toBool = (v) => {
   return s === 'true' || s === '1' || s === 'on';
 };
 
+const toBoolString = (v) => (v ? 'true' : 'false');
+
 function CarLightCanvas({ d }) {
   const errorActive = toBool(d?.error);
   const marker = toBool(d?.lowBeamLight) && !errorActive;
@@ -128,13 +130,13 @@ function CarLightParamsSidebar() {
   useEffect(() => {
     const updates = {};
     if (toBool(d?.sensorLight) !== sensorLight) {
-      updates.sensorLight = sensorLight;
+      updates.sensorLight = toBoolString(sensorLight);
     }
     if (toBool(d?.sensorConnectorConnected) !== sensorConnectorConnected) {
-      updates.sensorConnectorConnected = sensorConnectorConnected;
+      updates.sensorConnectorConnected = toBoolString(sensorConnectorConnected);
     }
     if (toBool(d?.error) !== errorState) {
-      updates.error = errorState;
+      updates.error = toBoolString(errorState);
     }
     if (Object.keys(updates).length > 0) {
       saveSection(updates);

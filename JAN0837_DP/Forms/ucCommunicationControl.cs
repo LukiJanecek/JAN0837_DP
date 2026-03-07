@@ -125,7 +125,7 @@ namespace JAN0837_DP.Forms
 
                 lblEnabledPorts.Visible = true;
                 lblEnabledPorts.Enabled = true;
-                lblEnabledPorts.Text = $"Your actual IP: {internalVariables.LocalIP}\nPorts: \n OPCUA: 4840 and 4841 \n MQTT: 1883\n TCP/IP: 5001\n Modbus TCP/IP: 502\n REST API BE: {internalVariables.apiPort} \n REST API FE: {internalVariables.fePort} \n S7: None \n";
+                lblEnabledPorts.Text = $"Your actual IP: {internalVariables.LocalIP}\nPorts: \nOPCUA: 4840 and 4841 \nMQTT: 1883\nModbus TCP/IP: 502\nREST API BE: {internalVariables.apiPort} \nREST API FE: {internalVariables.fePort} \n";
 
                 #endregion
             }

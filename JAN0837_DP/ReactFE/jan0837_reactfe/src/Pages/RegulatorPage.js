@@ -25,7 +25,7 @@ function RegulatorCanvas({ background }) {
 
 const MAX_POINTS = 200;
 
-function UcChart({ Uc1, Uc2, PV, order }) {
+function UcChart({ Uc1, Uc2, order }) {
   const [history, setHistory] = useState([]);
   const startRef = useRef(Date.now());
   const isSecondOrder = order === 2;
@@ -35,8 +35,7 @@ function UcChart({ Uc1, Uc2, PV, order }) {
       const t = ((Date.now() - startRef.current) / 1000).toFixed(1);
       const point = { 
         t: Number(t), 
-        Uc1: Number(Uc1),
-        PV: Number(PV)
+        Uc1: Number(Uc1)
       };
       if (isSecondOrder) {
         point.Uc2 = Number(Uc2);
@@ -44,7 +43,7 @@ function UcChart({ Uc1, Uc2, PV, order }) {
       const next = [...prev, point];
       return next.length > MAX_POINTS ? next.slice(next.length - MAX_POINTS) : next;
     });
-  }, [Uc1, Uc2, PV, isSecondOrder]);
+  }, [Uc1, Uc2, isSecondOrder]);
 
   const clearHistory = () => {
     setHistory([]);
@@ -54,7 +53,7 @@ function UcChart({ Uc1, Uc2, PV, order }) {
   return (
     <div className="uc-chart-wrap">
       <div className="d-flex align-items-center justify-content-between mb-2">
-        <h5 className="mb-0">{isSecondOrder ? 'Uc₁, Uc₂, PV' : 'Uc, PV'} in time</h5>
+        <h5 className="mb-0">{isSecondOrder ? 'Uc₁, Uc₂' : 'Uc'} in time</h5>
         <Button size="sm" variant="outline-secondary" onClick={clearHistory}>Reset chart/graph</Button>
       </div>
       <ResponsiveContainer width="100%" height={280}>
@@ -75,7 +74,6 @@ function UcChart({ Uc1, Uc2, PV, order }) {
           {isSecondOrder && (
             <Line type="monotone" dataKey="Uc2" stroke="#6c757d" dot={false} isAnimationActive={false} name="Uc₂" />
           )}
-          <Line type="monotone" dataKey="PV" stroke="#198754" dot={false} isAnimationActive={false} name="PV" />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -95,7 +93,6 @@ function RegulatorParamsSidebar() {
   const [localR2,  setLocalR2]  = useState('');
   const [localC1,  setLocalC1]  = useState('');
   const [localC2,  setLocalC2]  = useState('');
-  const [localUin, setLocalUin] = useState('');
   const [localTd,  setLocalTd]  = useState('');
   const [localTs,  setLocalTs]  = useState('');
   
@@ -108,16 +105,14 @@ function RegulatorParamsSidebar() {
       if (editingRef.current !== 'R2') setLocalR2(String(d.R2  ?? 0));
       if (editingRef.current !== 'C1') setLocalC1(String(d.C1  ?? 0));
       if (editingRef.current !== 'C2') setLocalC2(String(d.C2  ?? 0));
-      if (editingRef.current !== 'Uin') setLocalUin(String(d.Uin ?? 0));
       if (editingRef.current !== 'Td') setLocalTd(String(d.Td ?? 0));
       if (editingRef.current !== 'Ts') setLocalTs(String(d.Ts ?? 0));
     }
-  }, [d?.R1, d?.R2, d?.C1, d?.C2, d?.Uin, d?.Td, d?.Ts]);
+  }, [d?.R1, d?.R2, d?.C1, d?.C2, d?.Td, d?.Ts]);
 
+  const Uin = Number(d?.Uin ?? 0);
   const Uc1 = Number(d?.Uc1 ?? 0);
   const Uc2 = Number(d?.Uc2 ?? 0);
-  const PV  = Number(d?.PV ?? 0);
-
   const toggleSwitch = async () => {
     try {
       await saveSection({ switchstate: !switchstate });
@@ -237,19 +232,6 @@ function RegulatorParamsSidebar() {
         )}
 
         <Form.Group className="mb-2">
-          <Form.Label>U<sub>in</sub> (V)</Form.Label>
-          <Form.Control
-            type="number"
-            step="any"
-            value={localUin}
-            onChange={e => setLocalUin(e.target.value)}
-            onFocus={() => handleFocus('Uin')}
-            onBlur={() => handleBlur('Uin', localUin)}
-            onKeyDown={e => e.key === 'Enter' && sendField('Uin', localUin)}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-2">
           <Form.Label>T<sub>d</sub> (s) – transport delay</Form.Label>
           <Form.Control
             type="number"
@@ -277,6 +259,9 @@ function RegulatorParamsSidebar() {
       </Form>
 
       <div className="reg-output mb-3">
+        <Badge bg="secondary" className="fs-6 me-2">
+          U<sub>in</sub> = {Uin.toFixed(2)} V
+        </Badge>
         <Badge bg="info" className="fs-6 me-2">
           U<sub>{isSecondOrder ? 'c1' : 'c'}</sub> = {Uc1.toFixed(2)} V
         </Badge>
@@ -285,9 +270,6 @@ function RegulatorParamsSidebar() {
             U<sub>c2</sub> = {Uc2.toFixed(2)} V
           </Badge>
         )}
-        <Badge bg="success" className="fs-6">
-          PV = {PV.toFixed(2)} V
-        </Badge>
       </div>
 
       <pre style={{ background: '#f6f8fa', padding: 8, borderRadius: 6, marginTop: 12 }}>
@@ -306,8 +288,6 @@ function RegulatorPage() {
   
   const Uc1 = Number(d?.Uc1 ?? 0);
   const Uc2 = Number(d?.Uc2 ?? 0);
-  const PV  = Number(d?.PV ?? 0);
-
   // Dynamický výběr obrázku podle řádu a stavu spínače
   const getBackgroundImage = () => {
     const circuitType = isSecondOrder ? 'RCRC' : 'RC';
@@ -322,7 +302,7 @@ function RegulatorPage() {
       <Col xs={12} lg={8}>
         <div className="mt-3">
           <RegulatorCanvas background={background} />
-          <UcChart Uc1={Uc1} Uc2={Uc2} PV={PV} order={order} />
+          <UcChart Uc1={Uc1} Uc2={Uc2} order={order} />
         </div>
       </Col>
 

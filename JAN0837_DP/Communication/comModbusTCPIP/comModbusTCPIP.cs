@@ -55,10 +55,31 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         public string BoolToStr(bool b)
             => b ? "true" : "false";
 
+        public bool IsConnected
+        {
+            get
+            {
+                try
+                {
+                    return tcpClient != null && tcpClient.Connected && master != null;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         public bool ConnectToSlave()
         {
             try
             {
+                if (IsConnected)
+                    return true;
+
+                // Clean up old connection if any
+                DisconnectFromSlave();
+
                 tcpClient = new TcpClient(ipAddress, port);
                 master = ModbusIpMaster.CreateIp(tcpClient);
                 return true;
@@ -75,22 +96,22 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
+                master?.Dispose();
+                master = null;
                 if (tcpClient != null)
                 {
                     tcpClient.Close();
                     tcpClient = null;
-                    master = null;
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error with disconnection from Slave: {ex.Message}.");
                 Logger.LogException(ex, "Failed to disconnect from Modbus server");
+                master = null;
+                tcpClient = null;
                 return false;
             }
         }
@@ -99,10 +120,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to read holding registers when Modbus is not connected");
-                    throw new Exception("Modbus is not connected.");
+                    return null;
                 }
                 return master.ReadHoldingRegisters(slaveId, startAddress, numRegisters);
             }
@@ -118,10 +139,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to read input registers when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return null;
                 }
                 return master.ReadInputRegisters(slaveId, startAddress, numRegisters);
             }
@@ -137,10 +158,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to read coils when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return null;
                 }
                 return master.ReadCoils(slaveId, startAddress, numCoils);
             }
@@ -156,10 +177,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to write single register when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return;
                 }
                 master.WriteSingleRegister(slaveId, address, value);
             }
@@ -174,10 +195,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to write registers when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return;
                 }
                 master.WriteMultipleRegisters(slaveId, startAddress, values);
             }
@@ -192,10 +213,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to write single coil when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return;
                 }
                 master.WriteSingleCoil(slaveId, address, value);
             }
@@ -210,10 +231,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to write coils when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return;
                 }
                 master.WriteMultipleCoils(slaveId, startAddress, values);
             }
@@ -229,10 +250,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to write registers when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return;
                 }
 
                 ushort[] registers = new ushort[values.Length];
@@ -254,10 +275,10 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             try
             {
-                if (master == null)
+                if (!IsConnected)
                 {
                     Logger.LogError("Attempt to read registers when Modbus is not connected");
-                    throw new Exception("Modbus is not connected!");
+                    return null;
                 }
 
                 ushort[] registers = master.ReadHoldingRegisters(slaveId, startAddress, count);

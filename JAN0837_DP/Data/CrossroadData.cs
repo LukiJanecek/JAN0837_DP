@@ -15,14 +15,8 @@ namespace JAN0837_DP.Data
         public static string btnStart { get; set; } = "true"; // bool
         public static string btnPause { get; set; } = "false"; // bool
         public static string btnStop { get; set; } = "false"; // bool
-        //public static string btnCrosswalk1 { get; set; } = "false"; // bool -> old 
-        //public static string btnCrosswalk2 { get; set; } = "false"; // bool -> old
-        // public static string btnNorthCrosswalk1 { get; set; } = "false"; // bool
-        // public static string btnNorthCrosswalk2 { get; set; } = "false"; // bool
         public static string btnWestCrosswalk1 { get; set; } = "false"; // bool     
         public static string btnWestCrosswalk2 { get; set; } = "false"; // bool
-        // public static string btnEastCrosswalk1 { get; set; } = "false"; // bool
-        // public static string btnEastCrosswalk2 { get; set; } = "false"; // bool
         public static string btnSouthCrosswalk1 { get; set; } = "false"; // bool
         public static string btnSouthCrosswalk2 { get; set; } = "false"; // bool
 

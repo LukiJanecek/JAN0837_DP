@@ -129,9 +129,6 @@ CarLight_Input_UDT_FIELDS = [
     ("error", "Bool", "FALSE"),
     ("sensorLight", "Bool", "FALSE"),
     ("sensorConnectorConnected", "Bool", "FALSE"),
-    ("lowBeamLight", "Bool", "FALSE"),
-    ("highBeamLight", "Bool", "FALSE"),
-    ("turnLight", "Bool", "FALSE"),
     ("spare1", "DWord", "0"),
     ("spare2", "DWord", "0"),
     ("spare3", "DWord", "0"),
@@ -142,6 +139,9 @@ CarLight_Output_UDT_NAME = "CarLight_Output"
 
 CarLight_Output_UDT_FIELDS = [
     
+    ("lowBeamLight", "Bool", "FALSE"),
+    ("highBeamLight", "Bool", "FALSE"),
+    ("turnLight", "Bool", "FALSE"),
     ("result", "Bool", "FALSE"),
     ("spare1", "DWord", "0"),
     ("spare2", "DWord", "0"),

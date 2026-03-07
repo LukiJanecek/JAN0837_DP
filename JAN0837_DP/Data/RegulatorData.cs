@@ -159,7 +159,7 @@ namespace JAN0837_DP.Data
             => bool.TryParse(s, out var v) && v;
 
         private static string ToStr(double v)
-            => v.ToString("0.#####", CultureInfo.InvariantCulture);
+            => v.ToString("G", CultureInfo.InvariantCulture);
         private static int ParseOrder(string s, int fallback = 1)
         {
             if (string.IsNullOrWhiteSpace(s))
@@ -193,10 +193,6 @@ namespace JAN0837_DP.Data
                 }
 
                 bool enable = ParseBool(RegulatorData.switchstate);
-                if (!enable)
-                {
-                    return;
-                }
 
                 int order = ParseOrder(RegulatorData.order, 1);
 
@@ -204,12 +200,12 @@ namespace JAN0837_DP.Data
                 if (Ts <= 0) return;
 
                 double R1 = ParseDouble(RegulatorData.R1, 0.0);
-                double C1 = ParseDouble(RegulatorData.C1, 0.0);
+                double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6; // µF 
                 double R2 = ParseDouble(RegulatorData.R2, 0.0);
-                double C2 = ParseDouble(RegulatorData.C2, 0.0);
+                double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6; // µF 
 
-                // vstup z PID (LMN)
-                double u = ParseDouble(RegulatorData.Uin, 0.0);
+                // vstup z PID (LMN), při vypnutém switchstate je vstup 0 → kondenzátory se vybíjejí
+                double u = enable ? ParseDouble(RegulatorData.Uin, 0.0) : 0.0;
 
                 // aktuální stavy
                 double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);

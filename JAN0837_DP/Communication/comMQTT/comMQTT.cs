@@ -82,8 +82,9 @@ namespace JAN0837_DP.Communication.comMQTT
             "JAN0837/Crossroad/Output",
             "JAN0837/Crosswalk/Output",
             "JAN0837/Regulator/Output",
-            "JAN0837/CarWash/Output",
-            "JAN0837/WashingMachine/Output"
+            "JAN0837/CarLight/Output"
+            //"JAN0837/CarWash/Output",
+            //"JAN0837/WashingMachine/Output"
         };
 
         public MQTTClient()

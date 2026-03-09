@@ -145,14 +145,21 @@ namespace JAN0837_DP.Communication.comMQTT
                     {
                         if (!mqttClient.IsConnected)
                             await mqttClient.ConnectAsync(options!, cts.Token);
-                    }
-                    catch 
-                    {
-                        // Connection failed, will retry in next loop
-                        Logger.LogError("Connection failed, retry in next loop.");
-                    }
 
-                    await Task.Delay(1000, cts.Token);
+                        await Task.Delay(1000, cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // StopAsync cancelled the token – exit cleanly
+                        break;
+                    }
+                    catch
+                    {
+                        Logger.LogError("Connection failed, retry in next loop.");
+
+                        try { await Task.Delay(1000, cts.Token); }
+                        catch (OperationCanceledException) { break; }
+                    }
                 }
             }, cts.Token);
 
@@ -164,14 +171,15 @@ namespace JAN0837_DP.Communication.comMQTT
         {
             if (!clientConnected) return;
 
-            cts?.Cancel();
-
+            // Publish offline status and disconnect BEFORE cancelling the reconnect loop,
+            // otherwise the loop could attempt a reconnect during shutdown.
             if (mqttClient.IsConnected)
             {
                 await PublishAsync("pc/status", "offline", retain: true);
                 await mqttClient.DisconnectAsync();
             }
 
+            cts?.Cancel();
             clientConnected = false;
         }
 

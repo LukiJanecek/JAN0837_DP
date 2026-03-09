@@ -92,7 +92,8 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCrossroadInput, token);
 
-                                    // CrossroadData - Output
+                                    // CrossroadData - Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
@@ -124,6 +125,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCrossroadOutput, token);
+                                    */
 
                                     // CrosswalkData - Input
                                     var crosswalkInput = new
@@ -142,7 +144,8 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCrosswalkInput, token);
 
-                                    // CrosswalkData - Output
+                                    // CrosswalkData - Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var crosswalkOutput = new
                                     {
                                         type = CrosswalkData.crosswalkType == "true",
@@ -164,6 +167,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCrosswalkOutput, token);
+                                    */
 
                                     // RegulatorData - Input
                                     var regulatorInput = new
@@ -188,12 +192,13 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgRegulatorInput, token);
 
-                                    // RegulatorData - Output 
+                                    // RegulatorData - Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var regulatorOutput = new
                                     {
                                         Uin = RegulatorData.Uin
                                     };
-                                    
+
                                     var msgRegulatorOutput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Regulator/Output")
                                         .WithPayload(System.Text.Json.JsonSerializer.Serialize(regulatorOutput))
@@ -201,6 +206,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgRegulatorOutput, token);
+                                    */
 
                                     PlantModel.ComputePlantStep();
 
@@ -221,7 +227,8 @@ namespace JAN0837_DP.Communication
                                         .Build();
                                     await client.mqttClient.PublishAsync(msagCarlightInput, token);
 
-                                    // CarLight - Output 
+                                    // CarLight - Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var carlightOutput = new
                                     {
                                         lowBeamLight = CarLightData.lowBeamLight == "true",
@@ -236,6 +243,7 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build();
                                     await client.mqttClient.PublishAsync(msgCarlightOutput, token);
+                                    */
 
                                     // CarWash - Input
                                     /*
@@ -378,6 +386,8 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build());
 
+                                    // Crossroad Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var crossroadOutput = new
                                     {
                                         type = CrossroadData.crossroadType == "true",
@@ -407,8 +417,9 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
+                                    */
 
-                                    // Crosswalk Input/Output
+                                    // Crosswalk Input
                                     var crosswalkInput = new
                                     {
                                         start = CrosswalkData.btnStart == "true",
@@ -423,6 +434,8 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true).Build());
 
+                                    // Crosswalk Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var crosswalkOutput = new
                                     {
                                         type = CrosswalkData.crosswalkType == "true",
@@ -443,8 +456,9 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
+                                    */
 
-                                    // Regulator Input/Output
+                                    // Regulator Input
                                     var regulatorInput = new
                                     {
                                         btnReset = RegulatorData.btnReset == "true",
@@ -466,6 +480,8 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build());
 
+                                    // Regulator Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var regulatorOutput = new
                                     {
                                         Uin = RegulatorData.Uin
@@ -477,10 +493,11 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
+                                    */
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight Input/Output 
+                                    // CarLight Input
                                     var carlightInput = new
                                     {
                                         btnReset = CarLightData.btnReset == "true",
@@ -496,6 +513,8 @@ namespace JAN0837_DP.Communication
                                         .WithRetainFlag(true)
                                         .Build());
 
+                                    // CarLight Output (Output comes from PLC via OnMessage -> OutputMapper)
+                                    /*
                                     var carlightOutput = new
                                     {
                                         lowBeamLight = CarLightData.lowBeamLight == "true",
@@ -510,8 +529,9 @@ namespace JAN0837_DP.Communication
                                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                                         .WithRetainFlag(true)
                                         .Build());
+                                    */
 
-                                    #region CarWash & WashingMachine 
+                                    #region CarWash & WashingMachine
                                     // CarWash - Input
                                     /*
                                     var carwashInput = new

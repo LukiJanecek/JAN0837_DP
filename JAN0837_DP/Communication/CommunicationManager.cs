@@ -1644,248 +1644,285 @@ namespace JAN0837_DP.Communication
 
                             var _sharp7 = _ucCommunicationControl._sharp7;
 
-                            int read1 = _sharp7.readDB(activeDBnumber, readBuffer, 0);
+                            if (_sharp7 == null)
+                            {
+                                _ucCommunicationControl.SetStatus("Sharp7 Client: Not initialized, waiting...");
+                                await Task.Delay(500, token);
+                                continue;
+                            }
 
-                            if (read1 == 0)
-                            {                                
-                                // CrossroadData 
-                                CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_crossroadType, CrossroadData.Sharp7Addresses.bit_crossroadType));
-                                CrossroadData.trafficLightNorth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_green, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_green));
-                                CrossroadData.trafficLightNorth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_yellow));
-                                CrossroadData.trafficLightNorth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_red, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_red));
-                                CrossroadData.trafficLightSouth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_green, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_green));
-                                CrossroadData.trafficLightSouth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_yellow));
-                                CrossroadData.trafficLightSouth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_red, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_red));
-                                CrossroadData.trafficLightWest_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_green, CrossroadData.Sharp7Addresses.bit_trafficLightWest_green));
-                                CrossroadData.trafficLightWest_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightWest_yellow));
-                                CrossroadData.trafficLightWest_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_red, CrossroadData.Sharp7Addresses.bit_trafficLightWest_red));
-                                CrossroadData.trafficLightEast_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_green, CrossroadData.Sharp7Addresses.bit_trafficLightEast_green));
-                                CrossroadData.trafficLightEast_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightEast_yellow));
-                                CrossroadData.trafficLightEast_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_red, CrossroadData.Sharp7Addresses.bit_trafficLightEast_red));
-                                CrossroadData.pedestrianSouth1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_green));
-                                CrossroadData.pedestrianSouth1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_red));
-                                CrossroadData.pedestrianSouth2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_green));
-                                CrossroadData.pedestrianSouth2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_red));
-                                CrossroadData.pedestrianWest1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_green));
-                                CrossroadData.pedestrianWest1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_red));
-                                CrossroadData.pedestrianWest2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_green));
-                                CrossroadData.pedestrianWest2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_red));
-                                
+                            if (_sharp7.client.Connected == false)
+                            {
+                                _ucCommunicationControl.SetStatus("Sharp7 Client: Not connected, waiting for connection...");
+                                string Sharp7_ipAddress = internalVariables.txtBoxParam1;
+                                int plcConnect = _sharp7.connectToPLC(Sharp7_ipAddress);
+
+                                if (plcConnect == 0)
+                                {
+                                    _ucCommunicationControl.SetStatus("Sharp7 communication reconnected successfully.");
+                                    Logger.LogInfo("Sharp communication reconnected successfully.");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}. Retrying...");
+                                    Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
+                                    await Task.Delay(500, token);
+                                    continue;
+                                }
+                            }
+
+                            try
+                            {
+                                int read1 = _sharp7.readDB(activeDBnumber, readBuffer, 0);
+
+                                if (read1 == 0)
+                                {
+                                    // CrossroadData 
+                                    CrossroadData.crossroadType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_crossroadType, CrossroadData.Sharp7Addresses.bit_crossroadType));
+                                    CrossroadData.trafficLightNorth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_green, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_green));
+                                    CrossroadData.trafficLightNorth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_yellow));
+                                    CrossroadData.trafficLightNorth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_red, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_red));
+                                    CrossroadData.trafficLightSouth_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_green, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_green));
+                                    CrossroadData.trafficLightSouth_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_yellow));
+                                    CrossroadData.trafficLightSouth_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_red, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_red));
+                                    CrossroadData.trafficLightWest_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_green, CrossroadData.Sharp7Addresses.bit_trafficLightWest_green));
+                                    CrossroadData.trafficLightWest_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightWest_yellow));
+                                    CrossroadData.trafficLightWest_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_red, CrossroadData.Sharp7Addresses.bit_trafficLightWest_red));
+                                    CrossroadData.trafficLightEast_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_green, CrossroadData.Sharp7Addresses.bit_trafficLightEast_green));
+                                    CrossroadData.trafficLightEast_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightEast_yellow));
+                                    CrossroadData.trafficLightEast_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_red, CrossroadData.Sharp7Addresses.bit_trafficLightEast_red));
+                                    CrossroadData.pedestrianSouth1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_green));
+                                    CrossroadData.pedestrianSouth1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_red));
+                                    CrossroadData.pedestrianSouth2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_green));
+                                    CrossroadData.pedestrianSouth2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_red));
+                                    CrossroadData.pedestrianWest1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_green));
+                                    CrossroadData.pedestrianWest1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_red));
+                                    CrossroadData.pedestrianWest2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_green));
+                                    CrossroadData.pedestrianWest2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_red));
+
+                                    // CrosswalkData 
+                                    CrosswalkData.crosswalkType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_crosswalkType, CrosswalkData.Sharp7Addresses.bit_crosswalkType));
+                                    CrosswalkData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_green, CrosswalkData.Sharp7Addresses.bit_trafficLight1_green));
+                                    CrosswalkData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight1_yellow));
+                                    CrosswalkData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_red, CrosswalkData.Sharp7Addresses.bit_trafficLight1_red));
+                                    CrosswalkData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_green, CrosswalkData.Sharp7Addresses.bit_trafficLight2_green));
+                                    CrosswalkData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight2_yellow));
+                                    CrosswalkData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_red, CrosswalkData.Sharp7Addresses.bit_trafficLight2_red));
+                                    CrosswalkData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_green, CrosswalkData.Sharp7Addresses.bit_pedestrian1_green));
+                                    CrosswalkData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_red, CrosswalkData.Sharp7Addresses.bit_pedestrian1_red));
+                                    CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_green, CrosswalkData.Sharp7Addresses.bit_pedestrian2_green));
+                                    CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_red, CrosswalkData.Sharp7Addresses.bit_pedestrian2_red));
+
+                                    // RegulatorData 
+                                    RegulatorData.Uin = Sharp7.S7.GetRealAt(readBuffer, RegulatorData.Sharp7Addresses.address_Uin).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                                    // CarLight 
+                                    CarLightData.lowBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight));
+                                    CarLightData.highBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight));
+                                    CarLightData.turnLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight));
+                                    CarLightData.result = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result));
+
+                                    #region CarWash & WashinMachine
+                                    // CarWashData 
+                                    /*
+                                    CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 0));
+                                    CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 1));
+                                    CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 2));
+                                    CarWashData.Door1_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 0));
+                                    CarWashData.Door1_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 1));
+                                    CarWashData.Door2_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 2));
+                                    CarWashData.Door2_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 3));
+                                    CarWashData.ChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 4));
+                                    CarWashData.ChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 5));
+                                    CarWashData.ChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 6));
+                                    CarWashData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 7));
+                                    CarWashData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 0));
+                                    CarWashData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 1));
+                                    CarWashData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 2));
+                                    CarWashData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 3));
+                                    CarWashData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 4));
+                                    CarWashData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 5));
+                                    CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 0));
+                                    CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 1));
+                                    CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 2));
+                                    */
+
+                                    // WashingMachineData
+                                    /*
+                                    WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 0));
+                                    WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 1));
+                                    WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 2));
+                                    WashingMachineData.DoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 3));
+                                    WashingMachineData.Chemicals = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 4));
+                                    WashingMachineData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 5));
+                                    WashingMachineData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 6));
+                                    WashingMachineData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 7));
+                                    WashingMachineData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 0));
+                                    WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 1));
+                                    WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 2));
+                                    WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 3));
+                                    */
+                                    #endregion
+
+                                    _ucCommunicationControl.SetStatus($"Sharp7: ReadDB OK - All data read from DB{activeDBnumber}");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read1}.");
+                                    Logger.LogError($"Sharp7 ReadDB error: Return code {read1} while reading DB{activeDBnumber}.");
+                                }
+
+                                PlantModel.ComputePlantStep(); // ?
+
+                                // CrossroadData
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStart, CrossroadData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrossroadData.btnStart));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnPause, CrossroadData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrossroadData.btnPause));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStop, CrossroadData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrossroadData.btnStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnWestCrosswalk1, CrossroadData.Sharp7Addresses.bit_btnWestCrosswalk1, Convert.ToBoolean(CrossroadData.btnWestCrosswalk1));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnWestCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnWestCrosswalk2, Convert.ToBoolean(CrossroadData.btnWestCrosswalk2));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk1, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk1, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk1));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk2, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk2));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_crossroadType, CrossroadData.Sharp7Addresses.bit_crossroadType, Convert.ToBoolean(CrossroadData.crossroadType));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_green, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_green, Convert.ToBoolean(CrossroadData.trafficLightNorth_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_yellow, Convert.ToBoolean(CrossroadData.trafficLightNorth_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_red, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_red, Convert.ToBoolean(CrossroadData.trafficLightNorth_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_green, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_green, Convert.ToBoolean(CrossroadData.trafficLightSouth_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_yellow, Convert.ToBoolean(CrossroadData.trafficLightSouth_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_red, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_red, Convert.ToBoolean(CrossroadData.trafficLightSouth_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_green, CrossroadData.Sharp7Addresses.bit_trafficLightWest_green, Convert.ToBoolean(CrossroadData.trafficLightWest_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightWest_yellow, Convert.ToBoolean(CrossroadData.trafficLightWest_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_red, CrossroadData.Sharp7Addresses.bit_trafficLightWest_red, Convert.ToBoolean(CrossroadData.trafficLightWest_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_green, CrossroadData.Sharp7Addresses.bit_trafficLightEast_green, Convert.ToBoolean(CrossroadData.trafficLightEast_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightEast_yellow, Convert.ToBoolean(CrossroadData.trafficLightEast_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_red, CrossroadData.Sharp7Addresses.bit_trafficLightEast_red, Convert.ToBoolean(CrossroadData.trafficLightEast_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_green, Convert.ToBoolean(CrossroadData.pedestrianSouth1_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_red, Convert.ToBoolean(CrossroadData.pedestrianSouth1_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_green, Convert.ToBoolean(CrossroadData.pedestrianSouth2_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_red, Convert.ToBoolean(CrossroadData.pedestrianSouth2_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_green, Convert.ToBoolean(CrossroadData.pedestrianWest1_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_red, Convert.ToBoolean(CrossroadData.pedestrianWest1_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_green, Convert.ToBoolean(CrossroadData.pedestrianWest2_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_red, Convert.ToBoolean(CrossroadData.pedestrianWest2_red));
+
                                 // CrosswalkData 
-                                CrosswalkData.crosswalkType = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_crosswalkType, CrosswalkData.Sharp7Addresses.bit_crosswalkType));
-                                CrosswalkData.trafficLight1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_green, CrosswalkData.Sharp7Addresses.bit_trafficLight1_green));
-                                CrosswalkData.trafficLight1_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight1_yellow));
-                                CrosswalkData.trafficLight1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_red, CrosswalkData.Sharp7Addresses.bit_trafficLight1_red));
-                                CrosswalkData.trafficLight2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_green, CrosswalkData.Sharp7Addresses.bit_trafficLight2_green));
-                                CrosswalkData.trafficLight2_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight2_yellow));
-                                CrosswalkData.trafficLight2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_red, CrosswalkData.Sharp7Addresses.bit_trafficLight2_red));
-                                CrosswalkData.pedestrian1_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_green, CrosswalkData.Sharp7Addresses.bit_pedestrian1_green));
-                                CrosswalkData.pedestrian1_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_red, CrosswalkData.Sharp7Addresses.bit_pedestrian1_red));
-                                CrosswalkData.pedestrian2_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_green, CrosswalkData.Sharp7Addresses.bit_pedestrian2_green));
-                                CrosswalkData.pedestrian2_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_red, CrosswalkData.Sharp7Addresses.bit_pedestrian2_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_crosswalkType, CrosswalkData.Sharp7Addresses.bit_crosswalkType, Convert.ToBoolean(CrosswalkData.crosswalkType));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStart, CrosswalkData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrosswalkData.btnStart));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnPause, CrosswalkData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrosswalkData.btnPause));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStop, CrosswalkData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrosswalkData.btnStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk1, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk1, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk2, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk2, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_green, CrosswalkData.Sharp7Addresses.bit_trafficLight1_green, Convert.ToBoolean(CrosswalkData.trafficLight1_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight1_yellow, Convert.ToBoolean(CrosswalkData.trafficLight1_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_red, CrosswalkData.Sharp7Addresses.bit_trafficLight1_red, Convert.ToBoolean(CrosswalkData.trafficLight1_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_green, CrosswalkData.Sharp7Addresses.bit_trafficLight2_green, Convert.ToBoolean(CrosswalkData.trafficLight2_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight2_yellow, Convert.ToBoolean(CrosswalkData.trafficLight2_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_red, CrosswalkData.Sharp7Addresses.bit_trafficLight2_red, Convert.ToBoolean(CrosswalkData.trafficLight2_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_green, CrosswalkData.Sharp7Addresses.bit_pedestrian1_green, Convert.ToBoolean(CrosswalkData.pedestrian1_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_red, CrosswalkData.Sharp7Addresses.bit_pedestrian1_red, Convert.ToBoolean(CrosswalkData.pedestrian1_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_green, CrosswalkData.Sharp7Addresses.bit_pedestrian2_green, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_red, CrosswalkData.Sharp7Addresses.bit_pedestrian2_red, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
                                 // RegulatorData 
-                                RegulatorData.Uin = Sharp7.S7.GetRealAt(readBuffer, RegulatorData.Sharp7Addresses.address_Uin).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_btnReset, RegulatorData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(RegulatorData.btnReset));
+                                Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_switchstate, RegulatorData.Sharp7Addresses.bit_switchstate, Convert.ToBoolean(RegulatorData.switchstate));
+                                Sharp7.S7.SetIntAt(writeBuffer, RegulatorData.Sharp7Addresses.address_order, (short)(int.TryParse(RegulatorData.order, out var s7Ord) ? s7Ord : 0));
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_R1, float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7R1) ? s7R1 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_R2, float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7R2) ? s7R2 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_C1, float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7C1) ? s7C1 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_C2, float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7C2) ? s7C2 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uc1, float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uc1) ? s7Uc1 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uc2) ? s7Uc2 : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Td) ? s7Td : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Ts) ? s7Ts : 0f);
+                                Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uin, float.TryParse(RegulatorData.Uin, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uin) ? s7Uin : 0f);
 
                                 // CarLight 
-                                CarLightData.lowBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight));
-                                CarLightData.highBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight));
-                                CarLightData.turnLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight));
-                                CarLightData.result = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_btnReset, CarLightData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(CarLightData.btnReset));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_error, CarLightData.Sharp7Addresses.bit_error, Convert.ToBoolean(CarLightData.error));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorLight, CarLightData.Sharp7Addresses.bit_sensorLight, Convert.ToBoolean(CarLightData.sensorLight));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorConnectorConnected, CarLightData.Sharp7Addresses.bit_sensorConnectorConnected, Convert.ToBoolean(CarLightData.sensorConnectorConnected));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight, Convert.ToBoolean(CarLightData.lowBeamLight));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight, Convert.ToBoolean(CarLightData.highBeamLight));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight, Convert.ToBoolean(CarLightData.turnLight));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result, Convert.ToBoolean(CarLightData.result));
 
                                 #region CarWash & WashinMachine
                                 // CarWashData 
                                 /*
-                                CarWashData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 0));
-                                CarWashData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 1));
-                                CarWashData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 10, 2));
-                                CarWashData.Door1_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 0));
-                                CarWashData.Door1_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 1));
-                                CarWashData.Door2_Up = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 2));
-                                CarWashData.Door2_Down = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 3));
-                                CarWashData.ChemicalsFront = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 4));
-                                CarWashData.ChemicalsSides = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 5));
-                                CarWashData.ChemicalsBack = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 6));
-                                CarWashData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 11, 7));
-                                CarWashData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 0));
-                                CarWashData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 1));
-                                CarWashData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 2));
-                                CarWashData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 3));
-                                CarWashData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 4));
-                                CarWashData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 12, 5));
-                                CarWashData.MEMDoor = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 0));
-                                CarWashData.MEMDoorTrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 1));
-                                CarWashData.MEMDoorClosingtrig = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 13, 2));
-                                */
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 3, Convert.ToBoolean(CarWashData.ErrorSystem));
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarPosition));
+                                Sharp7.S7.SetBitAt(writeBuffer, 10, 5, Convert.ToBoolean(CarWashData.ShowerPosition));
 
-                                // WashingMachineData
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 0, Convert.ToBoolean(CarWashData.Light_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 1, Convert.ToBoolean(CarWashData.Light_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 2, Convert.ToBoolean(CarWashData.Light_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 3, Convert.ToBoolean(CarWashData.Door1_Up));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 4, Convert.ToBoolean(CarWashData.Door1_Down));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 5, Convert.ToBoolean(CarWashData.Door2_Up));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 6, Convert.ToBoolean(CarWashData.Door2_Down));
+                                Sharp7.S7.SetBitAt(writeBuffer, 11, 7, Convert.ToBoolean(CarWashData.ChemicalsFront));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 0, Convert.ToBoolean(CarWashData.ChemicalsSides));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 1, Convert.ToBoolean(CarWashData.ChemicalsBack));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 2, Convert.ToBoolean(CarWashData.Prewash));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 3, Convert.ToBoolean(CarWashData.Water));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 4, Convert.ToBoolean(CarWashData.Wax));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 5, Convert.ToBoolean(CarWashData.Dry));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 6, Convert.ToBoolean(CarWashData.Brushes));
+                                Sharp7.S7.SetBitAt(writeBuffer, 12, 7, Convert.ToBoolean(CarWashData.Soap));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, 13, 0, Convert.ToBoolean(CarWashData.ActiveFoam));
+                                Sharp7.S7.SetBitAt(writeBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
+                                Sharp7.S7.SetBitAt(writeBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
+                                Sharp7.S7.SetBitAt(writeBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
+                                */
+                                // WashingMachineData 
                                 /*
-                                WashingMachineData.Light_green = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 0));
-                                WashingMachineData.Light_yellow = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 1));
-                                WashingMachineData.Light_red = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 2));
-                                WashingMachineData.DoorClosed = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 3));
-                                WashingMachineData.Chemicals = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 4));
-                                WashingMachineData.Prewash = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 5));
-                                WashingMachineData.Water = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 6));
-                                WashingMachineData.Wax = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 15, 7));
-                                WashingMachineData.Dry = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 0));
-                                WashingMachineData.Brushes = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 1));
-                                WashingMachineData.Soap = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 2));
-                                WashingMachineData.ActiveFoam = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, 16, 3));
+                                Sharp7.S7.SetBitAt(writeBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
+                                Sharp7.S7.SetBitAt(writeBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
+                                Sharp7.S7.SetBitAt(writeBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.ErrorSystem));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.Light_green));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.Light_yellow));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.Light_red));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.DoorClosed));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.Chemicals));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.Prewash));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.Water));
+                                Sharp7.S7.SetBitAt(writeBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.Wax));
+
+                                Sharp7.S7.SetBitAt(writeBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.Dry));
+                                Sharp7.S7.SetBitAt(writeBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
+                                Sharp7.S7.SetBitAt(writeBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
+                                Sharp7.S7.SetBitAt(writeBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
                                 */
                                 #endregion
 
-                                _ucCommunicationControl.SetStatus($"Sharp7: ReadDB OK - All data read from DB{activeDBnumber}");
+                                int write1 = _sharp7.writeDB(activeDBnumber, writeBuffer, 0);
+
+                                if (write1 == 0)
+                                {
+                                    _ucCommunicationControl.SetStatus($"Sharp7: WriteDB OK - All data written to DB{activeDBnumber}");
+                                }
+                                else
+                                {
+                                    _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write1}.");
+                                    Logger.LogError($"Sharp7 writeDB error: Return code {write1} for DB {activeDBnumber}");
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. ReadDB returns {read1}.");
-                                Logger.LogError($"Sharp7 ReadDB error: Return code {read1} while reading DB{activeDBnumber}.");
-                            }
-
-                            PlantModel.ComputePlantStep(); // ?
-
-                            // CrossroadData
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStart, CrossroadData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrossroadData.btnStart));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnPause, CrossroadData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrossroadData.btnPause));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStop, CrossroadData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrossroadData.btnStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnWestCrosswalk1, CrossroadData.Sharp7Addresses.bit_btnWestCrosswalk1, Convert.ToBoolean(CrossroadData.btnWestCrosswalk1));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnWestCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnWestCrosswalk2, Convert.ToBoolean(CrossroadData.btnWestCrosswalk2));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk1, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk1, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk1));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk2, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk2));
-
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_crossroadType, CrossroadData.Sharp7Addresses.bit_crossroadType, Convert.ToBoolean(CrossroadData.crossroadType));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_green, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_green, Convert.ToBoolean(CrossroadData.trafficLightNorth_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_yellow, Convert.ToBoolean(CrossroadData.trafficLightNorth_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_red, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_red, Convert.ToBoolean(CrossroadData.trafficLightNorth_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_green, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_green, Convert.ToBoolean(CrossroadData.trafficLightSouth_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_yellow, Convert.ToBoolean(CrossroadData.trafficLightSouth_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightSouth_red, CrossroadData.Sharp7Addresses.bit_trafficLightSouth_red, Convert.ToBoolean(CrossroadData.trafficLightSouth_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_green, CrossroadData.Sharp7Addresses.bit_trafficLightWest_green, Convert.ToBoolean(CrossroadData.trafficLightWest_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightWest_yellow, Convert.ToBoolean(CrossroadData.trafficLightWest_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightWest_red, CrossroadData.Sharp7Addresses.bit_trafficLightWest_red, Convert.ToBoolean(CrossroadData.trafficLightWest_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_green, CrossroadData.Sharp7Addresses.bit_trafficLightEast_green, Convert.ToBoolean(CrossroadData.trafficLightEast_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightEast_yellow, Convert.ToBoolean(CrossroadData.trafficLightEast_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightEast_red, CrossroadData.Sharp7Addresses.bit_trafficLightEast_red, Convert.ToBoolean(CrossroadData.trafficLightEast_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_green, Convert.ToBoolean(CrossroadData.pedestrianSouth1_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth1_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth1_red, Convert.ToBoolean(CrossroadData.pedestrianSouth1_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_green, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_green, Convert.ToBoolean(CrossroadData.pedestrianSouth2_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianSouth2_red, CrossroadData.Sharp7Addresses.bit_pedestrianSouth2_red, Convert.ToBoolean(CrossroadData.pedestrianSouth2_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_green, Convert.ToBoolean(CrossroadData.pedestrianWest1_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest1_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest1_red, Convert.ToBoolean(CrossroadData.pedestrianWest1_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_green, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_green, Convert.ToBoolean(CrossroadData.pedestrianWest2_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_red, Convert.ToBoolean(CrossroadData.pedestrianWest2_red));
-                            
-                            // CrosswalkData 
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_crosswalkType, CrosswalkData.Sharp7Addresses.bit_crosswalkType, Convert.ToBoolean(CrosswalkData.crosswalkType));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStart, CrosswalkData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrosswalkData.btnStart));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnPause, CrosswalkData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrosswalkData.btnPause));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStop, CrosswalkData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrosswalkData.btnStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk1, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk1, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk2, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk2, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
-
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_green, CrosswalkData.Sharp7Addresses.bit_trafficLight1_green, Convert.ToBoolean(CrosswalkData.trafficLight1_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight1_yellow, Convert.ToBoolean(CrosswalkData.trafficLight1_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_red, CrosswalkData.Sharp7Addresses.bit_trafficLight1_red, Convert.ToBoolean(CrosswalkData.trafficLight1_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_green, CrosswalkData.Sharp7Addresses.bit_trafficLight2_green, Convert.ToBoolean(CrosswalkData.trafficLight2_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight2_yellow, Convert.ToBoolean(CrosswalkData.trafficLight2_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight2_red, CrosswalkData.Sharp7Addresses.bit_trafficLight2_red, Convert.ToBoolean(CrosswalkData.trafficLight2_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_green, CrosswalkData.Sharp7Addresses.bit_pedestrian1_green, Convert.ToBoolean(CrosswalkData.pedestrian1_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian1_red, CrosswalkData.Sharp7Addresses.bit_pedestrian1_red, Convert.ToBoolean(CrosswalkData.pedestrian1_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_green, CrosswalkData.Sharp7Addresses.bit_pedestrian2_green, Convert.ToBoolean(CrosswalkData.pedestrian2_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_red, CrosswalkData.Sharp7Addresses.bit_pedestrian2_red, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
-
-                            // RegulatorData 
-                            Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_btnReset, RegulatorData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(RegulatorData.btnReset));
-                            Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_switchstate, RegulatorData.Sharp7Addresses.bit_switchstate, Convert.ToBoolean(RegulatorData.switchstate));
-                            Sharp7.S7.SetIntAt(writeBuffer, RegulatorData.Sharp7Addresses.address_order, (short)(int.TryParse(RegulatorData.order, out var s7Ord) ? s7Ord : 0));
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_R1, float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7R1) ? s7R1 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_R2, float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7R2) ? s7R2 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_C1, float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7C1) ? s7C1 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_C2, float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7C2) ? s7C2 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uc1, float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uc1) ? s7Uc1 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uc2) ? s7Uc2 : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Td) ? s7Td : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Ts) ? s7Ts : 0f);
-                            Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uin, float.TryParse(RegulatorData.Uin, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uin) ? s7Uin : 0f);
-                            
-                            // CarLight 
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_btnReset, CarLightData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(CarLightData.btnReset));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_error, CarLightData.Sharp7Addresses.bit_error, Convert.ToBoolean(CarLightData.error));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorLight, CarLightData.Sharp7Addresses.bit_sensorLight, Convert.ToBoolean(CarLightData.sensorLight));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorConnectorConnected, CarLightData.Sharp7Addresses.bit_sensorConnectorConnected, Convert.ToBoolean(CarLightData.sensorConnectorConnected));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight, Convert.ToBoolean(CarLightData.lowBeamLight));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight, Convert.ToBoolean(CarLightData.highBeamLight));
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight, Convert.ToBoolean(CarLightData.turnLight));
-
-                            Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result, Convert.ToBoolean(CarLightData.result));
-
-                            #region CarWash & WashinMachine
-                            // CarWashData 
-                            /*
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 0, Convert.ToBoolean(CarWashData.btnEmergencyStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 1, Convert.ToBoolean(CarWashData.btnStart));
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 2, Convert.ToBoolean(CarWashData.btnStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 3, Convert.ToBoolean(CarWashData.ErrorSystem));
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 4, Convert.ToBoolean(CarWashData.CarPosition));
-                            Sharp7.S7.SetBitAt(writeBuffer, 10, 5, Convert.ToBoolean(CarWashData.ShowerPosition));
-                            
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 0, Convert.ToBoolean(CarWashData.Light_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 1, Convert.ToBoolean(CarWashData.Light_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 2, Convert.ToBoolean(CarWashData.Light_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 3, Convert.ToBoolean(CarWashData.Door1_Up));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 4, Convert.ToBoolean(CarWashData.Door1_Down));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 5, Convert.ToBoolean(CarWashData.Door2_Up));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 6, Convert.ToBoolean(CarWashData.Door2_Down));
-                            Sharp7.S7.SetBitAt(writeBuffer, 11, 7, Convert.ToBoolean(CarWashData.ChemicalsFront));
-                
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 0, Convert.ToBoolean(CarWashData.ChemicalsSides));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 1, Convert.ToBoolean(CarWashData.ChemicalsBack));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 2, Convert.ToBoolean(CarWashData.Prewash));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 3, Convert.ToBoolean(CarWashData.Water));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 4, Convert.ToBoolean(CarWashData.Wax));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 5, Convert.ToBoolean(CarWashData.Dry));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 6, Convert.ToBoolean(CarWashData.Brushes));
-                            Sharp7.S7.SetBitAt(writeBuffer, 12, 7, Convert.ToBoolean(CarWashData.Soap));
-                            
-                            Sharp7.S7.SetBitAt(writeBuffer, 13, 0, Convert.ToBoolean(CarWashData.ActiveFoam));
-                            Sharp7.S7.SetBitAt(writeBuffer, 13, 1, Convert.ToBoolean(CarWashData.MEMDoor));
-                            Sharp7.S7.SetBitAt(writeBuffer, 13, 2, Convert.ToBoolean(CarWashData.MEMDoorTrig));
-                            Sharp7.S7.SetBitAt(writeBuffer, 13, 3, Convert.ToBoolean(CarWashData.MEMDoorClosingtrig));
-                            */
-                            // WashingMachineData 
-                            /*
-                            Sharp7.S7.SetBitAt(writeBuffer, 15, 0, Convert.ToBoolean(WashingMachineData.btnEmergencyStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, 15, 1, Convert.ToBoolean(WashingMachineData.btnStart));
-                            Sharp7.S7.SetBitAt(writeBuffer, 15, 2, Convert.ToBoolean(WashingMachineData.btnStop));
-                            Sharp7.S7.SetBitAt(writeBuffer, 15, 3, Convert.ToBoolean(WashingMachineData.ErrorSystem));
-                            
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 0, Convert.ToBoolean(WashingMachineData.Light_green));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 1, Convert.ToBoolean(WashingMachineData.Light_yellow));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 2, Convert.ToBoolean(WashingMachineData.Light_red));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 3, Convert.ToBoolean(WashingMachineData.DoorClosed));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 4, Convert.ToBoolean(WashingMachineData.Chemicals));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 5, Convert.ToBoolean(WashingMachineData.Prewash));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 6, Convert.ToBoolean(WashingMachineData.Water));
-                            Sharp7.S7.SetBitAt(writeBuffer, 16, 7, Convert.ToBoolean(WashingMachineData.Wax));
-                            
-                            Sharp7.S7.SetBitAt(writeBuffer, 17, 0, Convert.ToBoolean(WashingMachineData.Dry));
-                            Sharp7.S7.SetBitAt(writeBuffer, 17, 1, Convert.ToBoolean(WashingMachineData.Brushes));
-                            Sharp7.S7.SetBitAt(writeBuffer, 17, 2, Convert.ToBoolean(WashingMachineData.Soap));
-                            Sharp7.S7.SetBitAt(writeBuffer, 17, 3, Convert.ToBoolean(WashingMachineData.ActiveFoam));
-                            */
-                            #endregion
-
-                            int write1 = _sharp7.writeDB(activeDBnumber, writeBuffer, 0);
-
-                            if (write1 == 0)
-                            {
-                                _ucCommunicationControl.SetStatus($"Sharp7: WriteDB OK - All data written to DB{activeDBnumber}");
-                            }
-                            else
-                            {
-                                _ucCommunicationControl.SetStatus($"Error in Sharp7 communication. WriteDB returns {write1}.");
-                                Logger.LogError($"Sharp7 writeDB error: Return code {write1} for DB {activeDBnumber}");
+                                Logger.LogException(ex, "CommunicationManager - Sharp7 read/write");
+                                _ucCommunicationControl.SetStatus($"Exception: Error in Sharp7 communication: {ex.Message}");
+                                await Task.Delay(500, token);
+                                continue;
                             }
 
                             break;

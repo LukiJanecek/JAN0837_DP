@@ -1316,8 +1316,8 @@ namespace JAN0837_DP.Communication
                                     // WRITE input values to server's holding registers
                                     // ═══════════════════════════════════════════════════════════
 
-                                    // CrossroadData inputs: registers 1-7
-                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 1, new bool[]
+                                    // CrossroadData inputs: registers 1-7 (wire address 0)
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 0, new bool[]
                                     {
                                         _modbusClient.StrToBool(CrossroadData.btnStart),
                                         _modbusClient.StrToBool(CrossroadData.btnPause),
@@ -1328,8 +1328,8 @@ namespace JAN0837_DP.Communication
                                         _modbusClient.StrToBool(CrossroadData.btnSouthCrosswalk2)
                                     });
 
-                                    // CrosswalkData inputs: registers 8-12
-                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 8, new bool[]
+                                    // CrosswalkData inputs: registers 8-12 (wire address 7)
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 7, new bool[]
                                     {
                                         _modbusClient.StrToBool(CrosswalkData.btnStart),
                                         _modbusClient.StrToBool(CrosswalkData.btnPause),
@@ -1338,7 +1338,7 @@ namespace JAN0837_DP.Communication
                                         _modbusClient.StrToBool(CrosswalkData.btnCrosswalk2)
                                     });
 
-                                    // RegulatorData inputs: registers 13-31 (bool+bool+int + 8×float)
+                                    // RegulatorData inputs: registers 13-31 (wire address 12)
                                     ushort[] regulatorRegisters = new ushort[19];
                                     regulatorRegisters[0] = (ushort)(_modbusClient.StrToBool(RegulatorData.btnReset) ? 1 : 0);
                                     regulatorRegisters[1] = (ushort)(_modbusClient.StrToBool(RegulatorData.switchstate) ? 1 : 0);
@@ -1352,10 +1352,10 @@ namespace JAN0837_DP.Communication
                                     ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2) ? uc2 : 0f, regulatorRegisters, 13);
                                     ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var td) ? td : 0f, regulatorRegisters, 15);
                                     ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var ts) ? ts : 0f, regulatorRegisters, 17);
-                                    _modbusClient.WriteMultipleRegisters(slaveId, 13, regulatorRegisters);
+                                    _modbusClient.WriteMultipleRegisters(slaveId, 12, regulatorRegisters);
 
-                                    // CarLight inputs: registers 32-35
-                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 32, new bool[]
+                                    // CarLight inputs: registers 32-35 (wire address 31)
+                                    _modbusClient.WriteMultipleRegistersAsBool(slaveId, 31, new bool[]
                                     {
                                         _modbusClient.StrToBool(CarLightData.btnReset),
                                         _modbusClient.StrToBool(CarLightData.error),
@@ -1367,8 +1367,8 @@ namespace JAN0837_DP.Communication
                                     // READ output values from server's holding registers
                                     // ═══════════════════════════════════════════════════════════
 
-                                    // CrossroadData outputs: registers 40-60 (21 bools)
-                                    bool[] crossroadOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 40, 21);
+                                    // CrossroadData outputs: registers 40-60 (wire address 39)
+                                    bool[] crossroadOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 39, 21);
                                     if (crossroadOutputs != null && crossroadOutputs.Length >= 21)
                                     {
                                         CrossroadData.crossroadType = _modbusClient.BoolToStr(crossroadOutputs[0]);
@@ -1394,8 +1394,8 @@ namespace JAN0837_DP.Communication
                                         CrossroadData.pedestrianWest2_red = _modbusClient.BoolToStr(crossroadOutputs[20]);
                                     }
 
-                                    // CrosswalkData outputs: registers 61-71 (11 bools)
-                                    bool[] crosswalkOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 61, 11);
+                                    // CrosswalkData outputs: registers 61-71 (wire address 60)
+                                    bool[] crosswalkOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 60, 11);
                                     if (crosswalkOutputs != null && crosswalkOutputs.Length >= 11)
                                     {
                                         CrosswalkData.crosswalkType = _modbusClient.BoolToStr(crosswalkOutputs[0]);
@@ -1411,8 +1411,8 @@ namespace JAN0837_DP.Communication
                                         CrosswalkData.pedestrian2_red = _modbusClient.BoolToStr(crosswalkOutputs[10]);
                                     }
 
-                                    // RegulatorData outputs: Uin as float (2 registers at 72-73)
-                                    ushort[] regulatorOutputRegs = _modbusClient.ReadHoldingRegisters(slaveId, 72, 2);
+                                    // RegulatorData outputs: Uin as float (registers 72-73, wire address 71)
+                                    ushort[] regulatorOutputRegs = _modbusClient.ReadHoldingRegisters(slaveId, 71, 2);
                                     if (regulatorOutputRegs != null && regulatorOutputRegs.Length >= 2)
                                     {
                                         RegulatorData.Uin = ModbusHelper.RegistersToFloat(regulatorOutputRegs, 0).ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -1420,8 +1420,8 @@ namespace JAN0837_DP.Communication
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight outputs: registers 74-77 (4 bools)
-                                    bool[] carlightOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 74, 4);
+                                    // CarLight outputs: registers 74-77 (wire address 73)
+                                    bool[] carlightOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 73, 4);
                                     if (carlightOutputs != null && carlightOutputs.Length >= 4)
                                     {
                                         CarLightData.lowBeamLight = _modbusClient.BoolToStr(carlightOutputs[0]);

@@ -16,21 +16,21 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
     // Shared helpers for float ↔ Modbus register conversion
     public static class ModbusHelper
     {
-        // Float (32-bit) occupies 2 Modbus registers (big-endian word order)
+        // Float (32-bit) occupies 2 Modbus registers (CDAB word order: low word first, high word second)
         public static void FloatToRegisters(float value, ushort[] registers, int offset)
         {
             byte[] bytes = BitConverter.GetBytes(value);
-            registers[offset] = (ushort)((bytes[3] << 8) | bytes[2]);     // high word
-            registers[offset + 1] = (ushort)((bytes[1] << 8) | bytes[0]); // low word
+            registers[offset] = (ushort)((bytes[1] << 8) | bytes[0]);     // low word
+            registers[offset + 1] = (ushort)((bytes[3] << 8) | bytes[2]); // high word
         }
 
         public static float RegistersToFloat(ushort[] registers, int offset)
         {
             byte[] bytes = new byte[4];
-            bytes[3] = (byte)(registers[offset] >> 8);
-            bytes[2] = (byte)(registers[offset] & 0xFF);
-            bytes[1] = (byte)(registers[offset + 1] >> 8);
-            bytes[0] = (byte)(registers[offset + 1] & 0xFF);
+            bytes[1] = (byte)(registers[offset] >> 8);
+            bytes[0] = (byte)(registers[offset] & 0xFF);
+            bytes[3] = (byte)(registers[offset + 1] >> 8);
+            bytes[2] = (byte)(registers[offset + 1] & 0xFF);
             return BitConverter.ToSingle(bytes, 0);
         }
     }
@@ -321,7 +321,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
             => int.TryParse(s, out int result) ? result : 0;
 
         public float StrToFloat(string s)
-            => float.TryParse(s, out float result) ? result : 0.0f;
+            => float.TryParse(s, System.Globalization.NumberStyles.Float | System.Globalization.NumberStyles.AllowThousands, System.Globalization.CultureInfo.InvariantCulture, out float result) ? result : 0.0f;
 
         public string FloatToStr(float f)
             => f.ToString();
@@ -408,7 +408,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
         {
             if (slave?.DataStore?.CoilDiscretes == null) return;
 
-            ushort idx = (ushort)(address ); // 0-based
+            ushort idx = (ushort)(address);
             if (idx < slave.DataStore.CoilDiscretes.Count)
             {
                 slave.DataStore.CoilDiscretes[idx] = value;
@@ -426,7 +426,7 @@ namespace JAN0837_DP.Communication.comModbusTCPIP
 
             for (int i = 0; i < values.Length; i++)
             {
-                ushort idx = (ushort)(startAddress + i); // 0-based
+                ushort idx = (ushort)(startAddress + i);
                 if (idx < slave.DataStore.CoilDiscretes.Count)
                 {
                     slave.DataStore.CoilDiscretes[idx] = values[i];

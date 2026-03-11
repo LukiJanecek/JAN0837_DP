@@ -19,7 +19,7 @@ function CommunicationParamsSidebar({data, refresh, isFetching}) {
     <div className="p-3 border-start h-100">
       <Card>
         <Card.Header>
-          <span>Aktuální data z API</span>
+          <span>Actual data from API</span>
             <Badge bg="light" text="dark">
               {lastUpdated ? lastUpdated.toLocaleTimeString() : '—'}
             </Badge>
@@ -47,7 +47,7 @@ function CommunicationParamsSidebar({data, refresh, isFetching}) {
         </Card.Body>
         <Card.Footer className="d-flex justify-content-between">
           <small className="text-muted">
-            Stav: {isFetching ? 'Načítám…' : 'Hotovo'}
+            State: {isFetching ? 'Loading...' : 'Done'}
           </small>
           <Button size="sm" variant="outline-secondary" onClick={refresh}>
             Refresh
@@ -78,12 +78,13 @@ function CommunicationPage() {
             <Col xs={12} lg={8} className="p-3">
                 <div>
                     <h1>Communication Page</h1> 
-                    {error && <div style={{color:'red'}}>Chyba: {error}</div>}
+                    {error && <div style={{color:'red'}}>Error: {error}</div>}
                     
-                    <div style={{ marginTop: 12 }}><strong>Obnovovat každých:</strong> {interval}</div>
+                    <div style={{ marginTop: 12 }}><strong>Refresh every:</strong> {interval} <strong>s</strong></div> 
                     {/*
                     <label>Obnovovat každých{' '} <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value) || 2000)} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
                     */}
+                    {/*
                     <div style={{ marginTop: 12 }}><strong>Number:</strong> {number}</div>
 
                     <button style={{ marginTop: '0.5rem' }} onClick={inc} disabled={isFetching}>Zvýšit o 1</button>
@@ -92,12 +93,12 @@ function CommunicationPage() {
 
                     <div><strong>Status:</strong> {String(toggle)}</div>
 
-                    <button style={{ marginTop: '0.5rem' }} onClick={() => setToggleAsync(!toggle)} /*disabled={isFetching}*/>Přepnout status ({String(toggle)})</button>
+                    <button style={{ marginTop: '0.5rem' }} onClick={() => setToggleAsync(!toggle)} disabled={isFetching}>Přepnout status ({String(toggle)})</button>
 
                     <div style={{ marginTop: 12 }}><strong>Text:</strong> {text}</div>
-
+                    */}
                     <div>
-                        <button onClick={refresh} style={{ marginTop: '1rem' }} disabled={isFetching}>Obnovit teď</button>
+                        <button onClick={refresh} style={{ marginTop: '1rem' }} disabled={isFetching}>Refresh now</button>
                         <span style={{ marginLeft: 8 }}>{isFetching ? 'Fetching…' : 'Idle'}</span>
                     </div>
                 </div>

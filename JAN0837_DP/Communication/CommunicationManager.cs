@@ -818,6 +818,41 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
+                                    // ═══════════════════════════════════════════════════════════════════
+                                    // OPTIMIZED: BulkRead all outputs → ComputePlantStep → BulkWrite all inputs
+                                    // Reduces ~50+ individual OPC UA calls to 2 (1x BulkRead + 1x BulkWrite)
+                                    // ═══════════════════════════════════════════════════════════════════
+
+                                    // 1) Hromadné čtení všech výstupů z PLC
+                                    if (!opcuaClient.BulkReadAllOutputs())
+                                    {
+                                        _ucCommunicationControl.SetStatus("OPC UA: BulkRead failed or session lost, waiting for reconnection...");
+                                        Logger.LogWarning("OPC UA Client: BulkReadAllOutputs failed.");
+                                        await Task.Delay(1000, token);
+                                        continue;
+                                    }
+
+                                    // 2) Výpočet PID regulátoru
+                                    PlantModel.ComputePlantStep();
+
+                                    // 3) Hromadný zápis všech vstupů do PLC
+                                    if (!opcuaClient.BulkWriteAllInputs())
+                                    {
+                                        Logger.LogWarning("OPC UA: BulkWriteAllInputs partially or fully failed.");
+                                    }
+
+                                    if (!opcuaClient.connected)
+                                    {
+                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost, waiting for reconnection...");
+                                        Logger.LogWarning("OPC UA Client: Session lost after bulk operations.");
+                                        await Task.Delay(1000, token);
+                                        continue;
+                                    }
+
+                                    _ucCommunicationControl.SetStatus("OPC UA Client: All data synchronized (BulkRead → Compute → BulkWrite)");
+
+                                    // ── OLD INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) ──
+                                    /*
                                     // CrossroadData 
                                     // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnStart, CrossroadData.btnStart == "true");
@@ -828,16 +863,8 @@ namespace JAN0837_DP.Communication
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnSouthCrosswalk1, CrossroadData.btnSouthCrosswalk1 == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrossroadData.OpcUaNodeIds.btnSouthCrosswalk2, CrossroadData.btnSouthCrosswalk2 == "true");
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // Read output values from PLC 
                                     CrossroadData.crossroadType = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.crossroadType) ? "true" : "false";
                                     CrossroadData.trafficLightNorth_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightNorth_green) ? "true" : "false";
                                     CrossroadData.trafficLightNorth_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.trafficLightNorth_yellow) ? "true" : "false";
@@ -860,33 +887,16 @@ namespace JAN0837_DP.Communication
                                     CrossroadData.pedestrianWest2_green = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianWest2_green) ? "true" : "false";
                                     CrossroadData.pedestrianWest2_red = opcuaClient.ReadOPCUABool(opcuaClient, CrossroadData.OpcUaNodeIds.pedestrianWest2_red) ? "true" : "false";
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // CrosswalkData
-                                    // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnStart, CrosswalkData.btnStart == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnPause, CrosswalkData.btnPause == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnStop, CrosswalkData.btnStop == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalk1, CrosswalkData.btnCrosswalk1 == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CrosswalkData.OpcUaNodeIds.btnCrosswalk2, CrosswalkData.btnCrosswalk2 == "true");
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // Read output values from PLC 
                                     CrosswalkData.crosswalkType = opcuaClient.ReadOPCUABool(opcuaClient, CrosswalkData.OpcUaNodeIds.crosswalkType) ? "true" : "false";
                                     CrosswalkData.trafficLight1_green = opcuaClient.ReadOPCUABool(opcuaClient, CrosswalkData.OpcUaNodeIds.trafficLight1_green) ? "true" : "false";
                                     CrosswalkData.trafficLight1_yellow = opcuaClient.ReadOPCUABool(opcuaClient, CrosswalkData.OpcUaNodeIds.trafficLight1_yellow) ? "true" : "false";
@@ -899,83 +909,43 @@ namespace JAN0837_DP.Communication
                                     CrosswalkData.pedestrian2_green = opcuaClient.ReadOPCUABool(opcuaClient, CrosswalkData.OpcUaNodeIds.pedestrian2_green) ? "true" : "false";
                                     CrosswalkData.pedestrian2_red = opcuaClient.ReadOPCUABool(opcuaClient, CrosswalkData.OpcUaNodeIds.pedestrian2_red) ? "true" : "false";
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // RegulatorData 
-                                    // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.btnReset, RegulatorData.btnReset == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true");
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, (short)(int.TryParse(RegulatorData.order, out var ordVal) ? ordVal : 0));
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r1Val) ? r1Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r2Val) ? r2Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c1Val) ? c1Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c2Val) ? c2Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1, float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1Val) ? uc1Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2Val) ? uc2Val : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tdVal) ? tdVal : 0f);
-                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tsVal) ? tsVal : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.order, (short)(int.TryParse(RegulatorData.order, out var ordVal2) ? ordVal2 : 0));
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R1, float.TryParse(RegulatorData.R1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r1Val2) ? r1Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.R2, float.TryParse(RegulatorData.R2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var r2Val2) ? r2Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C1, float.TryParse(RegulatorData.C1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c1Val2) ? c1Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.C2, float.TryParse(RegulatorData.C2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var c2Val2) ? c2Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc1, float.TryParse(RegulatorData.Uc1, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc1Val2) ? uc1Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var uc2Val2) ? uc2Val2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tdVal2) ? tdVal2 : 0f);
+                                    opcuaClient.WriteOPCUAValue(opcuaClient, RegulatorData.OpcUaNodeIds.Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var tsVal2) ? tsVal2 : 0f);
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // read output values from PLC 
                                     RegulatorData.Uin = opcuaClient.ReadOPCUAFloat(opcuaClient, RegulatorData.OpcUaNodeIds.Uin).ToString();
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during read, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLightData 
-                                    // Write input values to PLC
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.btnReset, CarLightData.btnReset == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.error, CarLightData.error == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorLight, CarLightData.sensorLight == "true");
                                     opcuaClient.WriteOPCUAValue(opcuaClient, CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true");
 
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during write, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during write, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
 
-                                    // Read output values from PLC 
                                     CarLightData.btnReset = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.btnReset) ? "true" : "false";
                                     CarLightData.lowBeamLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.lowBeamLight) ? "true" : "false";
                                     CarLightData.highBeamLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.highBeamLight) ? "true" : "false";
                                     CarLightData.turnLight = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.turnLight) ? "true" : "false";
                                     CarLightData.result = opcuaClient.ReadOPCUABool(opcuaClient, CarLightData.OpcUaNodeIds.result) ? "true" : "false";
 
-                                    // If session became invalid during reads, skip rest this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during read, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
+                                    if (!opcuaClient.connected) { await Task.Delay(1000, token); continue; }
+                                    */
 
                                     #region CarWash & WashingMachine
                                     // CarWashData
@@ -1055,15 +1025,6 @@ namespace JAN0837_DP.Communication
                                     WashingMachineData.ActiveFoam = opcuaClient.ReadOPCUABool(opcuaClient, WashingMachineData.OpcUaNodeIds.ActiveFoam) ? "true" : "false";
                                     */
                                     #endregion
-
-                                    // If session became invalid during writes, skip reads this cycle
-                                    if (!opcuaClient.connected)
-                                    {
-                                        _ucCommunicationControl.SetStatus("OPC UA: Session lost during read, will reconnect...");
-                                        Logger.LogWarning("OPC UA Client: Session lost during read, waiting for reconnection...");
-                                        await Task.Delay(1000, token);
-                                        continue;
-                                    }
                                 }
                                 catch (Exception ex)
                                 {

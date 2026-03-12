@@ -5,80 +5,70 @@
 /* ── Visual light panel ───────────────────────────────── */
 .carlight-canvas {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #1a1a2e;
+  margin-top: 8px;
+}
+
+.carlight-image-wrap {
+  position: relative;
+  width: min(100%, 980px);
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  background: #0f1622;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
-.carlight-headlamp {
-  display: flex;
-  align-items: stretch;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
+.carlight-image {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.carlight-cell {
-  width: clamp(110px, 16vw, 170px);
+.carlight-overlay-status {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.carlight-glow {
+  position: absolute;
+  width: clamp(24px, 3.8vw, 52px);
   aspect-ratio: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #6c757d;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.35);
-  transition: color 0.25s ease, text-shadow 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.carlight-cell i {
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-  transition: color 0.3s ease, filter 0.3s ease;
+.carlight-glow.on {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* marker – yellow */
-.carlight-cell--marker.on {
-  color: #ffc107;
-  border-color: rgba(255,193,7,.65);
-  box-shadow: inset 0 0 16px rgba(255,193,7,.18), 0 0 12px rgba(255,193,7,.25);
-  text-shadow: 0 0 12px rgba(255,193,7,.6);
-}
-.carlight-cell--marker.on i {
-  color: #ffc107;
-  filter: drop-shadow(0 0 10px #ffc107);
+.carlight-glow--turn {
+  left: 64%;
+  top: 34%;
+  background: radial-gradient(circle, rgba(13, 202, 240, 0.95) 0%, rgba(13, 202, 240, 0.45) 45%, rgba(13, 202, 240, 0) 78%);
+  box-shadow: 0 0 24px rgba(13, 202, 240, 0.75);
 }
 
-/* brake – white/blue */
-.carlight-cell--brake.on {
-  color: #dce7ff;
-  border-color: rgba(220,231,255,.75);
-  box-shadow: inset 0 0 16px rgba(220,231,255,.2), 0 0 12px rgba(220,231,255,.3);
-  text-shadow: 0 0 12px rgba(220,231,255,.7);
-}
-.carlight-cell--brake.on i {
-  color: #dce7ff;
-  filter: drop-shadow(0 0 10px #dce7ff);
+.carlight-glow--high {
+  left: 73%;
+  top: 50%;
+  background: radial-gradient(circle, rgba(220, 231, 255, 0.96) 0%, rgba(220, 231, 255, 0.5) 48%, rgba(220, 231, 255, 0) 80%);
+  box-shadow: 0 0 28px rgba(220, 231, 255, 0.8);
 }
 
-/* turn – cyan / info */
-.carlight-cell--turn.on {
-  color: #0dcaf0;
-  border-color: rgba(13,202,240,.65);
-  box-shadow: inset 0 0 16px rgba(13,202,240,.18), 0 0 12px rgba(13,202,240,.25);
-  text-shadow: 0 0 12px rgba(13,202,240,.6);
+.carlight-glow--low {
+  left: 81%;
+  top: 67%;
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.96) 0%, rgba(255, 193, 7, 0.5) 45%, rgba(255, 193, 7, 0) 78%);
+  box-shadow: 0 0 24px rgba(255, 193, 7, 0.78);
 }
-.carlight-cell--turn.on i {
-  color: #0dcaf0;
-  filter: drop-shadow(0 0 10px #0dcaf0);
+
+@media (max-width: 992px) {
+  .carlightpage {
+    min-width: 0;
+  }
 }
 
 /* ── Shared button styles (reused from other pages) ───── */

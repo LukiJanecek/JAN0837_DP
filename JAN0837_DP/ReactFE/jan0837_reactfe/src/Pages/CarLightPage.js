@@ -16,25 +16,28 @@ const toBool = (v) => {
 const toBoolString = (v) => (v ? 'true' : 'false');
 
 function CarLightCanvas({ d }) {
+  const connectorConnected = toBool(d?.sensorConnectorConnected);
   const errorActive = toBool(d?.error);
-  const marker = toBool(d?.lowBeamLight) && !errorActive;
-  const brake  = toBool(d?.highBeamLight) && !errorActive;
-  const turn   = toBool(d?.turnLight) && !errorActive;
+  const marker = connectorConnected && toBool(d?.lowBeamLight) && !errorActive;
+  const brake  = connectorConnected && toBool(d?.highBeamLight) && !errorActive;
+  const turn   = connectorConnected && toBool(d?.turnLight) && !errorActive;
+  const source = connectorConnected
+    ? '/images/carlight/carlight_connected.png'
+    : '/images/carlight/carlight_disconnected.png';
 
   return (
     <div className="carlight-canvas">
-      <div className="carlight-headlamp">
-        <div className={`carlight-cell carlight-cell--turn ${turn ? 'on' : ''}`}>
-          <i className="bi bi-arrow-left-right" />
-          <span>Turn</span>
-        </div>
-        <div className={`carlight-cell carlight-cell--brake ${brake ? 'on' : ''}`}>
-          <i className="bi bi-sun-fill" />
-          <span>High Beam</span>
-        </div>
-        <div className={`carlight-cell carlight-cell--marker ${marker ? 'on' : ''}`}>
-          <i className="bi bi-lightbulb-fill" />
-          <span>Low Beam</span>
+      <div className="carlight-image-wrap">
+        <img className="carlight-image" src={source} alt="Car light" />
+
+        <span className={`carlight-glow carlight-glow--turn ${turn ? 'on' : ''}`} />
+        <span className={`carlight-glow carlight-glow--high ${brake ? 'on' : ''}`} />
+        <span className={`carlight-glow carlight-glow--low ${marker ? 'on' : ''}`} />
+
+        <div className="carlight-overlay-status">
+          <Badge bg={connectorConnected ? 'success' : 'secondary'}>
+            Connector: {String(connectorConnected)}
+          </Badge>
         </div>
       </div>
     </div>
@@ -48,6 +51,7 @@ function CarLightParamsSidebar() {
   const lowBeamLight = toBool(d?.lowBeamLight);
   const highBeamLight = toBool(d?.highBeamLight);
   const turnLight   = toBool(d?.turnLight);
+  const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
   const [manualError, setManualError] = useState(false);
   const [cfg, setCfg] = useState({
     aBps: '1',
@@ -124,16 +128,15 @@ function CarLightParamsSidebar() {
 
   const autoError = mismatch.A || mismatch.B || mismatch.C;
   const errorState = manualError || autoError;
-  const sensorLight = (lowBeamLight || highBeamLight || turnLight) && !errorState;
-  const sensorConnectorConnected = lowBeamLight || highBeamLight || turnLight;
+  const effectiveLowBeam = sensorConnectorConnected && lowBeamLight && !errorState;
+  const effectiveHighBeam = sensorConnectorConnected && highBeamLight && !errorState;
+  const effectiveTurn = sensorConnectorConnected && turnLight && !errorState;
+  const sensorLight = effectiveLowBeam || effectiveHighBeam || effectiveTurn;
 
   useEffect(() => {
     const updates = {};
     if (toBool(d?.sensorLight) !== sensorLight) {
       updates.sensorLight = toBoolString(sensorLight);
-    }
-    if (toBool(d?.sensorConnectorConnected) !== sensorConnectorConnected) {
-      updates.sensorConnectorConnected = toBoolString(sensorConnectorConnected);
     }
     if (toBool(d?.error) !== errorState) {
       updates.error = toBoolString(errorState);
@@ -141,7 +144,7 @@ function CarLightParamsSidebar() {
     if (Object.keys(updates).length > 0) {
       saveSection(updates);
     }
-  }, [d?.sensorLight, d?.sensorConnectorConnected, d?.error, sensorLight, sensorConnectorConnected, errorState, saveSection]);
+  }, [d?.sensorLight, d?.error, sensorLight, errorState, saveSection]);
 
   return (
     <div>
@@ -233,6 +236,16 @@ function CarLightParamsSidebar() {
           <Col xs={6}>{totalSumTime.toFixed(5)} s</Col>
         </Row>
       </div>
+
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="carlight-connector"
+          label={`Connector connected (${String(sensorConnectorConnected)})`}
+          checked={sensorConnectorConnected}
+          onChange={e => saveSection({ sensorConnectorConnected: e.target.checked })}
+        />
+      </Form.Group>
 
       <Form.Group className="mb-3">
         <Form.Check

@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.Globalization;
+using JAN0837_DP.Data;
 using JAN0837_DP.Log;
 
 namespace JAN0837_DP.Communication.comOPCUA
@@ -612,11 +614,13 @@ namespace JAN0837_DP.Communication.comOPCUA
 
                 if (success)
                 {
-                    Console.WriteLine("Reconnection successful!");
+                    Console.WriteLine("Reconnection successfull!");
+                    Logger.LogInfo("OPCUA reconnection successfull.");
                 }
                 else
                 {
                     Console.WriteLine("Reconnection failed.");
+                    Logger.LogError("OPCUA reconnection failed.");
                 }
 
                 return success;
@@ -669,6 +673,7 @@ namespace JAN0837_DP.Communication.comOPCUA
                 if (StatusCode.IsBad(readValues[0].StatusCode))
                 {
                     Console.WriteLine($"Warning: Node {nodeId} read status before write: {readValues[0].StatusCode}");
+                    Logger.LogError($"Warning: Node {nodeId} read status before write: {readValues[0].StatusCode}");
                 }
 
                 var wv = new WriteValue
@@ -1112,6 +1117,288 @@ namespace JAN0837_DP.Communication.comOPCUA
             }
 
             return true;
+        }
+
+        private void HandleSessionError(ServiceResultException ex, string context)
+        {
+            if (ex.StatusCode == StatusCodes.BadSessionIdInvalid ||
+                ex.StatusCode == StatusCodes.BadSessionClosed ||
+                ex.StatusCode == StatusCodes.BadSessionNotActivated ||
+                ex.StatusCode == StatusCodes.BadSecureChannelClosed ||
+                ex.StatusCode == StatusCodes.BadConnectionClosed ||
+                ex.StatusCode == StatusCodes.BadNotConnected ||
+                ex.StatusCode == StatusCodes.BadServerNotConnected)
+            {
+                Logger.LogError($"Session error in {context}: [0x{ex.StatusCode:X8}] {ex.Message}");
+                connected = false;
+                if (!_isReconnecting)
+                {
+                    _ = TryReconnectAsync();
+                }
+            }
+            else
+            {
+                Logger.LogError($"OPC UA error in {context}: [0x{ex.StatusCode:X8}] {ex.Message}");
+            }
+        }
+
+        public bool BulkWrite(List<(string nodeId, object value)> items)
+        {
+            try
+            {
+                var session = clientSession;
+                if (session == null || !session.Connected)
+                {
+                    connected = false;
+                    return false;
+                }
+
+                var writeValues = new WriteValueCollection();
+                foreach (var (nodeId, value) in items)
+                {
+                    writeValues.Add(new WriteValue
+                    {
+                        NodeId = NodeId.Parse(nodeId),
+                        AttributeId = Attributes.Value,
+                        Value = new DataValue(new Variant(value))
+                    });
+                }
+
+                session.Write(null, writeValues, out StatusCodeCollection results, out _);
+
+                bool allOk = true;
+                for (int i = 0; i < results.Count; i++)
+                {
+                    if (StatusCode.IsBad(results[i]))
+                    {
+                        Logger.LogError($"BulkWrite failed for {items[i].nodeId}: 0x{results[i].Code:X8}");
+                        allOk = false;
+                    }
+                }
+                return allOk;
+            }
+            catch (ServiceResultException ex)
+            {
+                HandleSessionError(ex, "BulkWrite");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "OPC UA BulkWrite");
+                return false;
+            }
+        }
+
+        public DataValueCollection BulkRead(string[] nodeIds)
+        {
+            try
+            {
+                var session = clientSession;
+                if (session == null || !session.Connected)
+                {
+                    connected = false;
+                    return null;
+                }
+
+                var readValueIds = new ReadValueIdCollection();
+                foreach (var nodeId in nodeIds)
+                {
+                    readValueIds.Add(new ReadValueId
+                    {
+                        NodeId = NodeId.Parse(nodeId),
+                        AttributeId = Attributes.Value
+                    });
+                }
+
+                session.Read(null, 0, TimestampsToReturn.Neither, readValueIds, out DataValueCollection results, out _);
+                return results;
+            }
+            catch (ServiceResultException ex)
+            {
+                HandleSessionError(ex, "BulkRead");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "OPC UA BulkRead");
+                return null;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // Bulk helpers for extracting values from DataValueCollection
+        // ═══════════════════════════════════════════════════════════════════
+
+        private static bool GetBoolResult(DataValueCollection results, int index)
+        {
+            if (index < results.Count && StatusCode.IsGood(results[index].StatusCode) && results[index].Value != null)
+                return Convert.ToBoolean(results[index].Value);
+            return false;
+        }
+
+        private static float GetFloatResult(DataValueCollection results, int index)
+        {
+            if (index < results.Count && StatusCode.IsGood(results[index].StatusCode) && results[index].Value != null)
+                return Convert.ToSingle(results[index].Value);
+            return 0f;
+        }
+
+        private static float ParseFloat(string s)
+            => float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v) ? v : 0f;
+
+        // ═══════════════════════════════════════════════════════════════════
+        // BulkReadAllOutputs – hromadné čtení všech výstupů z PLC (1x OPC UA Read)
+        // ═══════════════════════════════════════════════════════════════════
+
+        public bool BulkReadAllOutputs()
+        {
+            string[] readNodeIds =
+            [
+                // CrossroadData outputs (index 0–20)
+                CrossroadData.OpcUaNodeIds.crossroadType,               // 0
+                CrossroadData.OpcUaNodeIds.trafficLightNorth_green,      // 1
+                CrossroadData.OpcUaNodeIds.trafficLightNorth_yellow,     // 2
+                CrossroadData.OpcUaNodeIds.trafficLightNorth_red,        // 3
+                CrossroadData.OpcUaNodeIds.trafficLightSouth_green,      // 4
+                CrossroadData.OpcUaNodeIds.trafficLightSouth_yellow,     // 5
+                CrossroadData.OpcUaNodeIds.trafficLightSouth_red,        // 6
+                CrossroadData.OpcUaNodeIds.trafficLightEast_green,       // 7
+                CrossroadData.OpcUaNodeIds.trafficLightEast_yellow,      // 8
+                CrossroadData.OpcUaNodeIds.trafficLightEast_red,         // 9
+                CrossroadData.OpcUaNodeIds.trafficLightWest_green,       // 10
+                CrossroadData.OpcUaNodeIds.trafficLightWest_yellow,      // 11
+                CrossroadData.OpcUaNodeIds.trafficLightWest_red,         // 12
+                CrossroadData.OpcUaNodeIds.pedestrianSouth1_green,       // 13
+                CrossroadData.OpcUaNodeIds.pedestrianSouth1_red,         // 14
+                CrossroadData.OpcUaNodeIds.pedestrianSouth2_green,       // 15
+                CrossroadData.OpcUaNodeIds.pedestrianSouth2_red,         // 16
+                CrossroadData.OpcUaNodeIds.pedestrianWest1_green,        // 17
+                CrossroadData.OpcUaNodeIds.pedestrianWest1_red,          // 18
+                CrossroadData.OpcUaNodeIds.pedestrianWest2_green,        // 19
+                CrossroadData.OpcUaNodeIds.pedestrianWest2_red,          // 20
+
+                // CrosswalkData outputs (index 21–31)
+                CrosswalkData.OpcUaNodeIds.crosswalkType,                // 21
+                CrosswalkData.OpcUaNodeIds.trafficLight1_green,          // 22
+                CrosswalkData.OpcUaNodeIds.trafficLight1_yellow,         // 23
+                CrosswalkData.OpcUaNodeIds.trafficLight1_red,            // 24
+                CrosswalkData.OpcUaNodeIds.trafficLight2_green,          // 25
+                CrosswalkData.OpcUaNodeIds.trafficLight2_yellow,         // 26
+                CrosswalkData.OpcUaNodeIds.trafficLight2_red,            // 27
+                CrosswalkData.OpcUaNodeIds.pedestrian1_green,            // 28
+                CrosswalkData.OpcUaNodeIds.pedestrian1_red,              // 29
+                CrosswalkData.OpcUaNodeIds.pedestrian2_green,            // 30
+                CrosswalkData.OpcUaNodeIds.pedestrian2_red,              // 31
+
+                // RegulatorData output (index 32)
+                RegulatorData.OpcUaNodeIds.Uin,                          // 32
+
+                // CarLightData outputs (index 33–37)
+                CarLightData.OpcUaNodeIds.btnReset,                      // 33
+                CarLightData.OpcUaNodeIds.lowBeamLight,                  // 34
+                CarLightData.OpcUaNodeIds.highBeamLight,                 // 35
+                CarLightData.OpcUaNodeIds.turnLight,                     // 36
+                CarLightData.OpcUaNodeIds.result                         // 37
+            ];
+
+            var results = BulkRead(readNodeIds);
+            if (results == null)
+                return false;
+
+            // CrossroadData outputs (index 0–20)
+            CrossroadData.crossroadType           = GetBoolResult(results, 0)  ? "true" : "false";
+            CrossroadData.trafficLightNorth_green = GetBoolResult(results, 1)  ? "true" : "false";
+            CrossroadData.trafficLightNorth_yellow= GetBoolResult(results, 2)  ? "true" : "false";
+            CrossroadData.trafficLightNorth_red   = GetBoolResult(results, 3)  ? "true" : "false";
+            CrossroadData.trafficLightSouth_green = GetBoolResult(results, 4)  ? "true" : "false";
+            CrossroadData.trafficLightSouth_yellow= GetBoolResult(results, 5)  ? "true" : "false";
+            CrossroadData.trafficLightSouth_red   = GetBoolResult(results, 6)  ? "true" : "false";
+            CrossroadData.trafficLightEast_green  = GetBoolResult(results, 7)  ? "true" : "false";
+            CrossroadData.trafficLightEast_yellow = GetBoolResult(results, 8)  ? "true" : "false";
+            CrossroadData.trafficLightEast_red    = GetBoolResult(results, 9)  ? "true" : "false";
+            CrossroadData.trafficLightWest_green  = GetBoolResult(results, 10) ? "true" : "false";
+            CrossroadData.trafficLightWest_yellow = GetBoolResult(results, 11) ? "true" : "false";
+            CrossroadData.trafficLightWest_red    = GetBoolResult(results, 12) ? "true" : "false";
+            CrossroadData.pedestrianSouth1_green  = GetBoolResult(results, 13) ? "true" : "false";
+            CrossroadData.pedestrianSouth1_red    = GetBoolResult(results, 14) ? "true" : "false";
+            CrossroadData.pedestrianSouth2_green  = GetBoolResult(results, 15) ? "true" : "false";
+            CrossroadData.pedestrianSouth2_red    = GetBoolResult(results, 16) ? "true" : "false";
+            CrossroadData.pedestrianWest1_green   = GetBoolResult(results, 17) ? "true" : "false";
+            CrossroadData.pedestrianWest1_red     = GetBoolResult(results, 18) ? "true" : "false";
+            CrossroadData.pedestrianWest2_green   = GetBoolResult(results, 19) ? "true" : "false";
+            CrossroadData.pedestrianWest2_red     = GetBoolResult(results, 20) ? "true" : "false";
+
+            // CrosswalkData outputs (index 21–31)
+            CrosswalkData.crosswalkType           = GetBoolResult(results, 21) ? "true" : "false";
+            CrosswalkData.trafficLight1_green     = GetBoolResult(results, 22) ? "true" : "false";
+            CrosswalkData.trafficLight1_yellow    = GetBoolResult(results, 23) ? "true" : "false";
+            CrosswalkData.trafficLight1_red       = GetBoolResult(results, 24) ? "true" : "false";
+            CrosswalkData.trafficLight2_green     = GetBoolResult(results, 25) ? "true" : "false";
+            CrosswalkData.trafficLight2_yellow    = GetBoolResult(results, 26) ? "true" : "false";
+            CrosswalkData.trafficLight2_red       = GetBoolResult(results, 27) ? "true" : "false";
+            CrosswalkData.pedestrian1_green       = GetBoolResult(results, 28) ? "true" : "false";
+            CrosswalkData.pedestrian1_red         = GetBoolResult(results, 29) ? "true" : "false";
+            CrosswalkData.pedestrian2_green       = GetBoolResult(results, 30) ? "true" : "false";
+            CrosswalkData.pedestrian2_red         = GetBoolResult(results, 31) ? "true" : "false";
+
+            // RegulatorData output (index 32)
+            RegulatorData.Uin = GetFloatResult(results, 32).ToString(CultureInfo.InvariantCulture);
+
+            // CarLightData outputs (index 33–37)
+            CarLightData.btnReset       = GetBoolResult(results, 33) ? "true" : "false";
+            CarLightData.lowBeamLight   = GetBoolResult(results, 34) ? "true" : "false";
+            CarLightData.highBeamLight  = GetBoolResult(results, 35) ? "true" : "false";
+            CarLightData.turnLight      = GetBoolResult(results, 36) ? "true" : "false";
+            CarLightData.result         = GetBoolResult(results, 37) ? "true" : "false";
+
+            return true;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // BulkWriteAllInputs – hromadný zápis všech vstupů do PLC (1x OPC UA Write)
+        // ═══════════════════════════════════════════════════════════════════
+
+        public bool BulkWriteAllInputs()
+        {
+            var writeItems = new List<(string nodeId, object value)>
+            {
+                // CrossroadData inputs
+                (CrossroadData.OpcUaNodeIds.btnStart,           CrossroadData.btnStart == "true"),
+                (CrossroadData.OpcUaNodeIds.btnPause,           CrossroadData.btnPause == "true"),
+                (CrossroadData.OpcUaNodeIds.btnStop,            CrossroadData.btnStop == "true"),
+                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk1,  CrossroadData.btnWestCrosswalk1 == "true"),
+                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk2,  CrossroadData.btnWestCrosswalk2 == "true"),
+                (CrossroadData.OpcUaNodeIds.btnSouthCrosswalk1, CrossroadData.btnSouthCrosswalk1 == "true"),
+                (CrossroadData.OpcUaNodeIds.btnSouthCrosswalk2, CrossroadData.btnSouthCrosswalk2 == "true"),
+
+                // CrosswalkData inputs
+                (CrosswalkData.OpcUaNodeIds.btnStart,      CrosswalkData.btnStart == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnPause,      CrosswalkData.btnPause == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnStop,       CrosswalkData.btnStop == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnCrosswalk1, CrosswalkData.btnCrosswalk1 == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnCrosswalk2, CrosswalkData.btnCrosswalk2 == "true"),
+
+                // RegulatorData inputs
+                (RegulatorData.OpcUaNodeIds.btnReset,    RegulatorData.btnReset == "true"),
+                (RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true"),
+                (RegulatorData.OpcUaNodeIds.order,       (short)(int.TryParse(RegulatorData.order, out var ordVal) ? ordVal : 0)),
+                (RegulatorData.OpcUaNodeIds.R1,  ParseFloat(RegulatorData.R1)),
+                (RegulatorData.OpcUaNodeIds.R2,  ParseFloat(RegulatorData.R2)),
+                (RegulatorData.OpcUaNodeIds.C1,  ParseFloat(RegulatorData.C1)),
+                (RegulatorData.OpcUaNodeIds.C2,  ParseFloat(RegulatorData.C2)),
+                (RegulatorData.OpcUaNodeIds.Uc1, ParseFloat(RegulatorData.Uc1)),
+                (RegulatorData.OpcUaNodeIds.Uc2, ParseFloat(RegulatorData.Uc2)),
+                (RegulatorData.OpcUaNodeIds.Td,  ParseFloat(RegulatorData.Td)),
+                (RegulatorData.OpcUaNodeIds.Ts,  ParseFloat(RegulatorData.Ts)),
+
+                // CarLightData inputs
+                (CarLightData.OpcUaNodeIds.btnReset,                CarLightData.btnReset == "true"),
+                (CarLightData.OpcUaNodeIds.error,                   CarLightData.error == "true"),
+                (CarLightData.OpcUaNodeIds.sensorLight,             CarLightData.sensorLight == "true"),
+                (CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true")
+            };
+
+            return BulkWrite(writeItems);
         }
 
         ///

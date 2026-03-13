@@ -731,9 +731,9 @@ function CrossroadPage({ setAside }) {
     { id: 'car-N-main-red', kind: 'car', color: 'red', state: CARN, dir: 180, x: '18.25%', y: '24.5%' },
 
     // car – South
-    { id: 'car-S-main-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '37.3%', y: '58.0%' },
+    { id: 'car-S-main-green', kind: 'car', color: 'green', state: CARS, dir: 0, x: '37.3%', y: '65.8%' },
     { id: 'car-S-main-yellow', kind: 'car', color: 'yellow', state: CARS, dir: 0, x: '37.3%', y: '62%' },
-    { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.3%', y: '65.8%' },
+    { id: 'car-S-main-red', kind: 'car', color: 'red', state: CARS, dir: 0, x: '37.3%', y: '58.0%' }, 
 
     // pedestrians S
     { id: 'ped-S-main-green', kind: 'ped', color: 'green', state: PEDS1, dir: 90, x: '16.5%', y: '83%' },

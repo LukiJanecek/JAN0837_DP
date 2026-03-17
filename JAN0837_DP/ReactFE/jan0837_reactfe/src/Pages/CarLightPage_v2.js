@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Row, Col, Form, Badge, Button } from 'react-bootstrap';
 
 import '../App.css';
@@ -67,22 +67,29 @@ function CarLightParamsSidebar() {
   //const sensorLight = toBool(d?.sensorLight);
   const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
   const errorState = toBool(d?.error);
+  const [cfg, setCfg] = useState({
+    aBps: '1',
+    bBps: '1',
+    cBps: '1',
+  });
 
-  //User config
-  const [turnBps, setTurnBps] = useState('1');
-  const [lowBeamDuration, setLowBeamDuration] = useState('1');
-  const [highBeamDuration, setHighBeamDuration] = useState('1');
+  const numCfg = useMemo(() => {
+    const toNum = (v, fallback = 0) => {
+      const parsed = parseFloat(String(v ?? '').replace(',', '.'));
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+    };
+    const deltaFromBps = (bps) => (bps > 0 ? 1 / bps : 0);
+    return {
+      A: { bps: toNum(cfg.aBps, 1), delta: deltaFromBps(toNum(cfg.aBps, 1)) },
+      B: { bps: toNum(cfg.bBps, 1), delta: deltaFromBps(toNum(cfg.bBps, 1)) },
+      C: { bps: toNum(cfg.cBps, 1), delta: deltaFromBps(toNum(cfg.cBps, 1)) },
+    };
+  }, [cfg]);
 
-  // Measurement
-  const turnPrev = useRef(false);
-  const turnBlinks = useRef([]);
-  const lowOnTime = useRef(null);
-  const highOnTime = useRef(null);
-  const [measuredTurnBps, setMeasuredTurnBps] = useState(null);
-  const [measuredLowDuration, setMeasuredLowDuration] = useState(null);
-  const [measuredHighDuration, setMeasuredHighDuration] = useState(null);
-
-  const TOLERANCE = 0.20; // 20% tolerance
+  const totalSumTime = useMemo(
+    () => numCfg.A.delta + numCfg.B.delta + numCfg.C.delta,
+    [numCfg]
+  );
 
   const normalizeNonNegative = (value) => {
     const normalized = String(value).replace(',', '.');
@@ -91,77 +98,6 @@ function CarLightParamsSidebar() {
     if (!Number.isFinite(parsed)) return '';
     return String(Math.max(0, parsed));
   };
-
-  const toNum = (v, fallback = 0) => {
-    const parsed = parseFloat(String(v ?? '').replace(',', '.'));
-    return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
-  };
-
-  const expectedTurnBps = toNum(turnBps, 1);
-  const expectedLowDuration = toNum(lowBeamDuration, 1);
-  const expectedHighDuration = toNum(highBeamDuration, 1);
-
-  // Turn light: count blinks (rising edges) within a 3s sliding window 
-  useEffect(() => {
-    const wasOff = !turnPrev.current;
-    const isOn = turnLight;
-    turnPrev.current = isOn;
-    if (wasOff && isOn) {
-      const now = Date.now();
-      turnBlinks.current.push(now);
-      // keep only last 3 seconds
-      const cutoff = now - 3000;
-      turnBlinks.current = turnBlinks.current.filter(t => t >= cutoff);
-      const count = turnBlinks.current.length;
-      if (count >= 2) {
-        const windowMs = now - turnBlinks.current[0];
-        const bps = windowMs > 0 ? ((count - 1) / (windowMs / 1000)) : 0;
-        setMeasuredTurnBps(Math.round(bps * 100) / 100);
-      }
-    }
-  }, [turnLight]);
-
-  // Low beam: measure how long it stays on 
-  useEffect(() => {
-    if (lowBeamLight) {
-      lowOnTime.current = Date.now();
-    } else if (lowOnTime.current !== null) {
-      const duration = (Date.now() - lowOnTime.current) / 1000;
-      setMeasuredLowDuration(Math.round(duration * 1000) / 1000);
-      lowOnTime.current = null;
-    }
-  }, [lowBeamLight]);
-
-  // High beam: measure how long it stays on 
-  useEffect(() => {
-    if (highBeamLight) {
-      highOnTime.current = Date.now();
-    } else if (highOnTime.current !== null) {
-      const duration = (Date.now() - highOnTime.current) / 1000;
-      setMeasuredHighDuration(Math.round(duration * 1000) / 1000);
-      highOnTime.current = null;
-    }
-  }, [highBeamLight]);
-
-  // Result evaluation 
-  const withinTolerance = (measured, expected) => {
-    if (measured === null || expected <= 0) return false;
-    return Math.abs(measured - expected) / expected <= TOLERANCE;
-  };
-
-  const turnOk = withinTolerance(measuredTurnBps, expectedTurnBps);
-  const lowOk = withinTolerance(measuredLowDuration, expectedLowDuration);
-  const highOk = withinTolerance(measuredHighDuration, expectedHighDuration);
-  const resultOk = turnOk && lowOk && highOk;
-
-  // Send result to backend when it changes
-  const prevResult = useRef(null);
-  useEffect(() => {
-    if (prevResult.current !== resultOk) {
-      prevResult.current = resultOk;
-      saveSection({ result: toBoolString(resultOk) });
-    }
-  }, [resultOk, saveSection]);
 
   const toggleReset = async () => {
     try {
@@ -190,48 +126,84 @@ function CarLightParamsSidebar() {
       </div>
 
       <Form>
-        <div className="mb-2"><strong>Low Beam — duration (s)</strong></div>
+        <Row className="g-2 mb-2">
+          <Col xs={6}><strong>Blinks per second</strong></Col>
+          <Col xs={6}><strong>Delta seconds</strong></Col>
+        </Row>
+
+        <div className="mb-2"><strong>Low Beam</strong></div>
         <Row className="g-2 mb-3">
-          <Col>
+          <Col xs={6}>
             <Form.Control
               type="number"
               step="any"
               min="0"
-              value={lowBeamDuration}
-              onChange={e => setLowBeamDuration(normalizeNonNegative(e.target.value))}
-              placeholder="Expected duration (s)"
+              value={cfg.aBps}
+              onChange={e => setCfg(prev => ({ ...prev, aBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="A - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.A.delta.toFixed(3)} s`}
+              placeholder="A - delta (s)"
             />
           </Col>
         </Row>
 
-        <div className="mb-2"><strong>High Beam — duration (s)</strong></div>
+        <div className="mb-2"><strong>High Beam</strong></div>
         <Row className="g-2 mb-3">
-          <Col>
+          <Col xs={6}>
             <Form.Control
               type="number"
               step="any"
               min="0"
-              value={highBeamDuration}
-              onChange={e => setHighBeamDuration(normalizeNonNegative(e.target.value))}
-              placeholder="Expected duration (s)"
+              value={cfg.bBps}
+              onChange={e => setCfg(prev => ({ ...prev, bBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="B - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.B.delta.toFixed(3)} s`}
+              placeholder="B - delta (s)"
             />
           </Col>
         </Row>
 
-        <div className="mb-2"><strong>Turn — blinks per second</strong></div>
+        <div className="mb-2"><strong>Turn</strong></div>
         <Row className="g-2 mb-3">
-          <Col>
+          <Col xs={6}>
             <Form.Control
               type="number"
               step="any"
               min="0"
-              value={turnBps}
-              onChange={e => setTurnBps(normalizeNonNegative(e.target.value))}
-              placeholder="Expected blinks/s"
+              value={cfg.cBps}
+              onChange={e => setCfg(prev => ({ ...prev, cBps: normalizeNonNegative(e.target.value) }))}
+              placeholder="C - blik/s"
+            />
+          </Col>
+          <Col xs={6}>
+            <Form.Control
+              type="text"
+              readOnly
+              value={`${numCfg.C.delta.toFixed(3)} s`}
+              placeholder="C - delta (s)"
             />
           </Col>
         </Row>
       </Form>
+
+      <div className="mb-3">
+        <Row>
+          <Col xs={6}>Total: </Col>
+          <Col xs={6}>{totalSumTime.toFixed(5)} s</Col>
+        </Row>
+      </div>
 
       <Form.Group className="mb-3">
         <Form.Check
@@ -265,7 +237,7 @@ function CarLightParamsSidebar() {
 
       <div className="gap-2 mb-2">
         <div className="d-flex align-items-center gap-2 mb-1">
-          <strong>Low Beam:</strong>
+          <strong>Low Beam (A):</strong>
           <Badge bg={lowBeamLight ? 'success' : 'secondary'}>{String(lowBeamLight)}</Badge>
           <Button
             size="sm"
@@ -274,14 +246,9 @@ function CarLightParamsSidebar() {
           >
             {lowBeamLight ? 'ON' : 'OFF'}
           </Button>
-          {measuredLowDuration !== null && (
-            <Badge bg={lowOk ? 'success' : 'danger'}>
-              {measuredLowDuration}s / {expectedLowDuration}s
-            </Badge>
-          )}
         </div>
         <div className="d-flex align-items-center gap-2 mb-1">
-          <strong>High Beam:</strong>
+          <strong>High Beam (B):</strong>
           <Badge bg={highBeamLight ? 'success' : 'secondary'}>{String(highBeamLight)}</Badge>
           <Button
             size="sm"
@@ -290,14 +257,9 @@ function CarLightParamsSidebar() {
           >
             {highBeamLight ? 'ON' : 'OFF'}
           </Button>
-          {measuredHighDuration !== null && (
-            <Badge bg={highOk ? 'success' : 'danger'}>
-              {measuredHighDuration}s / {expectedHighDuration}s
-            </Badge>
-          )}
         </div>
         <div className="d-flex align-items-center gap-2 mb-1">
-          <strong>Turn:</strong>
+          <strong>Turn (C):</strong>
           <Badge bg={turnLight ? 'success' : 'secondary'}>{String(turnLight)}</Badge>
           <Button
             size="sm"
@@ -306,15 +268,10 @@ function CarLightParamsSidebar() {
           >
             {turnLight ? 'ON' : 'OFF'}
           </Button>
-          {measuredTurnBps !== null && (
-            <Badge bg={turnOk ? 'success' : 'danger'}>
-              {measuredTurnBps} bps / {expectedTurnBps} bps
-            </Badge>
-          )}
         </div>
         <div>
           <strong>Result:</strong>{' '}
-          <Badge bg={resultOk ? 'success' : 'danger'}>{String(resultOk)}</Badge>
+          <Badge bg={toBool(d?.result) ? 'success' : 'danger'}>{String(toBool(d?.result))}</Badge>
         </div>
       </div>
 

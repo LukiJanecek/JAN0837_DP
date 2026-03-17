@@ -45,24 +45,38 @@
 }
 
 .carlight-glow--turn {
-  left: 64%;
-  top: 34%;
-  background: radial-gradient(circle, rgba(13, 202, 240, 0.95) 0%, rgba(13, 202, 240, 0.45) 45%, rgba(13, 202, 240, 0) 78%);
-  box-shadow: 0 0 24px rgba(13, 202, 240, 0.75);
+  left: 14%;
+  top: 33%;
+  width: clamp(30px, 4.5vw, 64px);
+  background: radial-gradient(circle, rgba(255, 193, 7, 1) 0%, rgba(255, 193, 7, 0.8) 25%, rgba(255, 193, 7, 0.4) 50%, rgba(255, 193, 7, 0) 75%);
+  box-shadow:
+    0 0 20px rgba(255, 193, 7, 0.95),
+    0 0 48px rgba(255, 193, 7, 0.6),
+    0 0 96px rgba(255, 193, 7, 0.25);
 }
 
 .carlight-glow--high {
-  left: 73%;
-  top: 50%;
-  background: radial-gradient(circle, rgba(220, 231, 255, 0.96) 0%, rgba(220, 231, 255, 0.5) 48%, rgba(220, 231, 255, 0) 80%);
-  box-shadow: 0 0 28px rgba(220, 231, 255, 0.8);
+  left: 28%;
+  top: 29%;
+  width: clamp(36px, 5.5vw, 80px);
+  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 30%, rgba(220, 231, 255, 0.6) 55%, rgba(220, 231, 255, 0) 80%);
+  box-shadow:
+    0 0 24px rgba(255, 255, 255, 1),
+    0 0 64px rgba(220, 231, 255, 0.95),
+    0 0 120px rgba(200, 215, 255, 0.7),
+    0 0 200px rgba(180, 200, 255, 0.35);
+  filter: blur(1px);
 }
 
 .carlight-glow--low {
-  left: 81%;
-  top: 67%;
-  background: radial-gradient(circle, rgba(255, 193, 7, 0.96) 0%, rgba(255, 193, 7, 0.5) 45%, rgba(255, 193, 7, 0) 78%);
-  box-shadow: 0 0 24px rgba(255, 193, 7, 0.78);
+  left: 43.5%;
+  top: 29%;
+  width: clamp(30px, 4.5vw, 64px);
+  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.85) 25%, rgba(220, 231, 255, 0.5) 50%, rgba(220, 231, 255, 0) 75%);
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 48px rgba(220, 231, 255, 0.8),
+    0 0 96px rgba(200, 215, 255, 0.4);
 }
 
 @media (max-width: 992px) {

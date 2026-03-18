@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form, Badge, Button } from 'react-bootstrap';
 
 import '../App.css';
@@ -15,12 +15,27 @@ const toBool = (v) => {
 
 const toBoolString = (v) => (v ? 'true' : 'false');
 
+const toNum = (v, fallback = 0) => {
+  const parsed = parseFloat(String(v ?? '').replace(',', '.'));
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+};
+
+const normalizeNonNegative = (value) => {
+  const normalized = String(value).replace(',', '.');
+  if (normalized === '' || normalized === '.') return normalized;
+  const parsed = parseFloat(normalized);
+  if (!Number.isFinite(parsed)) return '';
+  return String(Math.max(0, parsed));
+};
+
+const TOLERANCE = 0.15; // 150 ms tolerance
+
 function CarLightCanvas({ d }) {
   const connectorConnected = toBool(d?.sensorConnectorConnected);
   const sensorLight = toBool(d?.sensorLight);
   const errorActive = toBool(d?.error);
-  const marker = connectorConnected && toBool(d?.lowBeamLight) && !errorActive;
-  const brake = connectorConnected && toBool(d?.highBeamLight) && !errorActive;
+  const lowBeam = connectorConnected && toBool(d?.lowBeamLight) && !errorActive;
+  const highBeam = connectorConnected && toBool(d?.highBeamLight) && !errorActive;
   const turn = connectorConnected && toBool(d?.turnLight) && !errorActive;
   const source = connectorConnected
     ? '/images/carlight/carlight_connected.png'
@@ -32,8 +47,8 @@ function CarLightCanvas({ d }) {
         <img className="carlight-image" src={source} alt="Car light" />
         
         <span className={`carlight-glow carlight-glow--turn ${turn ? 'on' : ''}`} />
-        <span className={`carlight-glow carlight-glow--high ${brake ? 'on' : ''}`} />
-        <span className={`carlight-glow carlight-glow--low ${marker ? 'on' : ''}`} />
+        <span className={`carlight-glow carlight-glow--high ${highBeam ? 'on' : ''}`} />
+        <span className={`carlight-glow carlight-glow--low ${lowBeam ? 'on' : ''}`} />
 
         <div className="carlight-overlay-status">
           <Badge bg={connectorConnected ? 'success' : 'danger'}>
@@ -63,104 +78,131 @@ function CarLightParamsSidebar() {
   const btnReset = toBool(d?.btnReset);
   const lowBeamLight = toBool(d?.lowBeamLight);
   const highBeamLight = toBool(d?.highBeamLight);
-  const turnLight   = toBool(d?.turnLight);
-  //const sensorLight = toBool(d?.sensorLight);
+  const turnLight = toBool(d?.turnLight);
   const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
   const errorState = toBool(d?.error);
 
-  //User config
-  const [turnBps, setTurnBps] = useState('1');
+  const lowStart = useRef(null);
+  const highStart = useRef(null);
+  const turnStart = useRef(null);
+  const [lowDuration, setLowDuration] = useState(null);
+  const [highDuration, setHighDuration] = useState(null);
+  const [turnDuration, setTurnDuration] = useState(null);
+
+  const [turnCount, setTurnCount] = useState(0);
+  const turnBlinkState = useRef(false);
+
+  const getTestState = () => {
+    if (!lowBeamLight && !highBeamLight && !turnLight) return 'Idle';
+    const lights = [lowBeamLight, highBeamLight, turnLight].filter(Boolean).length;
+    if (lights === 1) {
+      if (lowBeamLight) return 'Testing Low Beam';
+      if (highBeamLight) return 'Testing High Beam';
+      if (turnLight) return 'Testing Turn';
+    }
+    if (lights > 1) return 'Testing';
+    return 'Waiting';
+  };
+  const testState = getTestState();
+
   const [lowBeamDuration, setLowBeamDuration] = useState('1');
   const [highBeamDuration, setHighBeamDuration] = useState('1');
+  const [turnBps, setTurnBps] = useState('1');
 
-  // Measurement
-  const turnPrev = useRef(false);
-  const turnBlinks = useRef([]);
-  const lowOnTime = useRef(null);
-  const highOnTime = useRef(null);
-  const [measuredTurnBps, setMeasuredTurnBps] = useState(null);
-  const [measuredLowDuration, setMeasuredLowDuration] = useState(null);
-  const [measuredHighDuration, setMeasuredHighDuration] = useState(null);
-
-  const TOLERANCE = 0.20; // 20% tolerance
-
-  const normalizeNonNegative = (value) => {
-    const normalized = String(value).replace(',', '.');
-    if (normalized === '' || normalized === '.') return normalized;
-    const parsed = parseFloat(normalized);
-    if (!Number.isFinite(parsed)) return '';
-    return String(Math.max(0, parsed));
-  };
-
-  const toNum = (v, fallback = 0) => {
-    const parsed = parseFloat(String(v ?? '').replace(',', '.'));
-    return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
-  };
-
-  const expectedTurnBps = toNum(turnBps, 1);
   const expectedLowDuration = toNum(lowBeamDuration, 1);
   const expectedHighDuration = toNum(highBeamDuration, 1);
+  const expectedTurnBps = toNum(turnBps, 1);
+  
+  const [measuredLowDuration, setMeasuredLowDuration] = useState(null);
+  const [measuredHighDuration, setMeasuredHighDuration] = useState(null);
+  const [measuredTurnBps, setMeasuredTurnBps] = useState(null);
 
-  // Turn light: count blinks (rising edges) within a 3s sliding window 
+  const measurePhase = useRef('idle');
+  const phaseStartTime = useRef(null);
   useEffect(() => {
-    const wasOff = !turnPrev.current;
-    const isOn = turnLight;
-    turnPrev.current = isOn;
-    if (wasOff && isOn) {
-      const now = Date.now();
-      turnBlinks.current.push(now);
-      // keep only last 3 seconds
-      const cutoff = now - 3000;
-      turnBlinks.current = turnBlinks.current.filter(t => t >= cutoff);
-      const count = turnBlinks.current.length;
-      if (count >= 2) {
-        const windowMs = now - turnBlinks.current[0];
-        const bps = windowMs > 0 ? ((count - 1) / (windowMs / 1000)) : 0;
-        setMeasuredTurnBps(Math.round(bps * 100) / 100);
+    const now = Date.now();
+
+    if (btnReset) {
+      setLowDuration(null);
+      setHighDuration(null);
+      setTurnDuration(null);
+      lowStart.current = null;
+      highStart.current = null;
+      turnStart.current = null;
+      setTurnCount(0);
+      turnBlinkState.current = false;
+      return;
+    }
+
+    const lightsOn = [lowBeamLight, highBeamLight, turnLight].filter(Boolean).length;
+    const isAllPhase = lightsOn > 1;
+
+    // LOW BEAM light 
+    if (lowBeamLight && !isAllPhase) {
+      if (!lowStart.current) lowStart.current = now;
+    } else {
+      if (lowStart.current) {
+        setLowDuration(((now - lowStart.current) / 1000).toFixed(3));
+        lowStart.current = null;
       }
     }
-  }, [turnLight]);
 
-  // Low beam: measure how long it stays on 
-  useEffect(() => {
-    if (lowBeamLight) {
-      lowOnTime.current = Date.now();
-    } else if (lowOnTime.current !== null) {
-      const duration = (Date.now() - lowOnTime.current) / 1000;
-      setMeasuredLowDuration(Math.round(duration * 1000) / 1000);
-      lowOnTime.current = null;
+    // HIGH BEAM light 
+    if (highBeamLight && !isAllPhase) {
+      if (!highStart.current) highStart.current = now;
+    } else {
+      if (highStart.current) {
+        setHighDuration(((now - highStart.current) / 1000).toFixed(3));
+        highStart.current = null;
+      }
     }
-  }, [lowBeamLight]);
 
-  // High beam: measure how long it stays on 
-  useEffect(() => {
-    if (highBeamLight) {
-      highOnTime.current = Date.now();
-    } else if (highOnTime.current !== null) {
-      const duration = (Date.now() - highOnTime.current) / 1000;
-      setMeasuredHighDuration(Math.round(duration * 1000) / 1000);
-      highOnTime.current = null;
+    // TURN light measures blinks only in Testing Turn phase
+    const testState = (() => {
+      if (!lowBeamLight && !highBeamLight && !turnLight) return 'Idle';
+      const lights = [lowBeamLight, highBeamLight, turnLight].filter(Boolean).length;
+      if (lights === 1) {
+        if (lowBeamLight) return 'Testing Low Beam';
+        if (highBeamLight) return 'Testing High Beam';
+        if (turnLight) return 'Testing Turn';
+      }
+      if (lights > 1) return 'Testing';
+      return 'Waiting';
+    })();
+
+    if (testState === 'Testing Turn') {
+      if (!turnStart.current) turnStart.current = now;
+      if (turnLight !== turnBlinkState.current) {
+        if (turnLight) {
+          setTurnCount(c => c + 1);
+        }
+        turnBlinkState.current = turnLight;
+      }
+    } else {
+      if (turnStart.current) {
+        setTurnDuration(((now - turnStart.current) / 1000).toFixed(3));
+        turnStart.current = null;
+      }
+      turnBlinkState.current = turnLight;
     }
-  }, [highBeamLight]);
+  }, [lowBeamLight, highBeamLight, turnLight, btnReset]);
 
-  // Result evaluation 
+  // Result evaluation
   const withinTolerance = (measured, expected) => {
     if (measured === null || expected <= 0) return false;
-    return Math.abs(measured - expected) / expected <= TOLERANCE;
+    return Math.abs(measured - expected) <= TOLERANCE;
   };
 
-  const turnOk = withinTolerance(measuredTurnBps, expectedTurnBps);
-  const lowOk = withinTolerance(measuredLowDuration, expectedLowDuration);
-  const highOk = withinTolerance(measuredHighDuration, expectedHighDuration);
-  const resultOk = turnOk && lowOk && highOk;
+  const lowOk = withinTolerance(Number(lowDuration), expectedLowDuration);
+  const highOk = withinTolerance(Number(highDuration), expectedHighDuration);
 
-  // Send result to backend when it changes
-  const prevResult = useRef(null);
+  const expectedTurnCount = turnDuration !== null ? Math.round(expectedTurnBps * Number(turnDuration)) : null;
+  const turnOk = turnDuration !== null && expectedTurnCount !== null && Math.abs(turnCount - expectedTurnCount) <= 1;
+
+  const resultOk = lowOk && highOk && turnOk;
+
   useEffect(() => {
-    if (prevResult.current !== resultOk) {
-      prevResult.current = resultOk;
-      saveSection({ result: toBoolString(resultOk) });
-    }
+    saveSection({ result: resultOk ? 'true' : 'false' });
   }, [resultOk, saveSection]);
 
   const toggleReset = async () => {
@@ -263,58 +305,61 @@ function CarLightParamsSidebar() {
         />
       </Form.Group>
 
+      {/* Light outputs (read-only from PLC) */}
       <div className="gap-2 mb-2">
         <div className="d-flex align-items-center gap-2 mb-1">
           <strong>Low Beam:</strong>
-          <Badge bg={lowBeamLight ? 'success' : 'secondary'}>{String(lowBeamLight)}</Badge>
-          <Button
-            size="sm"
-            variant={lowBeamLight ? 'success' : 'outline-secondary'}
-            onClick={() => saveSection({ lowBeamLight: toBoolString(!lowBeamLight) })}
-          >
-            {lowBeamLight ? 'ON' : 'OFF'}
-          </Button>
-          {measuredLowDuration !== null && (
-            <Badge bg={lowOk ? 'success' : 'danger'}>
-              {measuredLowDuration}s / {expectedLowDuration}s
+          <Badge bg={lowBeamLight ? 'success' : 'secondary'}>{lowBeamLight ? 'ON' : 'OFF'}</Badge>
+          {lowDuration !== null ? (
+            <Badge bg={Math.abs(lowDuration - expectedLowDuration) <= TOLERANCE ? 'success' : 'danger'}>
+              {lowDuration}s / {expectedLowDuration}s
+              {' '}
+              <span style={{ fontSize: '0.9em', marginLeft: 4 }}>
+                ({(lowDuration - expectedLowDuration >= 0 ? '+' : '')}{(lowDuration - expectedLowDuration).toFixed(3)}s)
+              </span>
             </Badge>
+          ) : (
+            <Badge bg="secondary">--- / {expectedLowDuration}s</Badge>
           )}
         </div>
         <div className="d-flex align-items-center gap-2 mb-1">
           <strong>High Beam:</strong>
-          <Badge bg={highBeamLight ? 'success' : 'secondary'}>{String(highBeamLight)}</Badge>
-          <Button
-            size="sm"
-            variant={highBeamLight ? 'success' : 'outline-secondary'}
-            onClick={() => saveSection({ highBeamLight: toBoolString(!highBeamLight) })}
-          >
-            {highBeamLight ? 'ON' : 'OFF'}
-          </Button>
-          {measuredHighDuration !== null && (
-            <Badge bg={highOk ? 'success' : 'danger'}>
-              {measuredHighDuration}s / {expectedHighDuration}s
+          <Badge bg={highBeamLight ? 'success' : 'secondary'}>{highBeamLight ? 'ON' : 'OFF'}</Badge>
+          {highDuration !== null ? (
+            <Badge bg={Math.abs(highDuration - expectedHighDuration) <= TOLERANCE ? 'success' : 'danger'}>
+              {highDuration}s / {expectedHighDuration}s
+              {' '}
+              <span style={{ fontSize: '0.9em', marginLeft: 4 }}>
+                ({(highDuration - expectedHighDuration >= 0 ? '+' : '')}{(highDuration - expectedHighDuration).toFixed(3)}s)
+              </span>
             </Badge>
+          ) : (
+            <Badge bg="secondary">--- / {expectedHighDuration}s</Badge>
           )}
         </div>
         <div className="d-flex align-items-center gap-2 mb-1">
           <strong>Turn:</strong>
-          <Badge bg={turnLight ? 'success' : 'secondary'}>{String(turnLight)}</Badge>
-          <Button
-            size="sm"
-            variant={turnLight ? 'success' : 'outline-secondary'}
-            onClick={() => saveSection({ turnLight: toBoolString(!turnLight) })}
-          >
-            {turnLight ? 'ON' : 'OFF'}
-          </Button>
-          {measuredTurnBps !== null && (
-            <Badge bg={turnOk ? 'success' : 'danger'}>
-              {measuredTurnBps} bps / {expectedTurnBps} bps
-            </Badge>
-          )}
+          <Badge bg={turnLight ? 'success' : 'secondary'}>{turnLight ? 'ON' : 'OFF'}</Badge>
+          {/* Turn badge: šedá pokud test není ukončen, zelená při splnění, červená při nesplnění */}
+          <Badge bg={turnDuration === null ? 'secondary' : (turnOk ? 'success' : 'danger')}>
+            {turnCount} blinks{expectedTurnCount !== null ? ` / ${expectedTurnCount}` : ''}
+            {' '}
+            {turnDuration !== null && expectedTurnCount !== null && (
+              <span style={{ fontSize: '0.9em', marginLeft: 4 }}>
+                ({(turnCount - expectedTurnCount >= 0 ? '+' : '')}{(turnCount - expectedTurnCount)})
+              </span>
+            )}
+          </Badge>
+        </div>
+        <div className="d-flex align-items-center gap-2 mb-1">
+          <strong>Test state:</strong>
+          <Badge bg="info">{testState}</Badge>
         </div>
         <div>
           <strong>Result:</strong>{' '}
-          <Badge bg={resultOk ? 'success' : 'danger'}>{String(resultOk)}</Badge>
+          <Badge bg={resultOk ? 'success' : 'danger'}>
+            {resultOk ? '✅ PASS' : '❌ FAIL'}
+          </Badge>
         </div>
       </div>
 

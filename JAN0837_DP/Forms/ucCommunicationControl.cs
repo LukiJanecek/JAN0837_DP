@@ -667,62 +667,59 @@ namespace JAN0837_DP.Forms
                         if (_mqttClient == null)
                         {
                             _mqttClient = new JAN0837_DP.Communication.comMQTT.MQTTClient();
+                        }
 
-                            _mqttClient.OnMessage += (topic, bytes, text) =>
-                            {
-                                
-                                if (topic == "JAN0837/plc/status")
-                                {
-                                    // plc connected? 
-                                }
-                                else if (topic == "JAN087/pc/status")
-                                {
-                                    // pc connected? 
-                                }
-                                else if (topic == "JAN0837/Crossroad/Output")
-                                {
-                                    // zpracování outputu z PLC -> CrossroadData
-                                    MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(text);
-                                }
-                                else if (topic == "JAN0837/Crosswalk/Output")
-                                {
-                                    // zpracování outputu z PLC -> CrosswalkData
-                                    MQTTClient.CrosswalkOutputMapper.ApplyOutputJsonToCrosswalkData(text);
-                                }
-                                else if (topic == "JAN0837/Regulator/Output")
-                                {
-                                    // zpracování outputu z PLC -> RegulatorData
-                                    MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(text);
-                                }
-                                else if (topic == "JAN0837/CarLight/Output")
-                                {
-                                    // zpracování outputu z PLC -> CarLightData
-                                    MQTTClient.CarLightOutputMapper.ApplyOutputJsonToCarLightData(text);
-                                }
-                                else
-                                {
-                                    // other topics
-                                    Logger.LogWarning($"There are other topics: {topic}");
-                                }
-                                /*
-                                else if (topic == "JAN0837/CarWash/Output")
-                                {
-                                    // zpracování outputu z PLC -> CarWashData
-                                    MQTTClient.CarWashOutputMapper.ApplyOutputJsonToCarWashData(text);
-                                }
-                                */
-                                /*
-                                else if (topic == "JAN0837/WashingMachine/Output")
-                                {
-                                    // zpracování outputu z PLC -> WashingMachineData
-                                    MQTTClient.WashingMachineOutputMapper.ApplyOutputJsonToWashingMachineData(text);
-                                }
-                                */
-                            };
+                        _mqttClient.OnMessage += (topic, bytes, text) =>
+                        {
 
-                            // set topics to subscribe from start
-                            _mqttClient.SubscribeTopics = new[]
+                            if (topic == "JAN0837/plc/status")
                             {
+                                // plc connected? 
+                            }
+                            else if (topic == "JAN0837/pc/status")
+                            {
+                                // pc connected? 
+                            }
+                            else if (topic == "JAN0837/Crossroad/Output")
+                            {
+                                MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(text);
+                            }
+                            else if (topic == "JAN0837/Crosswalk/Output")
+                            {
+                                MQTTClient.CrosswalkOutputMapper.ApplyOutputJsonToCrosswalkData(text);
+                            }
+                            else if (topic == "JAN0837/Regulator/Output")
+                            {
+                                MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(text);
+                            }
+                            else if (topic == "JAN0837/CarLight/Output")
+                            {
+                                MQTTClient.CarLightOutputMapper.ApplyOutputJsonToCarLightData(text);
+                            }
+                            else
+                            {
+                                // other topics
+                                Logger.LogWarning($"There are other topics: {topic}");
+                            }
+                            /*
+                            else if (topic == "JAN0837/CarWash/Output")
+                            {
+                                // zpracování outputu z PLC -> CarWashData
+                                MQTTClient.CarWashOutputMapper.ApplyOutputJsonToCarWashData(text);
+                            }
+                            */
+                            /*
+                            else if (topic == "JAN0837/WashingMachine/Output")
+                            {
+                                // zpracování outputu z PLC -> WashingMachineData
+                                MQTTClient.WashingMachineOutputMapper.ApplyOutputJsonToWashingMachineData(text);
+                            }
+                            */
+                        };
+
+                        // set topics to subscribe from start
+                        _mqttClient.SubscribeTopics = new[]
+                        {
                                 "JAN0837/plc/status",
                                 "JAN0837/Crossroad/Output",
                                 "JAN0837/Crosswalk/Output",
@@ -731,7 +728,6 @@ namespace JAN0837_DP.Forms
                                 //"JAN0837/CarWash/Output",
                                 //"JAN0837/WashingMachine/Output"
                             };
-                        }
 
                         if (internalVariables.checkBoxMaster == true)
                         {

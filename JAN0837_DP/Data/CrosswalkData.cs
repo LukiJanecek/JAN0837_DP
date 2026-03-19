@@ -11,7 +11,7 @@ namespace JAN0837_DP.Data
     public static class CrosswalkData
     {
         // inputs 
-        public static string btnStart { get; set; } = "true"; // bool
+        public static string btnStart { get; set; } = "false"; // bool
         public static string btnPause { get; set; } = "false"; // bool
         public static string btnStop { get; set; } = "false"; // bool
         public static string btnCrosswalk1 { get; set; } = "false"; // bool

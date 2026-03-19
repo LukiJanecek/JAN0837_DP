@@ -343,6 +343,20 @@ namespace JAN0837_DP.Communication
                                     await client.mqttClient.PublishAsync(msgWashingmachineOutput, token);
                                     */
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
+
+                                    client.OnMessage += (topic, bytes, payload) =>
+                                    {
+                                        if (topic == "JAN0837/Crossroad/Output")
+                                            MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(payload);
+                                        else if (topic == "JAN0837/Crosswalk/Output")
+                                            MQTTClient.CrosswalkOutputMapper.ApplyOutputJsonToCrosswalkData(payload);
+                                        else if (topic == "JAN0837/Regulator/Output")
+                                            MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(payload);
+                                        else if (topic == "JAN0837/CarLight/Output")
+                                            MQTTClient.CarLightOutputMapper.ApplyOutputJsonToCarLightData(payload);
+
+                                        _ucCommunicationControl.SetStatus("MQTT: All data subscribed successfully to separate topics");
+                                    };
                                 }
                                 catch (OperationCanceledException) 
                                 { 
@@ -631,6 +645,20 @@ namespace JAN0837_DP.Communication
                                     #endregion
 
                                     _ucCommunicationControl.SetStatus("MQTT: All data published successfully to separate topics");
+
+                                    client.OnMessage += (topic, bytes, payload) =>
+                                    {
+                                        if (topic == "JAN0837/Crossroad/Output")
+                                            MQTTClient.CrossroadOutputMapper.ApplyOutputJsonToCrossroadData(payload);
+                                        else if (topic == "JAN0837/Crosswalk/Output")
+                                            MQTTClient.CrosswalkOutputMapper.ApplyOutputJsonToCrosswalkData(payload);
+                                        else if (topic == "JAN0837/Regulator/Output")
+                                            MQTTClient.RegulatorOutputMapper.ApplyOutputJsonToRegulatorData(payload);
+                                        else if (topic == "JAN0837/CarLight/Output")
+                                            MQTTClient.CarLightOutputMapper.ApplyOutputJsonToCarLightData(payload);
+
+                                        _ucCommunicationControl.SetStatus("MQTT: All data subscribed successfully to separate topics");
+                                    };
                                 }
                                 catch (OperationCanceledException) 
                                 { 

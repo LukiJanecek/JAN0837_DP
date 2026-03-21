@@ -111,22 +111,6 @@ namespace JAN0837_DP.Data
             public static int bit_Uin = 0;
         }
 
-        public static class ModbusBytes // I will not need this :( 
-        {
-            public static int byte_btnReset = 0;
-            public static int byte_switchstate = 1;
-            public static int byte_order = 2;
-            public static int byte_R1 = 3;
-            public static int byte_R2 = 4;
-            public static int byte_C1 = 5;
-            public static int byte_C2 = 6;
-            public static int byte_Uc1 = 7;
-            public static int byte_Uc2 = 8;
-            public static int byte_Td = 9;
-            public static int byte_Ts = 10;
-
-            public static int byte_Uin = 11;
-        }
         public static class OpcUaNodeIds
         {
             // Inputs

@@ -334,7 +334,6 @@ namespace JAN0837_DP.Communication.comMQTT
                 public bool lowBeamLight { get; set; }
                 public bool highBeamLight { get; set; }
                 public bool turnLight { get; set; }
-                public bool result { get; set; }
             }
             public static void ApplyOutputJsonToCarLightData(string json)
             {
@@ -345,7 +344,6 @@ namespace JAN0837_DP.Communication.comMQTT
                     CarLightData.lowBeamLight = dto.lowBeamLight ? "true" : "false";
                     CarLightData.highBeamLight = dto.highBeamLight ? "true" : "false";
                     CarLightData.turnLight = dto.turnLight ? "true" : "false";
-                    CarLightData.result = dto.result ? "true" : "false";
                 }
                 catch (Exception ex)
                 {

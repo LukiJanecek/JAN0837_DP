@@ -150,27 +150,6 @@ namespace JAN0837_DP.Data
             public static int bit_pedestrian2_red = 2;
         }
 
-        public static class ModbusBytes // I will not need this :( 
-        {
-            public static int byte_btnStart = 0;
-            public static int byte_btnPause = 0;
-            public static int byte_btnStop = 0;
-            public static int byte_btnCrosswalk1 = 0;
-            public static int byte_btnCrosswalk2 = 0;
-
-            public static int byte_crosswalkType = 1;
-            public static int byte_trafficLight1_green = 2;
-            public static int byte_trafficLight1_yellow = 2;
-            public static int byte_trafficLight1_red = 2;
-            public static int byte_trafficLight2_green = 2;
-            public static int byte_trafficLight2_yellow = 2;
-            public static int byte_trafficLight2_red = 2;
-            public static int byte_pedestrian1_green = 3;
-            public static int byte_pedestrian1_red = 3;
-            public static int byte_pedestrian2_green = 3;
-            public static int byte_pedestrian2_red = 3;
-        }
-
         public static class OpcUaNodeIds
         {
             // Inputs

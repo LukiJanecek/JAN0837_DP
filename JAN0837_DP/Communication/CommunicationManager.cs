@@ -217,6 +217,7 @@ namespace JAN0837_DP.Communication
                                         error = CarLightData.error == "true",
                                         sensorLight = CarLightData.sensorLight == "true",
                                         sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
+                                        result = CarLightData.result == "true",
                                     };
 
                                     var msagCarlightInput = new MQTTnet.MqttApplicationMessageBuilder()
@@ -518,6 +519,7 @@ namespace JAN0837_DP.Communication
                                         error = CarLightData.error == "true",
                                         sensorLight = CarLightData.sensorLight == "true",
                                         sensorConnectorConnected = CarLightData.sensorConnectorConnected == "true",
+                                        result = CarLightData.result == "true",
                                     };
 
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
@@ -860,10 +862,8 @@ namespace JAN0837_DP.Communication
                                         continue;
                                     }
 
-                                    // 2) Výpočet PID regulátoru
                                     PlantModel.ComputePlantStep();
 
-                                    // 3) Hromadný zápis všech vstupů do PLC
                                     if (!opcuaClient.BulkWriteAllInputs())
                                     {
                                         Logger.LogWarning("OPC UA: BulkWriteAllInputs partially or fully failed.");
@@ -879,7 +879,7 @@ namespace JAN0837_DP.Communication
 
                                     _ucCommunicationControl.SetStatus("OPC UA Client: All data synchronized (BulkRead → Compute → BulkWrite)");
 
-                                    // ── OLD INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) ──
+                                    // OLD INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) 
                                     /*
                                     // CrossroadData 
                                     // Write input values to PLC
@@ -1128,13 +1128,14 @@ namespace JAN0837_DP.Communication
                                     ModbusHelper.FloatToRegisters(_modbusServer.StrToFloat(RegulatorData.Ts), regulatorRegisters, 17);
                                     _modbusServer.SetRegisters(13, regulatorRegisters);
 
-                                    // CarLight inputs : registers 32-35
-                                    bool[] carlightInputs = new bool[4]
+                                    // CarLight inputs : registers 32-36
+                                    bool[] carlightInputs = new bool[5]
                                     {
                                         _modbusServer.StrToBool(CarLightData.btnReset),
                                         _modbusServer.StrToBool(CarLightData.error),
                                         _modbusServer.StrToBool(CarLightData.sensorLight),
-                                        _modbusServer.StrToBool(CarLightData.sensorConnectorConnected)
+                                        _modbusServer.StrToBool(CarLightData.sensorConnectorConnected),
+                                        _modbusServer.StrToBool(CarLightData.result)
                                     };
                                     _modbusServer.SetRegisters(32, carlightInputs);
 
@@ -1223,14 +1224,13 @@ namespace JAN0837_DP.Communication
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight Outputs: registers 74-77
-                                    bool[] carlightOutputRegs = _modbusServer.GetRegisters(74, 4);
-                                    if (carlightOutputRegs != null && carlightOutputRegs.Length >= 4)
+                                    // CarLight Outputs: registers 74-76
+                                    bool[] carlightOutputRegs = _modbusServer.GetRegisters(74, 3);
+                                    if (carlightOutputRegs != null && carlightOutputRegs.Length >= 3)
                                     {
                                         CarLightData.lowBeamLight = _modbusServer.BoolToStr(carlightOutputRegs[0]);
                                         CarLightData.highBeamLight = _modbusServer.BoolToStr(carlightOutputRegs[1]);
                                         CarLightData.turnLight = _modbusServer.BoolToStr(carlightOutputRegs[2]);
-                                        CarLightData.result = _modbusServer.BoolToStr(carlightOutputRegs[3]);
                                     }
 
                                     #region CarWash & WashingMachine
@@ -1363,13 +1363,14 @@ namespace JAN0837_DP.Communication
                                     ModbusHelper.FloatToRegisters(float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var ts) ? ts : 0f, regulatorRegisters, 17);
                                     _modbusClient.WriteMultipleRegisters(slaveId, 12, regulatorRegisters);
 
-                                    // CarLight inputs: registers 32-35 (wire address 31)
+                                    // CarLight inputs: registers 32-36 (wire address 31)
                                     _modbusClient.WriteMultipleRegistersAsBool(slaveId, 31, new bool[]
                                     {
                                         _modbusClient.StrToBool(CarLightData.btnReset),
                                         _modbusClient.StrToBool(CarLightData.error),
                                         _modbusClient.StrToBool(CarLightData.sensorLight),
-                                        _modbusClient.StrToBool(CarLightData.sensorConnectorConnected)
+                                        _modbusClient.StrToBool(CarLightData.sensorConnectorConnected),
+                                        _modbusClient.StrToBool(CarLightData.result)
                                     });
 
                                     // ═══════════════════════════════════════════════════════════
@@ -1429,14 +1430,13 @@ namespace JAN0837_DP.Communication
 
                                     PlantModel.ComputePlantStep();
 
-                                    // CarLight outputs: registers 74-77 (wire address 73)
-                                    bool[] carlightOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 73, 4);
-                                    if (carlightOutputs != null && carlightOutputs.Length >= 4)
+                                    // CarLight outputs: registers 73-75 (wire address 73)
+                                    bool[] carlightOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 73, 3);
+                                    if (carlightOutputs != null && carlightOutputs.Length >= 3)
                                     {
                                         CarLightData.lowBeamLight = _modbusClient.BoolToStr(carlightOutputs[0]);
                                         CarLightData.highBeamLight = _modbusClient.BoolToStr(carlightOutputs[1]);
                                         CarLightData.turnLight = _modbusClient.BoolToStr(carlightOutputs[2]);
-                                        CarLightData.result = _modbusClient.BoolToStr(carlightOutputs[3]);
                                     }
 
                                     _ucCommunicationControl.SetStatus("Modbus Client: All data synchronized");
@@ -1709,7 +1709,6 @@ namespace JAN0837_DP.Communication
                                     CarLightData.lowBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight));
                                     CarLightData.highBeamLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight));
                                     CarLightData.turnLight = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight));
-                                    CarLightData.result = Convert.ToString(Sharp7.S7.GetBitAt(readBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result));
 
                                     #region CarWash & WashinMachine
                                     // CarWashData 
@@ -1764,6 +1763,7 @@ namespace JAN0837_DP.Communication
                                 PlantModel.ComputePlantStep(); // ?
 
                                 // CrossroadData
+                                // input
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStart, CrossroadData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrossroadData.btnStart));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnPause, CrossroadData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrossroadData.btnPause));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnStop, CrossroadData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrossroadData.btnStop));
@@ -1771,7 +1771,7 @@ namespace JAN0837_DP.Communication
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnWestCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnWestCrosswalk2, Convert.ToBoolean(CrossroadData.btnWestCrosswalk2));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk1, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk1, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk1));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_btnSouthCrosswalk2, CrossroadData.Sharp7Addresses.bit_btnSouthCrosswalk2, Convert.ToBoolean(CrossroadData.btnSouthCrosswalk2));
-
+                                //output
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_crossroadType, CrossroadData.Sharp7Addresses.bit_crossroadType, Convert.ToBoolean(CrossroadData.crossroadType));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_green, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_green, Convert.ToBoolean(CrossroadData.trafficLightNorth_green));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_trafficLightNorth_yellow, CrossroadData.Sharp7Addresses.bit_trafficLightNorth_yellow, Convert.ToBoolean(CrossroadData.trafficLightNorth_yellow));
@@ -1795,13 +1795,14 @@ namespace JAN0837_DP.Communication
                                 Sharp7.S7.SetBitAt(writeBuffer, CrossroadData.Sharp7Addresses.address_pedestrianWest2_red, CrossroadData.Sharp7Addresses.bit_pedestrianWest2_red, Convert.ToBoolean(CrossroadData.pedestrianWest2_red));
 
                                 // CrosswalkData 
+                                // input
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_crosswalkType, CrosswalkData.Sharp7Addresses.bit_crosswalkType, Convert.ToBoolean(CrosswalkData.crosswalkType));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStart, CrosswalkData.Sharp7Addresses.bit_btnStart, Convert.ToBoolean(CrosswalkData.btnStart));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnPause, CrosswalkData.Sharp7Addresses.bit_btnPause, Convert.ToBoolean(CrosswalkData.btnPause));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnStop, CrosswalkData.Sharp7Addresses.bit_btnStop, Convert.ToBoolean(CrosswalkData.btnStop));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk1, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk1, Convert.ToBoolean(CrosswalkData.btnCrosswalk1));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_btnCrosswalk2, CrosswalkData.Sharp7Addresses.bit_btnCrosswalk2, Convert.ToBoolean(CrosswalkData.btnCrosswalk2));
-
+                                // output
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_green, CrosswalkData.Sharp7Addresses.bit_trafficLight1_green, Convert.ToBoolean(CrosswalkData.trafficLight1_green));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_yellow, CrosswalkData.Sharp7Addresses.bit_trafficLight1_yellow, Convert.ToBoolean(CrosswalkData.trafficLight1_yellow));
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_trafficLight1_red, CrosswalkData.Sharp7Addresses.bit_trafficLight1_red, Convert.ToBoolean(CrosswalkData.trafficLight1_red));
@@ -1814,6 +1815,7 @@ namespace JAN0837_DP.Communication
                                 Sharp7.S7.SetBitAt(writeBuffer, CrosswalkData.Sharp7Addresses.address_pedestrian2_red, CrosswalkData.Sharp7Addresses.bit_pedestrian2_red, Convert.ToBoolean(CrosswalkData.pedestrian2_red));
 
                                 // RegulatorData 
+                                // input
                                 Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_btnReset, RegulatorData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(RegulatorData.btnReset));
                                 Sharp7.S7.SetBitAt(writeBuffer, RegulatorData.Sharp7Addresses.address_switchstate, RegulatorData.Sharp7Addresses.bit_switchstate, Convert.ToBoolean(RegulatorData.switchstate));
                                 Sharp7.S7.SetIntAt(writeBuffer, RegulatorData.Sharp7Addresses.address_order, (short)(int.TryParse(RegulatorData.order, out var s7Ord) ? s7Ord : 0));
@@ -1825,18 +1827,20 @@ namespace JAN0837_DP.Communication
                                 Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uc2, float.TryParse(RegulatorData.Uc2, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uc2) ? s7Uc2 : 0f);
                                 Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Td, float.TryParse(RegulatorData.Td, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Td) ? s7Td : 0f);
                                 Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Ts, float.TryParse(RegulatorData.Ts, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Ts) ? s7Ts : 0f);
+                                // output
                                 Sharp7.S7.SetRealAt(writeBuffer, RegulatorData.Sharp7Addresses.address_Uin, float.TryParse(RegulatorData.Uin, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s7Uin) ? s7Uin : 0f);
 
-                                // CarLight 
+                                // CarLight
+                                // input
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_btnReset, CarLightData.Sharp7Addresses.bit_btnReset, Convert.ToBoolean(CarLightData.btnReset));
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_error, CarLightData.Sharp7Addresses.bit_error, Convert.ToBoolean(CarLightData.error));
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorLight, CarLightData.Sharp7Addresses.bit_sensorLight, Convert.ToBoolean(CarLightData.sensorLight));
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_sensorConnectorConnected, CarLightData.Sharp7Addresses.bit_sensorConnectorConnected, Convert.ToBoolean(CarLightData.sensorConnectorConnected));
+                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result, Convert.ToBoolean(CarLightData.result));
+                                // output
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_lowBeamLight, CarLightData.Sharp7Addresses.bit_lowBeamLight, Convert.ToBoolean(CarLightData.lowBeamLight));
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_highBeamLight, CarLightData.Sharp7Addresses.bit_highBeamLight, Convert.ToBoolean(CarLightData.highBeamLight));
                                 Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_turnLight, CarLightData.Sharp7Addresses.bit_turnLight, Convert.ToBoolean(CarLightData.turnLight));
-
-                                Sharp7.S7.SetBitAt(writeBuffer, CarLightData.Sharp7Addresses.address_result, CarLightData.Sharp7Addresses.bit_result, Convert.ToBoolean(CarLightData.result));
 
                                 #region CarWash & WashinMachine
                                 // CarWashData 

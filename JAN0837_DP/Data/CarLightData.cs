@@ -13,12 +13,12 @@ namespace JAN0837_DP.Data
         public static string error { get; set; } = "false"; // bool
         public static string sensorLight { get; set; } = "false"; // bool
         public static string sensorConnectorConnected { get; set; } = "false"; // bool
+        public static string result { get; set; } = "false"; // bool
 
         // Outputs 
         public static string lowBeamLight { get; set; } = "false"; // bool
         public static string highBeamLight { get; set; } = "false"; // bool
-        public static string turnLight { get; set; } = "false"; // bool
-        public static string result { get; set; } = "false"; // bool
+        public static string turnLight { get; set; } = "false"; // bool   
 
         // Thread safety
         private static readonly object _lock = new();
@@ -59,7 +59,6 @@ namespace JAN0837_DP.Data
                 if (s.lowBeamLight != null) lowBeamLight = s.lowBeamLight;
                 if (s.highBeamLight != null) highBeamLight = s.highBeamLight;
                 if (s.turnLight != null) turnLight = s.turnLight;
-                if (s.result != null) result = s.result;
             }
         }
 
@@ -79,6 +78,8 @@ namespace JAN0837_DP.Data
             public static int bit_sensorLight = 2;
             public static int address_sensorConnectorConnected = 146;
             public static int bit_sensorConnectorConnected = 3;
+            public static int address_result = 146;
+            public static int bit_result = 4;
 
             public static int address_lowBeamLight = 164;
             public static int bit_lowBeamLight = 0;
@@ -86,21 +87,6 @@ namespace JAN0837_DP.Data
             public static int bit_highBeamLight = 1;
             public static int address_turnLight = 164;
             public static int bit_turnLight = 2;
-            public static int address_result = 164;
-            public static int bit_result = 3;
-        }
-
-        public static class ModbusBytes // I will not need this :( 
-        {
-            public static int byte_btnReset = 0;
-            public static int byte_error = 0;
-            public static int byte_sensorLight = 0;
-            public static int byte_sensorConnectorConnected = 0;
-            public static int byte_lowBeamLight = 0;
-            public static int byte_highBeamLight = 0;
-            public static int byte_turnLight = 0;
-
-            public static int byte_result = 0;
         }
 
         public static class OpcUaNodeIds
@@ -110,12 +96,12 @@ namespace JAN0837_DP.Data
             public static string error { get; set; } = "ns=4;i=115";
             public static string sensorLight { get; set; } = "ns=4;i=116";
             public static string sensorConnectorConnected { get; set; } = "ns=4;i=117";
+            public static string result { get; set; } = "ns=4;i=118";
 
             // Outputs  
             public static string lowBeamLight { get; set; } = "ns=4;i=125";
             public static string highBeamLight { get; set; } = "ns=4;i=126";
             public static string turnLight { get; set; } = "ns=4;i=127";
-            public static string result { get; set; } = "ns=4;i=128";
         }
     }
 }

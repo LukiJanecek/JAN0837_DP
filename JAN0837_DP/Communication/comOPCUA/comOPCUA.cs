@@ -1293,12 +1293,10 @@ namespace JAN0837_DP.Communication.comOPCUA
                 // RegulatorData output (index 32)
                 RegulatorData.OpcUaNodeIds.Uin,                          // 32
 
-                // CarLightData outputs (index 33–37)
-                CarLightData.OpcUaNodeIds.btnReset,                      // 33
+                // CarLightData outputs (index 33–36)
                 CarLightData.OpcUaNodeIds.lowBeamLight,                  // 34
                 CarLightData.OpcUaNodeIds.highBeamLight,                 // 35
                 CarLightData.OpcUaNodeIds.turnLight,                     // 36
-                CarLightData.OpcUaNodeIds.result                         // 37
             ];
 
             var results = BulkRead(readNodeIds);
@@ -1344,12 +1342,10 @@ namespace JAN0837_DP.Communication.comOPCUA
             // RegulatorData output (index 32)
             RegulatorData.Uin = GetFloatResult(results, 32).ToString(CultureInfo.InvariantCulture);
 
-            // CarLightData outputs (index 33–37)
-            CarLightData.btnReset       = GetBoolResult(results, 33) ? "true" : "false";
+            // CarLightData outputs (index 33–36)
             CarLightData.lowBeamLight   = GetBoolResult(results, 34) ? "true" : "false";
             CarLightData.highBeamLight  = GetBoolResult(results, 35) ? "true" : "false";
             CarLightData.turnLight      = GetBoolResult(results, 36) ? "true" : "false";
-            CarLightData.result         = GetBoolResult(results, 37) ? "true" : "false";
 
             return true;
         }
@@ -1363,39 +1359,40 @@ namespace JAN0837_DP.Communication.comOPCUA
             var writeItems = new List<(string nodeId, object value)>
             {
                 // CrossroadData inputs
-                (CrossroadData.OpcUaNodeIds.btnStart,           CrossroadData.btnStart == "true"),
-                (CrossroadData.OpcUaNodeIds.btnPause,           CrossroadData.btnPause == "true"),
-                (CrossroadData.OpcUaNodeIds.btnStop,            CrossroadData.btnStop == "true"),
-                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk1,  CrossroadData.btnWestCrosswalk1 == "true"),
-                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk2,  CrossroadData.btnWestCrosswalk2 == "true"),
+                (CrossroadData.OpcUaNodeIds.btnStart, CrossroadData.btnStart == "true"),
+                (CrossroadData.OpcUaNodeIds.btnPause, CrossroadData.btnPause == "true"),
+                (CrossroadData.OpcUaNodeIds.btnStop, CrossroadData.btnStop == "true"),
+                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk1, CrossroadData.btnWestCrosswalk1 == "true"),
+                (CrossroadData.OpcUaNodeIds.btnWestCrosswalk2, CrossroadData.btnWestCrosswalk2 == "true"),
                 (CrossroadData.OpcUaNodeIds.btnSouthCrosswalk1, CrossroadData.btnSouthCrosswalk1 == "true"),
                 (CrossroadData.OpcUaNodeIds.btnSouthCrosswalk2, CrossroadData.btnSouthCrosswalk2 == "true"),
 
                 // CrosswalkData inputs
-                (CrosswalkData.OpcUaNodeIds.btnStart,      CrosswalkData.btnStart == "true"),
-                (CrosswalkData.OpcUaNodeIds.btnPause,      CrosswalkData.btnPause == "true"),
-                (CrosswalkData.OpcUaNodeIds.btnStop,       CrosswalkData.btnStop == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnStart, CrosswalkData.btnStart == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnPause, CrosswalkData.btnPause == "true"),
+                (CrosswalkData.OpcUaNodeIds.btnStop, CrosswalkData.btnStop == "true"),
                 (CrosswalkData.OpcUaNodeIds.btnCrosswalk1, CrosswalkData.btnCrosswalk1 == "true"),
                 (CrosswalkData.OpcUaNodeIds.btnCrosswalk2, CrosswalkData.btnCrosswalk2 == "true"),
 
                 // RegulatorData inputs
-                (RegulatorData.OpcUaNodeIds.btnReset,    RegulatorData.btnReset == "true"),
+                (RegulatorData.OpcUaNodeIds.btnReset, RegulatorData.btnReset == "true"),
                 (RegulatorData.OpcUaNodeIds.switchstate, RegulatorData.switchstate == "true"),
-                (RegulatorData.OpcUaNodeIds.order,       (short)(int.TryParse(RegulatorData.order, out var ordVal) ? ordVal : 0)),
-                (RegulatorData.OpcUaNodeIds.R1,  ParseFloat(RegulatorData.R1)),
-                (RegulatorData.OpcUaNodeIds.R2,  ParseFloat(RegulatorData.R2)),
-                (RegulatorData.OpcUaNodeIds.C1,  ParseFloat(RegulatorData.C1)),
-                (RegulatorData.OpcUaNodeIds.C2,  ParseFloat(RegulatorData.C2)),
+                (RegulatorData.OpcUaNodeIds.order, (short)(int.TryParse(RegulatorData.order, out var ordVal) ? ordVal : 0)),
+                (RegulatorData.OpcUaNodeIds.R1, ParseFloat(RegulatorData.R1)),
+                (RegulatorData.OpcUaNodeIds.R2, ParseFloat(RegulatorData.R2)),
+                (RegulatorData.OpcUaNodeIds.C1, ParseFloat(RegulatorData.C1)),
+                (RegulatorData.OpcUaNodeIds.C2, ParseFloat(RegulatorData.C2)),
                 (RegulatorData.OpcUaNodeIds.Uc1, ParseFloat(RegulatorData.Uc1)),
                 (RegulatorData.OpcUaNodeIds.Uc2, ParseFloat(RegulatorData.Uc2)),
-                (RegulatorData.OpcUaNodeIds.Td,  ParseFloat(RegulatorData.Td)),
-                (RegulatorData.OpcUaNodeIds.Ts,  ParseFloat(RegulatorData.Ts)),
+                (RegulatorData.OpcUaNodeIds.Td, ParseFloat(RegulatorData.Td)),
+                (RegulatorData.OpcUaNodeIds.Ts, ParseFloat(RegulatorData.Ts)),
 
                 // CarLightData inputs
-                (CarLightData.OpcUaNodeIds.btnReset,                CarLightData.btnReset == "true"),
-                (CarLightData.OpcUaNodeIds.error,                   CarLightData.error == "true"),
-                (CarLightData.OpcUaNodeIds.sensorLight,             CarLightData.sensorLight == "true"),
-                (CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true")
+                (CarLightData.OpcUaNodeIds.btnReset, CarLightData.btnReset == "true"),
+                (CarLightData.OpcUaNodeIds.error, CarLightData.error == "true"),
+                (CarLightData.OpcUaNodeIds.sensorLight, CarLightData.sensorLight == "true"),
+                (CarLightData.OpcUaNodeIds.sensorConnectorConnected, CarLightData.sensorConnectorConnected == "true"),
+                (CarLightData.OpcUaNodeIds.result, CarLightData.result == "true"),
             };
 
             return BulkWrite(writeItems);

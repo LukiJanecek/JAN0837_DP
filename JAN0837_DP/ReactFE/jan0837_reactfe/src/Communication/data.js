@@ -94,11 +94,11 @@ export const STATE_SCHEMA = {
     error : { type: 'boolean', default: false },
     sensorLight : { type: 'boolean', default: false },
     sensorConnectorConnected : { type: 'boolean', default: false },
+    result : { type: 'boolean', default: false },
     // outputs
     lowBeamLight : { type: 'boolean', default: false }, 
     highBeamLight : { type: 'boolean', default: false }, 
     turnLight : { type: 'boolean', default: false }, 
-    result : { type: 'boolean', default: false },
   }},
 
   // CarWash 

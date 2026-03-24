@@ -76,13 +76,13 @@ namespace JAN0837_DP.Communication
                                     // CrossroadData - Input
                                     var crossroadInput = new
                                     {
-                                        btnstart = CrossroadData.btnStart == "true",
-                                        btnpause = CrossroadData.btnPause == "true",
-                                        btnstop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
+                                        btnStart = CrossroadData.btnStart == "true",
+                                        btnPause = CrossroadData.btnPause == "true",
+                                        btnStop = CrossroadData.btnStop == "true",
+                                        btnWestCrosswalk1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btnWestCrosswalk2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btnSouthCrosswalk1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btnSouthCrosswalk2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     var msgCrossroadInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Input")
@@ -130,11 +130,11 @@ namespace JAN0837_DP.Communication
                                     // CrosswalkData - Input
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
+                                        btnStart = CrosswalkData.btnStart == "true",
+                                        btnPause = CrosswalkData.btnPause == "true",
+                                        btnStop = CrosswalkData.btnStop == "true",
+                                        btnCrosswalk1 = CrosswalkData.btnCrosswalk1 == "true",
+                                        btnCrosswalk2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
                                     var msgCrosswalkInput = new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crosswalk/Input")
@@ -386,13 +386,13 @@ namespace JAN0837_DP.Communication
                                     // Crossroad Input/Output
                                     var crossroadInput = new
                                     {
-                                        start = CrossroadData.btnStart == "true",
-                                        pause = CrossroadData.btnPause == "true",
-                                        stop = CrossroadData.btnStop == "true",
-                                        btncwW1 = CrossroadData.btnWestCrosswalk1 == "true",
-                                        btncwW2 = CrossroadData.btnWestCrosswalk2 == "true",
-                                        btncwS1 = CrossroadData.btnSouthCrosswalk1 == "true",
-                                        btncwS2 = CrossroadData.btnSouthCrosswalk2 == "true"
+                                        btnStart = CrossroadData.btnStart == "true",
+                                        btnPause = CrossroadData.btnPause == "true",
+                                        btnStop = CrossroadData.btnStop == "true",
+                                        btnWestCrosswalk1 = CrossroadData.btnWestCrosswalk1 == "true",
+                                        btnWestCrosswalk2 = CrossroadData.btnWestCrosswalk2 == "true",
+                                        btnSouthCrosswalk1 = CrossroadData.btnSouthCrosswalk1 == "true",
+                                        btnSouthCrosswalk2 = CrossroadData.btnSouthCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crossroad/Input")
@@ -437,11 +437,11 @@ namespace JAN0837_DP.Communication
                                     // Crosswalk Input
                                     var crosswalkInput = new
                                     {
-                                        start = CrosswalkData.btnStart == "true",
-                                        pause = CrosswalkData.btnPause == "true",
-                                        stop = CrosswalkData.btnStop == "true",
-                                        cw1 = CrosswalkData.btnCrosswalk1 == "true",
-                                        cw2 = CrosswalkData.btnCrosswalk2 == "true"
+                                        btnStart = CrosswalkData.btnStart == "true",
+                                        btnPause = CrosswalkData.btnPause == "true",
+                                        btnStop = CrosswalkData.btnStop == "true",
+                                        btnCrosswalk1 = CrosswalkData.btnCrosswalk1 == "true",
+                                        btnCrosswalk2 = CrosswalkData.btnCrosswalk2 == "true"
                                     };
                                     await client.mqttClient.PublishAsync(new MQTTnet.MqttApplicationMessageBuilder()
                                         .WithTopic("JAN0837/Crosswalk/Input")
@@ -848,12 +848,7 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    // ═══════════════════════════════════════════════════════════════════
-                                    // OPTIMIZED: BulkRead all outputs → ComputePlantStep → BulkWrite all inputs
-                                    // Reduces ~50+ individual OPC UA calls to 2 (1x BulkRead + 1x BulkWrite)
-                                    // ═══════════════════════════════════════════════════════════════════
 
-                                    // 1) Hromadné čtení všech výstupů z PLC
                                     if (!opcuaClient.BulkReadAllOutputs())
                                     {
                                         _ucCommunicationControl.SetStatus("OPC UA: BulkRead failed or session lost, waiting for reconnection...");
@@ -879,7 +874,7 @@ namespace JAN0837_DP.Communication
 
                                     _ucCommunicationControl.SetStatus("OPC UA Client: All data synchronized (BulkRead → Compute → BulkWrite)");
 
-                                    // OLD INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) 
+                                    // INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) 
                                     /*
                                     // CrossroadData 
                                     // Write input values to PLC
@@ -1084,9 +1079,7 @@ namespace JAN0837_DP.Communication
 
                                 try
                                 {
-                                    // ═══════════════════════════════════════════════════════════
                                     // WRITE input values to holding registers 
-                                    // ═══════════════════════════════════════════════════════════
                                     
                                     // CrossroadData inputs: registers 1-7
                                     bool[] crossroadInputs = new bool[7] 
@@ -1167,9 +1160,7 @@ namespace JAN0837_DP.Communication
                                     _modbusServer.SetRegisters(22, washingmachineInputs);
                                     */
 
-                                    // ═══════════════════════════════════════════════════════════
                                     // READ output values that slaves wrote to our holding registers
-                                    // ═══════════════════════════════════════════════════════════
 
                                     // CrossroadData Outputs: registers 40-60 (21 values)
                                     bool[] crossroadOutputs = _modbusServer.GetRegisters(40, 21);
@@ -1321,9 +1312,7 @@ namespace JAN0837_DP.Communication
                                 {
                                     byte slaveId = 1;
 
-                                    // ═══════════════════════════════════════════════════════════
                                     // WRITE input values to server's holding registers
-                                    // ═══════════════════════════════════════════════════════════
 
                                     // CrossroadData inputs: registers 1-7 (wire address 0)
                                     _modbusClient.WriteMultipleRegistersAsBool(slaveId, 0, new bool[]
@@ -1373,9 +1362,7 @@ namespace JAN0837_DP.Communication
                                         _modbusClient.StrToBool(CarLightData.result)
                                     });
 
-                                    // ═══════════════════════════════════════════════════════════
                                     // READ output values from server's holding registers
-                                    // ═══════════════════════════════════════════════════════════
 
                                     // CrossroadData outputs: registers 40-60 (wire address 39)
                                     bool[] crossroadOutputs = _modbusClient.ReadHoldingRegistersAsBool(slaveId, 39, 21);

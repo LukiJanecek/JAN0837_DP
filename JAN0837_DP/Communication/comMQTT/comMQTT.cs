@@ -229,6 +229,26 @@ namespace JAN0837_DP.Communication.comMQTT
             {
                 public int lightsMask { get; set; }
                 public int crossroadType { get; set; }
+                public bool? trafficLightNorth_green { get; set; }
+                public bool? trafficLightNorth_yellow { get; set; }
+                public bool? trafficLightNorth_red { get; set; }
+                public bool? trafficLightSouth_green { get; set; }
+                public bool? trafficLightSouth_yellow { get; set; }
+                public bool? trafficLightSouth_red { get; set; }
+                public bool? trafficLightEast_green { get; set; }
+                public bool? trafficLightEast_yellow { get; set; }
+                public bool? trafficLightEast_red { get; set; }
+                public bool? trafficLightWest_green { get; set; }
+                public bool? trafficLightWest_yellow { get; set; }
+                public bool? trafficLightWest_red { get; set; }
+                public bool? pedestrianSouth1_green { get; set; }
+                public bool? pedestrianSouth1_red { get; set; }
+                public bool? pedestrianSouth2_green { get; set; }
+                public bool? pedestrianSouth2_red { get; set; }
+                public bool? pedestrianWest1_green { get; set; }
+                public bool? pedestrianWest1_red { get; set; }
+                public bool? pedestrianWest2_green { get; set; }
+                public bool? pedestrianWest2_red { get; set; }
             }
 
             public static void ApplyOutputJsonToCrossroadData(string json)
@@ -239,27 +259,55 @@ namespace JAN0837_DP.Communication.comMQTT
                     if (dto is null) return;
 
                     CrossroadData.crossroadType = dto.crossroadType.ToString();
-                    CrossroadData.trafficLightNorth_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightNorth_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightNorth_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightSouth_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightSouth_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightSouth_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightEast_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightEast_yellow = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightEast_red = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightWest_green = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightWest_yellow = ((dto.lightsMask >> 10) & 1) == 1 ? "true" : "false";
-                    CrossroadData.trafficLightWest_red = ((dto.lightsMask >> 11) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth1_green = ((dto.lightsMask >> 12) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth1_red = ((dto.lightsMask >> 13) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth2_green = ((dto.lightsMask >> 14) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianSouth2_red = ((dto.lightsMask >> 15) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest1_green = ((dto.lightsMask >> 16) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest1_red = ((dto.lightsMask >> 17) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest2_green = ((dto.lightsMask >> 18) & 1) == 1 ? "true" : "false";
-                    CrossroadData.pedestrianWest2_red = ((dto.lightsMask >> 19) & 1) == 1 ? "true" : "false";
-                }   
+
+                    // Preferovat lightsMask, pokud je > 0, jinak jednotlivé hodnoty
+                    if (dto.lightsMask > 0)
+                    {
+                        CrossroadData.trafficLightNorth_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightNorth_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightNorth_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightSouth_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightSouth_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightSouth_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightEast_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightEast_yellow = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightEast_red = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightWest_green = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightWest_yellow = ((dto.lightsMask >> 10) & 1) == 1 ? "true" : "false";
+                        CrossroadData.trafficLightWest_red = ((dto.lightsMask >> 11) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianSouth1_green = ((dto.lightsMask >> 12) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianSouth1_red = ((dto.lightsMask >> 13) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianSouth2_green = ((dto.lightsMask >> 14) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianSouth2_red = ((dto.lightsMask >> 15) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianWest1_green = ((dto.lightsMask >> 16) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianWest1_red = ((dto.lightsMask >> 17) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianWest2_green = ((dto.lightsMask >> 18) & 1) == 1 ? "true" : "false";
+                        CrossroadData.pedestrianWest2_red = ((dto.lightsMask >> 19) & 1) == 1 ? "true" : "false";
+                    }
+                    else
+                    {
+                        CrossroadData.trafficLightNorth_green = dto.trafficLightNorth_green?.ToString().ToLower() ?? CrossroadData.trafficLightNorth_green;
+                        CrossroadData.trafficLightNorth_yellow = dto.trafficLightNorth_yellow?.ToString().ToLower() ?? CrossroadData.trafficLightNorth_yellow;
+                        CrossroadData.trafficLightNorth_red = dto.trafficLightNorth_red?.ToString().ToLower() ?? CrossroadData.trafficLightNorth_red;
+                        CrossroadData.trafficLightSouth_green = dto.trafficLightSouth_green?.ToString().ToLower() ?? CrossroadData.trafficLightSouth_green;
+                        CrossroadData.trafficLightSouth_yellow = dto.trafficLightSouth_yellow?.ToString().ToLower() ?? CrossroadData.trafficLightSouth_yellow;
+                        CrossroadData.trafficLightSouth_red = dto.trafficLightSouth_red?.ToString().ToLower() ?? CrossroadData.trafficLightSouth_red;
+                        CrossroadData.trafficLightEast_green = dto.trafficLightEast_green?.ToString().ToLower() ?? CrossroadData.trafficLightEast_green;
+                        CrossroadData.trafficLightEast_yellow = dto.trafficLightEast_yellow?.ToString().ToLower() ?? CrossroadData.trafficLightEast_yellow;
+                        CrossroadData.trafficLightEast_red = dto.trafficLightEast_red?.ToString().ToLower() ?? CrossroadData.trafficLightEast_red;
+                        CrossroadData.trafficLightWest_green = dto.trafficLightWest_green?.ToString().ToLower() ?? CrossroadData.trafficLightWest_green;
+                        CrossroadData.trafficLightWest_yellow = dto.trafficLightWest_yellow?.ToString().ToLower() ?? CrossroadData.trafficLightWest_yellow;
+                        CrossroadData.trafficLightWest_red = dto.trafficLightWest_red?.ToString().ToLower() ?? CrossroadData.trafficLightWest_red;
+                        CrossroadData.pedestrianSouth1_green = dto.pedestrianSouth1_green?.ToString().ToLower() ?? CrossroadData.pedestrianSouth1_green;
+                        CrossroadData.pedestrianSouth1_red = dto.pedestrianSouth1_red?.ToString().ToLower() ?? CrossroadData.pedestrianSouth1_red;
+                        CrossroadData.pedestrianSouth2_green = dto.pedestrianSouth2_green?.ToString().ToLower() ?? CrossroadData.pedestrianSouth2_green;
+                        CrossroadData.pedestrianSouth2_red = dto.pedestrianSouth2_red?.ToString().ToLower() ?? CrossroadData.pedestrianSouth2_red;
+                        CrossroadData.pedestrianWest1_green = dto.pedestrianWest1_green?.ToString().ToLower() ?? CrossroadData.pedestrianWest1_green;
+                        CrossroadData.pedestrianWest1_red = dto.pedestrianWest1_red?.ToString().ToLower() ?? CrossroadData.pedestrianWest1_red;
+                        CrossroadData.pedestrianWest2_green = dto.pedestrianWest2_green?.ToString().ToLower() ?? CrossroadData.pedestrianWest2_green;
+                        CrossroadData.pedestrianWest2_red = dto.pedestrianWest2_red?.ToString().ToLower() ?? CrossroadData.pedestrianWest2_red;
+                    }
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Output JSON parse failed: {ex.Message}");
@@ -274,6 +322,16 @@ namespace JAN0837_DP.Communication.comMQTT
             {
                 public int lightsMask { get; set; }
                 public int crosswalkType { get; set; }
+                public bool? trafficLight1_green { get; set; }
+                public bool? trafficLight1_yellow { get; set; }
+                public bool? trafficLight1_red { get; set; }
+                public bool? trafficLight2_green { get; set; }
+                public bool? trafficLight2_yellow { get; set; }
+                public bool? trafficLight2_red { get; set; }
+                public bool? pedestrian1_green { get; set; }
+                public bool? pedestrian1_red { get; set; }
+                public bool? pedestrian2_green { get; set; }
+                public bool? pedestrian2_red { get; set; }
             }
 
             public static void ApplyOutputJsonToCrosswalkData(string json)
@@ -284,16 +342,33 @@ namespace JAN0837_DP.Communication.comMQTT
                     if (dto is null) return;
 
                     CrosswalkData.crosswalkType = dto.crosswalkType.ToString();
-                    CrosswalkData.trafficLight1_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.trafficLight1_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.trafficLight1_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.trafficLight2_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.trafficLight2_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.trafficLight2_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.pedestrian1_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.pedestrian1_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.pedestrian2_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
-                    CrosswalkData.pedestrian2_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+
+                    if (dto.lightsMask > 0)
+                    {
+                        CrosswalkData.trafficLight1_green = ((dto.lightsMask >> 0) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.trafficLight1_yellow = ((dto.lightsMask >> 1) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.trafficLight1_red = ((dto.lightsMask >> 2) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.trafficLight2_green = ((dto.lightsMask >> 3) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.trafficLight2_yellow = ((dto.lightsMask >> 4) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.trafficLight2_red = ((dto.lightsMask >> 5) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.pedestrian1_green = ((dto.lightsMask >> 6) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.pedestrian1_red = ((dto.lightsMask >> 7) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.pedestrian2_green = ((dto.lightsMask >> 8) & 1) == 1 ? "true" : "false";
+                        CrosswalkData.pedestrian2_red = ((dto.lightsMask >> 9) & 1) == 1 ? "true" : "false";
+                    }
+                    else
+                    {
+                        CrosswalkData.trafficLight1_green = dto.trafficLight1_green?.ToString().ToLower() ?? CrosswalkData.trafficLight1_green;
+                        CrosswalkData.trafficLight1_yellow = dto.trafficLight1_yellow?.ToString().ToLower() ?? CrosswalkData.trafficLight1_yellow;
+                        CrosswalkData.trafficLight1_red = dto.trafficLight1_red?.ToString().ToLower() ?? CrosswalkData.trafficLight1_red;
+                        CrosswalkData.trafficLight2_green = dto.trafficLight2_green?.ToString().ToLower() ?? CrosswalkData.trafficLight2_green;
+                        CrosswalkData.trafficLight2_yellow = dto.trafficLight2_yellow?.ToString().ToLower() ?? CrosswalkData.trafficLight2_yellow;
+                        CrosswalkData.trafficLight2_red = dto.trafficLight2_red?.ToString().ToLower() ?? CrosswalkData.trafficLight2_red;
+                        CrosswalkData.pedestrian1_green = dto.pedestrian1_green?.ToString().ToLower() ?? CrosswalkData.pedestrian1_green;
+                        CrosswalkData.pedestrian1_red = dto.pedestrian1_red?.ToString().ToLower() ?? CrosswalkData.pedestrian1_red;
+                        CrosswalkData.pedestrian2_green = dto.pedestrian2_green?.ToString().ToLower() ?? CrosswalkData.pedestrian2_green;
+                        CrosswalkData.pedestrian2_red = dto.pedestrian2_red?.ToString().ToLower() ?? CrosswalkData.pedestrian2_red;
+                    }
                 }
                 catch (Exception ex)
                 {

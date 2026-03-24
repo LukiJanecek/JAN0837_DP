@@ -82,6 +82,15 @@ function CarLightParamsSidebar() {
   const sensorConnectorConnected = toBool(d?.sensorConnectorConnected);
   const errorState = toBool(d?.error);
 
+  // Automatické nastavení sensorLight podle světel
+  useEffect(() => {
+    const anyLight = lowBeamLight || highBeamLight || turnLight;
+    if (toBool(d?.sensorLight) !== anyLight) {
+      saveSection({ sensorLight: toBoolString(anyLight) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lowBeamLight, highBeamLight, turnLight]);
+
   const lowStart = useRef(null);
   const highStart = useRef(null);
   const turnStart = useRef(null);
@@ -228,6 +237,25 @@ function CarLightParamsSidebar() {
       <div className="gap-2 mb-3">
         <Button variant="outline-danger" onClick={toggleReset}>
           Reset ({String(btnReset)})
+        </Button>
+      </div>
+
+      {/* Přidaná tlačítka pro světla Low Beam, High Beam, Turn Light */}
+      <div className="gap-2 mb-3">
+        <Button variant={lowBeamLight ? 'success' : 'outline-secondary'} onClick={async () => {
+          try { await saveSection({ lowBeamLight: !lowBeamLight }); } catch (e) { console.error(e); }
+        }}>
+          Low Beam ({String(lowBeamLight)})
+        </Button>
+        <Button variant={highBeamLight ? 'success' : 'outline-secondary'} onClick={async () => {
+          try { await saveSection({ highBeamLight: !highBeamLight }); } catch (e) { console.error(e); }
+        }}>
+          High Beam ({String(highBeamLight)})
+        </Button>
+        <Button variant={turnLight ? 'success' : 'outline-secondary'} onClick={async () => {
+          try { await saveSection({ turnLight: !turnLight }); } catch (e) { console.error(e); }
+        }}>
+          Turn Light ({String(turnLight)})
         </Button>
       </div>
 

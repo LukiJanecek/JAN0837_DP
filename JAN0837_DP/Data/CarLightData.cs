@@ -99,9 +99,9 @@ namespace JAN0837_DP.Data
             public static string result { get; set; } = "ns=4;i=118";
 
             // Outputs  
-            public static string lowBeamLight { get; set; } = "ns=4;i=125";
-            public static string highBeamLight { get; set; } = "ns=4;i=126";
-            public static string turnLight { get; set; } = "ns=4;i=127";
+            public static string lowBeamLight { get; set; } = "ns=4;i=126";
+            public static string highBeamLight { get; set; } = "ns=4;i=127";
+            public static string turnLight { get; set; } = "ns=4;i=128";
         }
     }
 }

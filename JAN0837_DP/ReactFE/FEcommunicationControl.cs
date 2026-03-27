@@ -679,7 +679,7 @@ namespace JAN0837_DP.ReactFE
 
             try
             {
-                // ── Swagger UI ──
+                // Swagger UI 
                 if (req.HttpMethod == "GET" && (path == "/swagger" || path == "/swagger/index.html"))
                 {
                     var host = req.Url.Authority;
@@ -705,7 +705,7 @@ namespace JAN0837_DP.ReactFE
                     return;
                 }
 
-                // ── Data endpoints --  
+                // Data endpoints  
                 if (req.HttpMethod == "GET" && (path == "/data" || path == "/"))
                 {
                     //var testdata = TestData.AppState.Get();
@@ -891,7 +891,6 @@ namespace JAN0837_DP.ReactFE
             }
             catch (Exception ex)
             {
-                // jednoduchý JSON error (ať to líp debuguješ v Network panelu)
                 Logger.LogException(ex, "FECommuncationControl HandleRequest");
                 var payload = Encoding.UTF8.GetBytes($"{{\"error\":\"{ex.Message}\"}}");
                 resp.StatusCode = 500;

@@ -1611,6 +1611,7 @@ namespace JAN0837_DP.Communication
                         */
                         #endregion
                         case "RESTAPI":
+                            PlantModel.ComputePlantStep(); // ?
                             _ucCommunicationControl.SetStatus($"This communication is already running in the project on http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/");
                             break;
                         case "Sharp7":                            

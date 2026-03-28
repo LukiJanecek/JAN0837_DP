@@ -197,6 +197,10 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "OPC UA selected.";
 
             internalVariables.communicationFlag = "OPCUA";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = true;
             internalVariables.mqttFlag = false;
@@ -259,6 +263,10 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "MQTT selected.";
 
             internalVariables.communicationFlag = "MQTT";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = true;
@@ -323,6 +331,9 @@ namespace JAN0837_DP.Forms
 
             internalVariables.communicationFlag = "TCPIP";
 
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             // UI settings 
             #region UI settings 
 
@@ -376,6 +387,10 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "Modbus TCP/IP selected.";
 
             internalVariables.communicationFlag = "ModbusTCPIP";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
@@ -440,6 +455,13 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "REST API selected. Server is already running on " + internalVariables.communicationDataURL + ".";
 
             internalVariables.communicationFlag = "RESTAPI";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
+            // start Communication Task 
+            btnStartCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
@@ -495,6 +517,12 @@ namespace JAN0837_DP.Forms
             checkBoxSlave.Enabled = false;
             checkBoxSlave.Text = "";
             checkBoxSlave.Checked = false;
+            
+            // rbtns
+            rbtnOPCUA.Enabled = true;
+            rbtnMQTT.Enabled = true;
+            rbtnModbusTCPIP.Enabled = true;
+            rbtnSharp7.Enabled = true;
 
             #endregion
         }
@@ -504,6 +532,10 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "S7 selected.";
 
             internalVariables.communicationFlag = "S7";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
@@ -567,6 +599,10 @@ namespace JAN0837_DP.Forms
             lblStatus.Text = "Sharp7 selected";
 
             internalVariables.communicationFlag = "Sharp7";
+
+            // stop running Communication Task 
+            btnStopCommunicationThread_Click(this, EventArgs.Empty);
+
             /*
             internalVariables.opcuaFlag = false;
             internalVariables.mqttFlag = false;
@@ -823,6 +859,7 @@ namespace JAN0837_DP.Forms
                         }
 
                         break;
+                    /*
                     case "TCPIP":
                         lblCommunicationStatus.Text = "TCP/IP communication started.";
                         lblStatus.Text = "TCP/IP communication started.";
@@ -884,6 +921,7 @@ namespace JAN0837_DP.Forms
                         }
 
                         break;
+                    */
                     case "ModbusTCPIP":
                         lblCommunicationStatus.Text = "Modbus TCP/IP communication started.";
                         lblStatus.Text = "Modbus TCP/IP communication started.";
@@ -1009,13 +1047,17 @@ namespace JAN0837_DP.Forms
 
                 // UI 
                 #region UI
-                rbtnOPCUA.Enabled = false;
-                rbtnMQTT.Enabled = false;
-                //rbtnTCPIP.Enabled = false;
-                rbtnModbusTCPIP.Enabled = false;
-                rbtnRESTAPI.Enabled = false;
-                //rbtnS7.Enabled = false;
-                rbtnSharp7.Enabled = false;
+
+                if (internalVariables.communicationFlag != "RESTAPI")
+                {
+                    rbtnOPCUA.Enabled = false;
+                    rbtnMQTT.Enabled = false;
+                    //rbtnTCPIP.Enabled = false;
+                    rbtnModbusTCPIP.Enabled = false;
+                    rbtnRESTAPI.Enabled = false;
+                    //rbtnS7.Enabled = false;
+                    rbtnSharp7.Enabled = false;
+                }
 
                 checkBoxMaster.Enabled = false;
                 checkBoxSlave.Enabled = false;
@@ -1054,28 +1096,32 @@ namespace JAN0837_DP.Forms
             switch (internalVariables.communicationFlag)
             {
                 case "MQTT":
-                    if (internalVariables.checkBoxMaster == true)
-                    {
-                        // disconnect client
-                        await _mqttClient.StopAsync();
 
-                        // stop broker (server)
-                        await _mqttBroker.StopAsync();
-                    }
-                    else if (internalVariables.checkBoxSlave == true)
+                    if (_mqttClient != null)
                     {
-                        // disconnect client
-                        await _mqttClient.StopAsync();
-                    }
-                    else
-                    {
-                        // no checkbox selected 
-                        lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
-                        return; // break;
-                    }
+                        if (internalVariables.checkBoxMaster == true)
+                        {
+                            // disconnect client
+                            await _mqttClient.StopAsync();
 
-                    lblCommunicationStatus.Text = "MQTT communication stopped.";
-                    lblStatus.Text = "MQTT communication stopped.";
+                            // stop broker (server)
+                            await _mqttBroker.StopAsync();
+                        }
+                        else if (internalVariables.checkBoxSlave == true)
+                        {
+                            // disconnect client
+                            await _mqttClient.StopAsync();
+                        }
+                        else
+                        {
+                            // no checkbox selected 
+                            lblStatus.Text = $"Error: Please select Master or Slave mode for Modbus TCP/IP.";
+                            return; // break;
+                        }
+
+                        lblCommunicationStatus.Text = "MQTT communication stopped.";
+                        lblStatus.Text = "MQTT communication stopped.";
+                    }
 
                     break;
                 case "OPCUA":
@@ -1170,6 +1216,7 @@ namespace JAN0837_DP.Forms
                     }
 
                     break;
+                /*
                 case "TCPIP":
                     if (internalVariables.checkBoxMaster == true)
                     {
@@ -1213,30 +1260,34 @@ namespace JAN0837_DP.Forms
                     }
 
                     break;
+                */
                 case "RESTAPI":
                     // 
                     break;
                 case "Sharp7":
                     string Sharp7_ipAddress = internalVariables.txtBoxParam1;
 
-                    if (_sharp7.client.Connected == true)
+                    if (_sharp7 != null)
                     {
-                        int plcConnect = _sharp7.disconnectFromPLC();
-
-                        if (plcConnect == 0)
+                        if (_sharp7.client.Connected == true)
                         {
-                            lblStatus.Text = ($"PLC connected successfully.");
+                            int plcConnect = _sharp7.disconnectFromPLC();
+
+                            if (plcConnect == 0)
+                            {
+                                lblStatus.Text = ($"PLC connected successfully.");
+                            }
+                            else
+                            {
+                                lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
+                                Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
+                            }
                         }
                         else
                         {
-                            lblStatus.Text = ($"Error in Sharp7 communication. ConnectToPLC returns {plcConnect}.");
-                            Logger.LogError($"Sharp7 communication error. ConnectToPLC returns {plcConnect} for IP {Sharp7_ipAddress}.");
+                            lblStatus.Text = "Sharp7 client is not connected, cannot disconnect.";
                         }
-                    }
-                    else
-                    {
-                        lblStatus.Text = "Sharp7 client is not connected, cannot disconnect.";
-                    }
+                    } 
 
                         break;
                 case "S7":

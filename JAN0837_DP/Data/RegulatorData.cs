@@ -28,6 +28,30 @@ namespace JAN0837_DP.Data
         // Outputs 
         public static string Uin { get; set; } = "0.0"; // Real
 
+        // NRR
+        public static bool nrrEnabled { get; set; } = false; // Bool -> enable NRR mode (if true, Uin is ignored and set to Y)
+        public static string K1 { get; set; } = "1.0"; // Real -> gain 1st stage (can be used for gain tuning)
+        public static string K2 { get; set; } = "1.0"; // Real -> gain 2nd stage (can be used for gain tuning)
+        public static string PlantGain { get; set; } = "1.0"; // Real -> G(s) gain
+        public static string Theta { get; set; } = "0.0"; // Real -> adaptive parameter (can be either tau1 or tau1+tau2 based on order)
+        public static string Tau1 { get; set; } = "0.0"; // Real -> time constant 1st order
+        public static string Tau2 { get; set; } = "0.0"; // Real -> time constant 2nd order (0.0 if 1st order)
+        public static string TransferFunction { get; set; } = "0"; // String -> transfer function in human-readable form (e.g. "K / (tau1*s + 1)" or "K / ((tau1*s + 1)(tau2*s + 1))")
+        public static string A1 { get; set; } = "0.0"; // Real -> discretization parameter for 1st order (a1 = exp(-Ts/tau1))
+        public static string A2 { get; set; } = "0.0"; // Real -> discretization parameter for 2nd order (a2 = exp(-Ts/tau2), 0.0 if 1st order)
+        public static string Y { get; set; } = "0.0"; // Real - feedback for regulator (can be either Uc1 or Uc2 based on order)
+        public static string SuggestedKp { get; set; } = "0.0"; // Real -> suggested Kp for PID tuning based on current plant parameters
+        public static string SuggestedKi { get; set; } = "0.0"; // Real -> suggested Ki for PID tuning based on current plant parameters
+        public static string SuggestedKd { get; set; } = "0.0"; // Real -> suggested Kd for PID tuning based on current plant parameters
+        public static string SuggestedTi { get; set; } = "0.0"; // Real -> suggested Ti for PID tuning based on current plant parameters
+        public static string SuggestedTd { get; set; } = "0.0"; // Real -> suggested Td for PID tuning based on current plant parameters
+        public static string PlantChanged { get; set; } = "false"; // Bool -> indicates if plant parameters have changed since last reset (used to trigger PID retuning)
+        public static double _prevR1 { get; set; } = double.NaN; // Real -> previous R1 for change detection
+        public static double _prevC1 { get; set; } = double.NaN; // Real -> previous C1 for change detection
+        public static double _prevR2 { get; set; } = double.NaN; // Real -> previous R2 for change detection
+        public static double _prevC2 { get; set; } = double.NaN; // Real -> previous C2 for change detection
+
+
         // Thread safety 
         private static readonly object _lock = new();
 
@@ -165,59 +189,267 @@ namespace JAN0837_DP.Data
 
         public static void ComputePlantStep()
         {
+            if (RegulatorData.nrrEnabled)
+            {
+                ComputePlantWithAdaptive();
+            }
+            else
+            {
+                RegulatorData.Update(() =>
+                {
+                    // Reset handling (from FE/app side)
+                    if (ParseBool(RegulatorData.btnReset))
+                    {
+                        RegulatorData.Uc1 = "0.0";
+                        RegulatorData.Uc2 = "0.0";
+                        RegulatorData.btnReset = "false";
+                        return;
+                    }
+
+                    bool enable = ParseBool(RegulatorData.switchstate);
+
+                    int order = ParseOrder(RegulatorData.order, 1);
+
+                    double Ts = ParseDouble(RegulatorData.Ts, 0.1);
+                    if (Ts <= 0)
+                    {
+                        return;
+                    }
+
+                    double R1 = ParseDouble(RegulatorData.R1, 0.0);
+                    double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6; // µF 
+                    double R2 = ParseDouble(RegulatorData.R2, 0.0);
+                    double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6; // µF 
+
+                    // vstup z PID (LMN), při vypnutém switchstate je vstup 0 → kondenzátory se vybíjejí
+                    double u = enable ? ParseDouble(RegulatorData.Uin, 0.0) : 0.0;
+
+                    // aktuální stavy
+                    double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);
+                    double uc2 = ParseDouble(RegulatorData.Uc2, 0.0);
+
+                    // Validace 1st stage
+                    if (R1 <= 0 || C1 <= 0)
+                    {
+                        return;
+                    }
+
+                    // 1st stage (RC)
+                    double a1 = Math.Exp(-Ts / (R1 * C1));
+                    uc1 = a1 * uc1 + (1.0 - a1) * u;
+
+                    // Check if 2nd order is valid
+                    if (order == 2 && R2 > 0 && C2 > 0)
+                    {
+                        // 2nd stage (cascade) input = uc1
+                        double a2 = Math.Exp(-Ts / (R2 * C2));
+                        uc2 = a2 * uc2 + (1.0 - a2) * uc1;
+
+                        RegulatorData.Uc1 = ToStr(uc1);
+                        RegulatorData.Uc2 = ToStr(uc2);
+                    }
+                    else
+                    {
+                        // 1st order only (or 2nd order with invalid R2/C2)
+                        RegulatorData.Uc1 = ToStr(uc1);
+                        RegulatorData.Uc2 = "0.0";
+                    }
+                });
+            }
+        }
+
+        public static void ComputePlantWithAdaptive()
+        {
             RegulatorData.Update(() =>
             {
-                // Reset handling (from FE/app side)
+                // -------------------------------------------------
+                // RESET
+                // -------------------------------------------------
                 if (ParseBool(RegulatorData.btnReset))
                 {
                     RegulatorData.Uc1 = "0.0";
                     RegulatorData.Uc2 = "0.0";
+                    RegulatorData.Y = "0.0";
+
+                    RegulatorData.PlantGain = "1.0";
+                    RegulatorData.Tau1 = "0.0";
+                    RegulatorData.Tau2 = "0.0";
+                    RegulatorData.Theta = "0.0";
+                    RegulatorData.TransferFunction = "0";
+
+                    RegulatorData.SuggestedKp = "0.0";
+                    RegulatorData.SuggestedKi = "0.0";
+                    RegulatorData.SuggestedKd = "0.0";
+                    RegulatorData.SuggestedTi = "0.0";
+                    RegulatorData.SuggestedTd = "0.0";
+
+                    RegulatorData.PlantChanged = "false";
+
+                    RegulatorData._prevR1 = double.NaN;
+                    RegulatorData._prevC1 = double.NaN;
+                    RegulatorData._prevR2 = double.NaN;
+                    RegulatorData._prevC2 = double.NaN;
+
                     RegulatorData.btnReset = "false";
                     return;
                 }
 
+                // -------------------------------------------------
+                // ZÁKLADNÍ VSTUPY
+                // -------------------------------------------------
                 bool enable = ParseBool(RegulatorData.switchstate);
-
                 int order = ParseOrder(RegulatorData.order, 1);
 
                 double Ts = ParseDouble(RegulatorData.Ts, 0.1);
-                if (Ts <= 0) return;
+                if (Ts <= 0.0)
+                {
+                    return;
+                }
 
                 double R1 = ParseDouble(RegulatorData.R1, 0.0);
-                double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6; // µF 
+                double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6; // µF -> F
                 double R2 = ParseDouble(RegulatorData.R2, 0.0);
-                double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6; // µF 
+                double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6; // µF -> F
 
-                // vstup z PID (LMN), při vypnutém switchstate je vstup 0 → kondenzátory se vybíjejí
+                double K1 = ParseDouble(RegulatorData.K1, 1.0);
+                double K2 = ParseDouble(RegulatorData.K2, 1.0);
+
                 double u = enable ? ParseDouble(RegulatorData.Uin, 0.0) : 0.0;
 
-                // aktuální stavy
                 double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);
                 double uc2 = ParseDouble(RegulatorData.Uc2, 0.0);
 
-                // Validace 1st stage
-                if (R1 <= 0 || C1 <= 0) return;
-
-                // 1st stage (RC)
-                double a1 = Math.Exp(-Ts / (R1 * C1));
-                uc1 = a1 * uc1 + (1.0 - a1) * u;
-
-                // Check if 2nd order is valid
-                if (order == 2 && R2 > 0 && C2 > 0)
+                // -------------------------------------------------
+                // VALIDACE
+                // -------------------------------------------------
+                if (R1 <= 0.0 || C1 <= 0.0)
                 {
-                    // 2nd stage (cascade) input = uc1
-                    double a2 = Math.Exp(-Ts / (R2 * C2));
-                    uc2 = a2 * uc2 + (1.0 - a2) * uc1;
+                    return;
+                }
 
-                    RegulatorData.Uc1 = ToStr(uc1);
-                    RegulatorData.Uc2 = ToStr(uc2);
+                bool secondOrderValid = (order == 2 && R2 > 0.0 && C2 > 0.0);
+
+                // -------------------------------------------------
+                // DETEKCE ZMĚNY SOUSTAVY
+                // -------------------------------------------------
+                const double eps = 1e-12;
+
+                bool plantChanged =
+                    double.IsNaN(RegulatorData._prevR1) ||
+                    Math.Abs(R1 - RegulatorData._prevR1) > eps ||
+                    Math.Abs(C1 - RegulatorData._prevC1) > eps ||
+                    Math.Abs(R2 - RegulatorData._prevR2) > eps ||
+                    Math.Abs(C2 - RegulatorData._prevC2) > eps;
+                RegulatorData.PlantChanged = plantChanged ? "true" : "false";
+
+                // -------------------------------------------------
+                // VÝPOČET PARAMETRŮ SOUSTAVY
+                // -------------------------------------------------
+                double tau1 = R1 * C1;
+                double tau2 = secondOrderValid ? R2 * C2 : 0.0;
+
+                double plantGain = secondOrderValid ? (K1 * K2) : K1;
+
+                // Ekvivalentní parametry pro návrh PID
+                double Teq;
+                double theta;
+                string transferFunction;
+
+                if (secondOrderValid)
+                {
+                    // 2. řád aproximujeme pro návrh PID jako FOPDT
+                    Teq = tau1 + tau2;
+                    theta = 0.5 * (tau1 + tau2);
+
+                    transferFunction =
+                        $"{ToStr(plantGain)} / (({ToStr(tau1)} * s + 1) * ({ToStr(tau2)} * s + 1))";
                 }
                 else
                 {
-                    // 1st order only (or 2nd order with invalid R2/C2)
+                    Teq = tau1;
+                    theta = tau1;
+
+                    transferFunction =
+                        $"{ToStr(plantGain)} / ({ToStr(tau1)} * s + 1)";
+                }
+
+                // Bezpečnost proti dělení nulou / nesmyslným hodnotám
+                if (plantGain <= 0.0)
+                {
+                    plantGain = 1.0;
+                }
+
+                if (Teq <= 0.0)
+                {
+                    Teq = Ts;
+                }
+
+                if (theta <= 0.0)
+                {
+                    theta = Ts;
+                }
+
+                // -------------------------------------------------
+                // PŘEPOČET DOPORUČENÝCH PID PARAMETRŮ
+                // Jen když se změnila soustava
+                // -------------------------------------------------
+                if (plantChanged)
+                {
+                    // Konzervativní PID návrh
+                    double kp = 1.2 * (Teq / (plantGain * theta));
+                    double ti = 2.0 * theta;
+                    double td = 0.5 * theta;
+
+                    // Přepočet na Ki, Kd
+                    double ki = (ti > 0.0) ? (kp / ti) : 0.0;
+                    double kd = kp * td;
+
+                    RegulatorData.SuggestedKp = ToStr(kp);
+                    RegulatorData.SuggestedKi = ToStr(ki);
+                    RegulatorData.SuggestedKd = ToStr(kd);
+
+                    RegulatorData.SuggestedTi = ToStr(ti);
+                    RegulatorData.SuggestedTd = ToStr(td);
+
+                    // uložení nových parametrů jako referenčních
+                    RegulatorData._prevR1 = R1;
+                    RegulatorData._prevC1 = C1;
+                    RegulatorData._prevR2 = R2;
+                    RegulatorData._prevC2 = C2;
+                }
+
+                // -------------------------------------------------
+                // DISKRÉTNÍ MODEL SOUSTAVY
+                // -------------------------------------------------
+                double a1 = Math.Exp(-Ts / tau1);
+                uc1 = a1 * uc1 + K1 * (1.0 - a1) * u;
+
+                if (secondOrderValid)
+                {
+                    double a2 = Math.Exp(-Ts / tau2);
+                    uc2 = a2 * uc2 + K2 * (1.0 - a2) * uc1;
+
+                    RegulatorData.Uc1 = ToStr(uc1);
+                    RegulatorData.Uc2 = ToStr(uc2);
+                    RegulatorData.Y = ToStr(uc2);
+                }
+                else
+                {
+                    uc2 = 0.0;
+
                     RegulatorData.Uc1 = ToStr(uc1);
                     RegulatorData.Uc2 = "0.0";
+                    RegulatorData.Y = ToStr(uc1);
                 }
+
+                // -------------------------------------------------
+                // ULOŽENÍ PARAMETRŮ SOUSTAVY
+                // -------------------------------------------------
+                RegulatorData.PlantGain = ToStr(plantGain);
+                RegulatorData.Tau1 = ToStr(tau1);
+                RegulatorData.Tau2 = ToStr(tau2);
+                RegulatorData.Theta = ToStr(theta);
+                RegulatorData.TransferFunction = transferFunction;
             });
         }
     }

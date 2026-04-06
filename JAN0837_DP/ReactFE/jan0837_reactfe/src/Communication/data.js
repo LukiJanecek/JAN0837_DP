@@ -88,7 +88,7 @@ export const STATE_SCHEMA = {
   }},
 
   // CarLight 
-  CarLight: { type: 'object', shape: {
+  CarLightData: { type: 'object', shape: {
     // inputs
     btnReset : { type: 'boolean', default: false },
     error : { type: 'boolean', default: false },

@@ -73,7 +73,7 @@ function CarLightCanvas({ d }) {
 }
 
 function CarLightParamsSidebar() {
-  const { section: d, saveSection, data } = useSectionData('CarLight');
+  const { section: d, saveSection, data } = useSectionData('CarLightData');
 
   const btnReset = toBool(d?.btnReset);
   const lowBeamLight = toBool(d?.lowBeamLight);

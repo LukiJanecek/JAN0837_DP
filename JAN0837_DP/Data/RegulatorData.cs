@@ -197,7 +197,6 @@ namespace JAN0837_DP.Data
             {
                 RegulatorData.Update(() =>
                 {
-                    // Reset handling (from FE/app side)
                     if (ParseBool(RegulatorData.btnReset))
                     {
                         RegulatorData.Uc1 = "0.0";
@@ -207,53 +206,68 @@ namespace JAN0837_DP.Data
                     }
 
                     bool enable = ParseBool(RegulatorData.switchstate);
-
                     int order = ParseOrder(RegulatorData.order, 1);
 
                     double Ts = ParseDouble(RegulatorData.Ts, 0.1);
-                    if (Ts <= 0)
+                    if (Ts <= 0.0)
                     {
                         return;
                     }
 
                     double R1 = ParseDouble(RegulatorData.R1, 0.0);
-                    double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6; // µF 
+                    double C1 = ParseDouble(RegulatorData.C1, 0.0) * 1e-6;
                     double R2 = ParseDouble(RegulatorData.R2, 0.0);
-                    double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6; // µF 
+                    double C2 = ParseDouble(RegulatorData.C2, 0.0) * 1e-6;
 
-                    // vstup z PID (LMN), při vypnutém switchstate je vstup 0 → kondenzátory se vybíjejí
                     double u = enable ? ParseDouble(RegulatorData.Uin, 0.0) : 0.0;
 
-                    // aktuální stavy
                     double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);
                     double uc2 = ParseDouble(RegulatorData.Uc2, 0.0);
 
-                    // Validace 1st stage
-                    if (R1 <= 0 || C1 <= 0)
+                    if (R1 <= 0.0 || C1 <= 0.0)
                     {
                         return;
                     }
 
-                    // 1st stage (RC)
-                    double a1 = Math.Exp(-Ts / (R1 * C1));
-                    uc1 = a1 * uc1 + (1.0 - a1) * u;
-
-                    // Check if 2nd order is valid
-                    if (order == 2 && R2 > 0 && C2 > 0)
+                    if (order == 1)
                     {
-                        // 2nd stage (cascade) input = uc1
-                        double a2 = Math.Exp(-Ts / (R2 * C2));
-                        uc2 = a2 * uc2 + (1.0 - a2) * uc1;
+                        double a1 = Math.Exp(-Ts / (R1 * C1));
+                        uc1 = a1 * uc1 + (1.0 - a1) * u;
+
+                        RegulatorData.Uc1 = ToStr(uc1);
+                        RegulatorData.Uc2 = "0.0";
+                        return;
+                    }
+
+                    if (order == 2)
+                    {
+                        if (R2 <= 0.0 || C2 <= 0.0)
+                        {
+                            return;
+                        }
+
+                        // Stav na začátku kroku
+                        double uc1Old = uc1;
+                        double uc2Old = uc2;
+
+                        // Diferenciální rovnice RCRC
+                        double duc1 =
+                            ((u - uc1Old) / R1 - (uc1Old - uc2Old) / R2) / C1;
+
+                        double duc2 =
+                            ((uc1Old - uc2Old) / R2) / C2;
+
+                        // Eulerův krok
+                        uc1 = uc1Old + Ts * duc1;
+                        uc2 = uc2Old + Ts * duc2;
 
                         RegulatorData.Uc1 = ToStr(uc1);
                         RegulatorData.Uc2 = ToStr(uc2);
+                        return;
                     }
-                    else
-                    {
-                        // 1st order only (or 2nd order with invalid R2/C2)
-                        RegulatorData.Uc1 = ToStr(uc1);
-                        RegulatorData.Uc2 = "0.0";
-                    }
+
+                    RegulatorData.Uc1 = "0.0";
+                    RegulatorData.Uc2 = "0.0";
                 });
             }
         }
@@ -262,9 +276,6 @@ namespace JAN0837_DP.Data
         {
             RegulatorData.Update(() =>
             {
-                // -------------------------------------------------
-                // RESET
-                // -------------------------------------------------
                 if (ParseBool(RegulatorData.btnReset))
                 {
                     RegulatorData.Uc1 = "0.0";
@@ -294,9 +305,6 @@ namespace JAN0837_DP.Data
                     return;
                 }
 
-                // -------------------------------------------------
-                // ZÁKLADNÍ VSTUPY
-                // -------------------------------------------------
                 bool enable = ParseBool(RegulatorData.switchstate);
                 int order = ParseOrder(RegulatorData.order, 1);
 
@@ -319,9 +327,6 @@ namespace JAN0837_DP.Data
                 double uc1 = ParseDouble(RegulatorData.Uc1, 0.0);
                 double uc2 = ParseDouble(RegulatorData.Uc2, 0.0);
 
-                // -------------------------------------------------
-                // VALIDACE
-                // -------------------------------------------------
                 if (R1 <= 0.0 || C1 <= 0.0)
                 {
                     return;
@@ -329,9 +334,6 @@ namespace JAN0837_DP.Data
 
                 bool secondOrderValid = (order == 2 && R2 > 0.0 && C2 > 0.0);
 
-                // -------------------------------------------------
-                // DETEKCE ZMĚNY SOUSTAVY
-                // -------------------------------------------------
                 const double eps = 1e-12;
 
                 bool plantChanged =
@@ -342,9 +344,6 @@ namespace JAN0837_DP.Data
                     Math.Abs(C2 - RegulatorData._prevC2) > eps;
                 RegulatorData.PlantChanged = plantChanged ? "true" : "false";
 
-                // -------------------------------------------------
-                // VÝPOČET PARAMETRŮ SOUSTAVY
-                // -------------------------------------------------
                 double tau1 = R1 * C1;
                 double tau2 = secondOrderValid ? R2 * C2 : 0.0;
 
@@ -389,10 +388,6 @@ namespace JAN0837_DP.Data
                     theta = Ts;
                 }
 
-                // -------------------------------------------------
-                // PŘEPOČET DOPORUČENÝCH PID PARAMETRŮ
-                // Jen když se změnila soustava
-                // -------------------------------------------------
                 if (plantChanged)
                 {
                     // Konzervativní PID návrh
@@ -418,9 +413,6 @@ namespace JAN0837_DP.Data
                     RegulatorData._prevC2 = C2;
                 }
 
-                // -------------------------------------------------
-                // DISKRÉTNÍ MODEL SOUSTAVY
-                // -------------------------------------------------
                 double a1 = Math.Exp(-Ts / tau1);
                 uc1 = a1 * uc1 + K1 * (1.0 - a1) * u;
 
@@ -442,9 +434,6 @@ namespace JAN0837_DP.Data
                     RegulatorData.Y = ToStr(uc1);
                 }
 
-                // -------------------------------------------------
-                // ULOŽENÍ PARAMETRŮ SOUSTAVY
-                // -------------------------------------------------
                 RegulatorData.PlantGain = ToStr(plantGain);
                 RegulatorData.Tau1 = ToStr(tau1);
                 RegulatorData.Tau2 = ToStr(tau2);

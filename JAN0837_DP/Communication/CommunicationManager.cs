@@ -851,8 +851,8 @@ namespace JAN0837_DP.Communication
 
                                     if (!opcuaClient.BulkReadAllOutputs())
                                     {
-                                        _ucCommunicationControl.SetStatus("OPC UA: BulkRead failed or session lost, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: BulkReadAllOutputs failed.");
+                                        _ucCommunicationControl.SetStatus("OPC UA: Read failed or session lost, waiting for reconnection...");
+                                        Logger.LogWarning("OPC UA Client: ReadAllOutputs failed.");
                                         await Task.Delay(1000, token);
                                         continue;
                                     }
@@ -861,18 +861,18 @@ namespace JAN0837_DP.Communication
 
                                     if (!opcuaClient.BulkWriteAllInputs())
                                     {
-                                        Logger.LogWarning("OPC UA: BulkWriteAllInputs partially or fully failed.");
+                                        Logger.LogWarning("OPC UA: WriteAllInputs partially or fully failed.");
                                     }
 
                                     if (!opcuaClient.connected)
                                     {
                                         _ucCommunicationControl.SetStatus("OPC UA: Session lost, waiting for reconnection...");
-                                        Logger.LogWarning("OPC UA Client: Session lost after bulk operations.");
+                                        Logger.LogWarning("OPC UA Client: Session lost after writting operations.");
                                         await Task.Delay(1000, token);
                                         continue;
                                     }
 
-                                    _ucCommunicationControl.SetStatus("OPC UA Client: All data synchronized (BulkRead → Compute → BulkWrite)");
+                                    _ucCommunicationControl.SetStatus("OPC UA Client: All data synchronized (Read → Compute → Write)");
 
                                     // INDIVIDUAL READ/WRITE CODE (commented out, kept for reference) 
                                     /*

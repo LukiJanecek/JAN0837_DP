@@ -1,0 +1,45 @@
+.appGrid{
+  display: grid;
+  grid-template-columns: var(--left, var(--sidebar)) minmax(0,1fr) var(--right, var(--sidebar));
+  grid-template-rows: auto minmax(0,1fr) auto;
+  grid-template-areas:
+    "header header header"
+    "left   main   right"
+    "footer footer footer";
+  gap: var(--gutter);
+  min-height: 100dvh; /* lepší než 100vh na různých platformách */
+  padding: var(--gutter);
+  overflow: hidden; /* zabrání dvojitým scrollům */
+}
+
+.header{ grid-area: header; }
+.left  { grid-area: left;   min-width: 0; overflow: auto; }
+.main  { grid-area: main;   min-width: 0; overflow: auto; }
+.right { grid-area: right;  min-width: 0; overflow: auto; }
+.footer{ grid-area: footer; }
+
+.sidebar{
+  /* volitelné „sticky“ scrolování obsahu sidebaru */
+  align-self: start;
+  max-height: calc(100dvh - 2*var(--gutter) - 48px); /* přizpůsob výšce headeru */
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+}
+
+/* Když nechceš pravou lištu, stačí na wrapperu nastavit data-attr (viz komponenta níž) */
+.appGrid[data-right="off"]{ --right: 0px; }
+.appGrid[data-left="off"] { --left: 0px;  }
+
+/* Breakpoint: na úzkých oknech zrušíme sloupce a lyšty schováme (můžeš nahradit zásuvnými panely) */
+@media (max-width: 1100px){
+  .appGrid{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+  }
+  .left, .right { display: none; }
+}

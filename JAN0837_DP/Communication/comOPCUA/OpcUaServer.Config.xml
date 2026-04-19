@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationConfiguration xmlns="http://opcfoundation.org/UA/Configuration.xsd">
+  <ApplicationName>JAN0837_DP_OPC_UA_Server</ApplicationName>
+  <ApplicationUri>urn:localhost:JAN0837_DP:OPCUAServer</ApplicationUri>
+  <ProductUri>http://jan0837/opcuaserver</ProductUri>
+  <ApplicationType>Server</ApplicationType>
+
+  <SecurityConfiguration>
+    <ApplicationCertificate>
+      <StoreType>Directory</StoreType>
+      <StorePath>%TEMP%\OPC Foundation\pki\own</StorePath>
+    </ApplicationCertificate>
+    <TrustedPeerCertificates>
+      <StoreType>Directory</StoreType>
+      <StorePath>%TEMP%\OPC Foundation\pki\trusted</StorePath>
+    </TrustedPeerCertificates>
+    <TrustedIssuerCertificates>
+      <StoreType>Directory</StoreType>
+      <StorePath>%TEMP%\OPC Foundation\pki\issuer</StorePath>
+    </TrustedIssuerCertificates>
+    <RejectedCertificateStore>
+      <StoreType>Directory</StoreType>
+      <StorePath>%TEMP%\OPC Foundation\pki\rejected</StorePath>
+    </RejectedCertificateStore>
+    <AutoAcceptUntrustedCertificates>true</AutoAcceptUntrustedCertificates>
+    <RejectSHA1SignedCertificates>false</RejectSHA1SignedCertificates>
+    <MinimumCertificateKeySize>1024</MinimumCertificateKeySize>
+    <AddAppCertToTrustedStore>true</AddAppCertToTrustedStore>
+  </SecurityConfiguration>
+
+  <ServerConfiguration>
+    <BaseAddresses>
+      <BaseAddress>opc.tcp://127.0.0.1:4840</BaseAddress>
+    </BaseAddresses>
+    <MinRequestThreadCount>5</MinRequestThreadCount>
+    <MaxRequestThreadCount>100</MaxRequestThreadCount>
+    <MaxQueuedRequestCount>200</MaxQueuedRequestCount>
+  </ServerConfiguration>
+
+  <TransportQuotas>
+    <OperationTimeout>600000</OperationTimeout>
+    <MaxStringLength>1048576</MaxStringLength>
+    <MaxByteStringLength>1048576</MaxByteStringLength>
+    <MaxArrayLength>65535</MaxArrayLength>
+    <MaxMessageSize>4194304</MaxMessageSize>
+    <MaxBufferSize>65535</MaxBufferSize>
+    <ChannelLifetime>300000</ChannelLifetime>
+    <SecurityTokenLifetime>3600000</SecurityTokenLifetime>
+  </TransportQuotas>
+
+  <TraceConfiguration>
+    <OutputFilePath>%TEMP%\JAN0837_Server.log</OutputFilePath>
+    <TraceMasks>1</TraceMasks>
+  </TraceConfiguration>
+</ApplicationConfiguration>

@@ -1,0 +1,31 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;         /* vyplní celou výšku obrazovky */
+  width: var(--left, 240px);  /* nebo pevná šířka, dle tvého layoutu */
+  padding: 12px;
+  border-right: 1px solid var(--border, #e5e7eb);
+  background: var(--nav-bg, #fff);
+  overflow: hidden;;
+}
+
+.nav_text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;;
+}
+
+.sidebar-footer {
+  margin-top: auto;       /* magicky odsunout na spodek */
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* srovná Clock a obrázek na výšku */
+  gap: 8px;
+}
+
+.sidebar-logo {
+  max-width: 96px;        /* uprav podle potřeby */
+  height: auto;
+  display: block;
+}

@@ -1,0 +1,195 @@
+/* //////////////////////////////////////////////////////////////////////////// */
+/* Proměnné (theme) */
+:root{
+  --gap: 12px;
+  --radius: 12px;
+
+  --app-min: 200px; 
+  --left: 200px;
+  --right: 200px; /*clamp(220px, 18vw, 360px);*/
+
+  --bg: #ffffff;
+  --text: #000000;
+  --border: #e5e7eb;
+
+  --nav-bg: #ffffff;
+  --nav-fg: #000000;
+  --nav-active: #3c3d3f; 
+  --nav-accent: #000000;  
+  --nav-accent-w: 10px; 
+
+  --red: #ef4444;
+  --red-light: #fecaca;
+  --red-dark: #b91c1c;
+  --green: #22c55e;
+  --green-light: #bbf7d0;
+  --green-dark: #166534;
+  --green-tree: #16a34a;
+  --blue: #3b82f6;
+  --blue-light: #bfdbfe;
+  --blue-dark: #1e40af;
+  --yellow: #eab308;
+  --yellow-light: #fef08a;
+  --yellow-dark: #a16207;
+  --white: #ffffff;
+  --black: #000000;
+  --gray: #6b7280;
+  --gray-light: #f3f4f6;
+  --gray-dark: #374151;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --pink: #ec4899;
+  --purple: #a855f7;
+  --indigo: #6366f1;
+}
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* Reset + base */
+*,*::before,*::after{ box-sizing: border-box; }
+html,body,#root{ height:100%; margin:0; }
+img,picture,video,canvas{ display:block; max-width:100%; }
+button,input,select,textarea{ font:inherit; }
+body{ background:var(--bg); color:var(--text); }
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* App layout (grid) */
+.app{
+  display: grid;
+  grid-template-columns: var(--left) minmax(0,1fr) var(--right);
+  grid-template-areas: "nav main aside";
+  gap: var(--gap);
+  min-height: 100dvh;
+  min-width: var(--app-min);    /* místo „rozpadání“ dostane uživatel H-scroll */
+  padding: var(--gap);
+  overflow: hidden;             /* regiony mají vlastní scroll */
+}
+
+/* vypnutí pravé lišty per-page: <div class="app" data-aside="off"> */
+.app[data-aside="off"]{ --right: 0px; }
+.app[data-aside="off"] .app__aside{ display:none; }
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* Regiony*/
+.app__header{ 
+  grid-area: header; 
+}
+
+.app__nav   { 
+  grid-area: nav;   
+  min-width:0; 
+  overflow:auto; 
+}
+
+.app__main  { 
+  grid-area: main;  
+  min-width:0; 
+  overflow:auto; 
+}
+
+.app__aside { 
+  grid-area: aside; 
+  min-width:0; 
+  overflow:auto; 
+}
+
+.app__footer{ 
+  grid-area: footer; 
+}
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* Vzhled panelů/obsahu */
+.app__nav{
+  position: relative;
+  display: flex; 
+  flex-direction: column;
+  padding: 1rem 1rem 1rem calc(1rem + var(--nav-accent-w) + 8px);
+  color: var(--nav-fg);
+  background: var(--nav-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  align-items: stretch;
+}
+
+.app__nav::before{
+  content:"";
+  position:absolute; inset:0 auto 0 0;
+  width: var(--nav-accent-w);
+  background: var(--nav-accent);
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
+.nav__link{
+  color: var(--nav-fg);
+  text-decoration: none;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .5rem .6rem;
+  border-radius: 6px;
+}
+
+.nav__link:hover{ 
+  background: rgba(98, 189, 24, 0.08); 
+}
+
+.nav__link.is-active{ 
+  background: var(--nav-active); 
+  color:#fff; 
+  font-weight:600; 
+}
+
+.nav__footer{ 
+  margin-top: auto; 
+  font-size: .9rem; 
+  text-align: center; 
+  opacity: .9;
+  gap: .5rem;
+  justify-items: center;
+  display: grid;
+}
+
+.nav__
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* ===== Main + Aside ===== */
+.app__main{
+  background:#f8f9fa;
+  border: #000000 2px dashed;
+  /*border: 1px solid var(--border);*/
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.app__aside{
+  border: #000000 2px dashed;
+  /*border: 1px solid var(--border);*/
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--bg);
+}
+
+/* Obrázky s pevným poměrem stran */
+.aspect{
+  position:relative; width:100%; aspect-ratio: var(--ratio, 16/9);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow:hidden; background: var(--bg);
+}
+.aspect>img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit: var(--fit, contain);
+}
+
+/* Backdrop pro mobilní menu (defaultně vyp.) */
+.app__backdrop{ display:none; }
+
+/* //////////////////////////////////////////////////////////////////////////// */
+/* Utility*/
+.stack{ display:grid; gap:var(--gap); }
+.truncate{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nowrap{ white-space:nowrap; }
+.aspect{ position:relative; width:100%; aspect-ratio: var(--ratio,16/9); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg);}
+.aspect>img{ position:absolute; inset:0; width:100%; height:100%; object-fit: var(--fit, contain); }
+.panel{ border:1px solid var(--border); border-radius:var(--radius); padding:12px; background:var(--bg); }
+.hidden{ display:none !important; }
+.min-w-0{ min-width:0 !important; }
+
+

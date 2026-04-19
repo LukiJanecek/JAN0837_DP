@@ -1,0 +1,157 @@
+.crossroadpage {
+    min-width: 500px;
+}
+
+.crossroad {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: auto 100%;
+  background-position: left;
+  background-repeat: no-repeat;
+  overflow: hidden; 
+}
+
+.light {
+  position: absolute;
+  height: auto; 
+  z-index: 2;
+  pointer-events: none; 
+}
+
+.crossroad .light--uniform { width: 2.3%; } 
+
+.crossroadlight {
+  position: absolute;
+  /* x, y, w se nastaví inline stylem v % (viz komponenta) */
+  pointer-events: none;    /* ať neblokuje kliky, pokud nechceš interakci */
+  image-rendering: auto;   /* hezčí škálování */
+  z-index: 2;              /* nad podkladem */
+}
+
+.pedestrianlight {
+  position: absolute;
+  /* x, y, w se nastaví inline stylem v % (viz komponenta) */
+  pointer-events: none;    /* ať neblokuje kliky, pokud nechceš interakci */
+  image-rendering: auto;   /* hezčí škálování */
+  z-index: 2;              /* nad podkladem */
+}
+
+.btn.btn--start{
+  --bs-btn-color: var(--black);
+  --bs-btn-bg: var(--green-light);
+  --bs-btn-border-color: var(--green-tree);
+
+  --bs-btn-hover-color: var(--green);
+  --bs-btn-hover-bg: var(--green-tree);
+  --bs-btn-hover-border-color: var(--green);
+
+  --bs-btn-active-color: var(--white);
+  --bs-btn-active-bg: var(--green-dark);
+  --bs-btn-active-border-color: var(--green-dark);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.btn.btn--pause{
+  --bs-btn-color: var(--black);
+  --bs-btn-bg: var(--yellow);
+  --bs-btn-border-color: var(--black);
+
+  --bs-btn-hover-color: var(--yellow);
+  --bs-btn-hover-bg: var(--yellow-light);
+  --bs-btn-hover-border-color: var(--yellow);
+
+  --bs-btn-active-color: var(--white);
+  --bs-btn-active-bg: var(--yellow-dark);
+  --bs-btn-active-border-color: var(--yellow-dark);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease; 
+}
+
+.btn.btn--stop{
+  --bs-btn-color: var(--white);
+  --bs-btn-bg: var(--red);
+  --bs-btn-border-color: var(--red);
+
+  --bs-btn-hover-color: var(--red);
+  --bs-btn-hover-bg: var(--red-dark);         
+  --bs-btn-hover-border-color: var(--red-dark);
+
+  --bs-btn-active-color: var(--black);
+  --bs-btn-active-bg: var(--red-light);         
+  --bs-btn-active-border-color: var(--red-light);
+
+  --bs-btn-disabled-bg: var(--gray-light);
+  --bs-btn-disabled-color: var(--gray);
+  --bs-btn-disabled-border-color: var(--gray-light);
+
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.switchers-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: stretch;
+}
+
+.crossroad .ped-btn {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  cursor: pointer;
+  z-index: 5;
+}
+
+.crossroad .ped-btn--north { 
+  left: 48%; 
+  top: 0.01%; 
+  rotate: 180deg;
+}
+
+.crossroad .ped-btn--north-2 {
+  left: 76%;
+  top: 6%;
+  rotate: 180deg;
+}
+
+.crossroad .ped-btn--south { 
+  left: 13.5%; 
+  top: 85.5%; 
+}
+
+.crossroad .ped-btn--south-2 {
+  left: 45%;
+  top: 85.5%;
+}
+
+.crossroad .ped-btn--west {
+  left: 2.5%;
+  top: 69%;
+}
+
+.crossroad .ped-btn--west-2 {
+  left: 2.5%;
+  top: 17%;
+}
+
+.crossroad .ped-btn--east {
+  left: 97.5%;
+  top: 30%;
+}
+
+.crossroad .ped-btn--east-2 {
+  left: 88%;
+  top: 39%;
+}

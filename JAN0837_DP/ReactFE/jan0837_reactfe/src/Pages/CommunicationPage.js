@@ -80,7 +80,7 @@ function CommunicationPage() {
                     <h1>Communication Page</h1> 
                     {error && <div style={{color:'red'}}>Error: {error}</div>}
                     
-                    <div style={{ marginTop: 12 }}><strong>Refresh every:</strong> {interval} <strong>s</strong></div> 
+                    <div style={{ marginTop: 12 }}><strong>Refresh every:</strong> {interval} <strong>ms</strong></div> 
                     {/*
                     <label>Obnovovat každých{' '} <input type="number" value={interval} onChange={e => setInterval(Number(e.target.value) || 2000)} style={{ width: 80, margin: '0 0.5rem' }}/> ms</label>
                     */}

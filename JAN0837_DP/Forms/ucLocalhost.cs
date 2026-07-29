@@ -44,59 +44,74 @@ namespace JAN0837_DP.Forms
 
         private async void ucLocalhost_Load(object sender, EventArgs e)
         {
-            //txtBoxParam1.Text = "Text";
-            //txtBoxParam2.Text = "0";
-            //txtBoxParam3.Text = "false";
-
-            if (webView21.CoreWebView2 == null)
+            try
             {
-                await webView21.EnsureCoreWebView2Async();
-                webView21.DefaultBackgroundColor = Color.WhiteSmoke;
-            }
+                if (webView21.CoreWebView2 == null)
+                {
+                    await webView21.EnsureCoreWebView2Async();
+                    webView21.DefaultBackgroundColor = Color.WhiteSmoke;
+                }
 
-            if (internalVariables.communicationServerStarted == false)
+                if (internalVariables.communicationServerStarted == false)
+                {
+                    _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
+                    _feCommunication.communicationStart();
+                }
+
+                if (internalVariables.feServerStarted == false)
+                {
+                    _feCommunication ??= new FEcommunicationControl(internalVariables.communicationBaseURL);
+                    await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
+                    await _feCommunication.EnsureReactDevServerAsync();        // port 3000
+
+                    webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                }
+                else
+                {
+                    webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                }
+            }
+            catch (Exception ex)
             {
-                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                _feCommunication.communicationStart();
-            }
-
-            if (internalVariables.feServerStarted == false)
-            {
-                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
-                await _feCommunication.EnsureReactDevServerAsync();        // port 3000
-
-                webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
-            }
-            else 
-            { 
-                webView21.CoreWebView2.Navigate(internalVariables.feURL);
+                Logger.LogException(ex, "ucLocalhost_Load");
+                MessageBox.Show(
+                    "Vizualizační server se nepodařilo spustit.\n\n" +
+                    ex.Message +
+                    "\n\nSpusťte deploy.ps1 jako správce. Pokud problém trvá, " +
+                    "zkontrolujte, zda porty 3000 nebo 5000 nepoužívá jiná aplikace.",
+                    "JAN0837_DP – chyba serveru",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
         }
 
         private async void btnStartFE_Click(object sender, EventArgs e)
         {
-            if (internalVariables.communicationServerStarted != true)
+            try
             {
-                _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                _feCommunication.communicationStart();
-            }
-
-            if (internalVariables.feServerStarted != true)
-            {
-                try
+                if (internalVariables.communicationServerStarted != true)
                 {
+                    _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
+                    _feCommunication.communicationStart();
+                }
+
+                if (internalVariables.feServerStarted != true)
+                {
+                    _feCommunication ??= new FEcommunicationControl(internalVariables.communicationBaseURL);
                     await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
                     await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
                     webView21.CoreWebView2.Navigate(internalVariables.feURL);
-                    //lblCommunicationStatus.Text = "FE running (3000) & API ready (5000)";
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogException(ex, "Error starting FE or communication service");
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "Error starting FE or communication service");
+                MessageBox.Show(
+                    ex.Message,
+                    "JAN0837_DP – chyba serveru",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
         }
         /*

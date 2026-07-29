@@ -113,7 +113,8 @@
             Controls.Add(mainWindow);
             Controls.Add(toolStripMain);
             Name = "MainForm";
-            ShowIcon = false;
+            ShowIcon = true;
+            Text = "ComSim — Industrial Communication & Simulation";
             Load += MainForm_Load;
             toolStripMain.ResumeLayout(false);
             toolStripMain.PerformLayout();

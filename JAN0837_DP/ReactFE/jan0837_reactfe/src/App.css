@@ -8,15 +8,15 @@
   --left: 200px;
   --right: 200px; /*clamp(220px, 18vw, 360px);*/
 
-  --bg: #ffffff;
-  --text: #000000;
-  --border: #e5e7eb;
+  --bg: #f5f9fb;
+  --text: #0f172a;
+  --border: #d8e4ea;
 
   --nav-bg: #ffffff;
   --nav-fg: #000000;
-  --nav-active: #3c3d3f; 
-  --nav-accent: #000000;  
-  --nav-accent-w: 10px; 
+  --nav-active: #082f49;
+  --nav-accent: #06b6d4;
+  --nav-accent-w: 7px;
 
   --red: #ef4444;
   --red-light: #fecaca;
@@ -151,16 +151,26 @@ body{ background:var(--bg); color:var(--text); }
 /* //////////////////////////////////////////////////////////////////////////// */
 /* ===== Main + Aside ===== */
 .app__main{
-  background:#f8f9fa;
-  border: #000000 2px dashed;
-  /*border: 1px solid var(--border);*/
+  position: relative;
+  isolation: isolate;
+  background:#ffffff;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem;
 }
 
+.app__main::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 18% 8%;
+  background: url("./assets/vsb-fei-logo.png") center / contain no-repeat;
+  opacity: .035;
+  pointer-events: none;
+}
+
 .app__aside{
-  border: #000000 2px dashed;
-  /*border: 1px solid var(--border);*/
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem;
   background: var(--bg);
@@ -191,5 +201,3 @@ body{ background:var(--bg); color:var(--text); }
 .panel{ border:1px solid var(--border); border-radius:var(--radius); padding:12px; background:var(--bg); }
 .hidden{ display:none !important; }
 .min-w-0{ min-width:0 !important; }
-
-

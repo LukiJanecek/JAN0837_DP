@@ -52,16 +52,10 @@ namespace JAN0837_DP.Forms
                     webView21.DefaultBackgroundColor = Color.WhiteSmoke;
                 }
 
-                if (internalVariables.communicationServerStarted == false)
-                {
-                    _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                    _feCommunication.communicationStart();
-                }
-
                 if (internalVariables.feServerStarted == false)
                 {
                     _feCommunication ??= new FEcommunicationControl(internalVariables.communicationBaseURL);
-                    await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
+                    await _feCommunication.EnsureCommunicationServiceAsync();  // port 3001
                     await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
                     webView21.CoreWebView2.Navigate(internalVariables.feURL);
@@ -78,8 +72,8 @@ namespace JAN0837_DP.Forms
                     "Vizualizační server se nepodařilo spustit.\n\n" +
                     ex.Message +
                     "\n\nSpusťte deploy.ps1 jako správce. Pokud problém trvá, " +
-                    "zkontrolujte, zda porty 3000 nebo 5000 nepoužívá jiná aplikace.",
-                    "JAN0837_DP – chyba serveru",
+                    "zkontrolujte, zda porty 3000 nebo 3001 nepoužívá jiná aplikace.",
+                    "ComSim – chyba serveru",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
@@ -89,16 +83,10 @@ namespace JAN0837_DP.Forms
         {
             try
             {
-                if (internalVariables.communicationServerStarted != true)
-                {
-                    _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
-                    _feCommunication.communicationStart();
-                }
-
                 if (internalVariables.feServerStarted != true)
                 {
                     _feCommunication ??= new FEcommunicationControl(internalVariables.communicationBaseURL);
-                    await _feCommunication.EnsureCommunicationServiceAsync();  // port 5000
+                    await _feCommunication.EnsureCommunicationServiceAsync();  // port 3001
                     await _feCommunication.EnsureReactDevServerAsync();        // port 3000
 
                     webView21.CoreWebView2.Navigate(internalVariables.feURL);
@@ -109,7 +97,7 @@ namespace JAN0837_DP.Forms
                 Logger.LogException(ex, "Error starting FE or communication service");
                 MessageBox.Show(
                     ex.Message,
-                    "JAN0837_DP – chyba serveru",
+                    "ComSim – chyba serveru",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }

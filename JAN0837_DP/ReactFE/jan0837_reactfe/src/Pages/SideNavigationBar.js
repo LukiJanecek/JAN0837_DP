@@ -14,8 +14,17 @@ import PictureSwitcher from '../Components/PictureSwitcher.js';
 import ResponsiveImage from '../Components/ResponsiveImage.js';
 
 function SideNavigationBar() {
+  const publicUrl = process.env.PUBLIC_URL || '';
+
   return (
     <>
+      <div className="brand">
+        <img className="brand__icon" src={`${publicUrl}/comsim-icon.png`} alt="" />
+        <div>
+          <div className="brand__name">ComSim</div>
+          <div className="brand__tagline">Communication &amp; Simulation</div>
+        </div>
+      </div>
       <Nav className="nav_text">
         {/*}
         <Nav.Link as={NavLink} to="/mainpage">
@@ -23,13 +32,13 @@ function SideNavigationBar() {
         </Nav.Link>
         */}
         <Nav.Link as={NavLink} to="/communication">
-           Communication
+           Komunikace
         </Nav.Link>
         <Nav.Link as={NavLink} to="/crossroad">
-           Crossroad
+           Křižovatka
         </Nav.Link>
         <Nav.Link as={NavLink} to="/crosswalk">
-           Crosswalk
+           Přechod
         </Nav.Link>
         {/*
         <Nav.Link as={NavLink} to="/washingmachine">
@@ -42,10 +51,10 @@ function SideNavigationBar() {
         </Nav.Link>
         */}
         <Nav.Link as={NavLink} to="/carlight">
-           Car Light
+           Světla vozidla
         </Nav.Link>
         <Nav.Link as={NavLink} to="/regulator">
-           Regulator
+           Regulátor
         </Nav.Link>
       </Nav>
 

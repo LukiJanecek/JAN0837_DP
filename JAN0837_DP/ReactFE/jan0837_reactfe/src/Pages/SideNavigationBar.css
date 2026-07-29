@@ -16,6 +16,34 @@
   overflow: auto;;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.brand__icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+}
+
+.brand__name {
+  color: #082f49;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.brand__tagline {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: .65rem;
+  line-height: 1.15;
+}
+
 .sidebar-footer {
   margin-top: auto;       /* magicky odsunout na spodek */
   display: flex;

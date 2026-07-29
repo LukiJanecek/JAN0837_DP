@@ -43,6 +43,8 @@ $FrontendDirectory = Join-Path $ProjectRoot "ReactFE\jan0837_reactfe"
 $PythonDirectory = Join-Path $ProjectRoot "TIA\PythonScripts"
 $PublishDirectory = Join-Path $ProjectRoot "bin\Release\net8.0-windows"
 $OpennessGroup = "Siemens TIA Openness"
+$FrontendPort = 3000
+$ApiPort = 3001
 
 function Write-Step([string]$Text) {
     Write-Host ""
@@ -292,21 +294,29 @@ function Publish-Project {
     return $exe
 }
 
-function Configure-Network {
+function Configure-Network([bool]$ConfigureFirewall = $true) {
     Write-Step "Kontrola portů a nastavení HTTP URL ACL/firewallu"
 
     $user = [Security.Principal.WindowsIdentity]::GetCurrent().Name
 
     # Rezervujeme kořen portu. Tím jsou pokryté jak /api/, tak OWIN statický server.
     # Předchozí verze rezervovala pouze /api/, což na čisté instalaci Windows 11 nestačilo.
-    & netsh.exe http delete urlacl url="http://+:5000/api/" *> $null
-    & netsh.exe http delete urlacl url="http://+:5000/" *> $null
-    & netsh.exe http add urlacl url="http://+:5000/" user="$user"
+    $apiUrl = "http://+:$ApiPort/api/"
+    foreach ($url in @($apiUrl)) {
+        & netsh.exe http delete urlacl url="$url" *> $null
+    }
+    & netsh.exe http add urlacl url="$apiUrl" user="$user" listen=yes delegate=no
     if ($LASTEXITCODE -ne 0) {
         throw "Nepodařilo se vytvořit HTTP URL ACL pro uživatele $user."
     }
 
-    foreach ($port in @(3000, 5000)) {
+    & netsh.exe http show urlacl url="$apiUrl" *> $null
+    if ($LASTEXITCODE -ne 0) {
+        throw "HTTP URL ACL $apiUrl se po vytvoreni nepodarilo overit."
+    }
+    Write-Host "HTTP URL ACL: $apiUrl ($user)" -ForegroundColor Green
+
+    foreach ($port in @($FrontendPort, $ApiPort)) {
         $listeners = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
         if ($listeners) {
             $processes = $listeners |
@@ -316,10 +326,19 @@ function Configure-Network {
                 -ForegroundColor Yellow
         }
 
+        if (-not $ConfigureFirewall) {
+            continue
+        }
+
         $name = "JAN0837_DP - TCP $port"
         Remove-NetFirewallRule -DisplayName $name -ErrorAction SilentlyContinue
         New-NetFirewallRule -DisplayName $name -Direction Inbound -Action Allow `
-            -Protocol TCP -LocalPort $port -Profile Private | Out-Null
+            -Protocol TCP -LocalPort $port -Profile Any | Out-Null
+    }
+
+    if (-not $ConfigureFirewall) {
+        Write-Host "Firewall byl preskocen; povinna HTTP URL ACL byla vytvorena." `
+            -ForegroundColor Yellow
     }
 }
 
@@ -369,9 +388,7 @@ try {
     Install-ProjectDependencies
     $exe = Publish-Project
 
-    if (-not $SkipFirewall) {
-        Configure-Network
-    }
+    Configure-Network -ConfigureFirewall:(-not $SkipFirewall)
 
     if ($CreateShortcut) {
         New-ApplicationShortcut $exe

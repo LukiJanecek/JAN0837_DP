@@ -87,6 +87,7 @@ namespace JAN0837_DP
         public MainForm()
         {
             InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             this.MinimumSize = new Size(900, 700);
 
             _ucCommControl = new ucCommunicationControl { Dock = DockStyle.Fill };
@@ -297,15 +298,12 @@ namespace JAN0837_DP
 
         #endregion
 
-        public async void Visualization()
+        public void Visualization()
         {
             try
             {
                 _feCommunication = new FEcommunicationControl(internalVariables.communicationBaseURL);
                 _feCommunication.communicationStart();
-
-                _feServer = new FEserver(_feCommunication);
-                await _feServer.serverStart();
             }
             catch (Exception ex)
             {

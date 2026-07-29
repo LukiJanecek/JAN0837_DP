@@ -113,7 +113,9 @@ namespace JAN0837_DP.ReactFE
         public Task serverStop()
         {
             _webApp?.Dispose();
+            _webApp = null;
             Console.WriteLine("FE server stopped.");
+            internalVariables.communicationServerStarted = false;
             internalVariables.feServerStarted = false;
             return Task.CompletedTask;
         }

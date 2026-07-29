@@ -35,8 +35,8 @@ namespace JAN0837_DP.Data
         public static string clientXMLPath { get; set; } = Path.Combine(communiactionFolderPath, "comOPCUA", "OpcUaClient.Config.xml");
 
         // TIA Portal paths 
-        public static string tiaDLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V20\\PublicAPI\\V20"; // Siemens.Engineering.dll
-        public static string defaultTIADLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V20\\PublicAPI\\V20"; // Siemens.Engineering.dll
+        public static string tiaDLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V15_1\\PublicAPI\\V15.1"; // Siemens.Engineering.dll
+        public static string defaultTIADLLPath { get; set; } = "C:\\Program Files\\Siemens\\Automation\\Portal V15_1\\PublicAPI\\V15.1"; // Siemens.Engineering.dll
         public static string tiaPath { get; set; } = Path.Combine(projectRootPath, "TIA");
         public static string tiaProjectPath { get; set; } = Path.Combine(tiaPath, "TIA_Projects");
         public static string tiaExampleProjectPath { get; set; } = Path.Combine(tiaProjectPath, "Example");
@@ -82,7 +82,7 @@ namespace JAN0837_DP.Data
 
         // Ports
         public static int fePort { get; set; } = 3000;
-        public static int apiPort { get; set; } = 5000;
+        public static int apiPort { get; set; } = 3001;
 
         // Actual bound address (set by server when it starts)
         // API server tracks what it bound to (may be localhost if network binding failed)
@@ -237,3 +237,4 @@ namespace JAN0837_DP.Data
         }
     }
 }
+

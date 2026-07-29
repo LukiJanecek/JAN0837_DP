@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -7,8 +6,12 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>ComSim</AssemblyName>
+    <Product>ComSim</Product>
+    <Title>ComSim</Title>
+    <Description>Industrial communication, simulation and TIA Portal integration.</Description>
+    <ApplicationIcon>comsim.ico</ApplicationIcon>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.3.9" />
@@ -32,7 +35,6 @@
     <PackageReference Include="Sharp7" Version="1.1.84" />
     <PackageReference Include="System.IO.Ports" Version="10.0.2" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -40,18 +42,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Siemens.Engineering">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Siemens\Automation\Portal V19\PublicAPI\V19\Siemens.Engineering.dll</HintPath>
+      <HintPath>C:\Program Files\Siemens\Automation\Portal V15_1\PublicAPI\V15.1\Siemens.Engineering.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>

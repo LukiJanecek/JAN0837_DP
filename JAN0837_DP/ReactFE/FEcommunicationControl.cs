@@ -19,6 +19,10 @@ namespace JAN0837_DP.ReactFE
 {
     public class FEcommunicationControl
     {
+        // MainForm a ucLocalhost mohou inicializaci vyvolat téměř současně.
+        // Zámek zabrání tomu, aby dva HttpListenery závodily o stejný port.
+        private static readonly object listenerStartLock = new object();
+
         private string _prefix;
         private HttpListener _listener;
         private CancellationTokenSource _cts;
@@ -38,83 +42,90 @@ namespace JAN0837_DP.ReactFE
 
         public void communicationStart()
         {
-            if (_listener?.IsListening == true)
+            lock (listenerStartLock)
             {
-                return;
-            }
+                if (_listener?.IsListening == true)
+                {
+                    return;
+                }
 
-            if (internalVariables.communicationServerStarted == true)
-            {
-                return;
-            }
+                if (internalVariables.communicationServerStarted == true)
+                {
+                    return;
+                }
 
-            _listener = new HttpListener();
+                _listener = new HttpListener();
             
-            // Try different prefixes in order of preference
-            string[] prefixesToTry = new[]
-            {
-                $"http://+:{internalVariables.apiPort}/api/",                   
-                $"http://*:{internalVariables.apiPort}/api/",                    
-                $"http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/", 
-                $"http://localhost:{internalVariables.apiPort}/api/"            
-            };
+                // Try different prefixes in order of preference.
+                // Wildcard prefixes allow access from other devices; localhost is the safe fallback.
+                string[] prefixesToTry = new[]
+                {
+                    $"http://+:{internalVariables.apiPort}/api/",
+                    $"http://*:{internalVariables.apiPort}/api/",
+                    $"http://{internalVariables.LocalIP}:{internalVariables.apiPort}/api/",
+                    $"http://localhost:{internalVariables.apiPort}/api/"
+                };
 
-            bool started = false;
-            foreach (var prefix in prefixesToTry)
-            {
-                try
+                bool started = false;
+                var failures = new List<string>();
+                foreach (var prefix in prefixesToTry.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
-                    _listener.Prefixes.Clear();
-                    _listener.Prefixes.Add(prefix);
-                    _listener.Start();
-                    _prefix = prefix;
-                    started = true;
+                    try
+                    {
+                        _listener.Prefixes.Clear();
+                        _listener.Prefixes.Add(prefix);
+                        _listener.Start();
+                        _prefix = prefix;
+                        started = true;
                     
-                    // Extract the host from the prefix for internal health checks
-                    if (prefix.Contains("localhost"))
-                    {
-                        internalVariables.actualApiHost = "localhost";
-                        Console.WriteLine("WARNING: Server only accessible from this machine!");
-                        Console.WriteLine("Run as Admin or use: netsh http add urlacl url=http://+:5000/ user=Everyone");
-                        Logger.LogWarning("API Server bound to localhost only - not accessible from network");
-                    }
-                    else if (prefix.Contains("+") || prefix.Contains("*"))
-                    {
-                        // Bound to all interfaces - use localhost for internal checks
-                        internalVariables.actualApiHost = "localhost";
-                        Console.WriteLine($"Accessible at: {internalVariables.communicationBaseURL}");
-                    }
-                    else
-                    {
-                        // Bound to specific IP
-                        internalVariables.actualApiHost = internalVariables.LocalIP;
-                        Console.WriteLine($"Accessible at: {internalVariables.communicationBaseURL}");
-                    }
+                        // Extract the host from the prefix for internal health checks
+                        if (prefix.Contains("localhost"))
+                        {
+                            internalVariables.actualApiHost = "localhost";
+                            Logger.LogWarning("API server is accessible only from this computer.");
+                        }
+                        else if (prefix.Contains("+") || prefix.Contains("*"))
+                        {
+                            internalVariables.actualApiHost = "localhost";
+                        }
+                        else
+                        {
+                            internalVariables.actualApiHost = internalVariables.LocalIP;
+                        }
                     
-                    Console.WriteLine($"API Server started on {prefix}");
-                    //Logger.LogInfo($"API Server started on {prefix}");
-                    break;
+                        Console.WriteLine($"API Server started on {prefix}");
+                        break;
+                    }
+                    catch (HttpListenerException ex)
+                    {
+                        var failure = $"{prefix} -> {ex.Message} (HTTP.sys error {ex.NativeErrorCode})";
+                        failures.Add(failure);
+                        Logger.LogWarning($"Failed to bind: {failure}");
+                    
+                        // Failed HttpListener instances cannot be reliably reused.
+                        try { _listener.Close(); } catch { }
+                        _listener = new HttpListener();
+                    }
                 }
-                catch (HttpListenerException ex)
+
+                if (!started)
                 {
-                    Console.WriteLine($"Failed to bind to {prefix}: {ex.Message}");
-                    Logger.LogWarning($"Failed to bind to {prefix}: {ex.Message}");
-                    
-                    // Close and recreate listener for next attempt
                     try { _listener.Close(); } catch { }
-                    _listener = new HttpListener();
+                    _listener = null;
+
+                    var details = string.Join(Environment.NewLine, failures);
+                    throw new InvalidOperationException(
+                        $"API server nelze spustit na portu {internalVariables.apiPort}. " +
+                        "Port může být obsazený nebo pro něj chybí HTTP URL ACL oprávnění. " +
+                        "Spusťte deploy.ps1 jako správce a zkuste aplikaci znovu." +
+                        Environment.NewLine + details);
                 }
+
+                _cts = new CancellationTokenSource();
+                Task.Run(() => HandleAsync(_cts.Token));
+
+                internalVariables.communicationServerStarted = true;
             }
-
-            if (!started)
-            {
-                throw new Exception("Could not start HTTP listener on any prefix. Check firewall and permissions.");
-            }
-
-            _cts = new CancellationTokenSource();
-            Task.Run(() => HandleAsync(_cts.Token));
-
-            internalVariables.communicationServerStarted = true;
         }
 
         public void communicationStop()

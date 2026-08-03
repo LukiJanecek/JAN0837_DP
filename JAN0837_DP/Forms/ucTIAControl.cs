@@ -4,14 +4,6 @@ using JAN0837_DP.TIA;
 using S7.Net;
 // 
 //using TiaOpennessHelper;
-using Siemens.Engineering;
-using Siemens.Engineering.Hmi.Tag;
-using Siemens.Engineering.HW;
-using Siemens.Engineering.HW.Features;
-using Siemens.Engineering.SW;
-using Siemens.Engineering.SW.Blocks;
-using Siemens.Engineering.SW.Tags;
-using Siemens.Engineering.SW.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,7 +21,6 @@ namespace JAN0837_DP.Forms
 {
     public partial class ucTIAControl : UserControl
     {
-        public TiaPortal tiaPortal;
         public ucTIAControl()
         {
             InitializeComponent();
@@ -53,7 +44,7 @@ namespace JAN0837_DP.Forms
             lblParam2.Text = "";
             lblParam3.Text = "";
 
-            lblDLLpath.Text = "Path to Siemens.Engineering.dll:";
+            lblDLLpath.Text = "Path to TIA Portal Openness API:";
             lblTiaProject.Text = "Select TIA Portal project:";
 
             txtBoxTIADLL.Enabled = false;
@@ -707,7 +698,9 @@ namespace JAN0837_DP.Forms
             }
 
             // Detect version from the path BEFORE importing
-            string newDllPath = txtBoxTIADLL.Text.Trim();
+            string selectedPath = txtBoxTIADLL.Text.Trim();
+            string newDllPath = TiaApiLocator.ResolveApiDirectory(selectedPath) ?? selectedPath;
+            txtBoxTIADLL.Text = newDllPath;
             int? detectedVersion = TIAcontrol.DetectTIAVersion(newDllPath);
 
             // Show what we're trying to import
@@ -751,7 +744,7 @@ namespace JAN0837_DP.Forms
                     }
                     else
                     {
-                        lblStatus1.Text = $"Import failed. Check path to Siemens.Engineering.dll.";
+                        lblStatus1.Text = $"Import failed. Check the TIA Portal Openness API folder.";
                     }
 
                     // Show error details
@@ -902,7 +895,7 @@ namespace JAN0837_DP.Forms
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "Choose your folder with Siemens.Engineering.dll.";
+                dialog.Description = "Choose a TIA Portal PublicAPI folder (legacy or V21+).";
                 dialog.UseDescriptionForTitle = true;
 
                 if (dialog.ShowDialog() == DialogResult.OK)

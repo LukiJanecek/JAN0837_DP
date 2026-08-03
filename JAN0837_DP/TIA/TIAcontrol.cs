@@ -1,12 +1,6 @@
 ﻿using JAN0837_DP.Data;
 using JAN0837_DP.Log;
 using MQTTnet.Internal;
-using Siemens.Engineering;
-using Siemens.Engineering.HW;
-using Siemens.Engineering.HW.Features;
-using Siemens.Engineering.SW;
-using Siemens.Engineering.SW.Blocks;
-using Siemens.Engineering.SW.ExternalSources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -97,36 +91,6 @@ namespace JAN0837_DP.TIA
             await p.WaitForExitAsync();
 
             return (p.ExitCode, so, se);
-        }
-
-        public static (TiaPortal portal, Project project) OpenOrAttachProject(string projectPath, bool withUI = true)
-        {
-            if (string.IsNullOrWhiteSpace(projectPath) || !File.Exists(projectPath))
-            {
-                throw new FileNotFoundException("TIA project file not found.", projectPath);
-            }
-
-            // try connecting to running TIA Portal process
-            try
-            {
-                foreach(var p in TiaPortal.GetProcesses())
-                {
-                    if (p.ProjectPath?.FullName?.Equals(projectPath, StringComparison.OrdinalIgnoreCase) == true)
-                    {
-                        var attached = p.Attach();
-                        return (attached, attached.Projects[0]);
-                    }
-                }
-            }   
-            catch (Exception ex)
-            {
-                // could not attach, proceed to open a new instanceq
-                Logger.LogException(ex, "Failed to attach to running TIA Portal instance");
-            }
-
-            var tia = new TiaPortal(TiaPortalMode.WithUserInterface);
-            tia.Projects.Open(new FileInfo(projectPath));
-            return (tia, tia.Projects[0]);
         }
 
         public static int? DetectTIAVersion(string dllPath)

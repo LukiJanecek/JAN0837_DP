@@ -12,6 +12,7 @@
 - PY works with TIA Portal 
 - C# is calling PY scripts 
 - C# communicate with PLC via Sharp7 
+
 # Užitečné odkazy: 
 
 Miro: 

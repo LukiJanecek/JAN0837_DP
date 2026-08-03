@@ -48,9 +48,4 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Siemens.Engineering">
-      <HintPath>C:\Program Files\Siemens\Automation\Portal V15_1\PublicAPI\V15.1\Siemens.Engineering.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

@@ -194,12 +194,12 @@ namespace JAN0837_DP.Forms
         #region radio buttons 
         private void rbtnOPCUA_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbtnOPCUA.Checked) return;
             lblStatus.Text = "OPC UA selected.";
-
-            internalVariables.communicationFlag = "OPCUA";
 
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "OPCUA";
 
             /*
             internalVariables.opcuaFlag = true;
@@ -260,12 +260,12 @@ namespace JAN0837_DP.Forms
 
         private void rbtnMQTT_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbtnMQTT.Checked) return;
             lblStatus.Text = "MQTT selected.";
-
-            internalVariables.communicationFlag = "MQTT";
 
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "MQTT";
 
             /*
             internalVariables.opcuaFlag = false;
@@ -329,10 +329,9 @@ namespace JAN0837_DP.Forms
         {
             lblStatus.Text = "TCP/IP selected.";
 
-            internalVariables.communicationFlag = "TCPIP";
-
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "TCPIP";
 
             // UI settings 
             #region UI settings 
@@ -384,12 +383,12 @@ namespace JAN0837_DP.Forms
 
         private void rbtnModbusTCPIP_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbtnModbusTCPIP.Checked) return;
             lblStatus.Text = "Modbus TCP/IP selected.";
-
-            internalVariables.communicationFlag = "ModbusTCPIP";
 
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "ModbusTCPIP";
 
             /*
             internalVariables.opcuaFlag = false;
@@ -452,12 +451,12 @@ namespace JAN0837_DP.Forms
 
         private void rbtnRESTAPI_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbtnRESTAPI.Checked) return;
             lblStatus.Text = "REST API selected. Server is already running on " + internalVariables.communicationDataURL + ".";
-
-            internalVariables.communicationFlag = "RESTAPI";
 
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "RESTAPI";
 
             // start Communication Task 
             btnStartCommunicationThread_Click(this, EventArgs.Empty);
@@ -596,12 +595,12 @@ namespace JAN0837_DP.Forms
 
         private void rbtnSharp7_CheckedChanged(object sender, EventArgs e)
         {
+            if (!rbtnSharp7.Checked) return;
             lblStatus.Text = "Sharp7 selected";
-
-            internalVariables.communicationFlag = "Sharp7";
 
             // stop running Communication Task 
             btnStopCommunicationThread_Click(this, EventArgs.Empty);
+            internalVariables.communicationFlag = "Sharp7";
 
             /*
             internalVariables.opcuaFlag = false;
@@ -1182,7 +1181,7 @@ namespace JAN0837_DP.Forms
                     if (internalVariables.checkBoxMaster == true)
                     {
                         // Stop server
-                        bool stopped = _modbusServer.Stop();
+                        bool stopped = _modbusServer?.Stop() ?? true;
 
                         if (stopped == true)
                         {
@@ -1197,7 +1196,7 @@ namespace JAN0837_DP.Forms
                     else if (internalVariables.checkBoxSlave == true)
                     {
                         // Disconnect client
-                        bool disconnected = _modbusClient.DisconnectFromSlave();
+                        bool disconnected = _modbusClient?.DisconnectFromSlave() ?? true;
 
                         if (disconnected == true)
                         {

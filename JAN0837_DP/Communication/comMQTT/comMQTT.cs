@@ -4,7 +4,6 @@ using JAN0837_DP.Log;
 using MQTTnet;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
-using Siemens.Engineering.HW;
 using System;
 using System.Buffers;
 using System.Collections.Generic;

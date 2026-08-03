@@ -287,7 +287,7 @@ function Publish-Project {
 
     if ($LASTEXITCODE -ne 0) { throw "dotnet publish selhal." }
 
-    $exe = Join-Path $PublishDirectory "JAN0837_DP.exe"
+    $exe = Join-Path $PublishDirectory "ComSim.exe"
     if (-not (Test-Path -LiteralPath $exe)) {
         throw "Výsledné EXE nebylo nalezeno: $exe"
     }
@@ -356,6 +356,117 @@ function New-ApplicationShortcut([string]$Executable) {
     $shortcut.Save()
 }
 
+# Compatible deployment path for both the legacy monolithic API and V21+ modular API.
+function Find-TiaPublicApiCompatible {
+    Write-Step "Hledani TIA Portal Openness API (legacy nebo V21+)"
+
+    $roots = @(
+        (Join-Path $env:ProgramFiles "Siemens\Automation"),
+        (Join-Path ${env:ProgramFiles(x86)} "Siemens\Automation")
+    ) | Where-Object { $_ -and (Test-Path -LiteralPath $_) }
+
+    $apiFiles = foreach ($root in $roots) {
+        Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue |
+            Where-Object {
+                $_.Name -in @("Siemens.Engineering.dll", "Siemens.Engineering.Base.dll") -and
+                $_.FullName -match "\\PublicAPI\\V[0-9.]+\\"
+            }
+    }
+
+    $candidates = $apiFiles | ForEach-Object {
+        $match = [regex]::Match($_.FullName, "\\PublicAPI\\V(?<version>[0-9.]+)\\")
+        $version = [version]"0.0"
+        if ($match.Success) {
+            [version]::TryParse($match.Groups["version"].Value, [ref]$version) | Out-Null
+        }
+        [PSCustomObject]@{
+            Version = $version
+            Dll = $_.FullName
+            Directory = $_.DirectoryName
+            ApiKind = if ($_.Name -eq "Siemens.Engineering.Base.dll") { "V21+ modular" } else { "legacy" }
+        }
+    }
+
+    $tia = $candidates | Sort-Object Version -Descending | Select-Object -First 1
+    if ($null -eq $tia) {
+        throw "TIA Portal Openness API nebylo nalezeno. Nainstalujte komponentu Openness/PublicAPI."
+    }
+    Write-Host "Nalezeno: $($tia.Dll) [$($tia.ApiKind)]" -ForegroundColor Green
+    return $tia
+}
+
+function Confirm-TiaPath($Tia) {
+    Write-Step "Overeni cesty k TIA API"
+    if (-not (Test-Path -LiteralPath $Tia.Dll -PathType Leaf)) {
+        throw "Nalezene TIA API neni dostupne: $($Tia.Dll)"
+    }
+    Write-Host "TIA API se bude nacitat dynamicky z: $($Tia.Directory)" -ForegroundColor Green
+}
+
+function Install-ProjectDependenciesCompatible {
+    Write-Step "Instalace React zavislosti"
+    Push-Location $FrontendDirectory
+    try {
+        & npm.cmd ci --no-audit --no-fund
+        if ($LASTEXITCODE -ne 0) { throw "npm ci selhalo." }
+    }
+    finally {
+        Pop-Location
+    }
+
+    Write-Step "Priprava lokalniho Python virtual environment"
+    $venv = Join-Path $PythonDirectory "venv"
+    $venvPython = Join-Path $venv "Scripts\python.exe"
+    $venvConfig = Join-Path $venv "pyvenv.cfg"
+    $recreateVenv = -not (Test-Path -LiteralPath $venvPython)
+
+    if (-not $recreateVenv -and (Test-Path -LiteralPath $venvConfig)) {
+        $executableLine = Get-Content -LiteralPath $venvConfig |
+            Where-Object { $_ -match '^executable\s*=\s*(.+)$' } |
+            Select-Object -First 1
+        if ($executableLine -match '^executable\s*=\s*(.+)$') {
+            $basePython = $Matches[1].Trim()
+            if (-not (Test-Path -LiteralPath $basePython -PathType Leaf)) {
+                Write-Host "Preneseny venv odkazuje na $basePython a bude vytvoren znovu." -ForegroundColor Yellow
+                $recreateVenv = $true
+            }
+        }
+    }
+
+    if ($recreateVenv -and (Test-Path -LiteralPath $venv)) {
+        $resolvedVenv = (Resolve-Path -LiteralPath $venv).Path
+        $resolvedPythonDirectory = (Resolve-Path -LiteralPath $PythonDirectory).Path
+        if (-not $resolvedVenv.StartsWith($resolvedPythonDirectory, [StringComparison]::OrdinalIgnoreCase)) {
+            throw "Odmitnuto odstraneni neocekavaneho venv: $resolvedVenv"
+        }
+        Remove-Item -LiteralPath $resolvedVenv -Recurse -Force
+    }
+
+    if ($recreateVenv) {
+        $launcher = Get-PythonLauncher
+        if ($launcher -eq "py.exe") {
+            & py.exe -3 -m venv $venv
+        }
+        elseif ($launcher -eq "python.exe") {
+            & python.exe -m venv $venv
+        }
+        else {
+            throw "Python nebyl nalezen ani po instalaci prerequisites."
+        }
+        if ($LASTEXITCODE -ne 0) { throw "Vytvoreni Python venv selhalo." }
+    }
+
+    & $venvPython --version
+    if ($LASTEXITCODE -ne 0) { throw "Lokalni Python venv nelze spustit." }
+    $requirements = Join-Path $PythonDirectory "requirements.txt"
+    & $venvPython -m pip install --disable-pip-version-check --upgrade pip
+    if ($LASTEXITCODE -ne 0) { throw "Aktualizace pip selhala." }
+    & $venvPython -m pip install --disable-pip-version-check -r $requirements
+    if ($LASTEXITCODE -ne 0) { throw "Instalace Python zavislosti selhala." }
+    & $venvPython -c "import clr; print('pythonnet OK')"
+    if ($LASTEXITCODE -ne 0) { throw "Overeni pythonnet selhalo." }
+}
+
 if (-not (Test-Administrator)) {
     Restart-AsAdministrator
 }
@@ -382,10 +493,10 @@ try {
         Write-Host "Instalace návazností přeskočena." -ForegroundColor Yellow
     }
 
-    $tia = Find-TiaPublicApi
+    $tia = Find-TiaPublicApiCompatible
     $restartRequired = Add-UserToOpennessGroup
-    Set-TiaPath $tia
-    Install-ProjectDependencies
+    Confirm-TiaPath $tia
+    Install-ProjectDependenciesCompatible
     $exe = Publish-Project
 
     Configure-Network -ConfigureFirewall:(-not $SkipFirewall)

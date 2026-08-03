@@ -1,8 +1,1 @@
-os 
-sys
-clr
-collections
-pythonnet
-pathlib 
-argparse
-traceback
+pythonnet>=3.0.5

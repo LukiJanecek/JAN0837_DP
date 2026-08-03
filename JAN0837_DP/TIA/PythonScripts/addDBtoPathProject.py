@@ -31,7 +31,9 @@ def main():
     print("Task 1: Importing TIA DLL from", args.dll_dir)
     print("=" * 60)
     sys.argv = ["importTIADLL.py", "--dir", args.dll_dir]
-    fc.import_tia_dll(args.dll_dir)
+    import_result = fc.import_tia_dll(args.dll_dir)
+    if import_result != 0:
+        return import_result
 
     from Siemens.Engineering import TiaPortalMode
 

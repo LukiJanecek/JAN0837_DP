@@ -6,6 +6,24 @@ from pathlib import Path
 import tia_parameters as params
 import importTIADLL
 
+def _engineering_assemblies():
+	"""Return all loaded legacy or modular TIA Openness assemblies."""
+	from System import AppDomain
+	return [
+		assembly for assembly in AppDomain.CurrentDomain.GetAssemblies()
+		if assembly.GetName().Name.startswith("Siemens.Engineering")
+	]
+
+def _find_engineering_type(type_name: str):
+	for assembly in _engineering_assemblies():
+		try:
+			for candidate in assembly.GetTypes():
+				if candidate.Name == type_name:
+					return candidate
+		except Exception:
+			continue
+	return None
+
 def import_tia_dll(dll_dir: str) -> int:
 	"""Load Siemens.Engineering from the given PublicAPI folder using importTIADLL.
 
@@ -69,15 +87,8 @@ def open_project(portal, project_file: Path):
 
 def get_service_generic(item, service_type_name: str):
 	"""Get service using generic method invocation with GetService<T>()."""
-	from System.Reflection import Assembly
-
 	try:
-		asm = Assembly.Load("Siemens.Engineering")
-		service_type = None
-		for t in asm.GetTypes():
-			if t.Name == service_type_name:
-				service_type = t
-				break
+		service_type = _find_engineering_type(service_type_name)
 		if service_type:
 			m = item.GetType().GetMethod("GetService")
 			if m and m.IsGenericMethodDefinition:
@@ -93,15 +104,8 @@ def find_plc_software(dev):
 
 	Returns (item_with_service, plc_software) or (None, None).
 	"""
-	from System.Reflection import Assembly
-
 	try:
-		asm = Assembly.Load("Siemens.Engineering")
-		software_container_type = None
-		for t in asm.GetTypes():
-			if t.Name == "SoftwareContainer":
-				software_container_type = t
-				break
+		software_container_type = _find_engineering_type("SoftwareContainer")
 
 		if not software_container_type:
 			return None, None

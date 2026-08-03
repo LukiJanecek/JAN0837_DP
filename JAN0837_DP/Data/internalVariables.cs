@@ -44,7 +44,10 @@ namespace JAN0837_DP.Data
         // Python paths 
         public static string pythonScriptsFolder { get; set; } = Path.Combine(tiaPath, "PythonScripts");
 
-        public static string pythonExePath = Path.Combine(pythonScriptsFolder, "venv", "Scripts", "python.exe");
+        public static string pythonExePath => PythonRuntimeLocator.FindPythonExecutable(pythonScriptsFolder)
+            ?? throw new FileNotFoundException(
+                "Python was not found. Install 64-bit Python and create the local environment using " +
+                Path.Combine(pythonScriptsFolder, "StartPYEnviroment.ps1"));
 
         // Log paths
         public static string logDirectoryPath { get; set; } = Path.Combine(projectRootPath, "Log");

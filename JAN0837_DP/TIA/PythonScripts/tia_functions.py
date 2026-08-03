@@ -79,9 +79,37 @@ def locate_project_file(path_like: str) -> Path:
 	raise FileNotFoundError(f"No .ap* file found in directory: {p}")
 
 
+def get_loaded_tia_version():
+	"""Return the major version of the loaded legacy or modular Openness API."""
+	tia_portal_type = _find_engineering_type("TiaPortal")
+	if tia_portal_type is None:
+		return None
+	try:
+		return int(tia_portal_type.Assembly.GetName().Version.Major)
+	except Exception:
+		return None
+
+def get_project_version(project_file: Path):
+	import re
+	match = re.fullmatch(r"\.ap(\d+)(?:_\d+)?", Path(project_file).suffix, re.IGNORECASE)
+	return int(match.group(1)) if match else None
+
 def open_project(portal, project_file: Path):
-	"""Open a TIA project by file path. Returns the Project instance."""
+	"""Open a matching project or upgrade a project from the immediately previous TIA version."""
 	from System.IO import FileInfo
+	project_file = Path(project_file)
+	project_version = get_project_version(project_file)
+	tia_version = get_loaded_tia_version()
+
+	if project_version and tia_version and project_version < tia_version:
+		if project_version != tia_version - 1:
+			raise RuntimeError(
+				f"TIA Portal V{tia_version} Openness can upgrade only a project from the previous "
+				f"version; selected project is V{project_version}."
+			)
+		print(f"[INFO] Upgrading project from V{project_version} to V{tia_version}...")
+		return portal.Projects.OpenWithUpgrade(FileInfo(str(project_file)))
+
 	return portal.Projects.Open(FileInfo(str(project_file)))
 
 

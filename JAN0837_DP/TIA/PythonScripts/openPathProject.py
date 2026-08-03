@@ -36,7 +36,6 @@ def main():
         return import_result
 
     # Now import System modules after DLL is loaded
-    from System.IO import FileInfo
     from Siemens.Engineering import TiaPortal, TiaPortalMode
 
     # Task 2: open project on path
@@ -59,8 +58,8 @@ def main():
     # Debug: show what we're opening
     print(f"[DEBUG] Opening project file: {project_path}")
     
-    # Open the project using FileInfo with the directory path
-    project = tia_portal.Projects.Open(FileInfo(str(project_path)))
+    # Open directly when versions match; upgrade the immediately previous version.
+    project = fc.open_project(tia_portal, project_path)
     
     print(f"[OK] Project opened successfully: {project_path}")
     print(f"Project name: {project.Name}")  

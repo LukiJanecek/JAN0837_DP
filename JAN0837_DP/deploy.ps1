@@ -100,12 +100,37 @@ function Install-WingetPackage([string]$Id, [string]$Name) {
 
 function Get-PythonLauncher {
     if (Test-Command "py.exe") {
-        & py.exe -3 --version *> $null
-        if ($LASTEXITCODE -eq 0) { return "py.exe" }
+        $previousErrorPreference = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            & py.exe -3.13 --version *> $null
+            $pythonExitCode = $LASTEXITCODE
+        }
+        catch {
+            $pythonExitCode = 1
+        }
+        finally {
+            $ErrorActionPreference = $previousErrorPreference
+        }
+        if ($pythonExitCode -eq 0) { return "py.exe" }
     }
     if (Test-Command "python.exe") {
-        & python.exe --version *> $null
-        if ($LASTEXITCODE -eq 0) { return "python.exe" }
+        $previousErrorPreference = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            $pythonVersionOutput = & python.exe --version 2>&1
+            $pythonExitCode = $LASTEXITCODE
+            if ($pythonExitCode -eq 0 -and $pythonVersionOutput -notmatch '^Python 3\.13\.') {
+                $pythonExitCode = 1
+            }
+        }
+        catch {
+            $pythonExitCode = 1
+        }
+        finally {
+            $ErrorActionPreference = $previousErrorPreference
+        }
+        if ($pythonExitCode -eq 0) { return "python.exe" }
     }
     return $null
 }
@@ -128,7 +153,7 @@ function Install-Prerequisites {
     }
 
     if ($null -eq (Get-PythonLauncher)) {
-        Install-WingetPackage "Python.Python.3.12" "Python 3.12"
+        Install-WingetPackage "Python.Python.3.13" "Python 3.13"
     }
 
     # WebView2 bývá ve Windows již nainstalovaný. Winget existující instalaci rozpozná.

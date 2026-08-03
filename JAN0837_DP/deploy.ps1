@@ -295,7 +295,7 @@ function Install-ProjectDependencies {
 function Publish-Project {
     Write-Step "Publikování aplikace"
 
-    & dotnet.exe restore $ProjectFile
+    & dotnet.exe restore $ProjectFile --runtime win-x64
     if ($LASTEXITCODE -ne 0) { throw "dotnet restore selhal." }
 
     # Tato cesta zachovává současné očekávání aplikace, že kořen projektu leží

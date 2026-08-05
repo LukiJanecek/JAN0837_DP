@@ -1,5 +1,13 @@
 Write-Host "Check virtual enviroment..."
 
+if (Test-Path ".\venv\pyvenv.cfg") {
+    $configuredPython = (Select-String -Path ".\venv\pyvenv.cfg" -Pattern '^executable\s*=\s*(.+)$').Matches.Groups[1].Value.Trim()
+    if ($configuredPython -and -Not (Test-Path -LiteralPath $configuredPython)) {
+        Write-Host "Existing virtual environment belongs to another computer. Recreating it..."
+        Remove-Item -LiteralPath ".\venv" -Recurse -Force
+    }
+}
+
 if (-Not (Test-Path ".\venv")) {
     Write-Host "Venv not found, creating new..."
     python -m venv venv

@@ -6,6 +6,24 @@ from pathlib import Path
 import tia_parameters as params
 import importTIADLL
 
+def _engineering_assemblies():
+	"""Return all loaded legacy or modular TIA Openness assemblies."""
+	from System import AppDomain
+	return [
+		assembly for assembly in AppDomain.CurrentDomain.GetAssemblies()
+		if assembly.GetName().Name.startswith("Siemens.Engineering")
+	]
+
+def _find_engineering_type(type_name: str):
+	for assembly in _engineering_assemblies():
+		try:
+			for candidate in assembly.GetTypes():
+				if candidate.Name == type_name:
+					return candidate
+		except Exception:
+			continue
+	return None
+
 def import_tia_dll(dll_dir: str) -> int:
 	"""Load Siemens.Engineering from the given PublicAPI folder using importTIADLL.
 
@@ -61,23 +79,44 @@ def locate_project_file(path_like: str) -> Path:
 	raise FileNotFoundError(f"No .ap* file found in directory: {p}")
 
 
+def get_loaded_tia_version():
+	"""Return the major version of the loaded legacy or modular Openness API."""
+	tia_portal_type = _find_engineering_type("TiaPortal")
+	if tia_portal_type is None:
+		return None
+	try:
+		return int(tia_portal_type.Assembly.GetName().Version.Major)
+	except Exception:
+		return None
+
+def get_project_version(project_file: Path):
+	import re
+	match = re.fullmatch(r"\.ap(\d+)(?:_\d+)?", Path(project_file).suffix, re.IGNORECASE)
+	return int(match.group(1)) if match else None
+
 def open_project(portal, project_file: Path):
-	"""Open a TIA project by file path. Returns the Project instance."""
+	"""Open a matching project or upgrade a project from the immediately previous TIA version."""
 	from System.IO import FileInfo
+	project_file = Path(project_file)
+	project_version = get_project_version(project_file)
+	tia_version = get_loaded_tia_version()
+
+	if project_version and tia_version and project_version < tia_version:
+		if project_version != tia_version - 1:
+			raise RuntimeError(
+				f"TIA Portal V{tia_version} Openness can upgrade only a project from the previous "
+				f"version; selected project is V{project_version}."
+			)
+		print(f"[INFO] Upgrading project from V{project_version} to V{tia_version}...")
+		return portal.Projects.OpenWithUpgrade(FileInfo(str(project_file)))
+
 	return portal.Projects.Open(FileInfo(str(project_file)))
 
 
 def get_service_generic(item, service_type_name: str):
 	"""Get service using generic method invocation with GetService<T>()."""
-	from System.Reflection import Assembly
-
 	try:
-		asm = Assembly.Load("Siemens.Engineering")
-		service_type = None
-		for t in asm.GetTypes():
-			if t.Name == service_type_name:
-				service_type = t
-				break
+		service_type = _find_engineering_type(service_type_name)
 		if service_type:
 			m = item.GetType().GetMethod("GetService")
 			if m and m.IsGenericMethodDefinition:
@@ -93,15 +132,8 @@ def find_plc_software(dev):
 
 	Returns (item_with_service, plc_software) or (None, None).
 	"""
-	from System.Reflection import Assembly
-
 	try:
-		asm = Assembly.Load("Siemens.Engineering")
-		software_container_type = None
-		for t in asm.GetTypes():
-			if t.Name == "SoftwareContainer":
-				software_container_type = t
-				break
+		software_container_type = _find_engineering_type("SoftwareContainer")
 
 		if not software_container_type:
 			return None, None

@@ -142,7 +142,10 @@ namespace JAN0837_DP
             AppDomain.CurrentDomain.AssemblyResolve += (s, args) =>
             {
                 var name = new System.Reflection.AssemblyName(args.Name).Name + ".dll";
-                var path = System.IO.Path.Combine(paths.tiaDLLPath, name);
+                var apiDirectory = TiaApiLocator.ResolveApiDirectory(paths.tiaDLLPath);
+                if (apiDirectory == null || !name.StartsWith("Siemens.Engineering", StringComparison.Ordinal))
+                    return null;
+                var path = System.IO.Path.Combine(apiDirectory, name);
                 return System.IO.File.Exists(path) ? System.Reflection.Assembly.LoadFrom(path) : null;
             };
 

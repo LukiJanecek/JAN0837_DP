@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using S7.Net;
-using Siemens.Engineering.HW;
 
 namespace JAN0837_DP.Communication.comS7
 {

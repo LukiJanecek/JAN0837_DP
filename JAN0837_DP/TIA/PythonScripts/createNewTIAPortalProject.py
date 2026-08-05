@@ -36,7 +36,9 @@ def main():
     print("Task 1: Importing TIA DLL from", args.dll_dir)
     print("=" * 60)
     sys.argv = ["importTIADLL.py", "--dir", args.dll_dir]
-    fc.import_tia_dll(args.dll_dir)
+    import_result = fc.import_tia_dll(args.dll_dir)
+    if import_result != 0:
+        return import_result
 
     import System
     from System.Reflection import Assembly, AssemblyName, ReflectionTypeLoadException
@@ -64,12 +66,17 @@ def main():
     parent_dir = DirectoryInfo(str(project_dir_path))
     project_name = args.project_name
     
-    # The actual project will be at: project_dir / project_name / project_name.ap19
-    proj_folder = project_dir_path / project_name / f"{project_name}.ap19"
+    tia_version = fc.get_loaded_tia_version()
+    if tia_version is None:
+        print("[ERROR] Could not determine the loaded TIA Portal version.")
+        return 3
+
+    # The project extension follows the loaded Openness API (for example .ap20 or .ap21).
+    proj_folder = project_dir_path / project_name / f"{project_name}.ap{tia_version}"
     
     # Open existing or create new project
     if proj_folder.exists():
-        project = tia_portal.Projects.Open(FileInfo(str(proj_folder)))
+        project = fc.open_project(tia_portal, proj_folder)
         print(f"[OK] Project opened: {proj_folder}")
     else:
         # Check if project subdirectory exists and is not empty (to avoid TIA error)
@@ -78,7 +85,7 @@ def main():
             print(f"[WARN] Project subdirectory exists but is not empty: {proj_subdir}")
             print(f"[NOTE] Trying to open project anyway...")
             try:
-                project = tia_portal.Projects.Open(FileInfo(str(proj_folder)))
+                project = fc.open_project(tia_portal, proj_folder)
                 print(f"[OK] Project opened: {proj_folder}")
             except Exception as e:
                 print(f"[ERROR] Could not open project: {e}")

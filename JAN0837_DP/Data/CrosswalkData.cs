@@ -1,5 +1,4 @@
 ﻿using Opc.Ua;
-using Siemens.Engineering.HW;
 using System;
 using System.Collections.Generic;
 using System.Linq;

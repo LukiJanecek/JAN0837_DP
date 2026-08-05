@@ -13,10 +13,16 @@ def eprint(*args, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser(description="Load TIA PublicAPI assemblies via pythonnet.")
-    parser.add_argument("--dir", required=True, help="Directory containing Siemens.Engineering.dll and friends")
+    parser.add_argument("--dir", required=True, help="TIA PublicAPI folder (legacy or V21+)")
     args = parser.parse_args()
 
-    dll_dir = Path(args.dir).expanduser().resolve()
+    selected_dir = Path(args.dir).expanduser().resolve()
+    marker_names = ("Siemens.Engineering.Base.dll", "Siemens.Engineering.dll")
+    dll_dir = selected_dir
+    if selected_dir.is_dir() and not any((selected_dir / marker).is_file() for marker in marker_names):
+        matches = [p.parent for marker in marker_names for p in selected_dir.rglob(marker)]
+        if matches:
+            dll_dir = sorted(set(matches), key=lambda p: ("Base" in " ".join(x.name for x in p.glob("*.dll")), str(p)), reverse=True)[0]
     print("Using DLL directory:", dll_dir)
     if not dll_dir.exists() or not dll_dir.is_dir():
         eprint(f"ERROR: directory does not exist: {dll_dir}")
@@ -72,12 +78,30 @@ def main():
         eprint("WARNING: Could not register AssemblyResolve helper (continuing).")
         traceback.print_exc(file=sys.stderr)
 
-    # Try to add reference and import Siemens.Engineering
+    # V20 and older use Siemens.Engineering.dll. V21+ use modular Base/Step7 assemblies,
+    # while keeping the public Python namespace Siemens.Engineering.
     try:
-        clr.AddReference("Siemens.Engineering")
+        legacy = dll_dir / "Siemens.Engineering.dll"
+        base = dll_dir / "Siemens.Engineering.Base.dll"
+        if legacy.is_file():
+            clr.AddReference(str(legacy))
+            api_kind = "legacy"
+        elif base.is_file():
+            clr.AddReference(str(base))
+            for modular in sorted(dll_dir.glob("Siemens.Engineering.*.dll")):
+                if modular.name.startswith("Siemens.Engineering.AddIn.") or modular == base:
+                    continue
+                try:
+                    clr.AddReference(str(modular))
+                except Exception as ex:
+                    eprint(f"WARNING: optional module {modular.name} was not loaded: {ex}")
+            api_kind = "modular V21+"
+        else:
+            eprint(f"ERROR: neither {' nor '.join(marker_names)} was found below {selected_dir}")
+            return 4
         # import to validate
         import Siemens.Engineering as SE
-        print("Siemens.Engineering import OK")
+        print(f"Siemens.Engineering import OK ({api_kind})")
 
         # show a few diagnostics
         try:

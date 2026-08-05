@@ -12,7 +12,6 @@ using MQTTnet;
 using Newtonsoft.Json;
 using Opc.Ua;
 using S7.Net.Types;
-using Siemens.Engineering.HW;
 using System;
 using System.Collections.Generic;
 using System.Linq;

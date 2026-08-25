@@ -1,4 +1,13 @@
-﻿using System;
+﻿using JAN0837_DP.Data;
+using JAN0837_DP.Log;
+using JAN0837_DP.ReactFE;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.VisualBasic;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,22 +18,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-
-using JAN0837_DP.Data;
-
-
-using Newtonsoft;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Microsoft.Web.WebView2.Core;
-using JAN0837_DP.ReactFE;
-using static System.Net.WebRequestMethods;
-using Microsoft.VisualBasic;
-using Microsoft.AspNetCore.Hosting.Server;
+using static JAN0837_DP.Data.internalVariables;
 using static JAN0837_DP.Data.TestData;
-using JAN0837_DP.Log;
+using static System.Net.WebRequestMethods;
 
 namespace JAN0837_DP.Forms
 {
@@ -40,6 +36,10 @@ namespace JAN0837_DP.Forms
         public ucLocalhost()
         {
             InitializeComponent();
+
+            //Branding.SetBackgroundImage(this, paths.vsbLogoCzPath, ImageLayout.Zoom);
+            //Branding.SetBackgroundImage(this, paths.vsbLogoEnPath, ImageLayout.Zoom);
+            Branding.SetBackgroundImage(this, paths.kkbiLogoPath, ImageLayout.Center);
         }
 
         private async void ucLocalhost_Load(object sender, EventArgs e)

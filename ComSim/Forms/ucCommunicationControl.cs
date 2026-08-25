@@ -1,11 +1,11 @@
 ﻿using JAN0837_DP;
 using JAN0837_DP.Communication;
 using JAN0837_DP.Communication.comModbusTCPIP;
+using JAN0837_DP.Communication.comMQTT;
+using JAN0837_DP.Communication.comOPCUA;
 using JAN0837_DP.Communication.comS7;
 using JAN0837_DP.Communication.comSharp7;
 using JAN0837_DP.Communication.comTCPIP;
-using JAN0837_DP.Communication.comMQTT;
-using JAN0837_DP.Communication.comOPCUA;
 using JAN0837_DP.Data;
 using JAN0837_DP.Log;
 using MQTTnet.Server;
@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static JAN0837_DP.Data.internalVariables;
 using static Sharp7.S7Consts;
 
 namespace JAN0837_DP.Forms
@@ -41,6 +42,10 @@ namespace JAN0837_DP.Forms
         public ucCommunicationControl()
         {
             InitializeComponent();
+
+            //Branding.SetBackgroundImage(this, paths.vsbLogoCzPath, ImageLayout.Zoom);
+            //Branding.SetBackgroundImage(this, paths.vsbLogoEnPath, ImageLayout.Zoom);
+            Branding.SetBackgroundImage(this, paths.kkbiLogoPath, ImageLayout.Center);
         }
 
         private void CommunicationControl_Load(object sender, EventArgs e)

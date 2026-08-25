@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static JAN0837_DP.Data.internalVariables;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace JAN0837_DP.Forms
@@ -24,6 +25,10 @@ namespace JAN0837_DP.Forms
         public ucTIAControl()
         {
             InitializeComponent();
+
+            //Branding.SetBackgroundImage(this, paths.vsbLogoCzPath, ImageLayout.Zoom);
+            //Branding.SetBackgroundImage(this, paths.vsbLogoEnPath, ImageLayout.Zoom);
+            Branding.SetBackgroundImage(this, paths.kkbiLogoPath, ImageLayout.Center);
         }
 
         private void ucTIAControl_Load(object sender, EventArgs e)

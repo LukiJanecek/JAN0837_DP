@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
+using JAN0837_DP.Log;
 using JAN0837_DP.ReactFE;
 
 namespace JAN0837_DP.Data
@@ -52,6 +53,11 @@ namespace JAN0837_DP.Data
         // Log paths
         public static string logDirectoryPath { get; set; } = Path.Combine(projectRootPath, "Log");
         public static string logFilePath { get; set; } = Path.Combine(logDirectoryPath, "log.txt");
+
+        // pitures 
+        public static string vsbLogoCzPath { get; set; } = Path.Combine(projectRootPath, "ReactFE", "jan0837_reactfe", "public", "images", "450 FEI-CZ.png");
+        public static string vsbLogoEnPath { get; set; } = Path.Combine(projectRootPath, "ReactFE", "jan0837_reactfe", "public", "images", "450 FEI-EN.png");
+        public static string kkbiLogoPath { get; set; } = Path.Combine(projectRootPath, "ReactFE", "jan0837_reactfe", "public", "images", "KKBI.png");
     }
 
     public static class internalVariables
@@ -236,6 +242,37 @@ namespace JAN0837_DP.Data
         public static void ResetLocalIP()
         {
             _localIP = null;
+        }
+
+        // Branding 
+        public static class Branding
+        {
+            public static void SetBackgroundImage(UserControl userControl, string imagePath, ImageLayout layout = ImageLayout.Zoom)
+            {
+                if (!File.Exists(imagePath))
+                {
+                    Logger.LogWarning($"Background image was not found: {imagePath}");
+                    return;
+                }
+
+                try
+                {
+                    using Image sourceImage = Image.FromFile(imagePath);
+                    Bitmap backgroundImage = new Bitmap(sourceImage);
+
+                    Image? previousImage = userControl.BackgroundImage;
+
+                    userControl.BackgroundImage = backgroundImage;
+                    userControl.BackgroundImageLayout = layout;
+                    userControl.BackColor = Color.White;
+
+                    previousImage?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, $"Failed to load background image '{imagePath}': ");
+                }
+            }
         }
     }
 }

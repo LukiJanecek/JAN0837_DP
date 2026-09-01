@@ -37,7 +37,7 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 $ProjectRoot = $PSScriptRoot
-$ProjectFile = Join-Path $ProjectRoot "JAN0837_DP.csproj"
+$ProjectFile = Join-Path $ProjectRoot "ComSim.csproj"
 $VariablesFile = Join-Path $ProjectRoot "Data\internalVariables.cs"
 $FrontendDirectory = Join-Path $ProjectRoot "ReactFE\jan0837_reactfe"
 $PythonDirectory = Join-Path $ProjectRoot "TIA\PythonScripts"
@@ -234,7 +234,7 @@ function Set-TiaPath($Tia) {
         Select-Object -First 1
 
     if ($null -eq $reference) {
-        throw "V JAN0837_DP.csproj chybí reference Siemens.Engineering."
+        throw "V ComSim.csproj chybí reference Siemens.Engineering."
     }
 
     $reference.HintPath = $Tia.Dll
@@ -498,7 +498,7 @@ if (-not (Test-Administrator)) {
 
 if (-not (Test-Path -LiteralPath $ProjectFile) -or
     -not (Test-Path -LiteralPath (Join-Path $ProjectRoot "Program.cs"))) {
-    throw "deploy.ps1 musí být umístěný vedle Program.cs a JAN0837_DP.csproj."
+    throw "deploy.ps1 musí být umístěný vedle Program.cs a ComSim.csproj."
 }
 
 $LogDirectory = Join-Path $ProjectRoot "Log"

@@ -1,46 +1,7 @@
 ﻿// System Libraries 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.IO.Ports;
-using System.Security.Policy;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
-
-// Communication Libraries 
-// OPCUA
-using Opc;
-using Opc.Ua;
-using Opc.Ua.Server;
-using Opc.Ua.Client;
-using Opc.Ua.Configuration;
-using Opc.Ua.Buffers;
-using Opc.Ua.Export;
-using Opc.Ua.Security;
-using JAN0837_DP.Communication.comOPCUA;
-
-    // Modbus
-using Modbus;
-using Modbus.Device;
-using Modbus.Utility;
-using Modbus.Data;
-using Modbus.Extensions;
-using Modbus.IO;
-using Modbus.Message;
+using JAN0837_DP.Communication;
 using JAN0837_DP.Communication.comModbusTCPIP;
-
-    // MQTT
-using MQTTnet;
+using JAN0837_DP.Communication.comOPCUA;
 //using MQTTnet.Server;
 //using MQTTnet.Client;
 //using MQTTnet.Client.Options;
@@ -50,22 +11,55 @@ using MQTTnet;
 
 //TCP/IP
 using JAN0837_DP.Communication.comTCPIP;
-
-// Sharp7
-using Sharp7;
-
+using JAN0837_DP.Data;
+using JAN0837_DP.Forms;
+using JAN0837_DP.Log;
+using JAN0837_DP.ReactFE;
+using Microsoft.AspNetCore.Mvc;
+    // Modbus
+using Modbus;
+using Modbus.Data;
+using Modbus.Device;
+using Modbus.Extensions;
+using Modbus.IO;
+using Modbus.Message;
+using Modbus.Utility;
+    // MQTT
+using MQTTnet;
 // Additional Libraries 
 using Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-using JAN0837_DP.Forms;
-using JAN0837_DP.Data;
-using JAN0837_DP.Communication;
-using JAN0837_DP.Log;
+// Communication Libraries 
+// OPCUA
+using Opc;
+using Opc.Ua;
+using Opc.Ua.Buffers;
+using Opc.Ua.Client;
+using Opc.Ua.Configuration;
+using Opc.Ua.Export;
+using Opc.Ua.Security;
+using Opc.Ua.Server;
+// Sharp7
+using Sharp7;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO.Ports;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
-using JAN0837_DP.ReactFE;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using static JAN0837_DP.Data.internalVariables;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace JAN0837_DP
 {
@@ -87,6 +81,11 @@ namespace JAN0837_DP
         public MainForm()
         {
             InitializeComponent();
+
+            //Branding.SetBackgroundImage(this, paths.vsbLogoCzPath, ImageLayout.Zoom);
+            //Branding.SetBackgroundImage(this, paths.vsbLogoEnPath, ImageLayout.Zoom);
+            //Branding.SetBackgroundImage(this, paths.kkbiLogoPath, ImageLayout.Center);
+
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             this.MinimumSize = new Size(900, 700);
 
